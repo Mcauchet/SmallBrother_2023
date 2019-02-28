@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Launch2Activity"
+    android:orientation="vertical"
+    android:background="@drawable/ombreshape">
+
+
+    <!-- Cadre Textes -->
+    <LinearLayout
+        android:id="@+id/cadre1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginTop="4dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/metalliqueshape" >
+
+        <!-- Installation -->
+        <TextView
+            android:id="@+id/intitule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical"
+            android:text="@string/install"
+            android:textColor="#404040"
+            android:textSize="21sp" />
+
+        <!-- Note explicative 1 -->
+        <TextView
+            android:id="@+id/install_note1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/install_note1"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+    </LinearLayout>
+
+    <!-- Cadre Boutons -->
+    <LinearLayout
+        android:id="@+id/cadre2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
+        android:paddingTop="9dp"
+        android:paddingBottom="9dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/metalliqueshape"
+        app:layout_constraintTop_toBottomOf="@id/cadre1"
+        android:layout_below="@id/cadre1" >
+
+        <Button
+            android:id="@+id/btn_role1"
+            android:onClick="aidant"
+            android:orientation="vertical"
+            android:text="@string/btn_role1"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textAllCaps="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/boutonsshape"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5" />
+
+        <Button
+            android:id="@+id/btn_role2"
+            android:onClick="aide"
+            android:orientation="vertical"
+            android:layout_below="@id/btn_role1"
+            android:text="@string/btn_role2"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textAllCaps="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/boutonsshape"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:shadowColor="#000000"
+            android:shadowDx="0"
+            android:shadowDy="0"
+            android:shadowRadius="5" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

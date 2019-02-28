@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ombreshape">
+
+    <!-- Cadre Principal -->
+    <LinearLayout
+        android:id="@+id/cadre1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/metalliqueshape" >
+
+        <!-- Entête -->
+        <LinearLayout
+            android:id="@+id/cadre1B"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:baselineAligned="false"
+            android:weightSum="1.0"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" >
+
+            <!-- Case vide -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".3"
+                android:layout_width="0dip"
+                android:orientation="horizontal"
+                android:gravity="start" >
+
+                <Button
+                    android:id="@+id/btn_aide"
+                    android:layout_height="32dp"
+                    android:layout_width="32dp"
+                    android:background="@drawable/aide"
+                    android:alpha="0.33"
+                    android:onClick="aide"
+                    android:orientation="vertical"
+                    android:textSize="17sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="5" />
+
+            </LinearLayout>
+
+            <!-- Logo -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".4"
+                android:layout_width="0dip"
+                android:orientation="horizontal"
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:src="@drawable/logo2" />
+
+            </LinearLayout>
+
+            <!-- Bouton Réduire -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".3"
+                android:layout_width="0dip"
+                android:orientation="horizontal"
+                android:gravity="end" >
+
+                <Button
+                    android:id="@+id/btn_reduire"
+                    android:layout_height="28dp"
+                    android:layout_width="28dp"
+                    android:background="@drawable/reduire"
+                    android:alpha="0.33"
+                    android:onClick="reduire"
+                    android:orientation="vertical"
+                    android:textSize="17sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="5" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Ligne 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical"
+            android:background="#404040"
+            android:alpha="0.1" />
+
+        <!-- Cadre Log -->
+        <LinearLayout
+            android:id="@+id/cadre1C"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1.0"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:background="@drawable/metalliqueshape" >
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".9"
+                android:layout_width="0dip"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:orientation="vertical"
+                tools:ignore="Suspicious0dp">
+
+                <TextView
+                    android:id="@+id/log_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="@string/log_intitule"
+                    android:textStyle="bold"
+                    android:background="@drawable/soulignement"
+                    android:textColor="#262626"
+                    android:textSize="15sp" />
+
+                <com.uncopt.android.widget.text.justify.JustifiedTextView
+                    android:id="@+id/log_texte"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="4dp"
+                    android:text=" "
+                    android:textStyle="italic"
+                    android:textColor="#404040"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Cadre Boutons -->
+    <LinearLayout
+        android:id="@+id/cadre2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:background="@drawable/metalliqueshape"
+        app:layout_constraintTop_toBottomOf="@id/cadre1" >
+
+        <!-- Cadre Mode Privé -->
+        <LinearLayout
+            android:id="@+id/cadreMP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1.0"
+            android:orientation="horizontal"
+            android:gravity="center" >
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:layout_width="0dip"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:paddingLeft="16dp"
+                android:orientation="horizontal"
+                tools:ignore="Suspicious0dp">
+
+                <TextView
+                    android:id="@+id/intituleDecompte"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center|center_vertical"
+                    android:layout_marginTop="4dp"
+                    android:text=" "
+                    android:textStyle="italic"
+                    android:textColor="#404040"
+                    android:textSize="14sp" />
+
+                <!-- Décompte délai -->
+                <TextView
+                    android:id="@+id/decompte"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center|center_vertical"
+                    android:layout_marginTop="4dp"
+                    android:text=" "
+                    android:textStyle="italic"
+                    android:textColor="#404040"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".5"
+                android:layout_width="0dip"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:orientation="vertical"
+                tools:ignore="Suspicious0dp">
+
+                <!-- Bouton Mode Privé -->
+                <FrameLayout
+                    android:id="@+id/contour0"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:layout_gravity="center" >
+
+                    <Switch
+                        android:id="@+id/btn_deranger"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_switch"
+                        android:textColor="#b3b3b3"
+                        android:textSize="13sp"
+                        android:gravity="right|center_vertical"
+                        android:switchPadding="6dp"
+                        android:theme="@style/switchekke" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Ligne 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical"
+            android:background="#404040"
+            android:alpha="0.1" />
+
+        <!-- Bouton SMS -->
+        <FrameLayout
+            android:id="@+id/contour1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center" >
+
+            <Button
+                android:id="@+id/btn_sms_va_dant"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="smsAide"
+                android:orientation="vertical"
+                android:text="@string/btn_sms_va_de"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:background="@drawable/boutonsshape"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="5" />
+
+        </FrameLayout>
+
+        <!-- Bouton Appel -->
+        <FrameLayout
+            android:id="@+id/contour2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center" >
+
+            <Button
+                android:id="@+id/btn_appel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="appel"
+                android:orientation="vertical"
+                android:text="@string/btn_appel"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:background="@drawable/boutonsshape"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:shadowColor="#000000"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="5" />
+
+        </FrameLayout>
+
+        <!-- Ligne 3 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical"
+            android:background="#404040"
+            android:alpha="0.1" />
+
+        <!-- Logo UNamur -->
+        <ImageView
+            android:id="@+id/unamur"
+            android:layout_width="104dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:src="@drawable/unamur"
+            android:alpha="0.60" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

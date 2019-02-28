@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ombreshape">
+
+    <!-- Cadre Principal -->
+    <LinearLayout
+        android:id="@+id/cadre1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/metalliqueshape" >
+
+        <!-- Entête -->
+        <LinearLayout
+            android:id="@+id/cadre1B"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:baselineAligned="false"
+            android:weightSum="1.0"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" >
+
+            <!-- Bouton Retour -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".3"
+                android:layout_width="0dip"
+                android:orientation="horizontal"
+                android:gravity="start" >
+
+                <Button
+                    android:id="@+id/btn_retour"
+                    android:layout_height="28dp"
+                    android:layout_width="28dp"
+                    android:background="@drawable/retour"
+                    android:alpha="0.33"
+                    android:onClick="retour"
+                    android:orientation="vertical"
+                    android:textSize="17sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="5" />
+
+            </LinearLayout>
+
+            <!-- Logo -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".4"
+                android:layout_width="0dip"
+                android:orientation="horizontal"
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="4dp"
+                    android:src="@drawable/logo2" />
+
+            </LinearLayout>
+
+            <!-- Bouton Aide -->
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_weight=".3"
+                android:layout_width="0dip"
+                android:orientation="horizontal"
+                android:gravity="end" >
+
+                <Button
+                    android:id="@+id/btn_aide"
+                    android:layout_height="32dp"
+                    android:layout_width="32dp"
+                    android:background="@drawable/aide"
+                    android:alpha="0.33"
+                    android:onClick="aide"
+                    android:orientation="vertical"
+                    android:textSize="17sp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="5" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    <!-- Ligne 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:orientation="vertical"
+        android:background="#404040"
+        android:alpha="0.1" />
+
+        <!-- Cadre entête -->
+        <LinearLayout
+            android:id="@+id/cadre1C"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1.0"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical"
+            android:gravity="center" >
+
+            <!-- Réglages -->
+            <TextView
+                android:id="@+id/reglages_intitule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical"
+                android:text="@string/reglages_intitule"
+                android:textColor="#404040"
+                android:textSize="21sp" />
+
+            <!-- Note explicative des réglages -->
+            <com.uncopt.android.widget.text.justify.JustifiedTextView
+                android:id="@+id/reglages_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/reglages_note"
+                android:textColor="#000000"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <!-- Cadre Boutons -->
+        <LinearLayout
+            android:id="@+id/cadre2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="4dp"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:background="@drawable/metalliqueshape"
+            app:layout_constraintTop_toBottomOf="@id/cadre1" >
+
+            <!-- Bouton Effacer Aidant -->
+            <FrameLayout
+                android:id="@+id/contour1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="center" >
+
+                <Button
+                    android:id="@+id/btn_reinit_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="reinitAidant"
+                    android:orientation="vertical"
+                    android:text="@string/btn_reinit_1"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:background="@drawable/boutons2shape"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="5" />
+
+            </FrameLayout>
+
+            <!-- Ligne -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:orientation="vertical"
+                android:background="#404040"
+                android:alpha="0.1" />
+
+            <!-- Bouton Effacer Aidé -->
+            <FrameLayout
+                android:id="@+id/contour2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="center" >
+
+                <Button
+                    android:id="@+id/btn_reinit_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="reinitAide"
+                    android:orientation="vertical"
+                    android:text="@string/btn_reinit_2"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:background="@drawable/boutons2shape"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="5" />
+
+            </FrameLayout>
+
+            <!-- Ligne -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="vertical"
+                android:background="#404040"
+                android:alpha="0.1" />
+
+            <!-- Bouton Refaire photo -->
+            <FrameLayout
+                android:id="@+id/contour3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_gravity="center" >
+
+                <Button
+                    android:id="@+id/btn_reinit_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="refairePhoto"
+                    android:orientation="vertical"
+                    android:text="@string/btn_reinit_3"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:background="@drawable/boutons2shape"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="0"
+                    android:shadowDy="0"
+                    android:shadowRadius="5" />
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <!-- Ligne -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical"
+            android:background="#404040"
+            android:alpha="0.1" />
+
+        <!-- Logo UNamur -->
+        <ImageView
+            android:id="@+id/unamur"
+            android:layout_width="104dp"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:src="@drawable/unamur"
+            android:alpha="0.60" />
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

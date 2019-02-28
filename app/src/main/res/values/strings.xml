@@ -1,0 +1,175 @@
+<resources>
+    <string name="app_name">SmallBrother</string>
+
+    <!-- Indications -->
+
+    <string name="indic_launch1">
+        Bonjour, et merci d\'avoir choisi SmallBrother pour vous aider.
+    </string>
+    <string name="install">Installation</string>
+    <string name="installDant">[Aidant] Installation</string>
+    <string name="installde">[Aidé] Installation</string>
+    <string name="install_note1">
+        Avant tout, il va falloir installer et configurer l\'application sur deux téléphones,
+        selon le rôle de chacun :
+    </string>
+    <string name="install_note2">Veuillez svp compléter ces champs :</string>
+    <string name="install_note3">
+        [ Facultatif ] : prendre une photo de la personne aidée pour les cas d\'urgence.
+    </string>
+    <string name="input1A">Nom de l\'Aidant</string>
+    <string name="input1B">Nom de l\'Aidé</string>
+    <string name="input2A">N° de portable de l\'Aidé</string>
+    <string name="input2B">N° de portable de l\'Aidant</string>
+    <string name="input3">Adresse email de l\'Aidant</string>
+    <string name="input4">Votre adresse Gmail (Aidé)</string>
+    <string name="input5">Votre mot de passe de Gmail</string>
+    <string name="log_intitule">Dernière nouvelle :</string>
+    <string name="reglages_intitule">Réglages</string>
+    <string name="reglages_note">
+        Mettre à jour vos informations ou celles de votre partenaire.
+    </string>
+    <string name="chargement">Chargement en cours </string>
+    <string name="cheminphoto">Stockage Interne/Download/SmallBrother/photo_aide.jpg</string>
+    <string name="nophoto">Aucun fichier trouvé.</string>
+    <string name="reacpitulatif_cln1">→ Nom : \n→ Numéro de l\'Aidé : </string>
+    <string name="popup1">
+        Entrez une durée en minutes (maximum 120) durant laquelle vous refuser
+        que votre partenaire puisse vérifier vos informations :
+    </string>
+    <string name="intitule_delai">Temps restant : </string>
+
+
+    <!-- Boutons -->
+
+    <string name="btn_commencer">Commencer</string>
+    <string name="btn_role1">Ce téléphone est celui de l\'Aidant</string>
+    <string name="btn_role2">Ce téléphone est celui de l\'Aidé</string>
+    <string name="btn_previous">Précédent</string>
+    <string name="btn_continue">Continuer</string>
+    <string name="btn_terminer">Terminer</string>
+    <string name="btn_valider">Valider</string>
+    <string name="btn_annuler">Annuler</string>
+    <string name="btn_sauver">Sauver</string>
+    <string name="btn_capture">Prendre une Photo</string>
+    <string name="btn_capture2">Prendre la Photo</string>
+    <string name="btn_sms_va_dant">Envoi SMS : Tout va bien ?</string>
+    <string name="btn_sms_va_de">Envoi SMS : Oui, tout va bien</string>
+    <string name="btn_appel">Appeler</string>
+    <string name="btn_urgence">Vérifier la situation de l\'Aidé</string>
+    <string name="btn_tiers">Envoyer les info par mail à ...</string>
+    <string name="btn_reinit_1">Réinitialiser mes informations</string>
+    <string name="btn_reinit_2">Celles de l\'Aidé</string>
+    <string name="btn_reinit_3">Refaire la photo de l\'Aidé</string>
+    <string name="btn_switch">Mode Privé </string>
+
+
+    <!-- Messages Système -->
+
+    <!-- Messages -->
+    <string name="oui">Oui</string>
+    <string name="message01">SmallBrother reste actif en arrière-plan.</string>
+    <string name="message02_titre">Réinitialiser</string>
+    <string name="message02_texte">Confirmez-vous cette action ?</string>
+    <string name="message03A">Suppression effectuée.</string>
+    <string name="message03B">Un SMS de déclenchement a été envoyé à votre partenaire.</string>
+    <string name="message04">SMS envoyé.</string>
+    <string name="message05">L\'appel est lancé.</string>
+    <string name="message06">
+        Votre partenaire tente de vérifier de votre situation.\n\n
+        Veuillez patienter pendant que SmallBrother réalise les actions requises.
+    </string>
+    <string name="message06B">
+        RAPPEL :
+        ce processus va déclencher les appareils photo, micro et outils de localisation
+        de votre smartphone.
+    </string>
+    <string name="message07">La demande a été envoyée.</string>
+    <string name="message09">Photo de votre partenaire mise à jour.</string>
+    <string name="message10">Mode Privé activé pour §%.</string>
+    <string name="message11">Mode Privé désactivé.</string>
+    <string name="message12A">EN COURS : enregistrement audio.</string>
+    <string name="message12B">EN COURS : prise des photos.</string>
+    <string name="message12C">EN COURS : localisation du téléphone.</string>
+    <string name="message12D">EN COURS : compression des fichiers.</string>
+    <string name="message12E">EN COURS : récupération du niveau de batterie.</string>
+    <string name="message12F">EN COURS : envoi du rapport de situation.</string>
+    <string name="message13A">Avertissement :</string>
+    <string name="message13B">
+        Installer la version Aidé de SmallBrother donnera à votre partenaire accès
+        à vos informations contextuelles.\nUne vérification de vos données contextuelles
+        lui permettra de capturer un échantillon audio de 10 secondes, deux photos
+        prises automatiquement, et d\'obtenir la localisation ainsi que le niveau de
+        batterie de votre téléphone.
+    </string>
+    <string name="message13C">Information :</string>
+    <string name="message13D">
+        Le contenu entré dans les champs ci-dessus ne quittera pas votre smartphone :
+        il est uniquement destiné à établir la connexion avec Gmail, dans le but de
+        faire parvenir vos informations contextuelles à votre partenaire.
+    </string>
+
+    <!-- Erreurs -->
+    <string name="error01">
+        Le numéro doit être au format GSM belge standard (04 puis huit chiffres).
+    </string>
+    <string name="error02">L\'adresse email entrée est invalide.</string>
+    <string name="error03">Tous les champs doivent être complétés.</string>
+
+
+    <!-- SMS Système -->
+
+    <string name="smsys01">
+        SmallBrother : §% lance la réinitialisation de vos données. [#SB01]
+    </string>
+    <string name="smsys02">SmallBrother : §% vous demande si tout va bien ? [#SB02]</string>
+    <string name="smsys03">SmallBrother : §% vous signale que tout va bien ! [#SB03]</string>
+    <string name="smsys04">
+        SmallBrother : §% demande à vérifier votre situation.[#SB04]
+    </string>
+    <string name="smsys05">SmallBrother : §% n\'est actuellement pas connecté à Internet ! [#SB05]</string>
+    <string name="smsys06">SmallBrother : §% vous a rapporté sa situation par email. [#SB06]</string>
+    <string name="smsys07">SmallBrother : §% a activé le Mode Privé. (N#)[#SB07]</string>
+
+
+    <!-- Log -->
+
+    <string name="log01">Installation terminée.</string>
+    <string name="log02">Réinitialisation des données SmallBrother sur votre téléphone.</string>
+    <string name="log03">Réinitialisation des données SmallBrother sur le téléphone de votre partenaire.</string>
+    <string name="log04">Envoi d\'un SMS \'Tout va bien ?\' à votre partenaire.</string>
+    <string name="log05">SMS reçu : votre partenaire va bien.</string>
+    <string name="log06">SMS reçu : votre partenaire demande si tout va bien ?</string>
+    <string name="log07">Vous appelez votre partenaire.</string>
+    <string name="log08">Votre partenaire vous a appelé.</string>
+    <string name="log09">Vous avez manqué un appel de votre partenaire.</string>
+    <string name="log10">
+        Vous avez demandé à vérifier la situation de l\'Aidé.
+        Le traitement est en cours, veuillez patienter ...
+    </string>
+    <string name="log11">Votre partenaire a reçu l\'email de rapport sur votre situation.</string>
+    <string name="log12">
+        Votre partenaire tente vérifier votre situation.
+        Pourquoi ne pas l\'appeler ?
+    </string>
+    <string name="log13">
+        Echec de l\'envoi de l\'email. Votre partenaire n\'a pas accès au Net actuellement.
+    </string>
+    <string name="log14">
+        Vous avez reçu le rapport sur la situation de l\'Aidé. Veuillez consulter vos emails.
+    </string>
+    <string name="log15">
+        Echec de l\'envoi de l\'email  : vous avez perdu votre connexion à Internet.
+        Veuillez svp appeler partenaire !
+    </string>
+    <string name="log16">Vous signalez à votre partenaire que tout va bien.</string>
+    <string name="log17">
+        Demande d\'email d\'urgence : temps d\'attente anormalement long.
+        Le téléphone de votre partenaire est peut-être éteint ou ne capte pas de réseau.
+    </string>
+    <string name="log18">Le délai du Mode Privé est écoulé.</string>
+    <string name="log19">
+        Votre partenaire souhaite ne pas être dérangé durant les N# prochaines minutes.
+    </string>
+
+</resources>
