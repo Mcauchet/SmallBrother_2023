@@ -152,7 +152,7 @@ public class WorkActivity extends AppCompatActivity  implements SensorEventListe
                         magneto = new MediaRecorder();
                         magneto.setAudioSource(MediaRecorder.AudioSource.MIC);
                         magneto.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-                        magneto.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+                        magneto.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
                         magneto.setOutputFile(fichier);
 
                         try { magneto.prepare(); }
