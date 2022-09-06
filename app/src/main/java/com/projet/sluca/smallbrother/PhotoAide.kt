@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import java.io.File
@@ -39,7 +38,7 @@ class PhotoAide : AppCompatActivity() {
     }
 
     // --> Au clic que le bouton "Retour".
-    fun retour(view: View?) {
+    fun retour() {
         vibreur.vibration(this, 100)
 
         // Transition vers la AidantActivity.
