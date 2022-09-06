@@ -3,7 +3,7 @@ package com.projet.sluca.smallbrother;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 public class Launch2Activity extends AppCompatActivity
