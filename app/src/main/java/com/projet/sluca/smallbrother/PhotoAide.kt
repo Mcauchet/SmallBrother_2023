@@ -43,6 +43,6 @@ class PhotoAide : AppCompatActivity() {
 
         // Transition vers la AidantActivity.
         val intent = Intent(this, AidantActivity::class.java)
-        startActivityForResult(intent, 1)
+        startActivity(intent)
     }
 }

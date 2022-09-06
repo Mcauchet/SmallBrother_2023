@@ -44,7 +44,8 @@
         android:theme="@style/AppTheme"
         android:name="com.projet.sluca.smallbrother.UserData"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Launch1Activity" android:screenOrientation="portrait">
+        <activity android:name=".Launch1Activity" android:screenOrientation="fullSensor"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -52,18 +53,18 @@
         </activity>
 
         <!-- Déclaration d'Activities -->
-        <activity android:name=".Launch2Activity"        android:screenOrientation="portrait" />
-        <activity android:name=".InstallDantActivity"    android:screenOrientation="portrait" />
-        <activity android:name=".InstallDantPicActivity" android:screenOrientation="portrait" />
-        <activity android:name=".InstallDeActivity"      android:screenOrientation="portrait" />
-        <activity android:name=".InstallDe2Activity"     android:screenOrientation="portrait" />
-        <activity android:name=".AidantActivity"         android:screenOrientation="portrait" />
-        <activity android:name=".AideActivity"           android:screenOrientation="portrait" />
-        <activity android:name=".ReglagesActivity"       android:screenOrientation="portrait" />
-        <activity android:name=".PhotoAide"              android:screenOrientation="portrait" />
-        <activity android:name=".PicActivity"            android:screenOrientation="portrait" />
-        <activity android:name=".WorkActivity"           android:screenOrientation="portrait" />
-        <activity android:name=".Work2Activity"          android:screenOrientation="portrait" />
+        <activity android:name=".Launch2Activity"        android:screenOrientation="fullSensor" />
+        <activity android:name=".InstallDantActivity"    android:screenOrientation="fullSensor" />
+        <activity android:name=".InstallDantPicActivity" android:screenOrientation="fullSensor" />
+        <activity android:name=".InstallDeActivity"      android:screenOrientation="fullSensor" />
+        <activity android:name=".InstallDe2Activity"     android:screenOrientation="fullSensor" />
+        <activity android:name=".AidantActivity"         android:screenOrientation="fullSensor" />
+        <activity android:name=".AideActivity"           android:screenOrientation="fullSensor" />
+        <activity android:name=".ReglagesActivity"       android:screenOrientation="fullSensor" />
+        <activity android:name=".PhotoAide"              android:screenOrientation="fullSensor" />
+        <activity android:name=".PicActivity"            android:screenOrientation="fullSensor" />
+        <activity android:name=".WorkActivity"           android:screenOrientation="fullSensor" />
+        <activity android:name=".Work2Activity"          android:screenOrientation="fullSensor" />
 
         <!-- SmsReceiver -->
         <receiver android:name=".SmsReceiver" android:exported="true" >
@@ -74,7 +75,8 @@
         </receiver>
 
         <!-- CallReceiver-->
-        <receiver android:name=".PhoneStatReceiver">
+        <receiver android:name=".PhoneStatReceiver"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.PHONE_STATE"/>
                 <action android:name="android.intent.action.NEW_OUTGOING_CALL" />

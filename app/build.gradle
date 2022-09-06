@@ -1,13 +1,15 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '28.0.3' // <- autophoto
+    compileSdkVersion 32
+    buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.projet.sluca.smallbrother"
-        minSdkVersion 23
-        targetSdkVersion 30
+        minSdkVersion 26
+        targetSdkVersion 32
         versionName '1.2'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
@@ -30,17 +32,24 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.5.0'
+    implementation 'androidx.appcompat:appcompat-resources:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    implementation 'com.uncopt:android.justified:1.0'
+    implementation 'com.uncopt:android.justified:1.3'
     // Justification de texte
     implementation files('libs/commons-io-2.6.jar')
     // Email
     implementation files('libs/activation.jar')
     implementation files('libs/additionnal.jar')
     implementation files('libs/mail.jar')
+
+
+    implementation "androidx.savedstate:savedstate-ktx:1.2.0"
+    implementation "androidx.core:core-ktx:1.8.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
 }
 repositories {
     mavenCentral()
