@@ -55,7 +55,6 @@
         <activity android:name=".ReglagesActivity"       android:screenOrientation="fullSensor" />
         <activity android:name=".PhotoAide"              android:screenOrientation="fullSensor" />
         <activity android:name=".PicActivity"            android:screenOrientation="fullSensor" />
-        <activity android:name=".WorkActivity"           android:screenOrientation="fullSensor" />
         <activity android:name=".Work2Activity"          android:screenOrientation="fullSensor" />
 
         <!-- SmsReceiver -->
