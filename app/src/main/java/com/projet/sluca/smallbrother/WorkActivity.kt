@@ -1,6 +1,7 @@
 package com.projet.sluca.smallbrother
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -11,10 +12,10 @@ import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.telephony.SmsManager
-import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import com.projet.sluca.smallbrother.Libs.AccelerometerListener
 import com.projet.sluca.smallbrother.Libs.AccelerometerManager
 import java.io.IOException
@@ -125,6 +126,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         val fichier = userdata.audioPath
 
                         // Configuration du recorder "magneto".
+                        //TODO deprecated, change for cameraX
                         magneto = MediaRecorder()
                         magneto!!.setAudioSource(MediaRecorder.AudioSource.MIC)
                         magneto!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
@@ -179,8 +181,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         // L'Aidant est averti par SMS de l'échec.
                         var sms = getString(R.string.smsys05)
                         sms = sms.replace("§%", userdata.getNom())
-                        SmsManager.getDefault()
-                            .sendTextMessage(userdata.getTelephone(), null, sms, null, null)
+                        this.getSystemService(SmsManager::class.java)
+                            .sendTextMessage(userdata.getTelephone(), null, sms,
+                                null, null)
 
                         // Retour à l'écran de rôle de l'Aidé.
                         val intent = Intent(this, AideActivity::class.java)
@@ -232,10 +235,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         object : CountDownTimer(2000, 1) {
             override fun onTick(millisUntilFinished: Long) {
                 // A chaque seconde passée, modifier le contenu l'objet TextView.
-                if (millisUntilFinished > 1600) tvLoading!!.text =
-                    "" else if (millisUntilFinished > 1200) tvLoading!!.text =
-                    "." else if (millisUntilFinished > 800) tvLoading!!.text =
-                    ".." else if (millisUntilFinished > 400) tvLoading!!.text =
+                if (millisUntilFinished > 1600) tvLoading.text =
+                    "" else if (millisUntilFinished > 1200) tvLoading.text =
+                    "." else if (millisUntilFinished > 800) tvLoading.text =
+                    ".." else if (millisUntilFinished > 400) tvLoading.text =
                     "..."
             }
 
