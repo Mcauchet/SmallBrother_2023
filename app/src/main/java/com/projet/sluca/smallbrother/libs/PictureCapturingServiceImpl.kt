@@ -225,7 +225,9 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
 
         // [SL:] Chemin d'enregistrement
         val file =
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath + "/SmallBrother/autophoto" + numeroImage + ".jpg")
+            File(Environment.
+            getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                .absolutePath + "/SmallBrother/autophoto" + numeroImage + ".jpg")
         numeroImage++ // [SL:] incrémenter numeroImage.
         try {
             FileOutputStream(file).use { output ->

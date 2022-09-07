@@ -23,5 +23,5 @@ interface PictureCapturingListener {
      *
      * @param picturesTaken : a  Map<PictureUrl></PictureUrl>, PictureData>
      */
-    fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String?, ByteArray?>?)
+    fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?)
 }
