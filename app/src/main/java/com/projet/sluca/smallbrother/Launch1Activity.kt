@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 class Launch1Activity : AppCompatActivity() {
@@ -62,7 +63,7 @@ class Launch1Activity : AppCompatActivity() {
     }
 
     // --> Au clic que le bouton "Commencer".
-    fun commencer() {
+    fun commencer(view: View) {
         vibreur.vibration(this, 100)
 
         // Transition vers l'activity suivante.

@@ -3,6 +3,7 @@ package com.projet.sluca.smallbrother
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.TextView
@@ -38,7 +39,7 @@ class PhotoAide : AppCompatActivity() {
     }
 
     // --> Au clic que le bouton "Retour".
-    fun retour() {
+    fun retour(view: View) {
         vibreur.vibration(this, 100)
 
         // Transition vers la AidantActivity.

@@ -26,7 +26,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
     private lateinit var tvLoading: TextView // Déclaration d'un objet TextView.
     private lateinit var tvAction: TextView // Déclaration du TextView pour l'action en cours.
-    var urlGoogleMap: String? = null // Retiendra l'url vers la carte avec positionnement.
+    private var urlGoogleMap: String? = null // Retiendra l'url vers la carte avec positionnement.
     private var batterie: String? = null // Retiendra le niveau de batterie restant.
 
     // Attribut de permission pour l'appel aux méthodes de "APictureCapturingService".

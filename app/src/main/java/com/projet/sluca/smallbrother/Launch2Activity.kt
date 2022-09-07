@@ -2,6 +2,7 @@ package com.projet.sluca.smallbrother
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
 class Launch2Activity : AppCompatActivity() {
@@ -19,7 +20,7 @@ class Launch2Activity : AppCompatActivity() {
     }
 
     // --> Au clic que le bouton "Aidant".
-    fun aidant() {
+    fun aidant(view: View) {
         vibreur.vibration(this, 100)
         userdata.setRole("Aidant")
 
@@ -29,7 +30,7 @@ class Launch2Activity : AppCompatActivity() {
     }
 
     // --> Au clic que le bouton "Aidé".
-    fun aide() {
+    fun aide(view: View) {
         vibreur.vibration(this, 100)
         userdata.setRole("Aidé")
 
