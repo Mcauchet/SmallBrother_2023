@@ -45,12 +45,9 @@
         tools:ignore="GoogleAppIndexingWarning">
 
         <!-- Déclaration d'Activities -->
-        <activity android:name=".InstallDantActivity"    android:screenOrientation="fullSensor" />
         <activity android:name=".InstallDantPicActivity" android:screenOrientation="fullSensor" />
         <activity android:name=".InstallDeActivity"      android:screenOrientation="fullSensor" />
         <activity android:name=".InstallDe2Activity"     android:screenOrientation="fullSensor" />
-        <activity android:name=".AidantActivity"         android:screenOrientation="fullSensor" />
-        <activity android:name=".AideActivity"           android:screenOrientation="fullSensor" />
         <activity android:name=".PhotoAide"              android:screenOrientation="fullSensor" />
 
         <!-- SmsReceiver -->
