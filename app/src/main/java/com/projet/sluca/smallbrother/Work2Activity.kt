@@ -14,7 +14,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
-import com.projet.sluca.smallbrother.Libs.*
+import com.projet.sluca.smallbrother.libs.*
 import java.io.File
 import java.io.IOException
 import java.util.*

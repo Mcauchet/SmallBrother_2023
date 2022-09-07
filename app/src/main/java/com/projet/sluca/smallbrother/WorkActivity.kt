@@ -14,8 +14,8 @@ import android.telephony.SmsManager
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import com.projet.sluca.smallbrother.Libs.AccelerometerListener
-import com.projet.sluca.smallbrother.Libs.AccelerometerManager
+import com.projet.sluca.smallbrother.libs.AccelerometerListener
+import com.projet.sluca.smallbrother.libs.AccelerometerManager
 import java.io.IOException
 
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {

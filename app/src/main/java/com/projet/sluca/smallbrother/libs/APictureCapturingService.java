@@ -1,10 +1,9 @@
-package com.projet.sluca.smallbrother.Libs;
+package com.projet.sluca.smallbrother.libs;
 
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.camera2.CameraManager;
 import android.util.SparseIntArray;
-import android.view.Surface;
 
 /**
  * Abstract Picture Taking Service.

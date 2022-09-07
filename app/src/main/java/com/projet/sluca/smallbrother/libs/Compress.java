@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother.Libs;
+package com.projet.sluca.smallbrother.libs;
 
 import android.util.Log;
 

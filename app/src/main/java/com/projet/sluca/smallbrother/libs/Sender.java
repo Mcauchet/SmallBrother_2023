@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother.Libs;
+package com.projet.sluca.smallbrother.libs;
 
 import android.os.Environment;
 import android.util.Log;
@@ -29,7 +29,7 @@ public class Sender extends javax.mail.Authenticator
 
     static
     {
-        Security.addProvider(new com.projet.sluca.smallbrother.Libs.JSSEProvider());
+        Security.addProvider(new com.projet.sluca.smallbrother.libs.JSSEProvider());
     }
 
     public Sender(String user, String password)
