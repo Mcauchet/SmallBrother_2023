@@ -61,7 +61,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     // Suite du processus après que les photos soient prises :
-    override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>) {
+    override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
         // --> [3] localisation de l'Aidé.
 
         // Affichage de l'action en cours.
@@ -236,7 +236,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // =======================================================================
     }
 
-    override fun onCaptureDone(pictureUrl: String, pictureData: ByteArray) {}
+    override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}
 
     // --> Animation des points de suspension en boucle de 2 secondes.
     fun loading() {
