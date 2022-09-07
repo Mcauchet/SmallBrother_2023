@@ -13,7 +13,7 @@ import java.io.File
 class PhotoAide : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
+    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
 
     // Eléments d'affichage (photo et légende);
     private lateinit var ivApercu: ImageView

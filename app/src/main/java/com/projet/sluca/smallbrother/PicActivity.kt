@@ -19,7 +19,7 @@ import java.io.FileOutputStream
 class PicActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
+    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
     private lateinit var apercu: ImageView // Instanciation de l'aperçu.
 
     override fun onCreate(savedInstanceState: Bundle?) {

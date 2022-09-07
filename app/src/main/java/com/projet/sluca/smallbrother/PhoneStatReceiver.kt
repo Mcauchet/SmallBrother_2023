@@ -10,7 +10,7 @@ import android.telephony.TelephonyManager
 class PhoneStatReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         userdata.loadData()
-        if (userdata.getTelephone() != null) {
+        if (userdata.telephone != null) {
             //TODO see deprecated
             if (intent.action == Intent.ACTION_NEW_OUTGOING_CALL) {
                 /*
@@ -24,14 +24,14 @@ class PhoneStatReceiver : BroadcastReceiver() {
                 if (tm.callState == TelephonyManager.CALL_STATE_RINGING) {
                     // Set du numéro de l'appelant.
                     callNumber = intent.getStringExtra("incoming_number").toString()
-                    if (SmsReceiver.getBit() == 1) // Si le Mode Privé est activé.
+                    if (SmsReceiver.bit == 1) // Si le Mode Privé est activé.
                     {
                         // Avertir :
-                        SmsReceiver.setBit(3) // cas d'un appel
+                        SmsReceiver.bit = 3 // cas d'un appel
                     } else {
                         // Déclaration d'un passage dans la WorkActivity pour éviter que, au retour dans
                         // AideActivity, ne soit généré un doublon du Handler local.
-                        userdata.setEsquive(true)
+                        userdata.esquive = true
 
                         // lancement de la "WorkActivity".
                         val intnt = Intent(context, WorkActivity::class.java)
@@ -43,10 +43,9 @@ class PhoneStatReceiver : BroadcastReceiver() {
         }
     }
 
-    //TODO see if useful
     companion object {
         var callNumber = ""
-        var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
+        lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
         fun catchcallNumber(): String {
             return callNumber
         } // Getter du numéro de l'appelant.

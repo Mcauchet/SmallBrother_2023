@@ -23,7 +23,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
     private lateinit var tvLoading: TextView // Déclaration d'un objet TextView.
     private lateinit var tvAction: TextView // Déclaration du TextView pour l'action en cours.
     private var urlGoogleMap: String? = null // Retiendra l'url vers la carte avec positionnement.
@@ -45,7 +45,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvAction.text = ""
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
         loading() // Déclenchement de l'animation de chargement.
 
         // ================== [ Constitution du dossier joint ] ==================
@@ -96,21 +96,21 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // Récupération des différents fichiers :
         val paquet = arrayOfNulls<String>(3) // liste des fichiers à zipper.
         var numCell = 0 // marqueur numérique incrémentable.
-        val fichier1 = userdata.audioPath
+        val fichier1 = userData.audioPath
         val file1 = File(fichier1)
         if (file1.exists()) // Enregistrement audio.
         {
             paquet[numCell] = fichier1
             numCell++
         }
-        val fichier2 = userdata.getAutophotosPath(1)
+        val fichier2 = userData.getAutophotosPath(1)
         val file2 = File(fichier2)
         if (file2.exists()) // Autophoto 1.
         {
             paquet[numCell] = fichier2
             numCell++
         }
-        val fichier3 = userdata.getAutophotosPath(2)
+        val fichier3 = userData.getAutophotosPath(2)
         val file3 = File(fichier3)
         if (file3.exists()) // Autophoto 2.
         {
@@ -118,7 +118,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }
 
         // Chemin de la future archive.
-        val ziPath = userdata.zipath
+        val ziPath = userData.zipath
 
         // Lancement de la compression.
         val c = Compress(paquet, ziPath)
@@ -134,7 +134,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         // --> [6] déterminer si en mouvement.
         var motion = "Non"
-        if (userdata.getMotion()) motion = "Oui"
+        if (userData.motion) motion = "Oui"
 
         // --> [7] envoi de l'email d'urgence (avec Libs/Sender.java).
 
@@ -142,13 +142,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvAction.text = getString(R.string.message12F)
 
         // Métadonnées du mail.
-        val login = userdata.getMymail()
-        val pwd = userdata.getPassword()
-        val objet = "Situation de " + userdata.getNom()
-        val email = userdata.getEmail()
+        val login = userData.mymail
+        val pwd = userData.password
+        val objet = "Situation de " + userData.nom
+        val email = userData.email
 
         // Détermine la synthaxe du message selon la première lettre du nom de l'Aidé.
-        val nomAide = userdata.getNom()
+        val nomAide = userData.nom
         var particule = nomAide[0].toString()
         val voyelles = arrayOf(
             "A",
@@ -207,15 +207,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 fileZ.delete()
 
                 // Rafraîchissement du Log en fonction de la réussite du processus.
-                if (checkInternet()) userdata.refreshLog(11) // réussi.
-                else userdata.refreshLog(15) // coupure Internet entretemps.
+                if (checkInternet()) userData.refreshLog(11) // réussi.
+                else userData.refreshLog(15) // coupure Internet entretemps.
 
                 // Concoction et envoi du SMS à l'Aidant.
                 var sms = getString(R.string.smsys06)
-                sms = sms.replace("§%", userdata.getNom())
+                sms = sms.replace("§%", userData.nom)
                 @Suppress("Deprecation")
                 SmsManager.getDefault()
-                    .sendTextMessage(userdata.getTelephone(), null, sms, null, null)
+                    .sendTextMessage(userData.telephone, null, sms, null, null)
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
                 // Réactivation du SmsReceiver.

@@ -15,7 +15,7 @@ class SmsReceiver : BroadcastReceiver() {
         val bundle = intent.extras
         val sms: Array<SmsMessage?>?
         userdata.loadData()
-        if (bundle != null && userdata.getTelephone() != null) {
+        if (bundle != null) {
             // Récupération du SMS reçu.
             val pdus = bundle["pdus"] as Array<*>?
             sms = arrayOfNulls(pdus!!.size)
@@ -67,26 +67,22 @@ class SmsReceiver : BroadcastReceiver() {
 
     companion object {
         var numero: String? = null // Retiendra le numéro de l'envoyeur.
-        lateinit var clef: String // Retiendra le mot-clef du sms.
+        var clef: String? = null // Retiendra le mot-clef du sms.
 
-        var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
+        lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
         lateinit var tempsrestant: String // Retiendra le temps restant de Mode Privé pour l'Aidant.
 
-        /*
-        fun catchNumero(): String {
+        fun catchNumero(): String? {
             return numero
         } // Getter du numéro.
-        */
 
-        fun catchClef(): String {
+        fun catchClef(): String? {
             return clef
         } // Getter du mot-clef.
 
-        /*
         fun catchTempsRestant(): String {
             return tempsrestant
         } // Getter du temps restant.
-        */
 
         // Placement des données dans un array, séparation par le retour-charriot.
         // Suppression du fichier de données s'il existe déjà (pour éviter concaténation).

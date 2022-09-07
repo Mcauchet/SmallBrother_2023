@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 class ReglagesActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
+    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_reglages.xml.
         super.onCreate(savedInstanceState)
@@ -90,9 +90,9 @@ class ReglagesActivity : AppCompatActivity() {
 
             // Concoction et envoi du SMS.
             var sms = getString(R.string.smsys01)
-            sms = sms.replace("§%", userdata.getNom())
+            sms = sms.replace("§%", userdata.nom)
             SmsManager.getDefault()
-                .sendTextMessage(userdata.getTelephone(), null, sms, null, null)
+                .sendTextMessage(userdata.telephone, null, sms, null, null)
             message(getString(R.string.message03B)) // toast de confirmation.
             userdata.refreshLog(3) // message de Log adéquat.
         }

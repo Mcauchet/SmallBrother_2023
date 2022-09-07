@@ -21,7 +21,7 @@ import java.io.IOException
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    var userdata = UserData() // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
     private lateinit var tvLoading: TextView // Déclaration d'un objet TextView.
 
     private lateinit var tvAction: TextView // Déclaration du TextView pour l'action en cours.
@@ -50,14 +50,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         tvAction.text = ""
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
 
         // Déclaration d'un passage dans la WorkActivity pour éviter que, au retour dans
         // AideActivity, ne soit généré un doublon du Handler local.
-        userdata.setEsquive(true)
+        userData.esquive = true
 
         // Récupération d'un mot-clef reçu par SMS, s'il en est.
-        if (SmsReceiver.catchClef() != null) clef = SmsReceiver.catchClef()
+        if (SmsReceiver.catchClef() != null) clef = SmsReceiver.catchClef().toString()
 
         // Récupération du numéro de l'appelant, suite à un appel reçu.
         appelant = PhoneStatReceiver.catchcallNumber()
@@ -65,30 +65,30 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         PhoneStatReceiver.resetCallNumber()
 
         // SI APPEL RECU :
-        if (appelant != "" && userdata.getTelephone() == appelant) {
+        if (appelant != "" && userData.telephone == appelant) {
             // Si l'appelant est bien le partenaire : màj du Log.
-            if (userdata.getTelephone() == appelant) userdata.refreshLog(8)
+            if (userData.telephone == appelant) userData.refreshLog(8)
             retour() // Retour à l'écran de rôle.
         } else {
             when (clef) {
                 "[#SB01]" -> {
                     vibreur.vibration(this, 330)
-                    userdata.byeData() // Suppression des données de l'utilisateur.
-                    userdata.refreshLog(3) // message de Log adéquat.
+                    userData.byeData() // Suppression des données de l'utilisateur.
+                    userData.refreshLog(3) // message de Log adéquat.
 
                     // Redémarrage de l'appli.
                     val mIntent = Intent(this, Launch1Activity::class.java)
                     startActivity(mIntent)
                 }
                 "[#SB02]" -> {
-                    userdata.refreshLog(6) // message de Log adéquat.
+                    userData.refreshLog(6) // message de Log adéquat.
 
                     // Retour à l'écran de rôle de l'Aidé.
                     val intent = Intent(this, AideActivity::class.java)
                     startActivity(intent)
                 }
                 "[#SB03]" -> {
-                    userdata.refreshLog(5) // message de Log adéquat.
+                    userData.refreshLog(5) // message de Log adéquat.
 
                     // Retour à l'écran de rôle de l'Aidant.
                     val intent = Intent(this, AidantActivity::class.java)
@@ -120,7 +120,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         tvAction.text = getString(R.string.message12A)
 
                         // Destination du futur fichier :
-                        val fichier = userdata.audioPath
+                        val fichier = userData.audioPath
 
                         // Configuration du recorder "magneto".
                         //TODO deprecated, change for cameraX
@@ -156,7 +156,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                                 // Déclaration : le téléphone est ou non en mouvement.
                                 val suspens = checkMove1.contentEquals(checkMove2)
-                                if (!suspens) userdata.setMotion(true) else userdata.setMotion(false)
+                                userData.motion = !suspens
 
                                 // Suite des évènements dans une autre activity pour éviter les
                                 // interférences entre les intents.
@@ -168,7 +168,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         // =======================================================================
                     } else  // Si pas de connexion :
                     {
-                        userdata.refreshLog(12) // message de Log adéquat.
+                        userData.refreshLog(12) // message de Log adéquat.
 
                         // Alarme : son et vibrations
                         val sound: MediaPlayer = MediaPlayer.create(this, R.raw.alarme)
@@ -177,9 +177,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                         // L'Aidant est averti par SMS de l'échec.
                         var sms = getString(R.string.smsys05)
-                        sms = sms.replace("§%", userdata.getNom())
+                        sms = sms.replace("§%", userData.nom)
                         this.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userdata.getTelephone(), null, sms,
+                            .sendTextMessage(userData.telephone, null, sms,
                                 null, null)
 
                         // Retour à l'écran de rôle de l'Aidé.
@@ -188,21 +188,21 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     }
                 }
                 "[#SB05]" -> {
-                    userdata.refreshLog(13) // message de Log adéquat.
+                    userData.refreshLog(13) // message de Log adéquat.
 
                     // Retour à l'écran de rôle de l'Aidant.
                     val intent = Intent(this, AidantActivity::class.java)
                     startActivity(intent)
                 }
                 "[#SB06]" -> {
-                    userdata.refreshLog(14) // message de Log adéquat.
+                    userData.refreshLog(14) // message de Log adéquat.
 
                     // Retour à l'écran de rôle de l'Aidant.
                     val intent = Intent(this, AidantActivity::class.java)
                     startActivity(intent)
                 }
                 "[#SB07]" -> {
-                    userdata.refreshLog(19) // message de Log adéquat.
+                    userData.refreshLog(19) // message de Log adéquat.
 
                     // Retour à l'écran de rôle de l'Aidant.
                     val intent = Intent(this, AidantActivity::class.java)
@@ -250,11 +250,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     // --> Retour à l'écran de rôle adéquat.
     fun retour() {
-        if ((userdata.getRole() == "Aidant")) {
+        if ((userData.role == "Aidant")) {
             // Envoie vers l'installation d'un Aidant.
             val intent = Intent(this, AidantActivity::class.java)
             startActivity(intent)
-        } else if ((userdata.getRole() == "Aidé")) {
+        } else if ((userData.role == "Aidé")) {
             // Envoie vers l'installation d'un Aidé.
             val intent = Intent(this, AideActivity::class.java)
             startActivity(intent)
@@ -284,7 +284,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     // Fonctions relatives à la consultation de l'accéléromètre (mouvement).
     override fun onResume() {
         super.onResume()
-        if (AccelerometerManager.isSupported(this) && (userdata.getRole() == "Aidé")) {
+        if (AccelerometerManager.isSupported(this) && (userData.role == "Aidé")) {
             AccelerometerManager.startListening(this)
         }
     }
