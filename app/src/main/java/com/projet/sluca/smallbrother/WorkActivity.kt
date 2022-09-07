@@ -285,7 +285,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onResume() {
         super.onResume()
         if (AccelerometerManager.isSupported(this) && (userData.role == "Aidé")) {
-            AccelerometerManager.startListening(this)
+            AccelerometerManager.startListening(this, this)
         }
     }
 
