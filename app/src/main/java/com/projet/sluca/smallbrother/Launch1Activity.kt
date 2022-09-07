@@ -49,11 +49,11 @@ class Launch1Activity : AppCompatActivity() {
             if (userdata.getRole() == "Aidant") {
                 // Envoie vers l'installation d'un Aidant.
                 val intent = Intent(this, InstallDantActivity::class.java)
-                startActivityForResult(intent, 1)
+                startActivity(intent)
             } else if (userdata.getRole() == "Aidé") {
                 // Envoie vers l'installation d'un Aidé.
                 val intent = Intent(this, InstallDeActivity::class.java)
-                startActivityForResult(intent, 1)
+                startActivity(intent)
             }
         } else {
             userdata.whatAboutGoBack(true) // activation des boutons retour.
