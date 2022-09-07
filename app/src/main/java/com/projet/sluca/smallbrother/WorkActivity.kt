@@ -1,7 +1,6 @@
 package com.projet.sluca.smallbrother
 
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -15,11 +14,9 @@ import android.telephony.SmsManager
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.getSystemService
 import com.projet.sluca.smallbrother.Libs.AccelerometerListener
 import com.projet.sluca.smallbrother.Libs.AccelerometerManager
 import java.io.IOException
-import java.util.*
 
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -219,7 +216,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     fun loading() {
         // Sortie de veille du téléphone et mise en avant-plan de cette appli.
         val window = window
+        //FLAG_DISMISS_KEYGUARD is deprecated since API 26, use setShowWhenLocked instead
+        //https://developer.android.com/reference/android/app/Activity#setShowWhenLocked(boolean)
         window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+        @Suppress("DEPRECATION")
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN or
                     WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
