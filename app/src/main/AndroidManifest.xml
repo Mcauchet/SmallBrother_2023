@@ -54,13 +54,6 @@
         <activity android:name=".PhotoAide"              android:screenOrientation="fullSensor" />
 
         <!-- SmsReceiver -->
-        <receiver android:name=".SmsReceiver" android:exported="true"
-            android:permission="android.permission.BROADCAST_SMS">
-            <intent-filter android:priority="2147483647">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-            </intent-filter>
-        </receiver>
 
         <!-- CallReceiver-->
 
