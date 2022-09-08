@@ -22,13 +22,16 @@ class Launch1Activity : AppCompatActivity() {
         vibreur.vibration(this, 100)
 
         // Réactivation du SmsReceiver (en cas de coupure inopinée de l'appli).
-        val pm = this@Launch1Activity.packageManager
+        //Without the comment, the app doesn't launch because "SmsReceiver component does not exist"
+        /*val pm = this@Launch1Activity.packageManager
         val componentName = ComponentName(this@Launch1Activity, SmsReceiver::class.java)
         pm.setComponentEnabledSetting(
             componentName,
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP
         )
+
+         */
 
         // Vérification : tout premier démarrage ?
 
