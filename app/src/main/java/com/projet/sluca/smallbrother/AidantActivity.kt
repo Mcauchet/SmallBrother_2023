@@ -1,13 +1,12 @@
 package com.projet.sluca.smallbrother
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.StrictMode
+import android.os.*
 import android.os.StrictMode.VmPolicy
 import android.telephony.SmsManager
 import android.text.Spannable
@@ -16,12 +15,14 @@ import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.Gravity
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import java.io.File
 
 class AidantActivity : AppCompatActivity() {
@@ -89,7 +90,10 @@ class AidantActivity : AppCompatActivity() {
         // Concoction et envoi du SMS.
         var sms = getString(R.string.smsys02)
         sms = sms.replace("§%", userdata.nom)
-        SmsManager.getDefault().sendTextMessage(userdata.telephone, null, sms, null, null)
+
+        this.getSystemService(SmsManager::class.java)
+            .sendTextMessage(userdata.telephone, null, sms, null, null)
+
         message(getString(R.string.message04)) // toast de confirmation.
         userdata.refreshLog(4) // rafraîchissement du Log.
     }
@@ -127,8 +131,10 @@ class AidantActivity : AppCompatActivity() {
             // Concoction et envoi du SMS.
             var sms = getString(R.string.smsys04)
             sms = sms.replace("§%", userdata.nom)
-            SmsManager.getDefault()
+
+            this.getSystemService(SmsManager::class.java)
                 .sendTextMessage(userdata.telephone, null, sms, null, null)
+
             message(getString(R.string.message07)) // toast de confirmation.
             userdata.refreshLog(10) // rafraîchissement du Log.
         }
@@ -205,18 +211,27 @@ class AidantActivity : AppCompatActivity() {
     // --> WAKEUP() : Sortie de veille du téléphone et mise en avant-plan de cette appli.
     fun wakeup() {
         val window = window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
         @Suppress("DEPRECATION")
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-            (WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-        )
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            keyguardManager.requestDismissKeyguard(this, null)
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                (WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            )
+        }
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
