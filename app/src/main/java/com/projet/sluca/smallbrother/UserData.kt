@@ -254,11 +254,9 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         // Chargement du fichier TXT retenant la date de création de la fiche de l'Aidé.
         val dataD = File(path + date)
         val dataF = File(path + fiche)
-        if (dataD.exists() && dataF.exists()) {
-            if (dateFichier(path + date) != dateFichier(path + fiche)) {
-                return true
-            }
-        }
-        return false
+
+        return dataD.exists()
+                && dataF.exists()
+                && (dateFichier(path + date) != dateFichier(path + fiche))
     }
 }
