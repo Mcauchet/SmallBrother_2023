@@ -31,9 +31,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     private lateinit var tvIntituleDelai: TextView // Déclaration du TextView pour l'intitulé du délai.
 
-    //TODO Look up SwitchCompat
-    //https://developer.android.com/reference/androidx/appcompat/widget/SwitchCompat
-    private var btnDeranger: Switch? = null // Déclaration du bouton ON/OFF.
+    private lateinit var btnDeranger: Switch // Déclaration du bouton ON/OFF.
 
     private lateinit var ivLogo: ImageView // Déclaration de l'ImageView du logo.
 
