@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.os.StrictMode.VmPolicy
 import android.telephony.SmsManager
@@ -29,10 +30,10 @@ class AidantActivity : AppCompatActivity() {
     lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
     private lateinit var tvLog: TextView // Déclaration du TextView pour le Log.
 
-    private var logHandler: Handler? = null // Handler pour rafraîchissement log.
+    // Handler pour rafraîchissement log.
+    private val logHandler: Handler = Handler(Looper.getMainLooper())
 
     private lateinit var flTiers: FrameLayout // Déclaration du FrameLayout pour le bouton Tiers.
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_aidant.xml.
@@ -49,7 +50,6 @@ class AidantActivity : AppCompatActivity() {
         flTiers = findViewById(R.id.contour4)
 
         // Lancement de l'activité en arrière-plan (rafraîchissement).
-        logHandler = Handler()
         reloadLog.run()
 
         // Sortie de veille du téléphone et mise en avant-plan de cette appli.
@@ -198,7 +198,7 @@ class AidantActivity : AppCompatActivity() {
             } else {
                 flTiers.visibility = View.GONE
             }
-            logHandler!!.postDelayed(this, 250) // rafraîchissement
+            logHandler.postDelayed(this, 250) // rafraîchissement
         }
     }
 
