@@ -55,9 +55,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     // -> Donne la part d'URL nécessaire pour accéder à l'aide de SB.
     val help = "help/"
 
-    fun canIGoBack(): Boolean {
-        return canGoBack
-    }
+    fun canIGoBack(): Boolean = canGoBack
 
     // Fonctions complexes :
     // -> Sauvegarde en TXT des données de l'utilisateur.
@@ -70,9 +68,8 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         try {
             // Création du dossier "Downloads/SmallBrother", s'il n'existe pas déjà.
             val dossier = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
-                "SmallBrother"
-            )
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                    .absolutePath, "SmallBrother")
             if (!dossier.exists()) {
                 dossier.mkdirs()
             }
@@ -185,7 +182,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
 
     // -> Retrait d'une certaine quantité de temps au délai gardé en mémoire.
     fun subDelai(sub: Long) {
-        delai = delai?.minus(sub)
+        delai = delai.minus(sub)
     } // Délai moins le paramètre.
 
     // -> Création de la fiche de l'Aidé.
@@ -228,7 +225,6 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             if (!file.exists()) // Créer uniquement si non déjà existant.
             {
                 file.createNewFile()
-
                 // Ecriture.
                 val writer = BufferedWriter(FileWriter(file, true))
                 writer.write(texte)
