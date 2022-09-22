@@ -22,7 +22,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import java.io.File
 
 class AidantActivity : AppCompatActivity() {
@@ -209,7 +208,7 @@ class AidantActivity : AppCompatActivity() {
     }
 
     // --> WAKEUP() : Sortie de veille du téléphone et mise en avant-plan de cette appli.
-    fun wakeup() {
+    private fun wakeup() {
         val window = window
         @Suppress("DEPRECATION")
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
