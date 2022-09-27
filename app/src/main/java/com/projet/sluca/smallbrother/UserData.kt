@@ -84,7 +84,8 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             writer.write(contenu)
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
-        } catch (_: IOException) {
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
     }
 
