@@ -1,12 +1,15 @@
 package com.projet.sluca.smallbrother
 
 import android.content.Intent
+import android.content.pm.PackageManager
 //import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 
 class InstallDe2Activity : AppCompatActivity() {
@@ -20,6 +23,8 @@ class InstallDe2Activity : AppCompatActivity() {
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     // --> Au clic que le bouton "Précédent".
@@ -55,20 +60,23 @@ class InstallDe2Activity : AppCompatActivity() {
             message(getString(R.string.error03))
         } else {
             // Récupération de la version de SB en cours.
-            /*
-            var version: String? = ""
+
+            var version = ""
             try {
                 version =
                     this.packageManager.getPackageInfo(this.packageName, 0).versionName
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
-             */
+
 
             // Sauvegarde en globale des valeurs entrées.
+            userData.version = version
             userData.role = "Aidé"
             userData.mymail = myEmail
             userData.password = password
+            Log.d("userDatasss", userData.version + " " + userData.role + " " + userData.mymail )
+            //TODO fix saveData as it looks like it is not working
             userData.saveData(this) // Sauvegarde des données d'utilisateur.
 
             // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
@@ -76,7 +84,7 @@ class InstallDe2Activity : AppCompatActivity() {
 
             // Transition vers l'activity suivante.
             val intent = Intent(this, AideActivity::class.java)
-            startActivityForResult(intent, 1)
+            startActivity(intent)
         }
     }
 
@@ -88,8 +96,9 @@ class InstallDe2Activity : AppCompatActivity() {
         vibreur.vibration(this, 330)
     }
 
-    // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 }

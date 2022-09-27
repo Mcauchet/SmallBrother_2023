@@ -4,11 +4,13 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 
@@ -23,15 +25,18 @@ class InstallDeActivity : AppCompatActivity() {
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
+        Log.d("USERDATA", userData.toString())
+
 
         // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
-        if (!userData.canIGoBack()) {
+        if (!userData.canGoBack) {
             val btn = findViewById<Button>(R.id.btn_previous)
             btn.visibility = View.INVISIBLE
         }
 
         // Lancement des demandes de permissions.
         demandesPermissions()
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     // --> Au clic que le bouton "Précédent".
@@ -75,7 +80,7 @@ class InstallDeActivity : AppCompatActivity() {
             // Récupération de la version de SB en cours.
             var version: String? = ""
             try {
-                version = this.packageManager.getPackageInfo(this.packageName, 0).versionName
+                version = packageManager.getPackageInfo(packageName, 0).versionName
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
@@ -88,17 +93,18 @@ class InstallDeActivity : AppCompatActivity() {
 
             // Transition vers l'activity suivante.
             val intent = Intent(this, InstallDe2Activity::class.java)
-            startActivityForResult(intent, 1)
+            startActivity(intent)
         }
     }
 
     // --> DEMANDESPERMISSIONS() : Liste des permissions requises pour ce rôle.
-    fun demandesPermissions() {
+    private fun demandesPermissions() {
         if (ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
+            @Suppress("DEPRECATION")
             ActivityCompat.requestPermissions(
                 this, arrayOf(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,  // -> enregistrer un fichier.
@@ -123,13 +129,13 @@ class InstallDeActivity : AppCompatActivity() {
     // --> MESSAGE() : affiche en Toast le string entré en paramètre.
     fun message(message: String?) {
         val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.TOP, 0, 0)
         toast.show()
         vibreur.vibration(this, 330)
     }
 
-    // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 }

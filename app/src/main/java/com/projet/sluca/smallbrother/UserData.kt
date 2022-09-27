@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.media.MediaScannerConnection
 import android.os.Environment
+import android.util.Log
 import org.apache.commons.io.IOUtils
 import java.io.*
 import java.text.DateFormat
@@ -29,7 +30,7 @@ import java.util.*
  * @param canGoBack: indicates if going back is possible
  */
 data class UserData(var version: String = "", var role: String? = null, var nom: String = "",
-                    var telephone: String? = null, var email: String = "", var mymail: String = "",
+                    var telephone: String = "", var email: String = "", var mymail: String = "",
                     var password:String = "", var motion: Boolean = false,
                     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
                     var log: String? = null, var canGoBack: Boolean = true) : Application() {
@@ -54,8 +55,6 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
 
     // -> Donne la part d'URL nécessaire pour accéder à l'aide de SB.
     val help = "help/"
-
-    fun canIGoBack(): Boolean = canGoBack
 
     // Fonctions complexes :
     // -> Sauvegarde en TXT des données de l'utilisateur.
@@ -85,7 +84,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             writer.write(contenu)
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
-        } catch (e: IOException) {
+        } catch (_: IOException) {
         }
     }
 
@@ -106,6 +105,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
                 val br = BufferedReader(FileReader(data))
                 val dataLine = IOUtils.toString(br)
                 val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
+                Log.d("DATATAB", dataTab.toString())
 
                 // Rapatriement des données :
                 version = dataTab[0]
@@ -231,7 +231,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
                 writer.close()
                 MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
             }
-        } catch (e: IOException) {
+        } catch (_: IOException) {
         }
     }
 

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
@@ -22,9 +23,10 @@ class InstallDantActivity : AppCompatActivity() {
 
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
+        Log.d("USERDATA", userdata.toString())
 
         // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
-        if (!userdata.canIGoBack()) {
+        if (!userdata.canGoBack) {
             val btn = findViewById<Button>(R.id.btn_previous)
             btn.visibility = View.INVISIBLE
         }
