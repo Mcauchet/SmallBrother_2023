@@ -1,23 +1,26 @@
 package com.projet.sluca.smallbrother
 
+import android.app.KeyguardManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.telephony.SmsManager
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.util.Log
+import android.view.*
 import android.widget.*
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
@@ -35,7 +38,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     private lateinit var ivLogo: ImageView // Déclaration de l'ImageView du logo.
 
-    private var logHandler: Handler? = null // Handler pour rafraîchissement log.
+    private var logHandler: Handler = Handler(Looper.getMainLooper()) // Handler pour rafraîchissement log.
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,7 +56,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         // Liaison avec le switch ON/OFF et écoute de son état.
         btnDeranger = findViewById(R.id.btn_deranger)
-        btnDeranger!!.setOnCheckedChangeListener(this)
+        btnDeranger.setOnCheckedChangeListener(this)
 
         // Liaison avec l'ImageView du logo.
         ivLogo = findViewById(R.id.logo)
@@ -78,8 +81,9 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             reloadLog.run();
         }
         */
-        logHandler = Handler()
         reloadLog.run()
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     // --> Au clic que le bouton "Aide".
@@ -109,7 +113,8 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         // Concoction et envoi du SMS.
         var sms = getString(R.string.smsys03)
         sms = sms.replace("§%", userData.nom)
-        SmsManager.getDefault().sendTextMessage(userData.telephone, null, sms, null, null)
+        this.getSystemService(SmsManager::class.java)
+            .sendTextMessage(userData.telephone, null, sms, null, null)
         message(getString(R.string.message04)) // toast de confirmation.
         userData.refreshLog(16) // rafraîchissement du Log.
     }
@@ -206,23 +211,23 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     }
 
     // -->
-    fun changeSwitch() {
+    private fun changeSwitch() {
         vibreur.vibration(this, 250)
         refresh()
     }
 
     // --> Rafraîchissement de l'affichage en fonction de l'état du Mode Privé.
-    fun refresh() {
+    private fun refresh() {
         if (userData.prive) // Si actif.
         {
-            btnDeranger!!.setTextColor(Color.parseColor("#b30000"))
+            btnDeranger.setTextColor(Color.parseColor("#b30000"))
             ivLogo.setImageResource(R.drawable.logoff)
-            btnDeranger!!.isChecked = true
+            btnDeranger.isChecked = true
         } else  // Si inactif.
         {
-            btnDeranger!!.setTextColor(Color.parseColor("#597854"))
+            btnDeranger.setTextColor(Color.parseColor("#597854"))
             ivLogo.setImageResource(R.drawable.logo2)
-            btnDeranger!!.isChecked = false
+            btnDeranger.isChecked = false
 
             // Retrait du décompte.
             tvDelai.text = " "
@@ -260,7 +265,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                     val restencore: Int = ((userData.delai / 60000)+1).toInt()
                     val waitage = restencore.toString()
                     sms = sms.replace("N#", waitage)
-                    SmsManager.getDefault()
+                    applicationContext.getSystemService(SmsManager::class.java)
                         .sendTextMessage(userData.telephone, null, sms, null, null)
                 }
                 tvLog.text = userData.log // affichage.
@@ -314,7 +319,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             }
 
             // Relance du Handler SI vérifications remplies pour éviter qu'il se duplique.
-            if (!userData.esquive) logHandler!!.postDelayed(this, 250) // rafraîchissement
+            if (!userData.esquive) logHandler.postDelayed(this, 250) // rafraîchissement
             else userData.esquive = false
         }
     }
@@ -328,23 +333,34 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     }
 
     // --> WAKEUP() : Sortie de veille du téléphone et mise en avant-plan de cette appli.
-    fun wakeup() {
+    private fun wakeup() {
         val window = window
-        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-            (WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-        )
+        @Suppress("DEPRECATION")
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            keyguardManager.requestDismissKeyguard(this, null)
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                (WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            )
+        }
     }
 
-    // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 }
