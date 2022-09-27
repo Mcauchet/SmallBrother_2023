@@ -20,10 +20,17 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 
+/***
+ * class AidantActivity manages the actions the Aidant can make
+ *
+ * @author Sébastien Luca and Maxime Caucheteur
+ * @version 2 (updated on 27-09-2022)
+ */
 class AidantActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -54,16 +61,18 @@ class AidantActivity : AppCompatActivity() {
 
         // Sortie de veille du téléphone et mise en avant-plan de cette appli.
         wakeup()
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
-    // --> Au clic que le bouton "Réduire".
+    // --> Au clic du bouton "Réduire".
     fun reduire(view: View?) {
         vibreur.vibration(this, 200)
         message(getString(R.string.message01)) // Message d'avertissement.
         moveTaskToBack(true) // Mise de l'appli en arrière-plan.
     }
 
-    // --> Au clic que le bouton "Réglages".
+    // --> Au clic du bouton "Réglages".
     fun reglages(view: View?) {
         vibreur.vibration(this, 100)
 
@@ -72,7 +81,7 @@ class AidantActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    // --> Au clic que le bouton "Photo".
+    // --> Au clic du bouton "Photo".
     fun photo(view: View?) {
         vibreur.vibration(this, 100)
 
@@ -81,7 +90,7 @@ class AidantActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    // --> Au clic que le bouton "SMS : Tout va bien ?".
+    // --> Au clic du bouton "SMS : Tout va bien ?".
     fun smsAidant(view: View?) {
         vibreur.vibration(this, 200)
         userdata.loadData() // Raptatriement des données de l'utilisateur.
@@ -97,7 +106,7 @@ class AidantActivity : AppCompatActivity() {
         userdata.refreshLog(4) // rafraîchissement du Log.
     }
 
-    // --> Au clic que le bouton "Appel".
+    // --> Au clic du bouton "Appel".
     fun appel(view: View?) {
         vibreur.vibration(this, 200)
         userdata.loadData() // Raptatriement des données de l'utilisateur.
@@ -110,7 +119,7 @@ class AidantActivity : AppCompatActivity() {
         userdata.refreshLog(7) // rafraîchissement du Log.
     }
 
-    // --> Au clic que le bouton "Demander un email d'urgence".
+    // --> Au clic du bouton "Demander un email d'urgence".
     fun urgence(view: View?) {
         vibreur.vibration(this, 330)
 
@@ -122,7 +131,6 @@ class AidantActivity : AppCompatActivity() {
         builder.setPositiveButton(
             getString(R.string.oui)
         ) { _, _ ->
-
             // Si choix = "OUI" :
             vibreur.vibration(this, 200)
             userdata.loadData() // Raptatriement des données de l'utilisateur.
@@ -147,7 +155,7 @@ class AidantActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    // --> Au clic que le bouton "Envoyer les infos à ...".
+    // --> Au clic du bouton "Envoyer les infos à ...".
     fun tiers(view: View?) {
         vibreur.vibration(this, 200)
         userdata.loadData() // Raptatriement des données de l'utilisateur.
@@ -169,7 +177,6 @@ class AidantActivity : AppCompatActivity() {
             val uri2 = Uri.fromFile(File(userdata.photoIdentPath))
             listUri.add(uri2)
         }
-
         // Appel du choix des services mail disponibles.
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, listUri)
         startActivity(Intent.createChooser(emailIntent, "Quel service email utiliser ?"))
@@ -233,8 +240,9 @@ class AidantActivity : AppCompatActivity() {
         }
     }
 
-    // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 }
