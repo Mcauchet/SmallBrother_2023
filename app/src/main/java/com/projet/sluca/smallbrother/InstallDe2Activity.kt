@@ -70,6 +70,16 @@ class InstallDe2Activity : AppCompatActivity() {
             }
 
 
+            if(intent.hasExtra("nom")){
+                userData.nom = intent.getStringExtra("nom").toString()
+            }
+            if(intent.hasExtra("mail")){
+                userData.email = intent.getStringExtra("mail").toString()
+            }
+            if(intent.hasExtra("telephone")){
+                userData.telephone = intent.getStringExtra("telephone").toString()
+            }
+
             // Sauvegarde en globale des valeurs entrées.
             userData.version = version
             userData.role = "Aidé"

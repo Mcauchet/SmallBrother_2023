@@ -2,6 +2,7 @@ package com.projet.sluca.smallbrother
 
 import android.app.Application
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
 import android.os.Environment
 import android.util.Log
@@ -28,6 +29,9 @@ import java.util.*
  * @param esquive: avoid redundant handlers for AideActivity
  * @param log: log content
  * @param canGoBack: indicates if going back is possible
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 2 (modified on 28-09-22)
  */
 data class UserData(var version: String = "", var role: String? = null, var nom: String = "",
                     var telephone: String = "", var email: String = "", var mymail: String = "",
@@ -63,12 +67,16 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         var contenu = version + "\r" + role + "\r" + nom + "\r" + telephone
         contenu += "\r" + email + "\r" + mymail + "\r" + password
 
+        Log.d("CONTENU", contenu)
+        Log.d("PATH", path)
+
         // Enregistrement :
         try {
             // Création du dossier "Downloads/SmallBrother", s'il n'existe pas déjà.
-            val dossier = File(
+            /*val dossier = File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .absolutePath, "SmallBrother")
+                    .absolutePath, "SmallBrother")*/
+            val dossier = File(this.filesDir, "SmallBrother")
             if (!dossier.exists()) {
                 dossier.mkdirs()
             }
@@ -80,9 +88,13 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             }
 
             // Ecriture.
-            val writer = BufferedWriter(FileWriter(testFile, true))
-            writer.write(contenu)
-            writer.close()
+            //val writer = BufferedWriter(FileWriter(testFile, true))
+
+            this.openFileOutput(file, Context.MODE_PRIVATE).use {
+                it.write(contenu.toByteArray())
+            }
+            //writer.write(contenu)
+            //writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -99,14 +111,17 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     fun loadData(): Boolean {
         // Chargement du fichier TXT pointé par "path".
         val data = File(path + file)
-        if (data.exists()) {
+        Log.d("DATA", data.toString())
+        //TODO this condition fails (the canRead() part)
+        if (data.exists() && data.canRead()) {
+            Log.d("IFLOOP", "I'm in")
             try  // Récupération du contenu du fichier :
             {
                 // Placement des données dans un array, séparation par le retour-charriot.
                 val br = BufferedReader(FileReader(data))
                 val dataLine = IOUtils.toString(br)
                 val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
-                Log.d("DATATAB", dataTab.toString())
+                Log.d("DATATAB", dataTab[0])
 
                 // Rapatriement des données :
                 version = dataTab[0]
@@ -125,6 +140,8 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             } catch (e: IOException) {
                 e.printStackTrace()
             }
+        } else {
+            Log.d("FILE", "Can't read the file")
         }
         return false
     }

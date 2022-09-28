@@ -78,21 +78,24 @@ class InstallDeActivity : AppCompatActivity() {
             message(getString(R.string.error03))
         } else {
             // Récupération de la version de SB en cours.
-            var version: String? = ""
+            /*var version: String? = ""
             try {
                 version = packageManager.getPackageInfo(packageName, 0).versionName
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
-            }
+            }*/
 
             // Sauvegarde en globale des valeurs entrées.
-            userData.version = version!!
             userData.nom = nom
             userData.telephone = telephone
             userData.email = email
 
             // Transition vers l'activity suivante.
             val intent = Intent(this, InstallDe2Activity::class.java)
+            //test to pass aidant data to aide activity
+            intent.putExtra("nom", nom)
+            intent.putExtra("telephone", telephone)
+            intent.putExtra("email", email)
             startActivity(intent)
         }
     }
