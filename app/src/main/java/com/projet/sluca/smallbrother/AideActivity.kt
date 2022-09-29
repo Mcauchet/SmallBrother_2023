@@ -24,6 +24,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
+/***
+ * class AideActivity manages the actions available to the "aidé".
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 2 (updated on 29-09-22)
+ */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -105,7 +111,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         moveTaskToBack(true) // Mise de l'appli en arrière-plan.
     }
 
-    // --> Au clic que le bouton "SMS : Tout va bien ?".
+    // --> Au clic du bouton "SMS : Tout va bien ?".
     fun smsAide(view: View?) {
         vibreur.vibration(this, 200)
         userData.loadData() // Raptatriement des données de l'utilisateur.
@@ -242,31 +248,27 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             val bit: Int = SmsReceiver.bit
             if (bit > 1) {
                 vibreur.vibration(this@AideActivity, 660)
-                if (bit == 2) // Cas : SMS "tout va bien" reçu.
-                {
-                    userData.refreshLog(6) // message de Log adéquat.
-                }
-                if (bit == 3) // Cas : appel reçu.
-                {
-                    userData.refreshLog(8) // message de Log adéquat.
-                }
-                if (bit == 4) // Cas : demande d'email d'urgence.
-                {
-                    userData.refreshLog(12) // message de Log adéquat.
+                when (bit) {
+                    2 -> userData.refreshLog(6)
+                    3 -> userData.refreshLog(8)
+                    4 -> {
+                        userData.refreshLog(12) // message de Log adéquat.
 
-                    // Sonnerie de notification.
-                    val sound: MediaPlayer = MediaPlayer
-                        .create(this@AideActivity, R.raw.notification)
-                    sound.start()
+                        // Sonnerie de notification.
+                        val sound: MediaPlayer = MediaPlayer
+                            .create(this@AideActivity, R.raw.notification)
+                        sound.start()
 
-                    // L'Aidant est averti par SMS de l'action du Mode Privé (+ reçoit tmp restant).
-                    var sms = getString(R.string.smsys07)
-                    sms = sms.replace("§%", userData.nom)
-                    val restencore: Int = ((userData.delai / 60000)+1).toInt()
-                    val waitage = restencore.toString()
-                    sms = sms.replace("N#", waitage)
-                    applicationContext.getSystemService(SmsManager::class.java)
-                        .sendTextMessage(userData.telephone, null, sms, null, null)
+                        // L'Aidant est averti par SMS de l'action du Mode Privé
+                        // (+ reçoit tmp restant).
+                        var sms = getString(R.string.smsys07)
+                        sms = sms.replace("§%", userData.nom)
+                        val restencore: Int = ((userData.delai / 60000)+1).toInt()
+                        val waitage = restencore.toString()
+                        sms = sms.replace("N#", waitage)
+                        applicationContext.getSystemService(SmsManager::class.java)
+                            .sendTextMessage(userData.telephone, null, sms, null, null)
+                    }
                 }
                 tvLog.text = userData.log // affichage.
                 SmsReceiver.bit = 1 // retour à décompte normal.
@@ -327,7 +329,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     // --> MESSAGE() : affiche en Toast le string entré en paramètre.
     fun message(message: String?) {
         val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.TOP, 0, 0)
         toast.show()
         vibreur.vibration(this, 330)
     }
