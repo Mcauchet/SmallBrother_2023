@@ -31,7 +31,7 @@ import java.util.*
  * @param canGoBack: indicates if going back is possible
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 2 (modified on 28-09-22)
+ * @version 2 (modified on 29-09-22)
  */
 data class UserData(var version: String = "", var role: String? = null, var nom: String = "",
                     var telephone: String = "", var email: String = "", var mymail: String = "",
@@ -93,6 +93,8 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             this.openFileOutput(file, Context.MODE_PRIVATE).use {
                 it.write(contenu.toByteArray())
             }
+            //TODO Test this (see if lines are well written in the document)
+            File(file).forEachLine { Log.d("WRITING", it) }
             //writer.write(contenu)
             //writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
@@ -147,21 +149,16 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     }
 
     // -> Appel du chemin globalisé vers la photo d'identité de l'aidé.
-    val photoIdentPath: String
-        get() = path + photo
+    val photoIdentPath: String = path + photo
 
     // -> Appel du chemin globalisé vers la capture audio.
-    val audioPath: String
-        get() = path + "audio.ogg"
+    val audioPath: String = path + "audio.ogg"
 
     // -> Appel du chemin globalisé vers les photos capturées (1 et 2).
-    fun getAutophotosPath(num: Int): String {
-        return path + "autophoto" + num.toString() + ".jpg"
-    }
+    fun getAutophotosPath(num: Int): String = path + "autophoto" + num.toString() + ".jpg"
 
     // -> Appel du chemin globalisé vers la fiche de l'aidé.
-    val fichePath: String
-        get() = path + fiche
+    val fichePath: String = path + fiche
 
     // -> Mise à jour du Log en fonction du numéro entré en paramètre.
     fun refreshLog(code: Int) {
@@ -222,6 +219,12 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         for (ligne in champs) {
             texte += ligne + "\r\r"
         }
+        Log.d("FORLOOP", texte)
+        //TODO Test to see if same result
+        champs.forEach {
+            texte += it + "\r\r"
+        }
+        Log.d("FOREACHLOOP", texte)
 
         // Enregistrement de la fiche :
         val fichette = File(path + fiche)
@@ -253,8 +256,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         }
     }
 
-    private val toDayte: String
-        get() = DateFormat.getDateTimeInstance().format(Date())
+    private val toDayte: String = DateFormat.getDateTimeInstance().format(Date())
 
     // -> Récupère la date de modification d'un fichier
     private fun dateFichier(chemin: String): String {
