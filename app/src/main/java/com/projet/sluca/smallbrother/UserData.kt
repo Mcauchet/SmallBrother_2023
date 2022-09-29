@@ -115,6 +115,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         val data = File(path + file)
         Log.d("DATA", data.toString())
         //TODO this condition fails (the canRead() part)
+        Log.d("PERMISSION", data.canRead().toString())
         if (data.exists() && data.canRead()) {
             Log.d("IFLOOP", "I'm in")
             try  // Récupération du contenu du fichier :
