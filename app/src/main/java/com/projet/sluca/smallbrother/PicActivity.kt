@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 import java.io.FileNotFoundException
@@ -37,6 +38,8 @@ class PicActivity : AppCompatActivity() {
         val fichier = userdata.photoIdentPath
         val file = File(fichier)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     // --> Au clic que le bouton "Capture".
@@ -71,7 +74,7 @@ class PicActivity : AppCompatActivity() {
 
         // Transition vers la AidantActivity.
         val intent = Intent(this, ReglagesActivity::class.java)
-        startActivityForResult(intent, 1)
+        startActivity(intent)
     }
 
     // --> Au clic que le bouton "Terminer".
@@ -87,13 +90,14 @@ class PicActivity : AppCompatActivity() {
     // --> MESSAGE() : affiche en Toast le string entré en paramètre.
     fun message(message: String?) {
         val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.TOP, 0, 0)
         toast.show()
         vibreur.vibration(this, 330)
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 }

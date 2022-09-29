@@ -10,6 +10,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import java.io.File
 import java.io.FileNotFoundException
@@ -36,6 +37,8 @@ class InstallDantPicActivity : AppCompatActivity() {
         val fichier = userData.photoIdentPath
         val file = File(fichier)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     // --> Au clic que le bouton "Capture".
@@ -91,7 +94,9 @@ class InstallDantPicActivity : AppCompatActivity() {
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 }

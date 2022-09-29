@@ -29,7 +29,7 @@ class ReglagesActivity : AppCompatActivity() {
 
         // Transition vers la AidantActivity.
         val intent = Intent(this, AidantActivity::class.java)
-        startActivityForResult(intent, 1)
+        startActivity(intent)
     }
 
     // --> Au clic que le bouton "Aide".
@@ -118,7 +118,6 @@ class ReglagesActivity : AppCompatActivity() {
     // --> MESSAGE() : affiche en Toast le string entré en paramètre.
     fun message(message: String?) {
         val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.TOP, 0, 0)
         toast.show()
         vibreur.vibration(this, 330)
     }

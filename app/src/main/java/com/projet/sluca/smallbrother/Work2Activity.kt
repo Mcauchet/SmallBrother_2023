@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.telephony.SmsManager
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
@@ -58,6 +59,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // Lancement de la capture.
         pictureService = PictureCapturingServiceImpl.getInstance(this)
         pictureService.startCapturing(this)
+
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     // Suite du processus après que les photos soient prises :
@@ -194,7 +197,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         login,  // Envoyeur
                         email // Destinataire
                     )
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                 }
 
                 // Suppression des captures.
@@ -272,7 +275,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 }

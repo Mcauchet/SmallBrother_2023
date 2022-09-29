@@ -1,6 +1,8 @@
 package com.projet.sluca.smallbrother
 
+import android.app.KeyguardManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -8,11 +10,13 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.telephony.SmsManager
 import android.view.WindowManager
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.libs.AccelerometerListener
 import com.projet.sluca.smallbrother.libs.AccelerometerManager
@@ -43,6 +47,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_work)
 
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         // Liaison et remplissage des objets TextView.
         tvLoading = findViewById(R.id.loading)
         tvAction = findViewById(R.id.action)
@@ -67,7 +73,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         // SI APPEL RECU :
         if (appelant != "" && userData.telephone == appelant) {
             // Si l'appelant est bien le partenaire : màj du Log.
-            if (userData.telephone == appelant) userData.refreshLog(8)
+            userData.refreshLog(8)
             retour() // Retour à l'écran de rôle.
         } else {
             when (clef) {
@@ -216,20 +222,25 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     fun loading() {
         // Sortie de veille du téléphone et mise en avant-plan de cette appli.
         val window = window
-        //FLAG_DISMISS_KEYGUARD is deprecated since API 26, use setShowWhenLocked instead
-        //https://developer.android.com/reference/android/app/Activity#setShowWhenLocked(boolean)
-        window.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-        @Suppress("DEPRECATION")
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-            (WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                    WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                    WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-        )
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
+            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            keyguardManager.requestDismissKeyguard(this, null)
+            setShowWhenLocked(true)
+        } else {
+            @Suppress("DEPRECATION")
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                (WindowManager.LayoutParams.FLAG_FULLSCREEN or
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+            )
+        }
+
 
         // Animation de chargement.
         object : CountDownTimer(2000, 1) {
@@ -277,8 +288,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
-    override fun onBackPressed() {
-        moveTaskToBack(false)
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            moveTaskToBack(false)
+        }
     }
 
     // Fonctions relatives à la consultation de l'accéléromètre (mouvement).

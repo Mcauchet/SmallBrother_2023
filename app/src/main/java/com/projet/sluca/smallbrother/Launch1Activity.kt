@@ -65,7 +65,7 @@ class Launch1Activity : AppCompatActivity() {
         }
     }
 
-    // --> Au clic que le bouton "Commencer".
+    // --> Au clic du bouton "Commencer".
     fun commencer(view: View) {
         vibreur.vibration(this, 100)
 
