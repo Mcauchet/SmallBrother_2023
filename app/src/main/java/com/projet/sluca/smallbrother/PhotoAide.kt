@@ -43,11 +43,11 @@ class PhotoAide : AppCompatActivity() {
         vibreur.vibration(this, 100)
 
         //TODO Test if it is enough
-        //finish()
+        finish()
 
 
         // Transition vers la AidantActivity.
-        val intent = Intent(this, AidantActivity::class.java)
-        startActivity(intent)
+        //val intent = Intent(this, AidantActivity::class.java)
+        //startActivity(intent)
     }
 }

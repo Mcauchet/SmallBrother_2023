@@ -86,17 +86,21 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             if (!testFile.exists()) testFile.createNewFile() else {
                 byeData() // Suppression du fichier de données s'il existe déjà.
             }
+            Log.d("DONNEES.TXT", testFile.exists().toString())
+            Log.d("DONNEES PATH", testFile.path)
 
             // Ecriture.
-            //val writer = BufferedWriter(FileWriter(testFile, true))
+            val writer = BufferedWriter(FileWriter(testFile, true))
 
-            this.openFileOutput(file, Context.MODE_PRIVATE).use {
+            /*this.openFileOutput(testFile.path, Context.MODE_PRIVATE).use {
                 it.write(contenu.toByteArray())
             }
+            */
+
             //TODO Test this (see if lines are well written in the document)
             File(file).forEachLine { Log.d("WRITING", it) }
-            //writer.write(contenu)
-            //writer.close()
+            writer.write(contenu)
+            writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -114,7 +118,8 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         // Chargement du fichier TXT pointé par "path".
         val data = File(path + file)
         Log.d("DATA", data.toString())
-        //TODO this condition fails (the canRead() part)
+        Log.d("donnees exists", data.exists().toString())
+        //TODO this condition fails (the canRead() part), the file exists but can't be read
         Log.d("PERMISSION", data.canRead().toString())
         if (data.exists() && data.canRead()) {
             Log.d("IFLOOP", "I'm in")
@@ -217,11 +222,6 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         )
 
         // Assemblage du contenu en un String.
-        for (ligne in champs) {
-            texte += ligne + "\r\r"
-        }
-        Log.d("FORLOOP", texte)
-        //TODO Test to see if same result
         champs.forEach {
             texte += it + "\r\r"
         }

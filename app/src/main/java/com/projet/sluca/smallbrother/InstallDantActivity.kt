@@ -90,7 +90,7 @@ class InstallDantActivity : AppCompatActivity() {
 
             // Transition vers l'activity suivante.
             val intent = Intent(this, InstallDantPicActivity::class.java)
-            startActivityForResult(intent, 1)
+            startActivity(intent)
         }
     }
 
