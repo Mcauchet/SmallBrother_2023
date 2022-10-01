@@ -13,13 +13,11 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.Gravity
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -68,7 +66,7 @@ class AidantActivity : AppCompatActivity() {
     // --> Au clic du bouton "Réduire".
     fun reduire(view: View?) {
         vibreur.vibration(this, 200)
-        message(getString(R.string.message01)) // Message d'avertissement.
+        message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
         moveTaskToBack(true) // Mise de l'appli en arrière-plan.
     }
 
@@ -102,7 +100,7 @@ class AidantActivity : AppCompatActivity() {
         this.getSystemService(SmsManager::class.java)
             .sendTextMessage(userdata.telephone, null, sms, null, null)
 
-        message(getString(R.string.message04)) // toast de confirmation.
+        message(this, getString(R.string.message04), vibreur) // toast de confirmation.
         userdata.refreshLog(4) // rafraîchissement du Log.
     }
 
@@ -115,7 +113,7 @@ class AidantActivity : AppCompatActivity() {
         val callIntent = Intent(Intent.ACTION_CALL)
         callIntent.data = Uri.parse("tel:" + userdata.telephone)
         startActivity(callIntent)
-        message(getString(R.string.message05)) // toast de confirmation.
+        message(this, getString(R.string.message05), vibreur) // toast de confirmation.
         userdata.refreshLog(7) // rafraîchissement du Log.
     }
 
@@ -142,7 +140,7 @@ class AidantActivity : AppCompatActivity() {
             this.getSystemService(SmsManager::class.java)
                 .sendTextMessage(userdata.telephone, null, sms, null, null)
 
-            message(getString(R.string.message07)) // toast de confirmation.
+            message(this, getString(R.string.message07), vibreur) // toast de confirmation.
             userdata.refreshLog(10) // rafraîchissement du Log.
         }
         builder.setNegativeButton(
@@ -183,12 +181,12 @@ class AidantActivity : AppCompatActivity() {
     }
 
     // --> MESSAGE() : affiche en Toast le string entré en paramètre.
-    fun message(message: String?) {
+    /*fun message(message: String?) {
         val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
         toast.setGravity(Gravity.TOP, 0, 0)
         toast.show()
         vibreur.vibration(this, 330)
-    }
+    }*/
 
     // --> Rafraîchissement automatique toutes les 250 ms du TextView de Log et des boutons.
     private val reloadLog: Runnable = object : Runnable {
