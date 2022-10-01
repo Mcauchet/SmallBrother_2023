@@ -96,10 +96,9 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
                 it.write(contenu.toByteArray())
             }
             */
-
+            writer.write(contenu)
             //TODO Test this (see if lines are well written in the document)
             File(file).forEachLine { Log.d("WRITING", it) }
-            writer.write(contenu)
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
         } catch (e: IOException) {
@@ -229,6 +228,8 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
 
         // Enregistrement de la fiche :
         val fichette = File(path + fiche)
+        //TODO test if this file can be accessed
+        Log.d("fichette", fichette.canRead().toString())
         writeFile(fichette, texte, context)
         try {
             Runtime.getRuntime().exec("chmod 777 $path$fiche")
@@ -244,7 +245,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     // -> Centralisation de l'écriture de fichier
     private fun writeFile(file: File, texte: String?, context: Context?) {
         try {
-            if (!file.exists()) // Créer uniquement si non déjà existant.
+            if (!file.exists()) return // Créer uniquement si non déjà existant.
             {
                 file.createNewFile()
                 // Ecriture.

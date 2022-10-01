@@ -246,6 +246,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         object : CountDownTimer(2000, 1) {
             override fun onTick(millisUntilFinished: Long) {
                 // A chaque seconde passée, modifier le contenu l'objet TextView.
+                //TODO check if same result (ux matter)
+                when {
+                    millisUntilFinished > 1600 -> tvLoading.text = ""
+                    millisUntilFinished > 1200 -> tvLoading.text = "."
+                    millisUntilFinished > 800 -> tvLoading.text = ".."
+                    millisUntilFinished > 400 -> tvLoading.text = "..."
+                }
+
                 if (millisUntilFinished > 1600) tvLoading.text =
                     "" else if (millisUntilFinished > 1200) tvLoading.text =
                     "." else if (millisUntilFinished > 800) tvLoading.text =
