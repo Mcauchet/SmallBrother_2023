@@ -4,10 +4,14 @@ import android.app.Application
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
+import android.os.Build
 import android.os.Environment
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import org.apache.commons.io.IOUtils
 import java.io.*
+import java.nio.file.Paths
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -41,9 +45,12 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
     // Centralisation des chemins de fichiers :
-    val path = Environment
-        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-        .absolutePath + "/SmallBrother/"
+    //val path = Environment
+    //    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    //    .absolutePath + "/SmallBrother/"
+
+    var path: String = ""
+
     private val file = "donnees.txt" // datas de l'utilisateur
     private val fiche = "fiche_aide.txt" // fiche de l'Aidé
     private val date = "date.txt" // date de création de la fiche de l'Aidé
@@ -60,6 +67,13 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     // -> Donne la part d'URL nécessaire pour accéder à l'aide de SB.
     val help = "help/"
 
+    fun configurePath(context: Context?) {
+        val tmpPath = context?.filesDir?.path
+        if(tmpPath != null) path = tmpPath
+
+        Log.d("TMPPATH", tmpPath.toString())
+    }
+
     // Fonctions complexes :
     // -> Sauvegarde en TXT des données de l'utilisateur.
     fun saveData(context: Context?) {
@@ -68,7 +82,6 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         contenu += "\r" + email + "\r" + mymail + "\r" + password
 
         Log.d("CONTENU", contenu)
-        Log.d("PATH", path)
 
         // Enregistrement :
         try {
@@ -82,15 +95,18 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             }
 
             // Création du fichier "donnees.txt" dans ce dossier, via la variable "path".
-            val testFile = File(path + file)
+            val testFile = File(dossier, file)
+            testFile.parent?.let { Log.d("PARENT", it) }
+            Log.d("DONNEES.TXT BEFORE", testFile.exists().toString())
             if (!testFile.exists()) testFile.createNewFile() else {
                 byeData() // Suppression du fichier de données s'il existe déjà.
             }
-            Log.d("DONNEES.TXT", testFile.exists().toString())
+            Log.d("DONNEES.TXT AFTER", testFile.exists().toString())
             Log.d("DONNEES PATH", testFile.path)
 
             // Ecriture.
             val writer = BufferedWriter(FileWriter(testFile, true))
+            Log.d("WRITER", writer.toString())
 
             /*this.openFileOutput(testFile.path, Context.MODE_PRIVATE).use {
                 it.write(contenu.toByteArray())
@@ -98,7 +114,8 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             */
             writer.write(contenu)
             //TODO Test this (see if lines are well written in the document)
-            File(file).forEachLine { Log.d("WRITING", it) }
+            Log.d("TESTFILE", testFile.canRead().toString())
+            testFile.forEachLine { Log.d("WRITING", it) }
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
         } catch (e: IOException) {
@@ -108,14 +125,24 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
 
     // -> Suppression des données de l'utilisateur.
     fun byeData() {
-        val data = File(path + file)
+        val data = File("$path/SmallBrother/$file")
         data.delete()
     }
 
     // -> Chargement du fichier TXT contenant les données de l'utilisateur et conversion en session.
     fun loadData(): Boolean {
+        //Check and ask permission to read files
+        if(File("SmallBrother", file).exists()) {
+            this.openFileInput("donnees.txt").bufferedReader().useLines { lines ->
+                lines.fold("") { some, text ->
+                    Log.d("OPEN", some + text)
+                    "$some\n$text"
+                }
+            }
+        }
+
         // Chargement du fichier TXT pointé par "path".
-        val data = File(path + file)
+        val data = File(this.filesDir, "SmallBrother/$file")
         Log.d("DATA", data.toString())
         Log.d("donnees exists", data.exists().toString())
         //TODO this condition fails (the canRead() part), the file exists but can't be read
@@ -154,16 +181,16 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     }
 
     // -> Appel du chemin globalisé vers la photo d'identité de l'aidé.
-    val photoIdentPath: String = path + photo
+    val photoIdentPath: String = "$path/SmallBrother/$photo"
 
     // -> Appel du chemin globalisé vers la capture audio.
-    val audioPath: String = path + "audio.ogg"
+    val audioPath: String = "$path/SmallBrother/audio.ogg"
 
     // -> Appel du chemin globalisé vers les photos capturées (1 et 2).
-    fun getAutophotosPath(num: Int): String = path + "autophoto" + num.toString() + ".jpg"
+    fun getAutophotosPath(num: Int): String = "$path/SmallBrother/autophoto$num.jpg"
 
     // -> Appel du chemin globalisé vers la fiche de l'aidé.
-    val fichePath: String = path + fiche
+    val fichePath: String = "$path/SmallBrother/$fiche"
 
     // -> Mise à jour du Log en fonction du numéro entré en paramètre.
     fun refreshLog(code: Int) {
@@ -194,7 +221,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
             19 -> {
                 // Message avec insertion du temps de Mode Privé restant.
                 texte += getString(R.string.log19)
-                texte = texte.replace("N#", SmsReceiver.catchTempsRestant())
+                //texte = texte.replace("N#", SmsReceiver.catchTempsRestant())
             }
         }
         log = texte // Set du Log.
@@ -227,18 +254,18 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         Log.d("FOREACHLOOP", texte)
 
         // Enregistrement de la fiche :
-        val fichette = File(path + fiche)
-        //TODO test if this file can be accessed
+        val fichette = File("$path/SmallBrother/$fiche")
+        //TODO file.canRead() == false
         Log.d("fichette", fichette.canRead().toString())
         writeFile(fichette, texte, context)
         try {
-            Runtime.getRuntime().exec("chmod 777 $path$fiche")
+            Runtime.getRuntime().exec("chmod 777 $path/SmallBrother/$fiche")
         } catch (e: IOException) {
             e.printStackTrace()
         }
 
         // Mémorisation de la date de création de la fiche :
-        val datation = File(path + date)
+        val datation = File("$path/SmallBrother/$date")
         writeFile(datation, toDayte, context)
     }
 
@@ -270,11 +297,12 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     // -> Vérification : la fiche de l'Aidé existe et a été complétée.
     fun pleineFiche(): Boolean {
         // Chargement du fichier TXT retenant la date de création de la fiche de l'Aidé.
-        val dataD = File(path + date)
-        val dataF = File(path + fiche)
+        val dataD = File("$path/SmallBrother/$date")
+        val dataF = File("$path/SmallBrother/$fiche")
 
         return dataD.exists()
                 && dataF.exists()
-                && (dateFichier(path + date) != dateFichier(path + fiche))
+                && (dateFichier("$path/SmallBrother/$date")
+                != dateFichier("$path/SmallBrother/$fiche"))
     }
 }

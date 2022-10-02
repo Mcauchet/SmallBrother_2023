@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother
+/*package com.projet.sluca.smallbrother
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -93,7 +93,7 @@ class SmsReceiver : BroadcastReceiver() {
         // ---- Méchanismes de communication AideActivity / SmsReceiver.
         var bit: Int
             get() {
-                val data = File(userdata.path + "bit.txt")
+                val data = File(userdata.path + "/SmallBrother/bit.txt")
                 if (data.exists()) {
                     try  // Récupération du contenu du fichier :
                     {
@@ -116,10 +116,10 @@ class SmsReceiver : BroadcastReceiver() {
             }
             set(bit) {
                 try {
-                    val bitFile = File(userdata.path + "bit.txt")
+                    val bitFile = File(userdata.path + "/SmallBrother/bit.txt")
                     if (!bitFile.exists()) bitFile.createNewFile() else {
                         // Suppression du fichier de données s'il existe déjà (pour éviter concaténation).
-                        val ciao = File(userdata.path + "bit.txt")
+                        val ciao = File(userdata.path + "/SmallBrother/bit.txt")
                         ciao.delete()
                     }
 
@@ -127,9 +127,9 @@ class SmsReceiver : BroadcastReceiver() {
                     val writer = BufferedWriter(FileWriter(bitFile, true))
                     writer.write(bit.toString())
                     writer.close()
-                } catch (e: IOException) {
+                } catch (_: IOException) {
                 }
             }
 
     }
-}
+}*////

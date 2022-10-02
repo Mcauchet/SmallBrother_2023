@@ -222,6 +222,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
                 // Réactivation du SmsReceiver.
+                /*
                 val pm = this@Work2Activity.packageManager
                 val componentName = ComponentName(this@Work2Activity, SmsReceiver::class.java)
                 pm.setComponentEnabledSetting(
@@ -229,6 +230,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP
                 )
+                */
 
                 // Retour à l'écran de rôle de l'Aidé.
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)

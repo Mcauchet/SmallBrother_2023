@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
@@ -20,6 +21,8 @@ class Launch1Activity : AppCompatActivity() {
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
         vibreur.vibration(this, 100)
+
+        userdata.configurePath(this)
 
         // Réactivation du SmsReceiver (en cas de coupure inopinée de l'appli).
         //Without the comment, the app doesn't launch because "SmsReceiver component does not exist"

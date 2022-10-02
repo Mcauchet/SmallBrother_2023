@@ -74,19 +74,11 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         refresh()
 
         // Réinitialisation de l'indicateur "Bit".
-        SmsReceiver.bit = 0
+        //SmsReceiver.bit = 0
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
 
-        // Lancement de l'activité en arrière-plan (décompte) en évitant les doublons.
-        /*
-        if(this.logHandler == null ) // && !userdata.getEsquive())
-        {
-            this.logHandler = new Handler();
-            reloadLog.run();
-        }
-        */
         reloadLog.run()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -191,7 +183,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
                     // Passage en Mode Privé.
                     userData.prive = true
-                    SmsReceiver.bit = 1 // Cookie : Mode Privé ON.
+                    //SmsReceiver.bit = 1 // Cookie : Mode Privé ON.
                     refresh()
                     vibreur.vibration(this, 330)
                 } // Si "Annuler" :
@@ -209,7 +201,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         {
             message(getString(R.string.message11)) // Toast de confirmation.
             userData.prive = false // Arrêt du Mode Privé.
-            SmsReceiver.bit = 0 // Cookie : Mode Privé OFF.
+            //SmsReceiver.bit = 0 // Cookie : Mode Privé OFF.
             userData.delai = 0
             refresh()
             vibreur.vibration(this, 330)
@@ -245,6 +237,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
             // -> Vérification des actions parallèles (appels et sms reçus) :
+            /*
             val bit: Int = SmsReceiver.bit
             if (bit > 1) {
                 vibreur.vibration(this@AideActivity, 660)
@@ -273,6 +266,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                 tvLog.text = userData.log // affichage.
                 SmsReceiver.bit = 1 // retour à décompte normal.
             }
+            */
 
             // -> Gestion du Log :
             if (userData.log != null) {
