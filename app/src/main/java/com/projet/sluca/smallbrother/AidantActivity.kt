@@ -27,7 +27,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 2 (updated on 27-09-2022)
+ * @version 1.2 (updated on 03-10-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -58,7 +58,7 @@ class AidantActivity : AppCompatActivity() {
         reloadLog.run()
 
         // Sortie de veille du téléphone et mise en avant-plan de cette appli.
-        wakeup()
+        wakeup(window, this@AidantActivity)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
@@ -166,27 +166,19 @@ class AidantActivity : AppCompatActivity() {
         StrictMode.setVmPolicy(builder.build())
 
         // Ajout de la fiche de l'Aidé.
-        val uri = Uri.fromFile(File(userdata.fichePath))
+        val uri = Uri.fromFile(File(userdata.path + "/SmallBrother/fiche_aide.txt"))
         listUri.add(uri)
 
         // Ajout de la photo de l'Aidé, s'il y en a une.
-        val photoident = File(userdata.photoIdentPath)
+        val photoident = File(userdata.path + "/SmallBrother/photo_aide.jpg")
         if (photoident.exists()) {
-            val uri2 = Uri.fromFile(File(userdata.photoIdentPath))
+            val uri2 = Uri.fromFile(File(userdata.path + "/SmallBrother/photo_aide.jpg"))
             listUri.add(uri2)
         }
         // Appel du choix des services mail disponibles.
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, listUri)
         startActivity(Intent.createChooser(emailIntent, "Quel service email utiliser ?"))
     }
-
-    // --> MESSAGE() : affiche en Toast le string entré en paramètre.
-    /*fun message(message: String?) {
-        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
-        toast.setGravity(Gravity.TOP, 0, 0)
-        toast.show()
-        vibreur.vibration(this, 330)
-    }*/
 
     // --> Rafraîchissement automatique toutes les 250 ms du TextView de Log et des boutons.
     private val reloadLog: Runnable = object : Runnable {
@@ -209,32 +201,6 @@ class AidantActivity : AppCompatActivity() {
                 flTiers.visibility = View.GONE
             }
             logHandler.postDelayed(this, 250) // rafraîchissement
-        }
-    }
-
-    // --> WAKEUP() : Sortie de veille du téléphone et mise en avant-plan de cette appli.
-    private fun wakeup() {
-        val window = window
-        @Suppress("DEPRECATION")
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-            keyguardManager.requestDismissKeyguard(this, null)
-            setShowWhenLocked(true)
-            setTurnScreenOn(true)
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-                (WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-            )
         }
     }
 

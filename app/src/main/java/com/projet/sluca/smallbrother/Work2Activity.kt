@@ -99,7 +99,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // Récupération des différents fichiers :
         val paquet = arrayOfNulls<String>(3) // liste des fichiers à zipper.
         var numCell = 0 // marqueur numérique incrémentable.
-        val fichier1 = userData.audioPath
+        val fichier1 = userData.path + "/SmallBrother/audio.ogg"
         val file1 = File(fichier1)
         if (file1.exists()) // Enregistrement audio.
         {

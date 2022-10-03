@@ -5,15 +5,19 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 
+/***
+ * class InstallDeActivity manages the data of the Aidant in the Aide's app
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 03-10-2022)
+ */
 class InstallDeActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -70,20 +74,13 @@ class InstallDeActivity : AppCompatActivity() {
         // Vérification 1 : le numéro de téléphone n'a pas une structure vraisemblable.
         if (telephone.length > 10 || !telephone.matches("".toRegex()) 
             && !telephone.startsWith("04")) {
-            message(getString(R.string.error01))
+            message(this, getString(R.string.error01), vibreur)
         } else if (!email.matches("".toRegex()) && !email.contains("@")) {
-            message(getString(R.string.error02))
+            message(this, getString(R.string.error02), vibreur)
         } else if (nom.matches("".toRegex()) || telephone.matches("".toRegex()) 
             || email.matches("".toRegex())) {
-            message(getString(R.string.error03))
+            message(this, getString(R.string.error03), vibreur)
         } else {
-            // Récupération de la version de SB en cours.
-            /*var version: String? = ""
-            try {
-                version = packageManager.getPackageInfo(packageName, 0).versionName
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
-            }*/
 
             // Sauvegarde en globale des valeurs entrées.
             userData.nom = nom
@@ -127,13 +124,6 @@ class InstallDeActivity : AppCompatActivity() {
                 ), 1
             )
         }
-    }
-
-    // --> MESSAGE() : affiche en Toast le string entré en paramètre.
-    fun message(message: String?) {
-        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
-        toast.show()
-        vibreur.vibration(this, 330)
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

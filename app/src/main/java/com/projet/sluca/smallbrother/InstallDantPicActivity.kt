@@ -16,6 +16,12 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
+/***
+ * class InstallDantPicActivity manages the capture of the aidé picture
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (updated on 03-10-2022)
+ */
 class InstallDantPicActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -34,7 +40,7 @@ class InstallDantPicActivity : AppCompatActivity() {
         apercu = findViewById(R.id.apercu)
 
         // Par défaut : afficher la photo enregistrée, s'il y en a une.
-        val fichier = userData.photoIdentPath
+        val fichier = userData.path + "/SmallBrother/photo_aide.jpg"
         val file = File(fichier)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 
@@ -57,7 +63,7 @@ class InstallDantPicActivity : AppCompatActivity() {
             val bitmap = data!!.extras!!["data"] as Bitmap? // Récupération de la photo
 
             // -> Sauvegarde de la photo.
-            val image = userData.photoIdentPath // chemin de fichier globalisé.
+            val image = userData.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
             try {
                 bitmap!!.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
             } catch (e: FileNotFoundException) {
@@ -82,15 +88,7 @@ class InstallDantPicActivity : AppCompatActivity() {
 
         // Transition vers l'activity suivante.
         val intent = Intent(this, AidantActivity::class.java)
-        startActivityForResult(intent, 1)
-    }
-
-    // --> MESSAGE() : affiche en Toast le string entré en paramètre.
-    fun message(message: String?) {
-        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.TOP, 0, 0)
-        toast.show()
-        vibreur.vibration(this, 330)
+        startActivity(intent)
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.

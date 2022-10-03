@@ -10,6 +10,9 @@ import android.widget.TextView
 import java.io.File
 
 // --> Affichage de la photo de l'Aidé.
+/***
+ * class PhotoAide allows the Aidant to show the picture of the Aide
+ */
 class PhotoAide : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -32,7 +35,7 @@ class PhotoAide : AppCompatActivity() {
         tvLegende = findViewById(R.id.legende)
 
         // Gestion de l'affichage, selon qu'un fichier existe ou non.
-        val fichier = userdata.photoIdentPath
+        val fichier = userdata.path + "/SmallBrother/photo_aide.jpg"
         val file = File(fichier)
         if (file.exists()) ivApercu.setImageURI(Uri.fromFile(file))
         else tvLegende.text = getString(R.string.nophoto)
@@ -42,12 +45,7 @@ class PhotoAide : AppCompatActivity() {
     fun retour(view: View) {
         vibreur.vibration(this, 100)
 
-        //TODO Test if it is enough
-        finish()
-
-
-        // Transition vers la AidantActivity.
-        //val intent = Intent(this, AidantActivity::class.java)
-        //startActivity(intent)
+        val intent = Intent(this, AidantActivity::class.java)
+        startActivity(intent)
     }
 }

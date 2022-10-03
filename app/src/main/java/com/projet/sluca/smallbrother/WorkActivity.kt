@@ -22,6 +22,9 @@ import com.projet.sluca.smallbrother.libs.AccelerometerListener
 import com.projet.sluca.smallbrother.libs.AccelerometerManager
 import java.io.IOException
 
+/***
+ * class WorkActivity
+ */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -128,7 +131,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         tvAction.text = getString(R.string.message12A)
 
                         // Destination du futur fichier :
-                        val fichier = userData.audioPath
+                        val fichier = userData.path + "/SmallBrother/audio.ogg"
 
                         // Configuration du recorder "magneto".
                         //TODO deprecated, change for cameraX
@@ -223,25 +226,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     // --> Animation des points de suspension en boucle de 2 secondes.
     fun loading() {
         // Sortie de veille du téléphone et mise en avant-plan de cette appli.
-        val window = window
-
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-            keyguardManager.requestDismissKeyguard(this, null)
-            setShowWhenLocked(true)
-        } else {
-            @Suppress("DEPRECATION")
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-                (WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-            )
-        }
+        wakeup(window, this@WorkActivity)
 
 
         // Animation de chargement.

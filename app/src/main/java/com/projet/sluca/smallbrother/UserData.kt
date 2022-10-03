@@ -35,7 +35,7 @@ import java.util.*
  * @param canGoBack: indicates if going back is possible
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 2 (modified on 29-09-22)
+ * @version 1.2 (modified on 03-10-22)
  */
 data class UserData(var version: String = "", var role: String? = null, var nom: String = "",
                     var telephone: String = "", var email: String = "", var mymail: String = "",
@@ -49,6 +49,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     //    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     //    .absolutePath + "/SmallBrother/"
 
+    //this path is configured at first launch of the app through configurePath(context: Context?)
     var path: String = ""
 
     private val file = "donnees.txt" // datas de l'utilisateur
@@ -68,7 +69,7 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     val help = "help/"
 
     fun configurePath(context: Context?) {
-        val tmpPath = context?.filesDir?.path
+        val tmpPath: String? = context?.filesDir?.path
         if(tmpPath != null) path = tmpPath
 
         Log.d("TMPPATH", tmpPath.toString())
@@ -106,16 +107,11 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
 
             // Ecriture.
             val writer = BufferedWriter(FileWriter(testFile, true))
-            Log.d("WRITER", writer.toString())
-
-            /*this.openFileOutput(testFile.path, Context.MODE_PRIVATE).use {
-                it.write(contenu.toByteArray())
-            }
-            */
             writer.write(contenu)
-            //TODO Test this (see if lines are well written in the document)
+
             Log.d("TESTFILE", testFile.canRead().toString())
             testFile.forEachLine { Log.d("WRITING", it) }
+
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
         } catch (e: IOException) {
@@ -145,7 +141,6 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
         val data = File(this.filesDir, "SmallBrother/$file")
         Log.d("DATA", data.toString())
         Log.d("donnees exists", data.exists().toString())
-        //TODO this condition fails (the canRead() part), the file exists but can't be read
         Log.d("PERMISSION", data.canRead().toString())
         if (data.exists() && data.canRead()) {
             Log.d("IFLOOP", "I'm in")
@@ -181,16 +176,16 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     }
 
     // -> Appel du chemin globalisé vers la photo d'identité de l'aidé.
-    val photoIdentPath: String = "$path/SmallBrother/$photo"
+    //val photoIdentPath: String = "$path/SmallBrother/$photo"
 
     // -> Appel du chemin globalisé vers la capture audio.
-    val audioPath: String = "$path/SmallBrother/audio.ogg"
+    //val audioPath: String = "$path/SmallBrother/audio.ogg"
 
     // -> Appel du chemin globalisé vers les photos capturées (1 et 2).
     fun getAutophotosPath(num: Int): String = "$path/SmallBrother/autophoto$num.jpg"
 
     // -> Appel du chemin globalisé vers la fiche de l'aidé.
-    val fichePath: String = "$path/SmallBrother/$fiche"
+    //val fichePath: String = "$path/SmallBrother/$fiche"
 
     // -> Mise à jour du Log en fonction du numéro entré en paramètre.
     fun refreshLog(code: Int) {
@@ -255,8 +250,6 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
 
         // Enregistrement de la fiche :
         val fichette = File("$path/SmallBrother/$fiche")
-        //TODO file.canRead() == false
-        Log.d("fichette", fichette.canRead().toString())
         writeFile(fichette, texte, context)
         try {
             Runtime.getRuntime().exec("chmod 777 $path/SmallBrother/$fiche")
@@ -272,15 +265,14 @@ data class UserData(var version: String = "", var role: String? = null, var nom:
     // -> Centralisation de l'écriture de fichier
     private fun writeFile(file: File, texte: String?, context: Context?) {
         try {
-            if (!file.exists()) return // Créer uniquement si non déjà existant.
-            {
-                file.createNewFile()
-                // Ecriture.
-                val writer = BufferedWriter(FileWriter(file, true))
-                writer.write(texte)
-                writer.close()
-                MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
-            }
+            if (file.exists()) return // Créer uniquement si non déjà existant.
+            file.createNewFile()
+            // Ecriture.
+            val writer = BufferedWriter(FileWriter(file, true))
+            writer.write(texte)
+            writer.close()
+            MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
+            Log.d("WriteFile", texte.toString())
         } catch (_: IOException) {
         }
     }

@@ -1,13 +1,10 @@
 package com.projet.sluca.smallbrother
 
-import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,7 +14,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
@@ -28,24 +24,20 @@ import androidx.appcompat.app.AppCompatActivity
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 2 (updated on 29-09-22)
+ * @version 1.2 (updated on 03-10-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
     lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
+
     private lateinit var tvLog: TextView // Déclaration du TextView pour le Log.
-
     private lateinit var tvDelai: TextView // Déclaration du TextView pour le délai.
-
     private lateinit var tvIntituleDelai: TextView // Déclaration du TextView pour l'intitulé du délai.
-
     private lateinit var btnDeranger: Switch // Déclaration du bouton ON/OFF.
-
     private lateinit var ivLogo: ImageView // Déclaration de l'ImageView du logo.
 
     private var logHandler: Handler = Handler(Looper.getMainLooper()) // Handler pour rafraîchissement log.
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_aide.xml.
@@ -68,7 +60,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         ivLogo = findViewById(R.id.logo)
 
         // Sortie de veille du téléphone et mise en avant-plan de cette appli.
-        wakeup()
+        wakeup(window, this@AideActivity)
 
         // Rafraîchissement de l'affichage.
         refresh()
@@ -99,7 +91,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     // --> Au clic que le bouton "Réduire".
     fun reduire(view: View?) {
         vibreur.vibration(this, 200)
-        message(getString(R.string.message01)) // Message d'avertissement.
+        message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
         moveTaskToBack(true) // Mise de l'appli en arrière-plan.
     }
 
@@ -113,7 +105,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         sms = sms.replace("§%", userData.nom)
         this.getSystemService(SmsManager::class.java)
             .sendTextMessage(userData.telephone, null, sms, null, null)
-        message(getString(R.string.message04)) // toast de confirmation.
+        message(this, getString(R.string.message04), vibreur) // toast de confirmation.
         userData.refreshLog(16) // rafraîchissement du Log.
     }
 
@@ -129,7 +121,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val callIntent = Intent(Intent.ACTION_CALL)
         callIntent.data = Uri.parse("tel:" + userData.telephone)
         startActivity(callIntent)
-        message(getString(R.string.message05)) // toast de confirmation.
+        message(this, getString(R.string.message05), vibreur) // toast de confirmation.
         userData.refreshLog(7) // rafraîchissement du Log.
     }
 
@@ -175,7 +167,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                         "§%",
                         (duree)
                     )
-                    message(biscotte)
+                    message(this, biscotte, vibreur)
 
                     // Détermination du délai.
                     valeur *= 60000
@@ -199,7 +191,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
         if (!isChecked && userData.prive) // Si arrêt du "Mode Privé".
         {
-            message(getString(R.string.message11)) // Toast de confirmation.
+            message(this, getString(R.string.message11), vibreur) // Toast de confirmation.
             userData.prive = false // Arrêt du Mode Privé.
             //SmsReceiver.bit = 0 // Cookie : Mode Privé OFF.
             userData.delai = 0
@@ -286,7 +278,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
                 // Si le délai  est dépassé :
                 if (userData.delai <= 0) {
-                    wakeup() // sortie de veille.
+                    wakeup(window, this@AideActivity) // sortie de veille.
                     vibreur.vibration(this@AideActivity, 1000)
 
                     // Sonnerie de notification.
@@ -320,38 +312,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
     }
 
-    // --> MESSAGE() : affiche en Toast le string entré en paramètre.
-    fun message(message: String?) {
-        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT)
-        toast.show()
-        vibreur.vibration(this, 330)
-    }
 
-    // --> WAKEUP() : Sortie de veille du téléphone et mise en avant-plan de cette appli.
-    private fun wakeup() {
-        val window = window
-        @Suppress("DEPRECATION")
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
-            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-            keyguardManager.requestDismissKeyguard(this, null)
-            setShowWhenLocked(true)
-            setTurnScreenOn(true)
-            window.insetsController?.hide(WindowInsets.Type.statusBars())
-        } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
-            window.setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-                (WindowManager.LayoutParams.FLAG_FULLSCREEN or
-                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
-                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-            )
-        }
-    }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {

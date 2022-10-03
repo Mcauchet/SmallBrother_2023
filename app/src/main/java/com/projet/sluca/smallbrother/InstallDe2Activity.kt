@@ -2,16 +2,19 @@ package com.projet.sluca.smallbrother
 
 import android.content.Intent
 import android.content.pm.PackageManager
-//import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.widget.EditText
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 
+/***
+ * class InstallDe2Activity manages the data of the aide.
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 03-10-2022)
+ */
 class InstallDe2Activity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -55,16 +58,26 @@ class InstallDe2Activity : AppCompatActivity() {
         val provider = myEmail.substring(myEmail.length - 10)
         if (!myEmail.matches("".toRegex()) && provider != "@gmail.com") // !myemail.contains ("@"))
         {
-            message(getString(R.string.error02))
+            message(this, getString(R.string.error02), vibreur)
         } else if (myEmail.matches("".toRegex()) || password.matches("".toRegex())) {
-            message(getString(R.string.error03))
+            message(this, getString(R.string.error03), vibreur)
         } else {
             // Récupération de la version de SB en cours.
-
+            // (une fois est nécessaire, pas besoin dans InstallDeActivity)
             var version = ""
             try {
-                version =
-                    this.packageManager.getPackageInfo(this.packageName, 0).versionName
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    version =
+                        this.packageManager
+                            .getPackageInfo(
+                                this.packageName,
+                                PackageManager.PackageInfoFlags.of(0)
+                            ).versionName
+                } else {
+                    @Suppress("DEPRECATION")
+                    version =
+                        this.packageManager.getPackageInfo(this.packageName, 0).versionName
+                }
             } catch (e: PackageManager.NameNotFoundException) {
                 e.printStackTrace()
             }
@@ -85,8 +98,6 @@ class InstallDe2Activity : AppCompatActivity() {
             userData.role = "Aidé"
             userData.mymail = myEmail
             userData.password = password
-            Log.d("userDatasss", userData.version + " " + userData.role + " " + userData.mymail )
-            //TODO fix saveData as it looks like it is not working
             userData.saveData(this) // Sauvegarde des données d'utilisateur.
 
             // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
@@ -96,14 +107,6 @@ class InstallDe2Activity : AppCompatActivity() {
             val intent = Intent(this, AideActivity::class.java)
             startActivity(intent)
         }
-    }
-
-    // --> MESSAGE() : affiche en Toast le string entré en paramètre.
-    fun message(message: String?) {
-        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
-        toast.setGravity(Gravity.TOP, 0, 0)
-        toast.show()
-        vibreur.vibration(this, 330)
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

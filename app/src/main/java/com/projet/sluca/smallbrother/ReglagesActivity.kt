@@ -4,12 +4,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.telephony.SmsManager
-import android.view.Gravity
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 
+/***
+ * ReglagesActivity manages the resets of aide's and/or aidant's information
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 03-10-2022)
+ */
 class ReglagesActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -58,7 +62,7 @@ class ReglagesActivity : AppCompatActivity() {
             // Si choix = "OUI" :
             vibreur.vibration(this, 100)
             userdata.byeData() // Suppression des données de l'utilisateur.
-            message(getString(R.string.message03A)) // toast de confirmation.
+            message(this, getString(R.string.message03A), vibreur) // toast de confirmation.
 
             // Redémarrage de l'appli.
             val mIntent = Intent(this, Launch1Activity::class.java)
@@ -91,9 +95,9 @@ class ReglagesActivity : AppCompatActivity() {
             // Concoction et envoi du SMS.
             var sms = getString(R.string.smsys01)
             sms = sms.replace("§%", userdata.nom)
-            SmsManager.getDefault()
+            this.getSystemService(SmsManager::class.java)
                 .sendTextMessage(userdata.telephone, null, sms, null, null)
-            message(getString(R.string.message03B)) // toast de confirmation.
+            message(this, getString(R.string.message03B), vibreur) // toast de confirmation.
             userdata.refreshLog(3) // message de Log adéquat.
         }
         builder.setNegativeButton(
@@ -113,12 +117,5 @@ class ReglagesActivity : AppCompatActivity() {
         // Changement d'activité.
         val mIntent = Intent(this, PicActivity::class.java)
         startActivity(mIntent)
-    }
-
-    // --> MESSAGE() : affiche en Toast le string entré en paramètre.
-    fun message(message: String?) {
-        val toast = Toast.makeText(applicationContext, message, Toast.LENGTH_LONG)
-        toast.show()
-        vibreur.vibration(this, 330)
     }
 }
