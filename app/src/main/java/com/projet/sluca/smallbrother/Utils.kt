@@ -40,3 +40,10 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
         )
     }
 }
+
+//TODO Test this (with ux rework, might be better)
+/*fun precedent(context: Context, vibreur: Vibration, activity: AppCompatActivity) {
+    Log.d("PRECEDENT UTILS", "It works")
+    vibreur.vibration(context, 100)
+    activity.finish()
+}*/
