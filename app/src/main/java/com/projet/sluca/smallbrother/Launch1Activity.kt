@@ -8,6 +8,12 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 
+/***
+ * class Launch1Activity is the starting point of the application.
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 07-10-2022)
+ */
 class Launch1Activity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
