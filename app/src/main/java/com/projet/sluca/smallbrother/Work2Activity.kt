@@ -210,8 +210,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 fileZ.delete()
 
                 // Rafraîchissement du Log en fonction de la réussite du processus.
-                if (checkInternet()) userData.refreshLog(11) // réussi.
-                else userData.refreshLog(15) // coupure Internet entretemps.
+                when  {
+                    checkInternet() -> userData.refreshLog(11) //réussi
+                    else -> userData.refreshLog(15) //coupure Internet
+                }
 
                 // Concoction et envoi du SMS à l'Aidant.
                 var sms = getString(R.string.smsys06)
@@ -247,17 +249,17 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     fun loading() {
         object : CountDownTimer(2000, 1) {
             override fun onTick(millisUntilFinished: Long) {
-                // A chaque seconde passée, modifier le contenu l'objet TextView.
-                if (millisUntilFinished > 1600) tvLoading.text =
-                    "" else if (millisUntilFinished > 1200) tvLoading.text =
-                    "." else if (millisUntilFinished > 800) tvLoading.text =
-                    ".." else if (millisUntilFinished > 400) tvLoading.text =
-                    "..."
+                // A chaque 400ms passés, modifier le contenu l'objet TextView.
+                when (millisUntilFinished) {
+                    in 1601..2000 -> tvLoading.text = ""
+                    in 1201..1600 -> tvLoading.text = "."
+                    in 801..1200 -> tvLoading.text = ".."
+                    in 401..800 -> tvLoading.text = "..."
+                }
             }
 
-            override fun onFinish() {
-                loading()
-            }
+            override fun onFinish(): Unit = loading()
+
         }.start()
     }
 
