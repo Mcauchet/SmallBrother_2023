@@ -37,11 +37,13 @@ import java.util.*
  * @author Sébastien Luca & Maxime Caucheteur
  * @version 1.2 (modified on 03-10-22)
  */
-data class UserData(var version: String = "", var role: String? = null, var nom: String = "",
-                    var telephone: String = "", var email: String = "", var mymail: String = "",
-                    var password:String = "", var motion: Boolean = false,
-                    var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
-                    var log: String? = null, var canGoBack: Boolean = true) : Application() {
+data class UserData(
+    var version: String = "", var role: String? = null, var nom: String = "",
+    var telephone: String = "", var email: String = "", var mymail: String = "",
+    var password:String = "", var motion: Boolean = false,
+    var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
+    var log: String? = null, var canGoBack: Boolean = true,
+) : Application() {
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
     // Centralisation des chemins de fichiers :
