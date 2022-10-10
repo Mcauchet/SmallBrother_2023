@@ -46,27 +46,33 @@ class Launch1Activity : AppCompatActivity() {
 
         // Cas 1 : data existant : redirection vers l'écran de rôle.
         if (userdata.loadData()) {
-            if (userdata.role == "Aidant") {
-                // Envoie vers l'installation d'un Aidant.
-                val intent = Intent(this, AidantActivity::class.java)
-                startActivity(intent)
-            } else if (userdata.role == "Aidé") {
-                // Envoie vers l'installation d'un Aidé.
-                val intent = Intent(this, AideActivity::class.java)
-                startActivity(intent)
+            when (userdata.role) {
+                "Aidant" -> {
+                    //Activité aidant
+                    val intent = Intent(this, AidantActivity::class.java)
+                    startActivity(intent)
+                }
+                "Aidé" -> {
+                    //Activité aidé
+                    val intent = Intent(this, AideActivity::class.java)
+                    startActivity(intent)
+                }
             }
         } else if (userdata.role != null) {
             // Désactivation des boutons retour (car suite de Reglages Activity).
             userdata.canGoBack = false
             userdata.refreshLog(2) // message de Log adéquat.
-            if (userdata.role == "Aidant") {
-                // Envoie vers l'installation d'un Aidant.
-                val intent = Intent(this, InstallDantActivity::class.java)
-                startActivity(intent)
-            } else if (userdata.role == "Aidé") {
-                // Envoie vers l'installation d'un Aidé.
-                val intent = Intent(this, InstallDeActivity::class.java)
-                startActivity(intent)
+            when (userdata.role) {
+                "Aidant" -> {
+                    //Installation aidant
+                    val intent = Intent(this, InstallDantActivity::class.java)
+                    startActivity(intent)
+                }
+                "Aidé" -> {
+                    //Installation aidé
+                    val intent = Intent(this, InstallDeActivity::class.java)
+                    startActivity(intent)
+                }
             }
         } else {
             userdata.canGoBack = true // activation des boutons retour.
