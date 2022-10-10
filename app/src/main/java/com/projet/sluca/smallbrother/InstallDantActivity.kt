@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat
  * class InstallDantActivity manages the installation for the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 03-10-2022)
+ * @version 1.2 (updated on 10-10-2022)
  */
 class InstallDantActivity : AppCompatActivity() {
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -71,7 +71,7 @@ class InstallDantActivity : AppCompatActivity() {
 
             nom.matches("".toRegex()) || telephone.matches("".toRegex())
                 -> message(this, getString(R.string.error03), vibreur)
-            
+
             else -> {
                 // Récupération de la version de SB en cours.
                 var version: String? = ""

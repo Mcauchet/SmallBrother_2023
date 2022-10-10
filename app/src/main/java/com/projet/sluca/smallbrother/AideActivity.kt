@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 03-10-22)
+ * @version 1.2 (updated on 10-10-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
