@@ -56,56 +56,59 @@ class InstallDe2Activity : AppCompatActivity() {
 
         // Vérification 1 : l'adresse email n'est pas valide.
         val provider = myEmail.substring(myEmail.length - 10)
-        if (!myEmail.matches("".toRegex()) && provider != "@gmail.com") // !myemail.contains ("@"))
-        {
-            message(this, getString(R.string.error02), vibreur)
-        } else if (myEmail.matches("".toRegex()) || password.matches("".toRegex())) {
-            message(this, getString(R.string.error03), vibreur)
-        } else {
-            // Récupération de la version de SB en cours.
-            // (une fois est nécessaire, pas besoin dans InstallDeActivity)
-            var version = ""
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    version =
-                        this.packageManager
-                            .getPackageInfo(
-                                this.packageName,
-                                PackageManager.PackageInfoFlags.of(0)
-                            ).versionName
-                } else {
-                    @Suppress("DEPRECATION")
-                    version =
-                        this.packageManager.getPackageInfo(this.packageName, 0).versionName
+        when {
+            !myEmail.matches("".toRegex()) && provider != "@gmail.com"
+                -> message(this, getString(R.string.error02), vibreur)
+
+            myEmail.matches("".toRegex()) || password.matches("".toRegex())
+                -> message(this, getString(R.string.error03), vibreur)
+
+            else -> {
+                // Récupération de la version de SB en cours.
+                // (une fois est nécessaire, pas besoin dans InstallDeActivity)
+                var version = ""
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        version =
+                            this.packageManager
+                                .getPackageInfo(
+                                    this.packageName,
+                                    PackageManager.PackageInfoFlags.of(0)
+                                ).versionName
+                    } else {
+                        @Suppress("DEPRECATION")
+                        version =
+                            this.packageManager.getPackageInfo(this.packageName, 0).versionName
+                    }
+                } catch (e: PackageManager.NameNotFoundException) {
+                    e.printStackTrace()
                 }
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
+
+
+                if(intent.hasExtra("nom")){
+                    userData.nom = intent.getStringExtra("nom").toString()
+                }
+                if(intent.hasExtra("mail")){
+                    userData.email = intent.getStringExtra("mail").toString()
+                }
+                if(intent.hasExtra("telephone")){
+                    userData.telephone = intent.getStringExtra("telephone").toString()
+                }
+
+                // Sauvegarde en globale des valeurs entrées.
+                userData.version = version
+                userData.role = "Aidé"
+                userData.mymail = myEmail
+                userData.password = password
+                userData.saveData(this) // Sauvegarde des données d'utilisateur.
+
+                // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
+                userData.canGoBack = true
+
+                // Transition vers l'activity suivante.
+                val intent = Intent(this, AideActivity::class.java)
+                startActivity(intent)
             }
-
-
-            if(intent.hasExtra("nom")){
-                userData.nom = intent.getStringExtra("nom").toString()
-            }
-            if(intent.hasExtra("mail")){
-                userData.email = intent.getStringExtra("mail").toString()
-            }
-            if(intent.hasExtra("telephone")){
-                userData.telephone = intent.getStringExtra("telephone").toString()
-            }
-
-            // Sauvegarde en globale des valeurs entrées.
-            userData.version = version
-            userData.role = "Aidé"
-            userData.mymail = myEmail
-            userData.password = password
-            userData.saveData(this) // Sauvegarde des données d'utilisateur.
-
-            // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
-            userData.canGoBack = true
-
-            // Transition vers l'activity suivante.
-            val intent = Intent(this, AideActivity::class.java)
-            startActivity(intent)
         }
     }
 
