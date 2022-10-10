@@ -260,7 +260,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     in 1601..2000 -> tvLoading.text = ""
                     in 1201..1600 -> tvLoading.text = "."
                     in 801..1200 -> tvLoading.text = ".."
-                    in 401..800 -> tvLoading.text = "..."
+                    in 0..800 -> tvLoading.text = "..."
                 }
             }
 

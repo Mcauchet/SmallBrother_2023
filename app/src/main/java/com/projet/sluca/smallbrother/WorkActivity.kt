@@ -24,6 +24,9 @@ import java.io.IOException
 
 /***
  * class WorkActivity
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 10-10-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -151,10 +154,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         object : CountDownTimer(10010, 1) {
                             override fun onTick(millisUntilFinished: Long) {
                                 // Aux secondes 9 et 2 sont capturé la position du téléphone.
-                                if (millisUntilFinished > 9000) {
-                                    checkMove1 = keepMove
-                                } else if (millisUntilFinished in 1001..1999) {
-                                    checkMove2 = keepMove
+                                when {
+                                   millisUntilFinished > 9000 -> checkMove1 = keepMove
+                                   millisUntilFinished in 1001..1999 -> checkMove2 = keepMove
                                 }
                             }
 
@@ -233,19 +235,12 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         object : CountDownTimer(2000, 1) {
             override fun onTick(millisUntilFinished: Long) {
                 // A chaque seconde passée, modifier le contenu l'objet TextView.
-                //TODO check if same result (ux matter)
-                when {
-                    millisUntilFinished > 1600 -> tvLoading.text = ""
-                    millisUntilFinished > 1200 -> tvLoading.text = "."
-                    millisUntilFinished > 800 -> tvLoading.text = ".."
-                    millisUntilFinished > 400 -> tvLoading.text = "..."
+                when (millisUntilFinished) {
+                    in 1601..2000 -> tvLoading.text = ""
+                    in 1201..1600 -> tvLoading.text = "."
+                    in 801..1200 -> tvLoading.text = ".."
+                    in 0..800 -> tvLoading.text = "..."
                 }
-
-                if (millisUntilFinished > 1600) tvLoading.text =
-                    "" else if (millisUntilFinished > 1200) tvLoading.text =
-                    "." else if (millisUntilFinished > 800) tvLoading.text =
-                    ".." else if (millisUntilFinished > 400) tvLoading.text =
-                    "..."
             }
 
             override fun onFinish() {
@@ -256,14 +251,15 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     // --> Retour à l'écran de rôle adéquat.
     fun retour() {
-        if ((userData.role == "Aidant")) {
-            // Envoie vers l'installation d'un Aidant.
-            val intent = Intent(this, AidantActivity::class.java)
-            startActivity(intent)
-        } else if ((userData.role == "Aidé")) {
-            // Envoie vers l'installation d'un Aidé.
-            val intent = Intent(this, AideActivity::class.java)
-            startActivity(intent)
+        when (userData.role) {
+            "Aidant" -> {
+                val intent = Intent(this, AidantActivity::class.java)
+                startActivity(intent)
+            }
+            "Aidé" -> {
+                val intent = Intent(this, AideActivity::class.java)
+                startActivity(intent)
+            }
         }
     }
 
