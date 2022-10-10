@@ -42,7 +42,7 @@ data class UserData(
     var telephone: String = "", var email: String = "", var mymail: String = "",
     var password:String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
-    var log: String? = null, var canGoBack: Boolean = true,
+    var log: String? = null, val canGoBack: Boolean = true,
 ) : Application() {
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
@@ -101,9 +101,13 @@ data class UserData(
             val testFile = File(dossier, file)
             testFile.parent?.let { Log.d("PARENT", it) }
             Log.d("DONNEES.TXT BEFORE", testFile.exists().toString())
-            if (!testFile.exists()) testFile.createNewFile() else {
-                byeData() // Suppression du fichier de données s'il existe déjà.
+
+            // Suppression du fichier de données s'il existe déjà.
+            when {
+                !testFile.exists() -> testFile.createNewFile()
+                testFile.exists() -> byeData()
             }
+
             Log.d("DONNEES.TXT AFTER", testFile.exists().toString())
             Log.d("DONNEES PATH", testFile.path)
 
