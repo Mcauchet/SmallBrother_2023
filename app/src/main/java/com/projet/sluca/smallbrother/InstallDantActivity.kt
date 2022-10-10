@@ -52,7 +52,6 @@ class InstallDantActivity : AppCompatActivity() {
     fun continuer(view: View?) {
         vibreur.vibration(this, 100)
 
-
         // > Récupération du contenu des inputs :
 
         // Nom :
@@ -63,38 +62,41 @@ class InstallDantActivity : AppCompatActivity() {
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
-
         // > Vérification de la validité des informations entrées :
 
         // Vérification 1 : le numéro de téléphone n'a pas une structure vraisemblable.
-        if (telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")) {
-            message(this, getString(R.string.error01), vibreur)
-        } else if (nom.matches("".toRegex()) || telephone.matches("".toRegex())) {
-            message(this, getString(R.string.error03), vibreur)
-        } else {
-            // Récupération de la version de SB en cours.
-            var version: String? = ""
-            try {
-                version = this.packageManager.getPackageInfo(this.packageName, 0).versionName
-            } catch (e: PackageManager.NameNotFoundException) {
-                e.printStackTrace()
+        when {
+            telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")
+                -> message(this, getString(R.string.error01), vibreur)
+
+            nom.matches("".toRegex()) || telephone.matches("".toRegex())
+                -> message(this, getString(R.string.error03), vibreur)
+            
+            else -> {
+                // Récupération de la version de SB en cours.
+                var version: String? = ""
+                try {
+                    version = this.packageManager.getPackageInfo(this.packageName, 0).versionName
+                } catch (e: PackageManager.NameNotFoundException) {
+                    e.printStackTrace()
+                }
+
+                // Sauvegarde en globale des valeurs entrées.
+                userdata.role = "Aidant"
+                userdata.version = version!!
+                userdata.nom = nom
+                userdata.telephone = telephone
+
+                // Enregistrement de la DB.
+                userdata.saveData(this)
+
+                // Création de la fiche de l'Aidé.
+                userdata.createFiche(this)
+
+                // Transition vers l'activity suivante.
+                val intent = Intent(this, InstallDantPicActivity::class.java)
+                startActivity(intent)
             }
-
-            // Sauvegarde en globale des valeurs entrées.
-            userdata.role = "Aidant"
-            userdata.version = version!!
-            userdata.nom = nom
-            userdata.telephone = telephone
-
-            // Enregistrement de la DB.
-            userdata.saveData(this)
-
-            // Création de la fiche de l'Aidé.
-            userdata.createFiche(this)
-
-            // Transition vers l'activity suivante.
-            val intent = Intent(this, InstallDantPicActivity::class.java)
-            startActivity(intent)
         }
     }
 

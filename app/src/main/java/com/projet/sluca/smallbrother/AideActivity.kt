@@ -318,7 +318,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             }
         }
     }
-    
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             moveTaskToBack(false)
