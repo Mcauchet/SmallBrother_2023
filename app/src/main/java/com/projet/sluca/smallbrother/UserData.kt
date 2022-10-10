@@ -35,7 +35,7 @@ import java.util.*
  * @param canGoBack: indicates if going back is possible
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 03-10-22)
+ * @version 1.2 (modified on 10-10-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -148,35 +148,37 @@ data class UserData(
         Log.d("DATA", data.toString())
         Log.d("donnees exists", data.exists().toString())
         Log.d("PERMISSION", data.canRead().toString())
-        if (data.exists() && data.canRead()) {
-            Log.d("IFLOOP", "I'm in")
-            try  // Récupération du contenu du fichier :
-            {
-                // Placement des données dans un array, séparation par le retour-charriot.
-                val br = BufferedReader(FileReader(data))
-                val dataLine = IOUtils.toString(br)
-                val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
-                Log.d("DATATAB", dataTab[0])
-
-                // Rapatriement des données :
-                version = dataTab[0]
-                role = dataTab[1]
-                nom = dataTab[2]
-                telephone = dataTab[3]
-                if (dataTab.size > 4) // Si compte de l'Aidé :
+        when {
+            data.exists() && data.canRead() -> {
+                Log.d("IFLOOP", "I'm in")
+                try  // Récupération du contenu du fichier :
                 {
-                    email = dataTab[4] // + email de l'Aidant
-                    mymail = dataTab[5] // + email de l'Aidé
-                    password = dataTab[6] // + son mdp
+                    // Placement des données dans un array, séparation par le retour-charriot.
+                    val br = BufferedReader(FileReader(data))
+                    val dataLine = IOUtils.toString(br)
+                    val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
+                    Log.d("DATATAB", dataTab[0])
+
+                    // Rapatriement des données :
+                    version = dataTab[0]
+                    role = dataTab[1]
+                    nom = dataTab[2]
+                    telephone = dataTab[3]
+                    if (dataTab.size > 4) // Si compte de l'Aidé :
+                    {
+                        email = dataTab[4] // + email de l'Aidant
+                        mymail = dataTab[5] // + email de l'Aidé
+                        password = dataTab[6] // + son mdp
+                    }
+                    return true
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                } catch (e: IOException) {
+                    e.printStackTrace()
                 }
-                return true
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            } catch (e: IOException) {
-                e.printStackTrace()
             }
-        } else {
-            Log.d("FILE", "Can't read the file")
+
+            else -> Log.d("FILE", "Can't read the file")
         }
         return false
     }
@@ -224,6 +226,7 @@ data class UserData(
                 texte += getString(R.string.log19)
                 //texte = texte.replace("N#", SmsReceiver.catchTempsRestant())
             }
+            else -> texte += ""
         }
         log = texte // Set du Log.
     }
