@@ -208,20 +208,21 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     // --> Rafraîchissement de l'affichage en fonction de l'état du Mode Privé.
     private fun refresh() {
-        if (userData.prive) // Si actif.
-        {
-            btnDeranger.setTextColor(Color.parseColor("#b30000"))
-            ivLogo.setImageResource(R.drawable.logoff)
-            btnDeranger.isChecked = true
-        } else  // Si inactif.
-        {
-            btnDeranger.setTextColor(Color.parseColor("#597854"))
-            ivLogo.setImageResource(R.drawable.logo2)
-            btnDeranger.isChecked = false
+        when (userData.prive) {
+            true -> {
+                btnDeranger.setTextColor(Color.parseColor("#b30000"))
+                ivLogo.setImageResource(R.drawable.logoff)
+                btnDeranger.isChecked = true
+            }
+            false -> {
+                btnDeranger.setTextColor(Color.parseColor("#597854"))
+                ivLogo.setImageResource(R.drawable.logo2)
+                btnDeranger.isChecked = false
 
-            // Retrait du décompte.
-            tvDelai.text = " "
-            tvIntituleDelai.text = " "
+                // Retrait du décompte.
+                tvDelai.text = " "
+                tvIntituleDelai.text = " "
+            }
         }
     }
 
@@ -276,44 +277,48 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             {
                 userData.subDelai(250) // délai moins le temps écoulé
 
-                // Si le délai  est dépassé :
-                if (userData.delai <= 0) {
-                    wakeup(window, this@AideActivity) // sortie de veille.
-                    vibreur.vibration(this@AideActivity, 1000)
+                when {
+                    // Si le délai  est dépassé :
+                    userData.delai <= 0 -> {
+                        wakeup(window, this@AideActivity) // sortie de veille.
+                        vibreur.vibration(this@AideActivity, 1000)
 
-                    // Sonnerie de notification.
-                    val sound: MediaPlayer = MediaPlayer
-                        .create(this@AideActivity, R.raw.notification)
-                    sound.start()
+                        // Sonnerie de notification.
+                        val sound: MediaPlayer = MediaPlayer
+                            .create(this@AideActivity, R.raw.notification)
+                        sound.start()
 
-                    // Retrait du décompte.
-                    tvDelai.text = " "
-                    tvIntituleDelai.text = " "
-                    userData.refreshLog(18) // rafraîchissement du Log.
-                    userData.prive = false // changement d'état.
+                        // Retrait du décompte.
+                        tvDelai.text = " "
+                        tvIntituleDelai.text = " "
+                        userData.refreshLog(18) // rafraîchissement du Log.
+                        userData.prive = false // changement d'état.
 
-                    // Reboot complet de l'activity.
-                    val intent = Intent(this@AideActivity, AideActivity::class.java)
-                    startActivity(intent)
-                } else {
-                    // Mise à jour du décompte.
-                    val min = (userData.delai / 60000).toInt() // calcul des minutes
-                    val sec = (userData.delai / 1000).toInt() - min * 60 // calcul des secondes
-                    tvIntituleDelai.text = getString(R.string.intitule_delai)
-                    var secSTG = sec.toString()
-                    if (sec < 10) secSTG = "0$secSTG"
-                    tvDelai.text = " $min\'$secSTG"
+                        // Reboot complet de l'activity.
+                        val intent = Intent(this@AideActivity, AideActivity::class.java)
+                        startActivity(intent)
+                    }
+                    else -> {
+                        // Mise à jour du décompte.
+                        val min = (userData.delai / 60000).toInt() // calcul des minutes
+                        val sec = (userData.delai / 1000).toInt() - min * 60 // calcul des secondes
+                        tvIntituleDelai.text = getString(R.string.intitule_delai)
+                        var secSTG = sec.toString()
+                        if (sec < 10) secSTG = "0$secSTG"
+                        val txt = "$min\'$secSTG"
+                        tvDelai.text = txt
+                    }
                 }
             }
 
             // Relance du Handler SI vérifications remplies pour éviter qu'il se duplique.
-            if (!userData.esquive) logHandler.postDelayed(this, 250) // rafraîchissement
-            else userData.esquive = false
+            when (userData.esquive) {
+                true -> userData.esquive = false
+                false -> logHandler.postDelayed(this, 250) //rafraîchissement
+            }
         }
     }
-
-
-
+    
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             moveTaskToBack(false)

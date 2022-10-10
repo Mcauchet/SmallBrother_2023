@@ -42,7 +42,7 @@ data class UserData(
     var telephone: String = "", var email: String = "", var mymail: String = "",
     var password:String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
-    var log: String? = null, val canGoBack: Boolean = true,
+    var log: String? = null, var canGoBack: Boolean = true,
 ) : Application() {
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
@@ -57,7 +57,7 @@ data class UserData(
     private val file = "donnees.txt" // datas de l'utilisateur
     private val fiche = "fiche_aide.txt" // fiche de l'Aidé
     private val date = "date.txt" // date de création de la fiche de l'Aidé
-    private val photo = "photo_aide.jpg" // photo de l'Aidé
+    //private val photo = "photo_aide.jpg" // photo de l'Aidé
 
     // -> Appel du chemin globalisé vers le zip d'un rapport de situation.
     //val zipath = "/sdcard/Download/SmallBrother/situation_partenaire.zip"
