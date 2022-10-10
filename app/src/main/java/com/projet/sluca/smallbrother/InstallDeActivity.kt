@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 03-10-2022)
+ * @version 1.2 (Updated on 10-10-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 

@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
  * class Launch1Activity is the starting point of the application.
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 07-10-2022)
+ * @version 1.2 (Updated on 10-10-2022)
  */
 class Launch1Activity : AppCompatActivity() {
 

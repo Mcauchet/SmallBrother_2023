@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
  * class InstallDe2Activity manages the data of the aide.
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 03-10-2022)
+ * @version 1.2 (Updated on 10-10-2022)
  */
 class InstallDe2Activity : AppCompatActivity() {
 
