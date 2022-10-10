@@ -53,9 +53,7 @@ class InstallDeActivity : AppCompatActivity() {
     fun continuer(view: View?) {
         vibreur.vibration(this, 100)
 
-
         // > Récupération du contenu des inputs :
-
         // Nom :
         val etNom = findViewById<EditText>(R.id.input_nom)
         val nom = etNom.text.toString()
@@ -68,32 +66,34 @@ class InstallDeActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.input_email)
         val email = etEmail.text.toString()
 
-
         // > Vérification de la validité des informations entrées :
-
         // Vérification 1 : le numéro de téléphone n'a pas une structure vraisemblable.
-        if (telephone.length > 10 || !telephone.matches("".toRegex()) 
-            && !telephone.startsWith("04")) {
-            message(this, getString(R.string.error01), vibreur)
-        } else if (!email.matches("".toRegex()) && !email.contains("@")) {
-            message(this, getString(R.string.error02), vibreur)
-        } else if (nom.matches("".toRegex()) || telephone.matches("".toRegex()) 
-            || email.matches("".toRegex())) {
-            message(this, getString(R.string.error03), vibreur)
-        } else {
+        when {
+            telephone.length > 10 || !telephone.matches("".toRegex())
+                    && !telephone.startsWith("04")
+                -> message(this, getString(R.string.error01), vibreur)
 
-            // Sauvegarde en globale des valeurs entrées.
-            userData.nom = nom
-            userData.telephone = telephone
-            userData.email = email
+            !email.matches("".toRegex()) && !email.contains("@")
+                -> message(this, getString(R.string.error02), vibreur)
 
-            // Transition vers l'activity suivante.
-            val intent = Intent(this, InstallDe2Activity::class.java)
-            //test to pass aidant data to aide activity
-            intent.putExtra("nom", nom)
-            intent.putExtra("telephone", telephone)
-            intent.putExtra("email", email)
-            startActivity(intent)
+            nom.matches("".toRegex()) || telephone.matches("".toRegex())
+                    || email.matches("".toRegex())
+                -> message(this, getString(R.string.error03), vibreur)
+
+            else -> {
+                // Sauvegarde en globale des valeurs entrées.
+                userData.nom = nom
+                userData.telephone = telephone
+                userData.email = email
+
+                // Transition vers l'activity suivante.
+                val intent = Intent(this, InstallDe2Activity::class.java)
+                //test to pass aidant data to aide activity
+                intent.putExtra("nom", nom)
+                intent.putExtra("telephone", telephone)
+                intent.putExtra("email", email)
+                startActivity(intent)
+            }
         }
     }
 
