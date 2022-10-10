@@ -1,7 +1,5 @@
 package com.projet.sluca.smallbrother
 
-import android.app.KeyguardManager
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -14,8 +12,6 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
-import android.view.WindowInsets
-import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -195,10 +191,9 @@ class AidantActivity : AppCompatActivity() {
             }
 
             // Bouton Tiers :
-            if (userdata.pleineFiche()) {
-                flTiers.visibility = View.VISIBLE
-            } else {
-                flTiers.visibility = View.GONE
+            when {
+                userdata.pleineFiche() -> flTiers.visibility = View.VISIBLE
+                else -> flTiers.visibility = View.GONE
             }
             logHandler.postDelayed(this, 250) // rafraîchissement
         }
