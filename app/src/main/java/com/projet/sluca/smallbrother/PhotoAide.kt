@@ -12,6 +12,9 @@ import java.io.File
 // --> Affichage de la photo de l'Aidé.
 /***
  * class PhotoAide allows the Aidant to show the picture of the Aide
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 10-10-2022)
  */
 class PhotoAide : AppCompatActivity() {
 
@@ -37,8 +40,10 @@ class PhotoAide : AppCompatActivity() {
         // Gestion de l'affichage, selon qu'un fichier existe ou non.
         val fichier = userdata.path + "/SmallBrother/photo_aide.jpg"
         val file = File(fichier)
-        if (file.exists()) ivApercu.setImageURI(Uri.fromFile(file))
-        else tvLegende.text = getString(R.string.nophoto)
+        when (file.exists()) {
+            true -> ivApercu.setImageURI(Uri.fromFile(file))
+            else -> tvLegende.text = getString(R.string.nophoto)
+        }
     }
 
     // --> Au clic que le bouton "Retour".
