@@ -20,19 +20,20 @@ import java.util.*
 /***
  * creates an object UserData which contains all pieces of information about the user
  *
- * @param version: last version of SB
- * @param role: Aidant or Aidé
- * @param nom: user's name
- * @param telephone: user's phone
- * @param email: helper's email
- * @param mymail: aide's email
- * @param password: user's password
- * @param motion: Is the user moving
- * @param prive: DND mode
- * @param delai: time spent in DND mode
- * @param esquive: avoid redundant handlers for AideActivity
- * @param log: log content
- * @param canGoBack: indicates if going back is possible
+ * @property version: last version of SB
+ * @property role: Aidant or Aidé
+ * @property nom: user's name
+ * @property telephone: user's phone
+ * @property email: helper's email
+ * @property mymail: aide's email
+ * @property password: user's password
+ * @property motion: Is the user moving
+ * @property prive: DND mode
+ * @property delai: time spent in DND mode
+ * @property esquive: avoid redundant handlers for AideActivity
+ * @property log: log content
+ * @property canGoBack: indicates if going back is possible
+ * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
  * @version 1.2 (modified on 10-10-22)
@@ -70,6 +71,12 @@ data class UserData(
     // -> Donne la part d'URL nécessaire pour accéder à l'aide de SB.
     val help = "help/"
 
+    /***
+     * configurePath sets the path at runtime in Launch1Activity
+     *
+     * @param [context] the context of the activity running
+     * @see Launch1Activity.onCreate
+     */
     fun configurePath(context: Context?) {
         val tmpPath: String? = context?.filesDir?.path
         if(tmpPath != null) path = tmpPath
@@ -77,8 +84,11 @@ data class UserData(
         Log.d("TMPPATH", tmpPath.toString())
     }
 
-    // Fonctions complexes :
-    // -> Sauvegarde en TXT des données de l'utilisateur.
+    /***
+     * saveData stores the user's data in a .txt file on the device
+     *
+     * @param [context] the context of the activity running
+     */
     fun saveData(context: Context?) {
         // Structuration du contenu du futur fichier (info, retour-charriot).
         var contenu = version + "\r" + role + "\r" + nom + "\r" + telephone
@@ -123,13 +133,19 @@ data class UserData(
         }
     }
 
-    // -> Suppression des données de l'utilisateur.
+    /***
+     * byeData deletes the donnees.txt file of the device
+     */
     fun byeData() {
         val data = File("$path/SmallBrother/$file")
         data.delete()
     }
 
-    // -> Chargement du fichier TXT contenant les données de l'utilisateur et conversion en session.
+    /***
+     * loadData fetches the donnees.txt file and sets the UserData properties accordingly
+     *
+     * @return true if data loaded, false otherwise
+     */
     fun loadData(): Boolean {
         //Check and ask permission to read files
         if(File("SmallBrother", file).exists()) {
@@ -185,13 +201,22 @@ data class UserData(
     // -> Appel du chemin globalisé vers la capture audio.
     //val audioPath: String = "$path/SmallBrother/audio.ogg"
 
-    // -> Appel du chemin globalisé vers les photos capturées (1 et 2).
+    /***
+     * getAutophotosPath retrieves the path of the captured pictures (1 and 2)
+     *
+     * @param [num] the number of the picture
+     * @return the path of the pictures
+     */
     fun getAutophotosPath(num: Int): String = "$path/SmallBrother/autophoto$num.jpg"
 
     // -> Appel du chemin globalisé vers la fiche de l'aidé.
     //val fichePath: String = "$path/SmallBrother/$fiche"
 
-    // -> Mise à jour du Log en fonction du numéro entré en paramètre.
+    /***
+     * refreshLog sets the log accordingly to the code entered as a parameter
+     *
+     * @param [code] the code associated to the log message
+     */
     fun refreshLog(code: Int) {
         // Capture de la date et de l'heure actuelles.
         val c = Calendar.getInstance()
@@ -227,12 +252,22 @@ data class UserData(
         log = texte // Set du Log.
     }
 
-    // -> Retrait d'une certaine quantité de temps au délai gardé en mémoire.
+    /***
+     * subDelai subtracts a number from the remaining delay in private mode
+     *
+     * @param [sub] the time to subtract
+     * @see [AideActivity.reloadLog] for usage
+     */
     fun subDelai(sub: Long) {
         delai = delai.minus(sub)
-    } // Délai moins le paramètre.
+    }
 
-    // -> Création de la fiche de l'Aidé.
+    /***
+     * createFiche creates the file containing all the "Aidé"'s information
+     *
+     * @param [context] context of the activity running
+     * @see [InstallDantActivity.continuer] for usage
+     */
     fun createFiche(context: Context?) {
         var texte = "" // Futur contenu du fichier texte.
         val champs = arrayOf(
@@ -248,8 +283,8 @@ data class UserData(
         )
 
         // Assemblage du contenu en un String.
-        champs.forEach {
-            texte += it + "\r\r"
+        for (champ in champs) {
+            texte += champ + "\r\r"
         }
         Log.d("FOREACHLOOP", texte)
 
@@ -268,6 +303,13 @@ data class UserData(
     }
 
     // -> Centralisation de l'écriture de fichier
+    /***
+     * writeFile creates the file and writes the text in the file (text and file in parameters)
+     *
+     * @param [file] the file to create, nothing happens if file already exists
+     * @param [texte] the text to write in [file]
+     * @param [context] the context of the activity running
+     */
     private fun writeFile(file: File, texte: String?, context: Context?) {
         try {
             if (file.exists()) return // Créer uniquement si non déjà existant.
@@ -278,20 +320,33 @@ data class UserData(
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
             Log.d("WriteFile", texte.toString())
-        } catch (_: IOException) {
+        } catch (e: IOException) {
+            Log.e("WRITEFILE", e.toString())
         }
     }
 
     private val toDayte: String = DateFormat.getDateTimeInstance().format(Date())
 
-    // -> Récupère la date de modification d'un fichier
+    /***
+     * dateFichier retrieves the modification date of a file given his path and transforms it
+     * into a string
+     *
+     * @param [chemin] the path of the file
+     * @return the date of the last modification as a String
+     * @see [pleineFiche] for usage
+     */
     private fun dateFichier(chemin: String): String {
         val file = File(chemin)
         val lastModDate = Date(file.lastModified())
         return lastModDate.toString()
     }
 
-    // -> Vérification : la fiche de l'Aidé existe et a été complétée.
+    /***
+     * pleineFiche checks if the "Aidé's fiche" exists (and is completed?)
+     *
+     * @return true if the fiche exists, false otherwise
+     * @see [AidantActivity.reloadLog] for usage
+     */
     fun pleineFiche(): Boolean {
         // Chargement du fichier TXT retenant la date de création de la fiche de l'Aidé.
         val dataD = File("$path/SmallBrother/$date")
