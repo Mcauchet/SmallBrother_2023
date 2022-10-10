@@ -20,6 +20,12 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
+/***
+ * class Work2Activity manages the captures of pictures if requested by the aidant
+ *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 10-10-2022)
+ */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
 
