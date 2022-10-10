@@ -191,10 +191,9 @@ class AidantActivity : AppCompatActivity() {
             }
 
             // Bouton Tiers :
-            when {
-                userdata.pleineFiche() -> flTiers.visibility = View.VISIBLE
-                else -> flTiers.visibility = View.GONE
-            }
+            if (userdata.pleineFiche()) flTiers.visibility = View.VISIBLE
+            else flTiers.visibility = View.GONE
+
             logHandler.postDelayed(this, 250) // rafraîchissement
         }
     }

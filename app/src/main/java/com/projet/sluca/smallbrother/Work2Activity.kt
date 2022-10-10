@@ -216,10 +216,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 fileZ.delete()
 
                 // Rafraîchissement du Log en fonction de la réussite du processus.
-                when  {
-                    checkInternet() -> userData.refreshLog(11) //réussi
-                    else -> userData.refreshLog(15) //coupure Internet
-                }
+                if(checkInternet()) userData.refreshLog(11)
+                else userData.refreshLog(15)
 
                 // Concoction et envoi du SMS à l'Aidant.
                 var sms = getString(R.string.smsys06)
