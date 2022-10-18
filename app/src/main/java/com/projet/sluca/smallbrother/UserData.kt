@@ -36,7 +36,7 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 10-10-22)
+ * @version 1.2 (modified on 18-10-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -223,6 +223,7 @@ data class UserData(
         val df = SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.FRENCH)
         val date = df.format(c.time)
         var texte = "$date : " // Début de message.
+        //TODO see if possible to put texte += when (code) {...} instead of 19 times texte += ...
         when (code) {
             1 -> texte += getString(R.string.log01)
             2 -> texte += getString(R.string.log02)
