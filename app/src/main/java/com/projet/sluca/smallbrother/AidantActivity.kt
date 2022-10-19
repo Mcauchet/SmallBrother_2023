@@ -96,9 +96,12 @@ class AidantActivity : AppCompatActivity() {
         sms = sms.replace("§%", userdata.nom)
 
         //TODO this is null (this.getSystemService)
-        this.getSystemService(SmsManager::class.java)
-            .sendTextMessage(userdata.telephone, null, sms, null, null)
-
+        if (this.getSystemService(SmsManager::class.java) == null) {
+            Log.d("SYS SERVICE", "NULL")
+        } else {
+            this.getSystemService(SmsManager::class.java)
+                .sendTextMessage(userdata.telephone, null, sms, null, null)
+        }
         message(this, getString(R.string.message04), vibreur) // toast de confirmation.
         userdata.refreshLog(4) // rafraîchissement du Log.
     }
