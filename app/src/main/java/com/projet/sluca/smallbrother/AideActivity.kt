@@ -66,7 +66,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         refresh()
 
         // Réinitialisation de l'indicateur "Bit".
-        //SmsReceiver.bit = 0
+        SmsReceiver.bit = 0
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
@@ -175,7 +175,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
                     // Passage en Mode Privé.
                     userData.prive = true
-                    //SmsReceiver.bit = 1 // Cookie : Mode Privé ON.
+                    SmsReceiver.bit = 1 // Cookie : Mode Privé ON.
                     refresh()
                     vibreur.vibration(this, 330)
                 } // Si "Annuler" :
@@ -193,7 +193,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         {
             message(this, getString(R.string.message11), vibreur) // Toast de confirmation.
             userData.prive = false // Arrêt du Mode Privé.
-            //SmsReceiver.bit = 0 // Cookie : Mode Privé OFF.
+            SmsReceiver.bit = 0 // Cookie : Mode Privé OFF.
             userData.delai = 0
             refresh()
             vibreur.vibration(this, 330)
@@ -227,36 +227,37 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
             // -> Vérification des actions parallèles (appels et sms reçus) :
-            /*
-            val bit: Int = SmsReceiver.bit
-            if (bit > 1) {
-                vibreur.vibration(this@AideActivity, 660)
-                when (bit) {
-                    2 -> userData.refreshLog(6)
-                    3 -> userData.refreshLog(8)
-                    4 -> {
-                        userData.refreshLog(12) // message de Log adéquat.
 
-                        // Sonnerie de notification.
-                        val sound: MediaPlayer = MediaPlayer
-                            .create(this@AideActivity, R.raw.notification)
-                        sound.start()
+            val bit: Int? = SmsReceiver.bit
+            if(bit != null) {
+                if (bit > 1) {
+                    vibreur.vibration(this@AideActivity, 660)
+                    when (bit) {
+                        2 -> userData.refreshLog(6)
+                        3 -> userData.refreshLog(8)
+                        4 -> {
+                            userData.refreshLog(12) // message de Log adéquat.
 
-                        // L'Aidant est averti par SMS de l'action du Mode Privé
-                        // (+ reçoit tmp restant).
-                        var sms = getString(R.string.smsys07)
-                        sms = sms.replace("§%", userData.nom)
-                        val restencore: Int = ((userData.delai / 60000)+1).toInt()
-                        val waitage = restencore.toString()
-                        sms = sms.replace("N#", waitage)
-                        applicationContext.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userData.telephone, null, sms, null, null)
+                            // Sonnerie de notification.
+                            val sound: MediaPlayer = MediaPlayer
+                                .create(this@AideActivity, R.raw.notification)
+                            sound.start()
+
+                            // L'Aidant est averti par SMS de l'action du Mode Privé
+                            // (+ reçoit tmp restant).
+                            var sms = getString(R.string.smsys07)
+                            sms = sms.replace("§%", userData.nom)
+                            val restencore: Int = ((userData.delai / 60000)+1).toInt()
+                            val waitage = restencore.toString()
+                            sms = sms.replace("N#", waitage)
+                            applicationContext.getSystemService(SmsManager::class.java)
+                                .sendTextMessage(userData.telephone, null, sms, null, null)
+                        }
                     }
+                    tvLog.text = userData.log // affichage.
+                    SmsReceiver.bit = 1 // retour à décompte normal.
                 }
-                tvLog.text = userData.log // affichage.
-                SmsReceiver.bit = 1 // retour à décompte normal.
             }
-            */
 
             // -> Gestion du Log :
             if (userData.log != null) {

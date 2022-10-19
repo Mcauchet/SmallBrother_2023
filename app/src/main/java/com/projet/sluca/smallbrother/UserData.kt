@@ -246,7 +246,7 @@ data class UserData(
             19 -> {
                 // Message avec insertion du temps de Mode Privé restant.
                 texte += getString(R.string.log19)
-                //texte = texte.replace("N#", SmsReceiver.catchTempsRestant())
+                texte = texte.replace("N#", SmsReceiver.tempsrestant)
             }
             else -> texte += ""
         }

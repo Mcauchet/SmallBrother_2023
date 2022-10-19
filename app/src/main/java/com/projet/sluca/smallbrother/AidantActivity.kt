@@ -11,12 +11,14 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import java.io.File
 
 /***
@@ -93,6 +95,7 @@ class AidantActivity : AppCompatActivity() {
         var sms = getString(R.string.smsys02)
         sms = sms.replace("§%", userdata.nom)
 
+        //TODO this is null (this.getSystemService)
         this.getSystemService(SmsManager::class.java)
             .sendTextMessage(userdata.telephone, null, sms, null, null)
 

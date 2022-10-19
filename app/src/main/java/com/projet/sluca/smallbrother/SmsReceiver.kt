@@ -1,4 +1,4 @@
-/*package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -72,18 +72,6 @@ class SmsReceiver : BroadcastReceiver() {
         lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
         lateinit var tempsrestant: String // Retiendra le temps restant de Mode Privé pour l'Aidant.
 
-        fun catchNumero(): String? {
-            return numero
-        } // Getter du numéro.
-
-        fun catchClef(): String? {
-            return clef
-        } // Getter du mot-clef.
-
-        fun catchTempsRestant(): String {
-            return tempsrestant
-        } // Getter du temps restant.
-
         // Placement des données dans un array, séparation par le retour-charriot.
         // Suppression du fichier de données s'il existe déjà (pour éviter concaténation).
         // Ecriture.
@@ -91,7 +79,7 @@ class SmsReceiver : BroadcastReceiver() {
         // Récupération du contenu du fichier :
 
         // ---- Méchanismes de communication AideActivity / SmsReceiver.
-        var bit: Int
+        var bit: Int?
             get() {
                 val data = File(userdata.path + "/SmallBrother/bit.txt")
                 if (data.exists()) {
@@ -132,4 +120,4 @@ class SmsReceiver : BroadcastReceiver() {
             }
 
     }
-}*////
+}

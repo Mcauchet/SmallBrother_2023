@@ -69,7 +69,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         userData.esquive = true
 
         // Récupération d'un mot-clef reçu par SMS, s'il en est.
-        //if (SmsReceiver.catchClef() != null) clef = SmsReceiver.catchClef().toString()
+        if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
 
         // Récupération du numéro de l'appelant, suite à un appel reçu.
         appelant = PhoneStatReceiver.catchcallNumber()
@@ -111,7 +111,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     // --> Vérification : l'appareil est bien connecté au Net.
                     if (checkInternet()) {
                         // Désactivation du SMSReceiver (pour éviter les cumuls de SMS).
-                        /*
+
                         val pm = this@WorkActivity.packageManager
                         val componentName = ComponentName(
                             this@WorkActivity,
@@ -122,7 +122,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                             PackageManager.DONT_KILL_APP
                         )
-                        */
+
                         loading() // Déclenchement de l'animation de chargement.
 
                         // ================== [ Constitution du dossier joint ] ==================

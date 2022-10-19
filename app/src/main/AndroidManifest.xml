@@ -90,6 +90,7 @@
         <activity android:name=".Work2Activity"
             android:screenOrientation="fullSensor" />
         <!-- SmsReceiver -->
+        <receiver android:name=".SmsReceiver" android:exported="false"/>
 
         <!-- CallReceiver-->
 
