@@ -3,12 +3,15 @@ package com.projet.sluca.smallbrother
 import android.app.KeyguardManager
 import android.content.Context
 import android.os.Build
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import java.io.IOException
 
 fun message(context: Context, msg: String, vibreur: Vibration) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT)
@@ -16,6 +19,12 @@ fun message(context: Context, msg: String, vibreur: Vibration) {
     vibreur.vibration(context, 330)
 }
 
+/***
+ * Launches the application and put it on screen even if device locked
+ *
+ * @param [window] the window of the application
+ * @param [activity] the activity to put on screen
+ */
 fun wakeup(window: Window, activity: AppCompatActivity) {
     @Suppress("DEPRECATION")
     if(Build.VERSION.SDK_INT > Build.VERSION_CODES.R) {
@@ -41,8 +50,46 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
     }
 }
 
-fun receiveMsg(context: Context, ){
+// --> CHECKINTERNET() : Renvoie vrai si l'appareil est connecté au Net.
+/***
+ * checkInternet returns true if device is connected to Internet
+ *
+ * @return true if device connected, false otherwise
+ */
+fun checkInternet(): Boolean {
+    val runtime = Runtime.getRuntime()
+    try {
+        val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+        val exitValue = ipProcess.waitFor()
+        return (exitValue==0)
+    } catch (e: IOException) {
+        e.printStackTrace()
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+    }
+    return false
+}
 
+/***
+ * Animation of loading
+ *
+ * @param [tvLoading] the TextView in which the animation takes place
+ */
+fun loading(tvLoading: TextView) {
+    object : CountDownTimer(2000, 1) {
+        override fun onTick(millisUntilFinished: Long) {
+            // A chaque 400ms passés, modifier le contenu l'objet TextView.
+            when (millisUntilFinished) {
+                in 1601..2000 -> tvLoading.text = ""
+                in 1201..1600 -> tvLoading.text = "."
+                in 801..1200 -> tvLoading.text = ".."
+                in 0..800 -> tvLoading.text = "..."
+            }
+        }
+
+        override fun onFinish(): Unit = loading(tvLoading)
+
+    }.start()
 }
 
 //TODO Test this (with ux rework, might be better)

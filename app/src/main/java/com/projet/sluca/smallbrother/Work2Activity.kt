@@ -53,7 +53,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
-        loading() // Déclenchement de l'animation de chargement.
+        loading(tvLoading) // Déclenchement de l'animation de chargement.
 
         // ================== [ Constitution du dossier joint ] ==================
 
@@ -142,8 +142,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         batterie = "$level%"
 
         // --> [6] déterminer si en mouvement.
-        var motion = "Non"
-        if (userData.motion) motion = "Oui"
+        val motion = if (userData.motion) "Oui" else "Non"
 
         // --> [7] envoi de l'email d'urgence (avec Libs/Sender.java).
 
@@ -248,39 +247,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}
-
-    // --> Animation des points de suspension en boucle de 2 secondes.
-    fun loading() {
-        object : CountDownTimer(2000, 1) {
-            override fun onTick(millisUntilFinished: Long) {
-                // A chaque 400ms passés, modifier le contenu l'objet TextView.
-                when (millisUntilFinished) {
-                    in 1601..2000 -> tvLoading.text = ""
-                    in 1201..1600 -> tvLoading.text = "."
-                    in 801..1200 -> tvLoading.text = ".."
-                    in 0..800 -> tvLoading.text = "..."
-                }
-            }
-
-            override fun onFinish(): Unit = loading()
-
-        }.start()
-    }
-
-    // --> CHECKINTERNET() : Renvoie vrai si l'appareil est connecté au Net.
-    private fun checkInternet(): Boolean {
-        val runtime = Runtime.getRuntime()
-        try {
-            val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
-            val exitValue = ipProcess.waitFor()
-            return exitValue == 0
-        } catch (e: IOException) {
-            e.printStackTrace()
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-        return false
-    }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
