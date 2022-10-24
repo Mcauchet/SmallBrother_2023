@@ -6,6 +6,9 @@ import java.util.*
  * Picture capturing listener
  * @author hzitoun (zitoun.hamed@gmail.com)
  * (written in Java by @author, converted to Kotlin by Maxime Caucheteur on 07/09/22)
+ *
+ * https://github.com/hzitoun/android-camera2-secret-picture-taker for further info about
+ * this library
  */
 interface PictureCapturingListener {
     /**

@@ -8,23 +8,23 @@ import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
-class Compress(private val _files: Array<String?>, private val _zipFile: String) {
+class Compress(private val files: Array<String?>, private val zipFile: String) {
     fun zip() {
         try {
-            var origin: BufferedInputStream? = null
-            val dest = FileOutputStream(_zipFile)
+            var origin: BufferedInputStream?
+            val dest = FileOutputStream(zipFile)
             val out = ZipOutputStream(BufferedOutputStream(dest))
             val data = ByteArray(BUFFER)
-            for (i in _files.indices) {
-                if (_files[i] != null) // [SL:] Si la cellule contient bien un fichier.
+            for (i in files.indices) {
+                if (files[i] != null) // [SL:] Si la cellule contient bien un fichier.
                 {
-                    Log.d("add:", _files[i]!!)
-                    val compress = Log.v("Compress", "Adding: " + _files[i])
-                    val fi = FileInputStream(_files[i])
+                    Log.d("add:", files[i].toString())
+                    Log.v("Compress", "Adding: " + files[i])
+                    val fi = FileInputStream(files[i])
                     origin = BufferedInputStream(fi, BUFFER)
                     val entry = ZipEntry(
-                        _files[i]!!.substring(
-                            _files[i]!!.lastIndexOf("/") + 1
+                        files[i]!!.substring(
+                            files[i]!!.lastIndexOf("/") + 1
                         )
                     )
                     out.putNextEntry(entry)

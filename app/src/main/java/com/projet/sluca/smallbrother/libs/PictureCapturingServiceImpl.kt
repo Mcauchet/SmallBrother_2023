@@ -25,6 +25,9 @@ import java.util.*
  *
  * @author hzitoun (zitoun.hamed@gmail.com)
  * (written in Java by @author, converted in Kotlin by Maxime Caucheteur on 07/09/22)
+ *
+ * https://github.com/hzitoun/android-camera2-secret-picture-taker for further info about
+ * this library
  */
 class PictureCapturingServiceImpl
 /***

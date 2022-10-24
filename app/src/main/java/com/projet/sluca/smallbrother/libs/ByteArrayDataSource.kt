@@ -6,35 +6,14 @@ import java.io.InputStream
 import java.io.OutputStream
 import javax.activation.DataSource
 
-class ByteArrayDataSource : DataSource {
-    private var data: ByteArray
-    private var type: String? = null
+class ByteArrayDataSource(val data: ByteArray, val type: String?) : DataSource {
 
-    constructor(data: ByteArray, type: String?) : super() {
-        this.data = data
-        this.type = type
-    }
-
-    constructor(data: ByteArray) : super() {
-        this.data = data
-    }
-
-    fun setType(type: String?) {
-        this.type = type
-    }
-
-    override fun getContentType(): String {
-        return type ?: "application/octet-stream"
-    }
+    override fun getContentType(): String = type ?: "application/octet-stream"
 
     @Throws(IOException::class)
-    override fun getInputStream(): InputStream {
-        return ByteArrayInputStream(data)
-    }
+    override fun getInputStream(): InputStream = ByteArrayInputStream(data)
 
-    override fun getName(): String {
-        return "ByteArrayDataSource"
-    }
+    override fun getName(): String = "ByteArrayDataSource"
 
     @Throws(IOException::class)
     override fun getOutputStream(): OutputStream {

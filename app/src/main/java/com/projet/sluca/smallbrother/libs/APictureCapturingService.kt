@@ -10,6 +10,8 @@ import android.view.Surface
  * Abstract Picture Taking Service.
  * @author hzitoun (zitoun.hamed@gmail.com)
  * (written in Java by @author, converted to Kotlin by Maxime Caucheteur on 07/09/22)
+ * https://github.com/hzitoun/android-camera2-secret-picture-taker for further info about
+ * this library
  */
 abstract class APictureCapturingService internal constructor(private val activity: Activity) {
     companion object {
