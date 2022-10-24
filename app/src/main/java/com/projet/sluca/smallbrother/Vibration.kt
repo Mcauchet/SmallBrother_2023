@@ -11,7 +11,7 @@ import android.os.VibratorManager
  * class Vibration creates a Vibrator and manages the vibrations made by all activities
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 20-10-2022)
+ * @version 1.2 (Updated on 24-10-2022)
  */
 class Vibration {
 
@@ -26,11 +26,14 @@ class Vibration {
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
         } else {
-            @Suppress("DEPRECATION")
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        shake.vibrate(VibrationEffect
-            .createOneShot(duree.toLong(), VibrationEffect.DEFAULT_AMPLITUDE))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            shake.vibrate(VibrationEffect
+                .createOneShot(duree.toLong(), VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            shake.vibrate(duree.toLong())
+        }
     }
 }

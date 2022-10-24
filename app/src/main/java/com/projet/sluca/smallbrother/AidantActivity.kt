@@ -18,14 +18,13 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import java.io.File
 
 /***
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 10-10-2022)
+ * @version 1.2 (updated on 24-10-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
