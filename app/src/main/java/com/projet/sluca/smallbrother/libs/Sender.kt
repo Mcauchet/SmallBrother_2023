@@ -13,7 +13,7 @@ import javax.mail.internet.MimeBodyPart
 import javax.mail.internet.MimeMessage
 import javax.mail.internet.MimeMultipart
 
-//TODO this part will have to change if we use Signal api
+//TODO this part will have to change if we use Signal api or server
 class Sender(private val user: String, private val password: String) : Authenticator() {
     private val mailhost = "smtp.gmail.com"
     private val session: Session
@@ -24,9 +24,7 @@ class Sender(private val user: String, private val password: String) : Authentic
         }
     }
 
-    override fun getPasswordAuthentication(): PasswordAuthentication {
-        return PasswordAuthentication(user, password)
-    }
+    override fun getPasswordAuthentication(): PasswordAuthentication = PasswordAuthentication(user, password)
 
     @Synchronized
     @Throws(Exception::class)
@@ -44,8 +42,7 @@ class Sender(private val user: String, private val password: String) : Authentic
             // Chemin vers lui.
             val urlFichier =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .toString() + "/SmallBrother/" +
-                        nomFichier
+                    .toString() + "/SmallBrother/" + nomFichier
             // Inclusion du corps du message (texte).
             val messageBodyPart: BodyPart = MimeBodyPart()
             messageBodyPart.setText(body)
