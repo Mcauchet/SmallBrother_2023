@@ -1,5 +1,6 @@
 package com.projet.sluca.smallbrother
 
+import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,6 +19,9 @@ class ReglagesActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
     lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+
+    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_reglages.xml.
         super.onCreate(savedInstanceState)
@@ -96,7 +100,7 @@ class ReglagesActivity : AppCompatActivity() {
             var sms = getString(R.string.smsys01)
             sms = sms.replace("§%", userdata.nom)
             this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userdata.telephone, null, sms, null, null)
+                .sendTextMessage(userdata.telephone, null, sms, sentPI, null)
             message(this, getString(R.string.message03B), vibreur) // toast de confirmation.
             userdata.refreshLog(3) // message de Log adéquat.
         }

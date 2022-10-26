@@ -1,6 +1,7 @@
 package com.projet.sluca.smallbrother
 
 import android.app.KeyguardManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -42,6 +43,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     private var magneto: MediaRecorder? = null // Création d'un recorder audio.
 
+    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
 
     // Variables pour déterminer l'état de mouvement.
     private lateinit var checkMove1: FloatArray
@@ -194,7 +196,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         sms = sms.replace("§%", userData.nom)
                         this.getSystemService(SmsManager::class.java)
                             .sendTextMessage(userData.telephone, null, sms,
-                                null, null)
+                                sentPI, null)
 
                         // Retour à l'écran de rôle de l'Aidé.
                         val intent = Intent(this, AideActivity::class.java)

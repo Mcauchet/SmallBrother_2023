@@ -1,6 +1,7 @@
 package com.projet.sluca.smallbrother
 
 import android.Manifest
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Intent
 import android.content.IntentFilter
@@ -39,6 +40,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     // Attribut de permission pour l'appel aux méthodes de "APictureCapturingService".
     // Must not be nullable in Kotlin in order for it to work
     private lateinit var pictureService: APictureCapturingService
+
+    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_work.xml (même écran).
@@ -223,7 +226,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 sms = sms.replace("§%", userData.nom)
                 @Suppress("Deprecation")
                 SmsManager.getDefault()
-                    .sendTextMessage(userData.telephone, null, sms, null, null)
+                    .sendTextMessage(userData.telephone, null, sms, sentPI, null)
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
                 // Réactivation du SmsReceiver.

@@ -261,7 +261,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                         val waitage = restencore.toString()
                         sms = sms.replace("N#", waitage)
                         applicationContext.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userData.telephone, null, sms, null, null)
+                            .sendTextMessage(userData.telephone, null, sms, sentPI, null)
                     }
                 }
                 tvLog.text = userData.log // affichage.
