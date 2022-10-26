@@ -195,8 +195,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         var sms = getString(R.string.smsys05)
                         sms = sms.replace("§%", userData.nom)
                         this.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userData.telephone, null, sms,
-                                sentPI, null)
+                            .sendTextMessage(userData.telephone, null, sms, sentPI, null)
 
                         // Retour à l'écran de rôle de l'Aidé.
                         val intent = Intent(this, AideActivity::class.java)
