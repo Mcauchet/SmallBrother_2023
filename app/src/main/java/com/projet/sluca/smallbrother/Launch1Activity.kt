@@ -31,7 +31,6 @@ class Launch1Activity : AppCompatActivity() {
         userdata.configurePath(this)
 
         // Réactivation du SmsReceiver (en cas de coupure inopinée de l'appli).
-        //Without the comment, the app doesn't launch because "SmsReceiver component does not exist"
         val pm = this@Launch1Activity.packageManager
         Log.d("PACKAGE MNG", pm.toString())
         val componentName = ComponentName(this@Launch1Activity, SmsReceiver::class.java)

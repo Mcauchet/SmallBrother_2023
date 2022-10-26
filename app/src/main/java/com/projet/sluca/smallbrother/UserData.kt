@@ -43,7 +43,7 @@ data class UserData(
     var telephone: String = "", var email: String = "", var mymail: String = "",
     var password:String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
-    var log: String? = null, var canGoBack: Boolean = true,
+    var log: String? = null, var canGoBack: Boolean = true, var bit: Int = 0,
 ) : Application() {
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
@@ -358,4 +358,5 @@ data class UserData(
                 && (dateFichier("$path/SmallBrother/$date")
                 != dateFichier("$path/SmallBrother/$fiche"))
     }
+
 }
