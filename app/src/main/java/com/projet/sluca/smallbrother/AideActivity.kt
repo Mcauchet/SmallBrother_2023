@@ -42,8 +42,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     private var logHandler: Handler = Handler(Looper.getMainLooper()) // Handler pour rafraîchissement log.
 
-    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_aide.xml.
         super.onCreate(savedInstanceState)
@@ -111,9 +109,10 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userData.telephone, null, sms, sentPI, null)
+                .sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
         } else {
-            SmsManager.getDefault().sendTextMessage(userData.telephone, null, sms, sentPI, null)
+            @Suppress("DEPRECATION")
+            SmsManager.getDefault().sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
         }
 
         message(this, getString(R.string.message04), vibreur) // toast de confirmation.
@@ -261,7 +260,13 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                         val waitage = restencore.toString()
                         sms = sms.replace("N#", waitage)
                         applicationContext.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userData.telephone, null, sms, sentPI, null)
+                            .sendTextMessage(
+                                userData.telephone,
+                                null,
+                                sms,
+                                sentPI(this@AideActivity),
+                                null
+                            )
                     }
                 }
                 tvLog.text = userData.log // affichage.

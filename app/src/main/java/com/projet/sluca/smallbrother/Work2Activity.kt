@@ -41,8 +41,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     // Must not be nullable in Kotlin in order for it to work
     private lateinit var pictureService: APictureCapturingService
 
-    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_work.xml (même écran).
         super.onCreate(savedInstanceState)
@@ -226,7 +224,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 sms = sms.replace("§%", userData.nom)
                 @Suppress("Deprecation")
                 SmsManager.getDefault()
-                    .sendTextMessage(userData.telephone, null, sms, sentPI, null)
+                    .sendTextMessage(userData.telephone, null, sms, sentPI(this@Work2Activity), null)
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
                 // Réactivation du SmsReceiver.

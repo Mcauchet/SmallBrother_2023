@@ -1,7 +1,9 @@
 package com.projet.sluca.smallbrother
 
 import android.app.KeyguardManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.CountDownTimer
 import android.util.Log
@@ -12,6 +14,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
+
+fun sentPI(context: Context) = PendingIntent.getBroadcast(
+    context,
+    0,
+    Intent("SMS_SENT"),
+    0)
 
 fun message(context: Context, msg: String, vibreur: Vibration) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT)

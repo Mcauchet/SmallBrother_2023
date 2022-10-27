@@ -43,8 +43,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     private var magneto: MediaRecorder? = null // Création d'un recorder audio.
 
-    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
-
     // Variables pour déterminer l'état de mouvement.
     private lateinit var checkMove1: FloatArray
     private lateinit var checkMove2: FloatArray
@@ -195,7 +193,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         var sms = getString(R.string.smsys05)
                         sms = sms.replace("§%", userData.nom)
                         this.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userData.telephone, null, sms, sentPI, null)
+                            .sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
 
                         // Retour à l'écran de rôle de l'Aidé.
                         val intent = Intent(this, AideActivity::class.java)
