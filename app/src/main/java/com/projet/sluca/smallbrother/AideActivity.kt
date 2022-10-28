@@ -1,6 +1,5 @@
 package com.projet.sluca.smallbrother
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -40,8 +39,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private lateinit var ivLogo: ImageView // Déclaration de l'ImageView du logo.
 
     private var logHandler: Handler = Handler(Looper.getMainLooper()) // Handler pour rafraîchissement log.
-
-    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_aide.xml.
@@ -110,10 +107,10 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userData.telephone, null, sms, sentPI, null)
+                .sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
         } else {
             @Suppress("DEPRECATION")
-            SmsManager.getDefault().sendTextMessage(userData.telephone, null, sms, sentPI, null)
+            SmsManager.getDefault().sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
         }
 
         message(this, getString(R.string.message04), vibreur) // toast de confirmation.
@@ -261,7 +258,13 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                         val waitage = restencore.toString()
                         sms = sms.replace("N#", waitage)
                         applicationContext.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userData.telephone, null, sms, sentPI, null)
+                            .sendTextMessage(
+                                userData.telephone,
+                                null,
+                                sms,
+                                sentPI(this@AideActivity),
+                                null
+                            )
                     }
                 }
                 tvLog.text = userData.log // affichage.

@@ -10,6 +10,7 @@ import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
 import android.os.Environment
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Size
 import android.view.Surface
@@ -132,7 +133,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             cameraDevice = camera
             Log.i(TAG, "Taking picture from camera " + camera.id)
             //Take the picture after some delay. It may resolve getting a black dark photos.
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 try {
                     takePicture()
                 } catch (e: CameraAccessException) {

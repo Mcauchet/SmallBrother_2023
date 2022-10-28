@@ -38,8 +38,6 @@ class AidantActivity : AppCompatActivity() {
 
     private lateinit var flTiers: FrameLayout // Déclaration du FrameLayout pour le bouton Tiers.
 
-    private val sentPI: PendingIntent = PendingIntent.getBroadcast(this, 0, Intent("SMS_SENT"), 0)
-
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_aidant.xml.
         super.onCreate(savedInstanceState)
@@ -102,7 +100,7 @@ class AidantActivity : AppCompatActivity() {
             Log.d("SYS SERVICE", "NULL")
         } else {
             this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userdata.telephone, null, sms, sentPI, null)
+                .sendTextMessage(userdata.telephone, null, sms, sentPI(this), null)
         }
         message(this, getString(R.string.message04), vibreur) // toast de confirmation.
         userdata.refreshLog(4) // rafraîchissement du Log.
@@ -142,7 +140,7 @@ class AidantActivity : AppCompatActivity() {
             sms = sms.replace("§%", userdata.nom)
 
             this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userdata.telephone, null, sms, sentPI, null)
+                .sendTextMessage(userdata.telephone, null, sms, sentPI(this), null)
 
             message(this, getString(R.string.message07), vibreur) // toast de confirmation.
             userdata.refreshLog(10) // rafraîchissement du Log.
