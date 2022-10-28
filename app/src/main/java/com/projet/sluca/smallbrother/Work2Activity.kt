@@ -11,6 +11,7 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.telephony.SmsManager
+import android.util.Log
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -25,7 +26,7 @@ import java.util.*
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 10-10-2022)
+ * @version 1.2 (Updated on 28-10-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -152,12 +153,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // Affichage de l'action en cours.
         tvAction.text = getString(R.string.message12F)
 
-        // Métadonnées du mail.
-        val login = userData.mymail
-        val pwd = userData.password
-        val objet = "Situation de " + userData.nom
-        val email = userData.email
-
         // Détermine la synthaxe du message selon la première lettre du nom de l'Aidé.
         val nomAide = userData.nom
         var particule = nomAide[0].toString()
@@ -192,19 +187,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         object : Thread() {
             override fun run() {
                 try {
-                    // Création d'un Sender connecté au compte Gmail.
-                    val sender = Sender(
-                        login,  // Login Gmail
-                        pwd // Mdp Gmail
-                    )
-
-                    // Ajout des données du mail dans le Sender.
-                    sender.sendMail(
-                        objet,  // Objet
-                        message,  // Contenu du message
-                        login,  // Envoyeur
-                        email // Destinataire
-                    )
+                    //TODO Envoi des données sur le serveur
+                    Log.d("DATA SEND", "data")
                 } catch (_: Exception) {
                 }
 
@@ -224,8 +208,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 // Concoction et envoi du SMS à l'Aidant.
                 var sms = getString(R.string.smsys06)
                 sms = sms.replace("§%", userData.nom)
-                @Suppress("Deprecation")
-                SmsManager.getDefault()
+                this@Work2Activity.getSystemService(SmsManager::class.java)
                     .sendTextMessage(userData.telephone, null, sms, sentPI, null)
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
@@ -238,7 +221,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP
                 )
-
 
                 // Retour à l'écran de rôle de l'Aidé.
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)

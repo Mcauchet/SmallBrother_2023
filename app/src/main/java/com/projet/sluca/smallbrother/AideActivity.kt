@@ -21,7 +21,6 @@ import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 
 /***
  * class AideActivity manages the actions available to the "aidé".
@@ -113,6 +112,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             this.getSystemService(SmsManager::class.java)
                 .sendTextMessage(userData.telephone, null, sms, sentPI, null)
         } else {
+            @Suppress("DEPRECATION")
             SmsManager.getDefault().sendTextMessage(userData.telephone, null, sms, sentPI, null)
         }
 
