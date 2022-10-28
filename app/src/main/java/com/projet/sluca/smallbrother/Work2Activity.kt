@@ -8,7 +8,6 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.BatteryManager
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.telephony.SmsManager
 import android.util.Log
 import android.widget.TextView
@@ -18,7 +17,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import com.projet.sluca.smallbrother.libs.*
 import java.io.File
-import java.io.IOException
 import java.util.*
 
 /***

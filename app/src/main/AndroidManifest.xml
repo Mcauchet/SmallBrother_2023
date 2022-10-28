@@ -77,9 +77,6 @@
         <activity android:name=".InstallDeActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".InstallDe2Activity"
-            android:screenOrientation="fullSensor" />
-
         <activity android:name=".PicActivity"
             android:screenOrientation="fullSensor" />
 

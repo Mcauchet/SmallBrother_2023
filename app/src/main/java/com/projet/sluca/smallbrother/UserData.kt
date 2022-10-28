@@ -24,9 +24,6 @@ import java.util.*
  * @property role: Aidant or Aidé
  * @property nom: user's name
  * @property telephone: user's phone
- * @property email: helper's email
- * @property mymail: aide's email
- * @property password: user's password
  * @property motion: Is the user moving
  * @property prive: DND mode
  * @property delai: time spent in DND mode
@@ -36,12 +33,11 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 18-10-22)
+ * @version 1.2 (modified on 28-10-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
-    var telephone: String = "", var email: String = "", var mymail: String = "",
-    var password:String = "", var motion: Boolean = false,
+    var telephone: String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
     var log: String? = null, var canGoBack: Boolean = true, var bit: Int = 0,
 ) : Application() {
@@ -52,7 +48,7 @@ data class UserData(
     //    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     //    .absolutePath + "/SmallBrother/"
 
-    //this path is configured at first launch of the app through configurePath(context: Context?)
+    //this path is configured at first launch of the app through configurePath(..)
     var path: String = ""
 
     private val file = "donnees.txt" // datas de l'utilisateur
@@ -91,8 +87,7 @@ data class UserData(
      */
     fun saveData(context: Context?) {
         // Structuration du contenu du futur fichier (info, retour-charriot).
-        var contenu = version + "\r" + role + "\r" + nom + "\r" + telephone
-        contenu += "\r" + email + "\r" + mymail + "\r" + password
+        val contenu = version + "\r" + role + "\r" + nom + "\r" + telephone
 
         Log.d("CONTENU", contenu)
 
@@ -179,9 +174,7 @@ data class UserData(
                 telephone = dataTab[3]
                 if (dataTab.size > 4) // Si compte de l'Aidé :
                 {
-                    email = dataTab[4] // + email de l'Aidant
-                    mymail = dataTab[5] // + email de l'Aidé
-                    password = dataTab[6] // + son mdp
+                    Log.d("AIDEDATA", "test")
                 }
                 return true
             } catch (e: FileNotFoundException) {

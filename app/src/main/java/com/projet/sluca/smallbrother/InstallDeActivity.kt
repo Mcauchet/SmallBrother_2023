@@ -3,6 +3,7 @@ package com.projet.sluca.smallbrother
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -16,7 +17,7 @@ import androidx.core.app.ActivityCompat
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 10-10-2022)
+ * @version 1.2 (Updated on 28-10-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 
@@ -62,9 +63,21 @@ class InstallDeActivity : AppCompatActivity() {
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
-        // Email de l'Aidant :
-        val etEmail = findViewById<EditText>(R.id.input_email)
-        val email = etEmail.text.toString()
+        //Récupération de la version de SB en cours
+        var version = ""
+        try {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                version = this.packageManager.getPackageInfo(
+                    this.packageName,
+                    PackageManager.PackageInfoFlags.of(0)
+                ).versionName
+            } else {
+                @Suppress("DEPRECATION")
+                version = this.packageManager.getPackageInfo(this.packageName, 0).versionName
+            }
+        } catch(e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
 
         // > Vérification de la validité des informations entrées :
         // Vérification 1 : le numéro de téléphone n'a pas une structure vraisemblable.
@@ -73,25 +86,19 @@ class InstallDeActivity : AppCompatActivity() {
                     && !telephone.startsWith("04")
                 -> message(this, getString(R.string.error01), vibreur)
 
-            !email.matches("".toRegex()) && !email.contains("@")
-                -> message(this, getString(R.string.error02), vibreur)
-
             nom.matches("".toRegex()) || telephone.matches("".toRegex())
-                    || email.matches("".toRegex())
                 -> message(this, getString(R.string.error03), vibreur)
 
             else -> {
                 // Sauvegarde en globale des valeurs entrées.
                 userData.nom = nom
                 userData.telephone = telephone
-                userData.email = email
+                userData.version = version
+
+                userData.canGoBack = true
 
                 // Transition vers l'activity suivante.
-                val intent = Intent(this, InstallDe2Activity::class.java)
-                //test to pass aidant data to aide activity
-                intent.putExtra("nom", nom)
-                intent.putExtra("telephone", telephone)
-                intent.putExtra("email", email)
+                val intent = Intent(this, AideActivity::class.java)
                 startActivity(intent)
             }
         }
