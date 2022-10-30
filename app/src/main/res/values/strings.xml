@@ -128,7 +128,7 @@
         SmallBrother : §% demande à vérifier votre situation.[#SB04]
     </string>
     <string name="smsys05">SmallBrother : §% n\'est actuellement pas connecté à Internet ! [#SB05]</string>
-    <string name="smsys06">SmallBrother : §% vous a rapporté sa situation par email. [#SB06]</string>
+    <string name="smsys06">SmallBrother : §% a transféré ses informations sur le serveur. [#SB06]</string>
     <string name="smsys07">SmallBrother : §% a activé le Mode Privé. (N#)[#SB07]</string>
 
 

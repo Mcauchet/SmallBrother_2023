@@ -11,11 +11,16 @@ import android.os.Bundle
 import android.telephony.SmsManager
 import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import com.projet.sluca.smallbrother.libs.*
+import com.projet.sluca.smallbrother.serverAPI.ApiClient
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.util.*
 
@@ -179,6 +184,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 "<br><br>" +
                 "<b>En mouvement :</b> " + motion +
                 "<br><br>"
+        //TODO create AideData object here, and then send it in object.run.try{}
         object : Thread() {
             override fun run() {
                 try {
@@ -230,6 +236,40 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}
+
+    /***
+     * compile all informations into an AideData object to send to the server
+     *
+     */
+    private fun sendAideData(data: AideData) = runBlocking {
+        launch(Dispatchers.Main) {
+            try{
+                val response = ApiClient.apiService.sendData(data)
+
+                if(response.isSuccessful && response.body() != null) {
+                    Toast.makeText(
+                        this@Work2Activity,
+                        "Données envoyées à l'aidant",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                        Toast.makeText(
+                            this@Work2Activity,
+                            "Erreur lors de l'envoi: ${response.message()}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@Work2Activity,
+                    "Erreur lors de l'envoi: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
