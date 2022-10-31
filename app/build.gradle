@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlinx-serialization'
 }
 
 android {
@@ -54,7 +55,16 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
 
-    //Ktor
+    //Ktor dependencies
+
+    // HTTP engine: that handles network requests.
+    implementation "io.ktor:ktor-client-android:$ktor_version"
+    // It used for JSON serialization and deserialization settings and //is recommended for multiplatform projects
+    implementation "io.ktor:ktor-client-serialization:$ktor_version"
+    //It is kotlinx.serialization, which is used for entity //serialization
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
+    //It's for logging HTTP requests
+    implementation "io.ktor:ktor-client-logging-jvm:$ktor_version"
 
 }
 repositories {
