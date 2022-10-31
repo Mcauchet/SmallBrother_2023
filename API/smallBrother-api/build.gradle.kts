@@ -23,11 +23,16 @@ repositories {
 }
 
 dependencies {
+    //Ktor's core components
     implementation("io.ktor:ktor-server-core-jvm:$ktor_version")
+    //Mechanism for converting Kotlin objects into a serialized form like JSON
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
+    //Adds the Netty engine
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
+    //Implementation of SLF4J for formatted logs
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    //Allows to test parts of the Ktor application
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
