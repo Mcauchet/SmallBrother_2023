@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -15,12 +14,27 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 
-fun sentPI(context: Context) = PendingIntent.getBroadcast(
+/***
+ * returns the PendingIntent for the SMS
+ *
+ * @param [context] the context of the activity
+ * @return the PendingIntent for the SMS
+ * @author Maxime Caucheteur
+ */
+fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
     context,
     0,
     Intent("SMS_SENT"),
     0)
 
+/***
+ * creates a toast with a msg to print
+ *
+ * @param [context] the context of the activity
+ * @param [msg] the message to print
+ * @param [vibreur] the phone Vibration system
+ * @author Maxime Caucheteur
+ */
 fun message(context: Context, msg: String, vibreur: Vibration) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT)
     toast.show()
@@ -58,7 +72,6 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
     }
 }
 
-// --> CHECKINTERNET() : Renvoie vrai si l'appareil est connecté au Net.
 /***
  * checkInternet returns true if device is connected to Internet
  *

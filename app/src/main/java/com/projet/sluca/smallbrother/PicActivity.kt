@@ -56,6 +56,7 @@ class PicActivity : AppCompatActivity() {
     }
 
     // --> Au retour à la présente actvité, si une photo a été prise :
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 7 && resultCode == RESULT_OK) {
