@@ -22,10 +22,10 @@ class PhoneStatReceiver : BroadcastReceiver() {
             if (tm.callState == TelephonyManager.CALL_STATE_RINGING) {
                 // Set du numéro de l'appelant.
                 callNumber = intent.getStringExtra("incoming_number").toString()
-                if (SmsReceiver.bit == 1) // Si le Mode Privé est activé.
+                if (userdata.bit == 1) // Si le Mode Privé est activé.
                 {
                     // Avertir :
-                    SmsReceiver.bit = 3 // cas d'un appel
+                    userdata.bit = 3 // cas d'un appel
                 } else {
                     // Déclaration d'un passage dans la WorkActivity pour éviter que, au retour dans
                     // AideActivity, ne soit généré un doublon du Handler local.

@@ -7,6 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.projet.sluca.smallbrother.server.AideDataRepository
+import com.projet.sluca.smallbrother.server.AideDataRepositoryImpl
+import com.projet.sluca.smallbrother.server.ClientAPI
+import com.projet.sluca.smallbrother.server.httpClientAndroid
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 
 /***
  * class Launch1Activity is the starting point of the application.
@@ -23,6 +29,11 @@ class Launch1Activity : AppCompatActivity() {
         // Etablissement de la liaison avec la vue res/layout/activity_launch1.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch1)
+
+
+        /*GlobalScope.async {
+            getData()
+        }*/
 
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
@@ -87,4 +98,14 @@ class Launch1Activity : AppCompatActivity() {
         val intent = Intent(this, Launch2Activity::class.java)
         startActivity(intent)
     }
+
+    /*suspend fun getData() {
+        val clientApi = ClientAPI(httpClientAndroid)
+        val response = AideDataRepositoryImpl(clientApi).getAideData()
+        if(response.isSuccess) {
+            Log.e("Response", response.getOrNull().toString())
+        } else {
+            Log.e("Response error", response.exceptionOrNull().toString())
+        }
+    }*/
 }
