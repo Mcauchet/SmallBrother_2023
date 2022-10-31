@@ -8,6 +8,7 @@ data class AideData(
     val img2: String,
     val motion: Boolean,
     val battery: Int,
+    val key: String,
 )
 
 val aideDataStorage = mutableListOf<AideData>()

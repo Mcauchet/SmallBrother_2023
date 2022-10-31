@@ -32,7 +32,10 @@ dependencies {
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
     //Implementation of SLF4J for formatted logs
     implementation("ch.qos.logback:logback-classic:$logback_version")
+    //Templating
+    implementation("io.ktor:ktor-server-freemarker:$ktor_version")
     //Allows to test parts of the Ktor application
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
+    testImplementation("io.ktor:ktor-server-test-host:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 }
