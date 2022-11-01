@@ -37,6 +37,7 @@
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher"

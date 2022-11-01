@@ -6,20 +6,49 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.CountDownTimer
+import android.telephony.SmsManager
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import io.ktor.client.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.request.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
+
+/***
+ * Send a SMS
+ *
+ * @param [context] context of the activity
+ * @param [msg] body of the SMS
+ * @param [receiver] receiver of the SMS
+ *
+ * @author Maxime Caucheteur (Updated on 01-11-2022)
+ */
+fun sendSMS(context: Context, msg: String, receiver: String) {
+    val subscriptionId: Int = SmsManager.getDefaultSmsSubscriptionId()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        context.getSystemService(SmsManager::class.java).createForSubscriptionId(subscriptionId)
+            .sendTextMessage(receiver, null, msg, sentPI(context), null)
+    } else {
+        @Suppress("DEPRECATION")
+        SmsManager
+            .getDefault()
+            .sendTextMessage(receiver, null, msg, sentPI(context), null)
+    }
+}
 
 /***
  * returns the PendingIntent for the SMS
  *
  * @param [context] the context of the activity
  * @return the PendingIntent for the SMS
- * @author Maxime Caucheteur
+ * @author Maxime Caucheteur (Updated on 28-10-2022)
  */
 fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
     context,
@@ -119,3 +148,19 @@ fun loading(tvLoading: TextView) {
     vibreur.vibration(context, 100)
     activity.finish()
 }*/
+
+
+fun getAideData() {
+    //This code access the Ktor client successfully
+    val client = HttpClient(Android)
+    CoroutineScope(Dispatchers.IO).launch {
+        val response =
+            try {
+                client.get {
+                    url("http://10.0.2.2:8080/aideData")
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+    }
+}

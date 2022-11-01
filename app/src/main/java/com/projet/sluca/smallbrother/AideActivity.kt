@@ -5,11 +5,9 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.media.MediaPlayer
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.telephony.SmsManager
 import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -25,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 10-10-22)
+ * @version 1.2 (updated on 01-11-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -105,13 +103,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         var sms = getString(R.string.smsys03)
         sms = sms.replace("§%", userData.nom)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
-        } else {
-            @Suppress("DEPRECATION")
-            SmsManager.getDefault().sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
-        }
+        sendSMS(this, sms, userData.telephone)
 
         message(this, getString(R.string.message04), vibreur) // toast de confirmation.
         userData.refreshLog(16) // rafraîchissement du Log.
@@ -257,14 +249,8 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                         val restencore: Int = ((userData.delai / 60000)+1).toInt()
                         val waitage = restencore.toString()
                         sms = sms.replace("N#", waitage)
-                        applicationContext.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(
-                                userData.telephone,
-                                null,
-                                sms,
-                                sentPI(this@AideActivity),
-                                null
-                            )
+
+                        sendSMS(this@AideActivity, sms, userData.telephone)
                     }
                 }
                 tvLog.text = userData.log // affichage.

@@ -7,18 +7,19 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.projet.sluca.smallbrother.server.AideDataRepository
-import com.projet.sluca.smallbrother.server.AideDataRepositoryImpl
-import com.projet.sluca.smallbrother.server.ClientAPI
-import com.projet.sluca.smallbrother.server.httpClientAndroid
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.request.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /***
  * class Launch1Activity is the starting point of the application.
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 10-10-2022)
+ * @version 1.2 (Updated on 01-11-2022)
  */
 class Launch1Activity : AppCompatActivity() {
 
@@ -30,10 +31,19 @@ class Launch1Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch1)
 
-
-        /*GlobalScope.async {
-            getData()
-        }*/
+        //This code access the Ktor client successfully
+        val client = HttpClient(Android)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = client.get {
+                    url("http://10.0.2.2:8080/aideData")
+                }
+                client.close()
+                Log.d("BODY", response.body())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
 
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
@@ -98,14 +108,4 @@ class Launch1Activity : AppCompatActivity() {
         val intent = Intent(this, Launch2Activity::class.java)
         startActivity(intent)
     }
-
-    /*suspend fun getData() {
-        val clientApi = ClientAPI(httpClientAndroid)
-        val response = AideDataRepositoryImpl(clientApi).getAideData()
-        if(response.isSuccess) {
-            Log.e("Response", response.getOrNull().toString())
-        } else {
-            Log.e("Response error", response.exceptionOrNull().toString())
-        }
-    }*/
 }

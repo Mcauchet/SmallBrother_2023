@@ -58,10 +58,13 @@ dependencies {
     //Ktor dependencies
 
     // HTTP engine: that handles network requests.
+    implementation "io.ktor:ktor-client-core:$ktor_version"
+    implementation "io.ktor:ktor-client-okhttp:$ktor_version"
     implementation "io.ktor:ktor-client-android:$ktor_version"
-    // It used for JSON serialization and deserialization settings and //is recommended for multiplatform projects
+    // It is used for JSON serialization and deserialization settings and
+    // is recommended for multiplatform projects
     implementation "io.ktor:ktor-client-serialization:$ktor_version"
-    //It is kotlinx.serialization, which is used for entity //serialization
+    //It is kotlinx.serialization, which is used for entity serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1"
     //It's for logging HTTP requests
     implementation "io.ktor:ktor-client-logging-jvm:$ktor_version"
@@ -69,6 +72,8 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
+    //Compose
+    implementation "com.google.accompanist:accompanist-appcompat-theme:0.25.1"
 }
 repositories {
     mavenCentral()

@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class AideData(
     @SerialName("img1")
-    val img1: Image,
+    val img1: String,
     @SerialName("img2")
-    val img2: Image,
+    val img2: String,
     @SerialName("motion")
     val motion: Boolean,
     @SerialName("battery")

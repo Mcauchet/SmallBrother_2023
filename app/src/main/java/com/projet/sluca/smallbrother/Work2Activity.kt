@@ -8,19 +8,22 @@ import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.BatteryManager
 import android.os.Bundle
-import android.telephony.SmsManager
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import com.projet.sluca.smallbrother.libs.*
-import com.projet.sluca.smallbrother.serverAPI.ApiClient
+
+import io.ktor.client.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.request.*
+import io.ktor.http.*
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
 import java.io.File
 import java.util.*
 
@@ -28,7 +31,7 @@ import java.util.*
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 28-10-2022)
+ * @version 1.2 (Updated on 01-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -189,6 +192,20 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             override fun run() {
                 try {
                     //TODO Envoi des données sur le serveur
+                    val client = HttpClient(Android)
+                    Log.d("CLIENT", client.toString())
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val response = client.post("http://10.0.2.2:8080/aideData") {
+                                contentType(ContentType.Application.Json)
+                                setBody(AideData("odf", "dsf", true, 48, "sdiijij324234"))
+                            }
+                            client.close()
+                            Log.d("BODY", response.toString())
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
                     Log.d("DATA SEND", "data")
                 } catch (_: Exception) {
                 }
@@ -210,9 +227,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 var sms = getString(R.string.smsys06)
                 sms = sms.replace("§%", userData.nom)
 
-                this@Work2Activity.getSystemService(SmsManager::class.java)
-                    .sendTextMessage(userData.telephone, null, sms,
-                        sentPI(this@Work2Activity), null)
+                sendSMS(this@Work2Activity, sms, userData.telephone)
 
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
@@ -236,39 +251,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}
-
-    /***
-     * compile all informations into an AideData object to send to the server
-     *
-     */
-    private fun sendAideData(data: AideData) = runBlocking {
-        launch(Dispatchers.Main) {
-            try{
-                val response = ApiClient.apiService.sendData(data)
-
-                if(response.isSuccessful && response.body() != null) {
-                    Toast.makeText(
-                        this@Work2Activity,
-                        "Données envoyées à l'aidant",
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                        Toast.makeText(
-                            this@Work2Activity,
-                            "Erreur lors de l'envoi: ${response.message()}",
-                            Toast.LENGTH_LONG
-                        ).show()
-                }
-            } catch (e: Exception) {
-                Toast.makeText(
-                    this@Work2Activity,
-                    "Erreur lors de l'envoi: ${e.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-    }
-
 
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.

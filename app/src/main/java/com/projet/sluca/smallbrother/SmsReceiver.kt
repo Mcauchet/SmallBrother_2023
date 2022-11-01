@@ -143,6 +143,7 @@ class SmsReceiver : BroadcastReceiver() {
      *
      * @param [pdu] the message PDU from the SMS_RECEIVED_ACTION intent
      * @param [format] the format extra from the SMS_RECEIVED_ACTION intent
+     * @return
      * @author joekickass (https://github.com/joekickass)
      * (code on https://github.com/joekickass/android-monday-madness/blob/master/app/src/main/
      * kotlin/com/joekickass/mondaymadness/SmsReceiver.kt)

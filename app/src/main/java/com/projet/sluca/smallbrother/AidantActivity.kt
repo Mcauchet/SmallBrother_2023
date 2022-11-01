@@ -1,18 +1,15 @@
 package com.projet.sluca.smallbrother
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.*
 import android.os.StrictMode.VmPolicy
-import android.telephony.SmsManager
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -25,7 +22,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 24-10-2022)
+ * @version 1.2 (updated on 01-11-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -95,13 +92,8 @@ class AidantActivity : AppCompatActivity() {
         var sms = getString(R.string.smsys02)
         sms = sms.replace("§%", userdata.nom)
 
-        //TODO this is null (this.getSystemService)
-        if (this.getSystemService(SmsManager::class.java) == null) {
-            Log.d("SYS SERVICE", "NULL")
-        } else {
-            this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userdata.telephone, null, sms, sentPI(this), null)
-        }
+        sendSMS(this, sms, userdata.telephone)
+
         message(this, getString(R.string.message04), vibreur) // toast de confirmation.
         userdata.refreshLog(4) // rafraîchissement du Log.
     }
@@ -139,8 +131,7 @@ class AidantActivity : AppCompatActivity() {
             var sms = getString(R.string.smsys04)
             sms = sms.replace("§%", userdata.nom)
 
-            this.getSystemService(SmsManager::class.java)
-                .sendTextMessage(userdata.telephone, null, sms, sentPI(this), null)
+            sendSMS(this, sms, userdata.telephone)
 
             message(this, getString(R.string.message07), vibreur) // toast de confirmation.
             userdata.refreshLog(10) // rafraîchissement du Log.
