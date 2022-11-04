@@ -31,7 +31,7 @@ import java.util.*
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 01-11-2022)
+ * @version 1.2 (Updated on 04-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -220,8 +220,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 fileZ.delete()
 
                 // Rafraîchissement du Log en fonction de la réussite du processus.
-                if(checkInternet()) userData.refreshLog(11)
-                else userData.refreshLog(15)
+                if(checkInternet()) userData.refreshLog(11) else userData.refreshLog(15)
 
                 // Concoction et envoi du SMS à l'Aidant.
                 var sms = getString(R.string.smsys06)
@@ -232,7 +231,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
                 // Réactivation du SmsReceiver.
-
                 val pm = this@Work2Activity.packageManager
                 val componentName = ComponentName(this@Work2Activity, SmsReceiver::class.java)
                 pm.setComponentEnabledSetting(
@@ -246,12 +244,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 startActivity(intent)
             }
         }.start() // Envoi !
-
-        // =======================================================================
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}
-
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

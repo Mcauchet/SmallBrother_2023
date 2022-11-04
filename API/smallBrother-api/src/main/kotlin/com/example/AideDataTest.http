@@ -2,6 +2,7 @@ POST http://127.0.0.1:8080/aideData
 Content-Type: application/json
 
 {
+  "id": "1",
   "img1": "img1",
   "img2": "img2",
   "motion": "true",
@@ -14,11 +15,12 @@ POST http://127.0.0.1:8080/aideData
 Content-Type: application/json
 
 {
-"img1": "img1",
-"img2": "img2",
-"motion": "false",
-"battery": "88",
-"key": "fsdko352"
+  "id": "2",
+  "img1": "img1",
+  "img2": "img2",
+  "motion": "false",
+  "battery": "88",
+  "key": "fsdko352"
 }
 
 ###
@@ -31,4 +33,12 @@ Accept: application/json
 
 ###
 GET http://127.0.0.1:8080/aideData/difjgifdjgidfjgij
+Accept: application/json
+
+###
+POST http://127.0.0.1:8080/aideData/delete/a243RDSFsdfsdko352
+Accept: application/json
+
+###
+POST http://127.0.0.1:8080/aideData/delete/
 Accept: application/json

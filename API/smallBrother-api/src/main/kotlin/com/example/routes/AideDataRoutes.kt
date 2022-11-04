@@ -1,46 +1,55 @@
 package com.example.routes
 
+import com.example.dao.dao
 import com.example.models.AideData
-import com.example.models.aideDataStorage
+import com.example.models.AideDatas
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import org.jetbrains.exposed.sql.select
 
-//Currently synchronous
+/***
+ * manages all the routes to access (CRD) aide datas
+ */
 fun Route.aideDataRouting() {
     route("/aideData") {
+
         get {
-            if(aideDataStorage.isNotEmpty()) {
-                call.respond(aideDataStorage)
+            val aideDatas: List<AideData> = dao.allAideData()
+            if(aideDatas.isEmpty()) call.respondText("Database Empty", status = HttpStatusCode.NoContent)
+            else call.respond(aideDatas)
+        }
+
+        get("/{key?}") {
+            val key = call.parameters["key"]
+                ?: return@get call.respondText("Aide Data key not valid", status = HttpStatusCode.NotFound)
+            val aideData: AideData? = dao.getAideData(key)
+            if (aideData != null) {
+                call.respond(aideData)
             } else {
-                call.respondText("No Aide Data found", status = HttpStatusCode.OK)
+                call.respondText("Aide Data not in database", status = HttpStatusCode.NotFound)
             }
         }
-        get("{key?}") {
-            val key = call.parameters["key"] ?: return@get call.respondText(
-                "Missing key",
-                status = HttpStatusCode.BadRequest
-            )
-            val aideData = aideDataStorage.find { it.key == key } ?: return@get call.respondText(
-                "No aide data with key $key",
-                status = HttpStatusCode.NotFound
-            )
-            call.respond(aideData)
-        }
+
         post {
             val aideData = call.receive<AideData>()
-            aideDataStorage.add(aideData)
+            dao.addAideData(aideData)
             call.respondText("AideData stored correctly", status = HttpStatusCode.Created)
         }
-        delete("{key?}") {
-            val key = call.parameters["key"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            if (aideDataStorage.removeIf {it.key == key}) {
-                call.respondText("Aide Data removed correctly", status = HttpStatusCode.Accepted)
-            } else {
-                call.respondText("Not Found", status = HttpStatusCode.NotFound)
-            }
+
+        post("/delete/{key?}") {
+            val key = call.parameters["key"]
+                ?: return@post call.respondText("Aide Data key not valid", status = HttpStatusCode.NotFound)
+            dao.deleteAideData(key)
+            call.respondText("AideData deleted successfully", status = HttpStatusCode.Accepted)
         }
+
+        post("delete/") {
+            dao.deleteAideDatas()
+            call.respondText("Database reset", status = HttpStatusCode.Accepted)
+        }
+
     }
 }
