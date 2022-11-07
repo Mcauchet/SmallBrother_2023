@@ -1,6 +1,5 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.models
 
-import android.media.Image
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

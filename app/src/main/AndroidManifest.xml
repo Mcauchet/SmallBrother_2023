@@ -45,9 +45,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="com.projet.sluca.smallbrother.UserData"
+        android:name="com.projet.sluca.smallbrother.models.UserData"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.projet.sluca.smallbrother.Launch1Activity"
+        <activity android:name="com.projet.sluca.smallbrother.activities.Launch1Activity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -57,37 +57,37 @@
 
 
         <!-- Déclaration d'Activities -->
-        <activity android:name=".Launch2Activity"
+        <activity android:name=".activities.Launch2Activity"
             android:screenOrientation="fullSensor" />
 
         <activity android:name=".PhotoAide"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".AidantActivity"
+        <activity android:name=".activities.AidantActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".AideActivity"
+        <activity android:name=".activities.AideActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".InstallDantActivity"
+        <activity android:name=".activities.InstallDantActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".InstallDantPicActivity"
+        <activity android:name=".activities.InstallDantPicActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".InstallDeActivity"
+        <activity android:name=".activities.InstallDeActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".PicActivity"
+        <activity android:name=".activities.PicActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".ReglagesActivity"
+        <activity android:name=".activities.ReglagesActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".WorkActivity"
+        <activity android:name=".activities.WorkActivity"
             android:screenOrientation="fullSensor" />
 
-        <activity android:name=".Work2Activity"
+        <activity android:name=".activities.Work2Activity"
             android:screenOrientation="fullSensor" />
 
         <!-- SmsReceiver -->

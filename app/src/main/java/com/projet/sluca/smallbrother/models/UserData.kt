@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.models
 
 import android.app.Application
 import android.content.Context
@@ -9,6 +9,8 @@ import android.os.Environment
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.SmsReceiver
 import org.apache.commons.io.IOUtils
 import java.io.*
 import java.nio.file.Paths

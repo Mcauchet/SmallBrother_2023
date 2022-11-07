@@ -1,5 +1,6 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -9,7 +10,13 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.projet.sluca.smallbrother.PhotoAide
+import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.message
+import com.projet.sluca.smallbrother.models.UserData
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -53,6 +60,10 @@ class PicActivity : AppCompatActivity() {
         // Lancement de l'activité de capture.
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, 7)
+
+        //TODO test this
+        /*val intent = Intent(this@PicActivity, MediaStore.ACTION_IMAGE_CAPTURE::class.java)
+        getResult.launch(intent)*/
     }
 
     // --> Au retour à la présente actvité, si une photo a été prise :
@@ -70,6 +81,23 @@ class PicActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
             apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
+        }
+    }
+
+    //TODO Test this
+    private val getResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val bitmap = it.data?.extras?.get("data") as Bitmap
+
+            val image = userdata.path + "/SmallBrother/photo_aide.jpg"
+            try {
+                bitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
+            } catch (e:FileNotFoundException) {
+                e.printStackTrace()
+            }
+            apercu.setImageBitmap(bitmap)
         }
     }
 

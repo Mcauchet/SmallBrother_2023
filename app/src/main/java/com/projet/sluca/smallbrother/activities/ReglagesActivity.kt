@@ -1,6 +1,5 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
-import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,12 +7,17 @@ import android.telephony.SmsManager
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.message
+import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.sentPI
 
 /***
  * ReglagesActivity manages the resets of aide's and/or aidant's information
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 03-10-2022)
+ * @version 1.2 (Updated on 07-11-22)
  */
 class ReglagesActivity : AppCompatActivity() {
 

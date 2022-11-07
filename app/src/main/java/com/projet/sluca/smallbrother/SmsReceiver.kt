@@ -3,16 +3,20 @@ package com.projet.sluca.smallbrother
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.telephony.SmsMessage
 import android.util.Log
-import org.apache.commons.io.IOUtils
-import java.io.*
+import com.projet.sluca.smallbrother.activities.WorkActivity
+import com.projet.sluca.smallbrother.models.UserData
 
-// Classe vouée à l'écoute de l'arrivée des SMS.
 //TODO check if this class works and get rid of comments if it does (and document the process)
+/***
+ * SmsReceiver updates aide's log depending on received messages coming from the aidant
+ * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
+ * (with the [#SBxx] code)
+ *
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 07-11-22)
+ */
 class SmsReceiver : BroadcastReceiver() {
     /*override fun onReceive(context: Context, intent: Intent) // Lors d'une réception de SMS :
     {
