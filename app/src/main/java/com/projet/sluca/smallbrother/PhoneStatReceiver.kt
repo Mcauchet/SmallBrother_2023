@@ -5,8 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager
+import com.projet.sluca.smallbrother.activities.WorkActivity
+import com.projet.sluca.smallbrother.models.UserData
 
-
+/***
+ * PhoneStatReceiver
+ *
+ * @author Sébastien Luca & Maxime Caucheteur (Updated on 07-11-22)
+ */
 class PhoneStatReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         userdata.loadData()

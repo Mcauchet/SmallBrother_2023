@@ -1,14 +1,20 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.models.UserData
 
+/***
+ *
+ */
 class Launch2Activity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata :UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userdata : UserData // Liaison avec les données globales de l'utilisateur.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_launch2.xml.

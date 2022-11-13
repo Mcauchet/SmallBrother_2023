@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -6,12 +6,13 @@ import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.models.UserData
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream

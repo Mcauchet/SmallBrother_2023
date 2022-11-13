@@ -7,6 +7,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.TextView
+import com.projet.sluca.smallbrother.activities.AidantActivity
+import com.projet.sluca.smallbrother.models.UserData
 import java.io.File
 
 // --> Affichage de la photo de l'Aidé.
@@ -14,7 +16,7 @@ import java.io.File
  * class PhotoAide allows the Aidant to show the picture of the Aide
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 10-10-2022)
+ * @version 1.2 (Updated on 07-11-2022)
  */
 class PhotoAide : AppCompatActivity() {
 

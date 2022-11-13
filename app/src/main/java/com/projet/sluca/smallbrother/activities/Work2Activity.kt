@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
 import android.content.ComponentName
@@ -14,7 +14,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
+import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.libs.*
+import com.projet.sluca.smallbrother.models.AideData
+import com.projet.sluca.smallbrother.models.UserData
 
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
@@ -31,7 +34,7 @@ import java.util.*
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 04-11-2022)
+ * @version 1.2 (Updated on 07-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {

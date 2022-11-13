@@ -1,9 +1,6 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
-import android.app.KeyguardManager
-import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -11,16 +8,16 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.telephony.SmsManager
-import android.view.WindowManager
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.libs.AccelerometerListener
 import com.projet.sluca.smallbrother.libs.AccelerometerManager
+import com.projet.sluca.smallbrother.models.UserData
 import java.io.IOException
 
 /***

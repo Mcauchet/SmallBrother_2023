@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
 import android.graphics.Color
@@ -18,6 +18,8 @@ import android.widget.*
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.projet.sluca.smallbrother.*
+import com.projet.sluca.smallbrother.models.UserData
 
 /***
  * class AideActivity manages the actions available to the "aidé".
