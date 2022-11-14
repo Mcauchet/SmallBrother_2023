@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
@@ -35,6 +36,8 @@ class Launch1Activity : AppCompatActivity() {
         // Etablissement de la liaison avec la vue res/layout/activity_launch1.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch1)
+
+        val btnStart: Button = findViewById(R.id.btn_commencer)
 
         //This code access the Ktor client successfully
         //the { engine {...} } part is for SSL, might change in time
@@ -110,14 +113,13 @@ class Launch1Activity : AppCompatActivity() {
             userdata.canGoBack = true // activation des boutons retour.
             userdata.refreshLog(1) // message de Log de commencement.
         }
-    }
 
-    // --> Au clic du bouton "Commencer".
-    fun commencer(view: View) {
-        vibreur.vibration(this, 100)
+        btnStart.setOnClickListener {
+            vibreur.vibration(this, 100)
 
-        // Transition vers l'activity suivante.
-        val intent = Intent(this, Launch2Activity::class.java)
-        startActivity(intent)
+            // Transition vers l'activity suivante.
+            val intent = Intent(this, Launch2Activity::class.java)
+            startActivity(intent)
+        }
     }
 }

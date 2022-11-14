@@ -35,7 +35,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/logo2"/>
+            android:src="@drawable/logo2"
+            android:contentDescription="@string/logo_unamur" />
 
         <com.uncopt.android.widget.text.justify.JustifiedTextView
             android:id="@+id/indication"
@@ -73,7 +74,6 @@
 
         <Button
             android:id="@+id/btn_commencer"
-            android:onClick="commencer"
             android:orientation="vertical"
             android:text="@string/btn_commencer"
             android:textAllCaps="false"
