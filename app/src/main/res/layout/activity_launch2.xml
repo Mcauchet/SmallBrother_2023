@@ -74,7 +74,6 @@
 
         <Button
             android:id="@+id/btn_role1"
-            android:onClick="aidant"
             android:orientation="vertical"
             android:text="@string/btn_role1"
             android:textColor="#FFFFFF"
@@ -92,7 +91,6 @@
 
         <Button
             android:id="@+id/btn_role2"
-            android:onClick="aide"
             android:orientation="vertical"
             android:layout_below="@id/btn_role1"
             android:text="@string/btn_role2"

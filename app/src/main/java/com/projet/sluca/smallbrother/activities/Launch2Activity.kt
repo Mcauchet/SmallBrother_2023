@@ -2,14 +2,17 @@ package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
 
 /***
+ * Launch2Activity class manages the role chosen for the device
  *
+ * @author Sébastien Luca & Maxime Caucheteur
+ * @version 1.2 (Updated on 14-11-22)
  */
 class Launch2Activity : AppCompatActivity() {
 
@@ -21,27 +24,28 @@ class Launch2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch2)
 
+        val btnRoleAidant: Button = findViewById(R.id.btn_role1)
+        val btnRoleAide: Button = findViewById(R.id.btn_role2)
+
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
-    }
 
-    // --> Au clic que le bouton "Aidant".
-    fun aidant(view: View) {
-        vibreur.vibration(this, 100)
-        userdata.role = "Aidant"
+        btnRoleAidant.setOnClickListener {
+            vibreur.vibration(this, 100)
+            userdata.role = "Aidant"
 
-        // Transition vers l'activity suivante.
-        val intent = Intent(this, InstallDantActivity::class.java)
-        startActivity(intent)
-    }
+            // Transition vers l'activity suivante.
+            val intent = Intent(this, InstallDantActivity::class.java)
+            startActivity(intent)
+        }
 
-    // --> Au clic que le bouton "Aidé".
-    fun aide(view: View) {
-        vibreur.vibration(this, 100)
-        userdata.role = "Aidé"
+        btnRoleAide.setOnClickListener {
+            vibreur.vibration(this, 100)
+            userdata.role = "Aidé"
 
-        // Transition vers l'activity suivante.
-        val intent = Intent(this, InstallDeActivity::class.java)
-        startActivity(intent)
+            // Transition vers l'activity suivante.
+            val intent = Intent(this, InstallDeActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
