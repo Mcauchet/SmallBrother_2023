@@ -47,36 +47,34 @@
                 <!-- Bouton Réglages -->
                 <Button
                     android:id="@+id/btn_reglages"
-                    android:layout_height="28dp"
-                    android:layout_width="28dp"
+                    android:layout_height="35dp"
+                    android:layout_width="35dp"
                     android:background="@drawable/rouage"
-                    android:alpha="0.33"
-                    android:onClick="reglages"
+                    android:alpha="0.5"
                     android:orientation="vertical"
-                    android:textSize="17sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:shadowColor="#000000"
                     android:shadowDx="0"
                     android:shadowDy="0"
-                    android:shadowRadius="5" />
+                    android:shadowRadius="5"
+                    style="?android:attr/buttonBarButtonStyle" />
 
                 <!-- Bouton Photo -->
                 <Button
                     android:id="@+id/btn_photo"
-                    android:layout_height="28dp"
-                    android:layout_width="28dp"
+                    android:layout_height="35dp"
+                    android:layout_width="35dp"
                     android:background="@drawable/photo"
-                    android:alpha="0.33"
-                    android:onClick="photo"
+                    android:alpha="0.6"
                     android:orientation="vertical"
-                    android:textSize="17sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:shadowColor="#000000"
                     android:shadowDx="0"
                     android:shadowDy="0"
-                    android:shadowRadius="5" />
+                    android:shadowRadius="5"
+                    style="?android:attr/buttonBarButtonStyle" />
 
             </LinearLayout>
 
@@ -94,7 +92,8 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
-                    android:src="@drawable/logo2" />
+                    android:src="@drawable/logo2"
+                    android:contentDescription="@string/logo_sb" />
 
             </LinearLayout>
 
@@ -108,13 +107,11 @@
 
                 <Button
                     android:id="@+id/btn_reduire"
-                    android:layout_height="28dp"
-                    android:layout_width="28dp"
+                    android:layout_height="35dp"
+                    android:layout_width="35dp"
                     android:background="@drawable/reduire"
                     android:alpha="0.33"
-                    android:onClick="reduire"
                     android:orientation="vertical"
-                    android:textSize="17sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:shadowColor="#000000"
@@ -225,7 +222,6 @@
                 android:id="@+id/btn_sms_va_dant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="smsAidant"
                 android:orientation="vertical"
                 android:text="@string/btn_sms_va_dant"
                 android:textAllCaps="false"
@@ -256,7 +252,6 @@
                 android:id="@+id/btn_appel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="appel"
                 android:orientation="vertical"
                 android:text="@string/btn_appel"
                 android:textAllCaps="false"
@@ -299,7 +294,6 @@
                 android:id="@+id/btn_urgence"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="urgence"
                 android:orientation="vertical"
                 android:text="@string/btn_urgence"
                 android:textAllCaps="false"
@@ -324,16 +318,14 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
-            android:layout_gravity="center"
-            android:visibility="gone" >
+            android:layout_gravity="center">
 
         <Button
             android:id="@+id/btn_tiers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="tiers"
             android:orientation="vertical"
-            android:text="@string/btn_tiers"
+            android:text="@string/transfert_data"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
@@ -367,7 +359,8 @@
             android:layout_gravity="center"
             android:orientation="vertical"
             android:src="@drawable/unamur"
-            android:alpha="0.60" />
+            android:alpha="0.60"
+            android:contentDescription="@string/logo_unamur" />
 
     </LinearLayout>
 

@@ -11,6 +11,7 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -42,6 +43,13 @@ class AidantActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aidant)
 
+        val btnSettings: Button = findViewById(R.id.btn_reglages)
+        val btnPicture: Button = findViewById(R.id.btn_photo)
+        val btnReduct: Button = findViewById(R.id.btn_reduire)
+        val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
+        val btnCall: Button = findViewById(R.id.btn_appel)
+        val btnEmergency: Button = findViewById(R.id.btn_urgence)
+
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
 
@@ -58,98 +66,92 @@ class AidantActivity : AppCompatActivity() {
         wakeup(window, this@AidantActivity)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
 
-    // --> Au clic du bouton "Réduire".
-    fun reduire(view: View?) {
-        vibreur.vibration(this, 200)
-        message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
-        moveTaskToBack(true) // Mise de l'appli en arrière-plan.
-    }
+        btnSettings.setOnClickListener {
+            vibreur.vibration(this, 100)
 
-    // --> Au clic du bouton "Réglages".
-    fun reglages(view: View?) {
-        vibreur.vibration(this, 100)
+            // Transition vers la ReglagesActivity.
+            val intent = Intent(this, ReglagesActivity::class.java)
+            startActivity(intent)
+        }
 
-        // Transition vers la ReglagesActivity.
-        val intent = Intent(this, ReglagesActivity::class.java)
-        startActivity(intent)
-    }
+        btnPicture.setOnClickListener {
+            vibreur.vibration(this, 100)
 
-    // --> Au clic du bouton "Photo".
-    fun photo(view: View?) {
-        vibreur.vibration(this, 100)
+            // Transition vers la ReglagesActivity.
+            val intent = Intent(this, PhotoAide::class.java)
+            startActivity(intent)
+        }
 
-        // Transition vers la ReglagesActivity.
-        val intent = Intent(this, PhotoAide::class.java)
-        startActivity(intent)
-    }
+        btnReduct.setOnClickListener {
+            vibreur.vibration(this, 200)
+            message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
+            moveTaskToBack(true) // Mise de l'appli en arrière-plan.
+        }
 
-    // --> Au clic du bouton "SMS : Tout va bien ?".
-    fun smsAidant(view: View?) {
-        vibreur.vibration(this, 200)
-        userdata.loadData() // Raptatriement des données de l'utilisateur.
-
-        // Concoction et envoi du SMS.
-        var sms = getString(R.string.smsys02)
-        sms = sms.replace("§%", userdata.nom)
-
-        sendSMS(this, sms, userdata.telephone)
-
-        message(this, getString(R.string.message04), vibreur) // toast de confirmation.
-        userdata.refreshLog(4) // rafraîchissement du Log.
-    }
-
-    // --> Au clic du bouton "Appel".
-    fun appel(view: View?) {
-        vibreur.vibration(this, 200)
-        userdata.loadData() // Raptatriement des données de l'utilisateur.
-
-        // Lancement de l'appel.
-        val callIntent = Intent(Intent.ACTION_CALL)
-        callIntent.data = Uri.parse("tel:" + userdata.telephone)
-        startActivity(callIntent)
-        message(this, getString(R.string.message05), vibreur) // toast de confirmation.
-        userdata.refreshLog(7) // rafraîchissement du Log.
-    }
-
-    // --> Au clic du bouton "Demander un email d'urgence".
-    fun urgence(view: View?) {
-        vibreur.vibration(this, 330)
-
-        // Demande de confirmation.
-        val builder = AlertDialog.Builder(this)
-        builder.setCancelable(true)
-        builder.setTitle(getString(R.string.btn_urgence))
-        builder.setMessage(getString(R.string.message02_texte))
-        builder.setPositiveButton(
-            getString(R.string.oui)
-        ) { _, _ ->
-            // Si choix = "OUI" :
+        btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 200)
             userdata.loadData() // Raptatriement des données de l'utilisateur.
 
             // Concoction et envoi du SMS.
-            var sms = getString(R.string.smsys04)
+            var sms = getString(R.string.smsys02)
             sms = sms.replace("§%", userdata.nom)
 
             sendSMS(this, sms, userdata.telephone)
 
-            message(this, getString(R.string.message07), vibreur) // toast de confirmation.
-            userdata.refreshLog(10) // rafraîchissement du Log.
+            message(this, getString(R.string.message04), vibreur) // toast de confirmation.
+            userdata.refreshLog(4) // rafraîchissement du Log.
         }
-        builder.setNegativeButton(
-            android.R.string.cancel
-        ) { _, _ ->
-            // Si choix = "ANNULER" :
-            /* rien */
+
+        btnCall.setOnClickListener {
+            vibreur.vibration(this, 200)
+            userdata.loadData() // Raptatriement des données de l'utilisateur.
+
+            // Lancement de l'appel.
+            val callIntent = Intent(Intent.ACTION_CALL)
+            callIntent.data = Uri.parse("tel:" + userdata.telephone)
+            startActivity(callIntent)
+            message(this, getString(R.string.message05), vibreur) // toast de confirmation.
+            userdata.refreshLog(7) // rafraîchissement du Log.
         }
-        val dialog = builder.create()
-        dialog.show()
+
+        btnEmergency.setOnClickListener {
+            vibreur.vibration(this, 330)
+
+            // Demande de confirmation.
+            val builder = AlertDialog.Builder(this)
+            builder.setCancelable(true)
+            builder.setTitle(getString(R.string.btn_urgence))
+            builder.setMessage(getString(R.string.message02_texte))
+            builder.setPositiveButton(
+                getString(R.string.oui)
+            ) { _, _ ->
+                // Si choix = "OUI" :
+                vibreur.vibration(this, 200)
+                userdata.loadData() // Raptatriement des données de l'utilisateur.
+
+                // Concoction et envoi du SMS.
+                var sms = getString(R.string.smsys04)
+                sms = sms.replace("§%", userdata.nom)
+
+                sendSMS(this, sms, userdata.telephone)
+
+                message(this, getString(R.string.message07), vibreur) // toast de confirmation.
+                userdata.refreshLog(10) // rafraîchissement du Log.
+            }
+            builder.setNegativeButton(
+                android.R.string.cancel
+            ) { _, _ ->
+                // Si choix = "ANNULER" :
+                /* rien */
+            }
+            val dialog = builder.create()
+            dialog.show()
+        }
     }
 
-    // --> Au clic du bouton "Envoyer les infos à ...".
-    fun tiers(view: View?) {
+    //TODO ajouter la création de QR Code avec les informations reçues du serveur
+    fun tiers() {
         vibreur.vibration(this, 200)
         userdata.loadData() // Raptatriement des données de l'utilisateur.
 
