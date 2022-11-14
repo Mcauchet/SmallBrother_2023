@@ -69,8 +69,6 @@ class InstallDantActivity : AppCompatActivity() {
         val telephone = etTelephone.text.toString()
 
         // > Vérification de la validité des informations entrées :
-
-        // Vérification 1 : le numéro de téléphone n'a pas une structure vraisemblable.
         when {
             telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")
                 -> message(this, getString(R.string.error01), vibreur)
