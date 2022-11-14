@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -61,11 +62,11 @@
             android:layout_marginBottom="12dp"
             android:layout_gravity="center"
             android:background="@drawable/border"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            tools:ignore="ContentDescription" />
 
         <Button
             android:id="@+id/btn_capture"
-            android:onClick="capture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="80dp"
@@ -108,7 +109,6 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
-                android:onClick="precedent"
                 android:orientation="vertical"
                 android:text="@string/btn_previous"
                 android:textColor="#FFFFFF"
@@ -117,20 +117,19 @@
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 android:shadowColor="#000000"
                 android:shadowDx="0"
                 android:shadowDy="0"
-                android:shadowRadius="5" />
+                android:shadowRadius="5"
+                style="?android:attr/buttonBarButtonStyle" />
 
             <Button
                 android:id="@+id/btn_terminer"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
-                android:onClick="terminer"
                 android:orientation="vertical"
-                android:layout_below="@id/btn_role1"
                 android:text="@string/btn_terminer"
                 android:textColor="#FFFFFF"
                 android:textSize="17sp"
@@ -138,11 +137,12 @@
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:shadowColor="#000000"
                 android:shadowDx="0"
                 android:shadowDy="0"
-                android:shadowRadius="5" />
+                android:shadowRadius="5"
+                style="?android:attr/buttonBarButtonStyle" />
         </LinearLayout>
 
     </LinearLayout>

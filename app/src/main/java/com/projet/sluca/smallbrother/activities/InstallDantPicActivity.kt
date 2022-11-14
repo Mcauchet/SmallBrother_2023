@@ -6,7 +6,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -21,13 +21,13 @@ import java.io.FileOutputStream
  * class InstallDantPicActivity manages the capture of the aidé picture
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 03-10-2022)
+ * @version 1.2 (updated on 14-11-2022)
  */
 class InstallDantPicActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
     lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
-    private lateinit var apercu: ImageView // Instanciation de l'aperçu.
+    private lateinit var apercu : ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_installdantpic.xml.
@@ -37,6 +37,10 @@ class InstallDantPicActivity : AppCompatActivity() {
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
 
+        val btnCapture: Button = findViewById(R.id.btn_capture)
+        val btnBack: Button = findViewById(R.id.btn_previous)
+        val btnEnd: Button = findViewById(R.id.btn_terminer)
+
         // Identification de l'aperçu.
         apercu = findViewById(R.id.apercu)
 
@@ -45,16 +49,29 @@ class InstallDantPicActivity : AppCompatActivity() {
         val file = File(fichier)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 
+        btnCapture.setOnClickListener {
+            vibreur.vibration(this, 100)
+
+            // Lancement de l'activité de capture.
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            startActivityForResult(intent, 7)
+        }
+
+        btnBack.setOnClickListener {
+            vibreur.vibration(this, 100)
+            finish()
+        }
+
+        btnEnd.setOnClickListener {
+            vibreur.vibration(this, 100)
+            // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
+            userData.canGoBack = true
+            // Transition vers l'activity suivante.
+            val intent = Intent(this, AidantActivity::class.java)
+            startActivity(intent)
+        }
+
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
-
-    // --> Au clic que le bouton "Capture".
-    fun capture(view: View?) {
-        vibreur.vibration(this, 100)
-
-        // Lancement de l'activité de capture.
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, 7)
     }
 
     // --> Au retour à la présente actvité, si une photo a été prise :
@@ -73,24 +90,6 @@ class InstallDantPicActivity : AppCompatActivity() {
             }
             apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
         }
-    }
-
-    // --> Au clic que le bouton "Précédent".
-    fun precedent(view: View?) {
-        vibreur.vibration(this, 100)
-        finish()
-    }
-
-    // --> Au clic que le bouton "Terminer".
-    fun terminer(view: View?) {
-        vibreur.vibration(this, 100)
-
-        // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
-        userData.canGoBack = true
-
-        // Transition vers l'activity suivante.
-        val intent = Intent(this, AidantActivity::class.java)
-        startActivity(intent)
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
