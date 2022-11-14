@@ -54,37 +54,42 @@
 
         <!-- [INPUTS] -->
 
-    <LinearLayout
+        <LinearLayout
         android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:orientation="horizontal"
         android:weightSum="1.0" >
 
-        <EditText
-            android:id="@+id/input_nom"
-            android:layout_height="wrap_content"
-            android:layout_weight=".4"
-            android:layout_width="0dip"
-            android:hint="@string/input1B"
-            android:textSize="15sp" />
+            <EditText
+                android:id="@+id/input_nom"
+                android:layout_height="wrap_content"
+                android:layout_weight=".4"
+                android:layout_width="0dip"
+                android:hint="@string/input1B"
+                android:textSize="18sp"
+                android:importantForAutofill="no"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/input_telephone"
-            android:layout_height="wrap_content"
-            android:layout_weight=".6"
-            android:layout_width="0dip"
-            android:hint="@string/input2B"
-            android:inputType="number"
-            android:textSize="15sp" />
+            <EditText
+                android:id="@+id/input_telephone"
+                android:layout_height="wrap_content"
+                android:layout_weight=".6"
+                android:layout_width="0dip"
+                android:hint="@string/input2B"
+                android:inputType="phone"
+                android:textSize="18sp"
+                android:importantForAutofill="no" />
 
-    </LinearLayout>
+        </LinearLayout>
 
         <EditText
             android:id="@+id/input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/input3"
-            android:textSize="15sp" />
+            android:textSize="18sp"
+            android:importantForAutofill="no"
+            android:inputType="textWebEmailAddress" />
 
     </LinearLayout>
 
@@ -117,41 +122,40 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
-                android:onClick="precedent"
                 android:orientation="vertical"
                 android:text="@string/btn_previous"
                 android:textColor="#FFFFFF"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:textAllCaps="false"
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginEnd="8dp"
                 android:shadowColor="#000000"
                 android:shadowDx="0"
                 android:shadowDy="0"
-                android:shadowRadius="5" />
+                android:shadowRadius="5"
+                style="?android:attr/buttonBarButtonStyle" />
 
             <Button
                 android:id="@+id/btn_suivant"
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
-                android:onClick="continuer"
                 android:orientation="vertical"
-                android:layout_below="@id/btn_role1"
                 android:text="@string/btn_continue"
                 android:textColor="#FFFFFF"
-                android:textSize="17sp"
+                android:textSize="18sp"
                 android:textAllCaps="false"
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:shadowColor="#000000"
                 android:shadowDx="0"
                 android:shadowDy="0"
-                android:shadowRadius="5" />
+                android:shadowRadius="5"
+                style="?android:attr/buttonBarButtonStyle" />
         </LinearLayout>
 
     </LinearLayout>
@@ -162,7 +166,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="left"
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
         android:paddingTop="9dp"

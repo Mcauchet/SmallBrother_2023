@@ -21,7 +21,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 28-10-2022)
+ * @version 1.2 (Updated on 14-11-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 
@@ -32,6 +32,9 @@ class InstallDeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_installde)
 
+        val btnBack: Button = findViewById(R.id.btn_previous)
+        val btnContinue: Button = findViewById(R.id.btn_suivant)
+
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
         Log.d("USERDATA", userData.toString())
@@ -39,8 +42,17 @@ class InstallDeActivity : AppCompatActivity() {
 
         // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
         if (!userData.canGoBack) {
-            val btn = findViewById<Button>(R.id.btn_previous)
-            btn.visibility = View.INVISIBLE
+            btnBack.visibility = View.INVISIBLE
+        }
+
+        btnBack.setOnClickListener {
+            vibreur.vibration(this, 100)
+            finish()
+        }
+
+        btnContinue.setOnClickListener {
+            vibreur.vibration(this, 100)
+            continuer()
         }
 
         // Lancement des demandes de permissions.
@@ -48,21 +60,11 @@ class InstallDeActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
-    // --> Au clic que le bouton "Précédent".
-    fun precedent(view: View?) {
-        vibreur.vibration(this, 100)
-        finish()
-    }
-
-    // --> Au clic que le bouton "Terminer".
-    fun continuer(view: View?) {
-        vibreur.vibration(this, 100)
-
+    private fun continuer() {
         // > Récupération du contenu des inputs :
         // Nom :
         val etNom = findViewById<EditText>(R.id.input_nom)
         val nom = etNom.text.toString()
-
         // Téléphone :
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
@@ -84,7 +86,6 @@ class InstallDeActivity : AppCompatActivity() {
         }
 
         // > Vérification de la validité des informations entrées :
-        // Vérification 1 : le numéro de téléphone n'a pas une structure vraisemblable.
         when {
             telephone.length > 10 || !telephone.matches("".toRegex())
                     && !telephone.startsWith("04")

@@ -47,35 +47,21 @@ android:background="@drawable/ombreshape">
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="4dp"
         android:text="@string/install_note2"
         android:textColor="#000000"
         android:textSize="15sp" />
 
     <!-- [INPUTS] -->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:text="@string/aidant_nom_installation"
-        android:textStyle="bold"/>
-
     <EditText
         android:id="@+id/input_nom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/input1A"
-        android:textSize="15sp"
+        android:textSize="18sp"
         android:importantForAutofill="no"
         android:inputType="textPersonName" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:text="@string/portable_aide_installation"
-        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/input_telephone"
@@ -83,7 +69,7 @@ android:background="@drawable/ombreshape">
         android:layout_height="wrap_content"
         android:hint="@string/input2A"
         android:inputType="phone"
-        android:textSize="15sp"
+        android:textSize="18sp"
         android:importantForAutofill="no" />
 
 </LinearLayout>
