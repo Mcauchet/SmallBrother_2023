@@ -172,5 +172,7 @@
         Votre partenaire souhaite ne pas être dérangé durant les N# prochaines minutes.
     </string>
     <string name="logo_unamur">Logo UNamur</string>
+    <string name="aidant_nom_installation">Veuillez saisir le nom de l\'aidant:</string>
+    <string name="portable_aide_installation">Veuillez saisir le numéro de portable de l\'Aidé:</string>
 
 </resources>

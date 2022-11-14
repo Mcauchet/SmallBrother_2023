@@ -20,7 +20,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDantActivity manages the installation for the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 10-10-2022)
+ * @version 1.2 (updated on 14-11-22)
  */
 class InstallDantActivity : AppCompatActivity() {
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -30,14 +30,26 @@ class InstallDantActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_installdant)
 
+        val btnBack: Button = findViewById(R.id.btn_previous)
+        val btnContinue: Button = findViewById(R.id.btn_continue)
+
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
         Log.d("USERDATA", userdata.toString())
 
         // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
         if (!userdata.canGoBack) {
-            val btn = findViewById<Button>(R.id.btn_previous)
-            btn.visibility = View.INVISIBLE
+            btnBack.visibility = View.INVISIBLE
+        }
+
+        btnBack.setOnClickListener {
+            vibreur.vibration(this, 100)
+            finish()
+        }
+
+        btnContinue.setOnClickListener {
+            vibreur.vibration(this, 100)
+            continuer()
         }
 
         // Lancement des demandes de permissions.
@@ -46,18 +58,8 @@ class InstallDantActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
-    // --> Au clic que le bouton "Précédent".
-    fun precedent(view: View?) {
-        vibreur.vibration(this, 100)
-        finish()
-    }
-
-    // --> Au clic que le bouton "Continuer".
-    fun continuer(view: View?) {
-        vibreur.vibration(this, 100)
-
+    private fun continuer() {
         // > Récupération du contenu des inputs :
-
         // Nom :
         val etNom = findViewById<EditText>(R.id.input_nom)
         val nom = etNom.text.toString()
