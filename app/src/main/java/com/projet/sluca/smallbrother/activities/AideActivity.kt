@@ -25,7 +25,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 01-11-22)
+ * @version 1.2 (updated on 14-11-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -44,6 +44,11 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         // Etablissement de la liaison avec la vue res/layout/activity_aide.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aide)
+
+        val btnHelp: Button = findViewById(R.id.btn_aide)
+        val btnReduct: Button = findViewById(R.id.btn_reduire)
+        val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
+        val btnCall: Button = findViewById(R.id.btn_appel)
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
@@ -75,56 +80,52 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         reloadLog.run()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
 
-    // --> Au clic que le bouton "Aide".
-    fun aide(view: View?) {
-        vibreur.vibration(this, 100)
+        btnHelp.setOnClickListener {
+            vibreur.vibration(this, 100)
 
-        // Ouverture de l'aide.
-        val browserIntent = Intent(
-            Intent.ACTION_VIEW,
-            Uri.parse(userData.url + userData.help)
-        )
-        startActivity(browserIntent)
-    }
+            // Ouverture de l'aide.
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(userData.url + userData.help)
+            )
+            startActivity(browserIntent)
+        }
 
-    // --> Au clic que le bouton "Réduire".
-    fun reduire(view: View?) {
-        vibreur.vibration(this, 200)
-        message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
-        moveTaskToBack(true) // Mise de l'appli en arrière-plan.
-    }
+        btnReduct.setOnClickListener {
+            vibreur.vibration(this, 200)
+            message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
+            moveTaskToBack(true) // Mise de l'appli en arrière-plan.
+        }
 
-    // --> Au clic du bouton "SMS : Tout va bien ?".
-    fun smsAide(view: View?) {
-        vibreur.vibration(this, 200)
-        userData.loadData() // Raptatriement des données de l'utilisateur.
+        btnSmsAidant.setOnClickListener {
+            vibreur.vibration(this, 200)
+            userData.loadData() // Raptatriement des données de l'utilisateur.
 
-        // Concoction et envoi du SMS.
-        var sms = getString(R.string.smsys03)
-        sms = sms.replace("§%", userData.nom)
+            // Concoction et envoi du SMS.
+            var sms = getString(R.string.smsys03)
+            sms = sms.replace("§%", userData.nom)
 
-        sendSMS(this, sms, userData.telephone)
+            sendSMS(this, sms, userData.telephone)
 
-        message(this, getString(R.string.message04), vibreur) // toast de confirmation.
-        userData.refreshLog(16) // rafraîchissement du Log.
-    }
+            message(this, getString(R.string.message04), vibreur) // toast de confirmation.
+            userData.refreshLog(16) // rafraîchissement du Log.
+        }
 
-    // --> Au clic que le bouton "Appel".
-    fun appel(view: View?) {
-        vibreur.vibration(this, 200)
-        userData.loadData() // Raptatriement des données de l'utilisateur.
+        btnCall.setOnClickListener {
+            vibreur.vibration(this, 200)
+            userData.loadData() // Raptatriement des données de l'utilisateur.
 
-        // Balance contre l'interférence de l'Intent ci-dessous dans l'équilibre Work-Aide activity.
-        //userdata.setEsquive(false);
+            // Balance contre l'interférence de l'Intent ci-dessous dans l'équilibre Work-Aide activity.
+            //userdata.setEsquive(false);
 
-        // Lancement de l'appel.
-        val callIntent = Intent(Intent.ACTION_CALL)
-        callIntent.data = Uri.parse("tel:" + userData.telephone)
-        startActivity(callIntent)
-        message(this, getString(R.string.message05), vibreur) // toast de confirmation.
-        userData.refreshLog(7) // rafraîchissement du Log.
+            // Lancement de l'appel.
+            val callIntent = Intent(Intent.ACTION_CALL)
+            callIntent.data = Uri.parse("tel:" + userData.telephone)
+            startActivity(callIntent)
+            message(this, getString(R.string.message05), vibreur) // toast de confirmation.
+            userData.refreshLog(7) // rafraîchissement du Log.
+        }
     }
 
     // --> Traitement des postions ON/OFF du bouton "Mode Privé".

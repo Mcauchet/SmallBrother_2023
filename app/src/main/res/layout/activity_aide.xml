@@ -46,15 +46,12 @@
 
                 <Button
                     android:id="@+id/btn_aide"
-                    android:layout_height="32dp"
-                    android:layout_width="32dp"
+                    android:layout_height="35dp"
+                    android:layout_width="35dp"
                     android:background="@drawable/aide"
-                    android:alpha="0.33"
-                    android:onClick="aide"
+                    android:alpha="0.5"
                     android:orientation="vertical"
-                    android:textSize="17sp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginStart="12dp"
                     android:shadowColor="#000000"
                     android:shadowDx="0"
                     android:shadowDy="0"
@@ -76,7 +73,8 @@
                     android:layout_height="40dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
-                    android:src="@drawable/logo2" />
+                    android:src="@drawable/logo2"
+                    android:contentDescription="@string/logo_sb" />
 
             </LinearLayout>
 
@@ -93,10 +91,8 @@
                     android:layout_height="28dp"
                     android:layout_width="28dp"
                     android:background="@drawable/reduire"
-                    android:alpha="0.33"
-                    android:onClick="reduire"
+                    android:alpha="0.4"
                     android:orientation="vertical"
-                    android:textSize="17sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:shadowColor="#000000"
@@ -208,7 +204,8 @@
                 android:layout_width="0dip"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
-                android:paddingLeft="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="0dp"
                 android:orientation="horizontal"
                 tools:ignore="Suspicious0dp">
 
@@ -264,8 +261,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/btn_switch"
-                        android:textColor="#b3b3b3"
-                        android:textSize="13sp"
+                        android:textColor="#656262"
+                        android:textSize="18sp"
                         android:gravity="right|center_vertical"
                         android:switchPadding="6dp"
                         android:theme="@style/switchekke" />
@@ -303,7 +300,6 @@
                 android:id="@+id/btn_sms_va_dant"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="smsAide"
                 android:orientation="vertical"
                 android:text="@string/btn_sms_va_de"
                 android:textAllCaps="false"
@@ -313,8 +309,6 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:shadowColor="#000000"
-                android:shadowDx="0"
-                android:shadowDy="0"
                 android:shadowRadius="5" />
 
         </FrameLayout>
@@ -334,7 +328,6 @@
                 android:id="@+id/btn_appel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="appel"
                 android:orientation="vertical"
                 android:text="@string/btn_appel"
                 android:textAllCaps="false"
@@ -344,8 +337,43 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:shadowColor="#000000"
-                android:shadowDx="0"
-                android:shadowDy="0"
+                android:shadowRadius="5" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical"
+            android:background="#404040"
+            android:alpha="0.1" />
+
+        <FrameLayout
+            android:id="@+id/contour3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center" >
+
+            <Button
+                android:id="@+id/btn_urgence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:text="@string/help_aide"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:background="@drawable/boutonsshape"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:shadowColor="#000000"
                 android:shadowRadius="5" />
 
         </FrameLayout>
@@ -354,7 +382,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
@@ -362,16 +390,16 @@
             android:background="#404040"
             android:alpha="0.1" />
 
-        <!-- Logo UNamur -->
-        <ImageView
-            android:id="@+id/unamur"
-            android:layout_width="104dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:src="@drawable/unamur"
-            android:alpha="0.60" />
+            <!-- Logo UNamur -->
+            <ImageView
+                android:id="@+id/unamur"
+                android:layout_width="104dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:orientation="vertical"
+                android:src="@drawable/unamur"
+                android:alpha="0.60" />
 
-    </LinearLayout>
+        </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
