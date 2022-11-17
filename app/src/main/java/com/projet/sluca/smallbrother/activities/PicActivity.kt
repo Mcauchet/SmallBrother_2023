@@ -58,33 +58,10 @@ class PicActivity : AppCompatActivity() {
         vibreur.vibration(this, 100)
 
         // Lancement de l'activité de capture.
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        startActivityForResult(intent, 7)
-
-        //TODO test this
-        /*val intent = Intent(this@PicActivity, MediaStore.ACTION_IMAGE_CAPTURE::class.java)
-        getResult.launch(intent)*/
+        val intent = Intent(this@PicActivity, MediaStore.ACTION_IMAGE_CAPTURE::class.java)
+        getResult.launch(intent)
     }
 
-    // --> Au retour à la présente actvité, si une photo a été prise :
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 7 && resultCode == RESULT_OK) {
-            val bitmap = data!!.extras!!["data"] as Bitmap? // Récupération de la photo
-
-            // -> Sauvegarde de la photo.
-            val image = userdata.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
-            try {
-                bitmap!!.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            }
-            apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
-        }
-    }
-
-    //TODO Test this
     private val getResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
