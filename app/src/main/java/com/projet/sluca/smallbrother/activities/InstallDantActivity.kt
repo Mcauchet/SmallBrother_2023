@@ -1,6 +1,7 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.projet.sluca.smallbrother.R
@@ -55,9 +57,6 @@ class InstallDantActivity : AppCompatActivity() {
 
         // Lancement des demandes de permissions.
         demandesPermissions()
-        val setSmsAppIntent = Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT)
-        setSmsAppIntent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, packageName)
-
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }

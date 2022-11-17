@@ -13,6 +13,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
@@ -72,7 +73,8 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         refresh()
 
         // Réinitialisation de l'indicateur "Bit".
-        userData.bit = 0
+        //userData.bit = 0
+        Log.d("BIT", userData.bit.toString())
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)

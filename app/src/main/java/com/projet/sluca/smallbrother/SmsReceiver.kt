@@ -3,7 +3,6 @@ package com.projet.sluca.smallbrother
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import android.telephony.SmsMessage
 import android.util.Log
 import com.projet.sluca.smallbrother.activities.WorkActivity
@@ -18,11 +17,13 @@ import com.projet.sluca.smallbrother.models.UserData
  * @author Maxime Caucheteur & Sébastien Luca (Updated on 07-11-22)
  */
 class SmsReceiver : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent) // Lors d'une réception de SMS :
     {
+        Log.d("SMSRECEIVER", "GOT A TEXT")
         lateinit var message: String
         val bundle = intent.extras
-        val sms: Array<SmsMessage?>?
+        val sms: Array<SmsMessage?>
         userdata.loadData()
         if (bundle != null) {
             // Récupération du SMS reçu.
@@ -74,7 +75,7 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    lateinit var userdata: UserData
+
 /*
     override fun onReceive(context: Context?, intent: Intent?) {
         val bundle = intent?.extras
@@ -163,7 +164,7 @@ class SmsReceiver : BroadcastReceiver() {
 
         lateinit var tempsrestant: String // Retiendra le temps restant de Mode Privé pour l'Aidant.
 
-        //lateinit var userdata: UserData// Liaison avec les données globales de l'utilisateur.
+        lateinit var userdata: UserData// Liaison avec les données globales de l'utilisateur.
 
 
         // Placement des données dans un array, séparation par le retour-charriot.
