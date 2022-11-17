@@ -100,6 +100,8 @@ class InstallDeActivity : AppCompatActivity() {
                 userData.telephone = telephone
                 userData.version = version
 
+                userData.saveData(this)
+
                 userData.canGoBack = true
 
                 // Transition vers l'activity suivante.

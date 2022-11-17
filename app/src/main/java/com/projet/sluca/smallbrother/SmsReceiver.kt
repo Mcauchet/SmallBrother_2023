@@ -18,7 +18,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * @author Maxime Caucheteur & Sébastien Luca (Updated on 07-11-22)
  */
 class SmsReceiver : BroadcastReceiver() {
-    /*override fun onReceive(context: Context, intent: Intent) // Lors d'une réception de SMS :
+    override fun onReceive(context: Context, intent: Intent) // Lors d'une réception de SMS :
     {
         lateinit var message: String
         val bundle = intent.extras
@@ -49,12 +49,12 @@ class SmsReceiver : BroadcastReceiver() {
                     "[#SB07]" // -> mode privé activé
                 )
                 if (listOf(*motsclef).contains(clef)) {
-                    if (bit == 1) // Si le Mode Privé est activé.
+                    if (userdata.bit == 1) // Si le Mode Privé est activé.
                     {
                         // Avertir :
-                        if (clef == "[#SB02]") bit =
+                        if (clef == "[#SB02]") userdata.bit =
                             2 // cas d'un SMS
-                        else if (clef == "[#SB04]") bit =
+                        else if (clef == "[#SB04]") userdata.bit =
                             4 // cas d'un email
                     } else {
                         if (clef == "[#SB07]") // Récupération du temps restant si Mode Privé.
@@ -72,12 +72,13 @@ class SmsReceiver : BroadcastReceiver() {
                 }
             }
         }
-    }*/
+    }
 
     lateinit var userdata: UserData
-
+/*
     override fun onReceive(context: Context?, intent: Intent?) {
         val bundle = intent?.extras
+        Log.d("ONRCV SMS", bundle.toString())
         userdata.loadData()
         val message = getTextFromSms(bundle)
         Log.d("MSG SMSRCV", message)
@@ -154,7 +155,7 @@ class SmsReceiver : BroadcastReceiver() {
      */
     private fun getSmsMsg(pdu: ByteArray?, format: String?): SmsMessage? {
         return SmsMessage.createFromPdu(pdu, format)
-    }
+    }*/
 
     companion object {
         var numero: String? = null // Retiendra le numéro de l'envoyeur.

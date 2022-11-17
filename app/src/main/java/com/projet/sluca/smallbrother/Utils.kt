@@ -21,6 +21,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
+const val URLServer = "https://d163-2a02-a03f-ae4e-1900-f942-6d98-d528-86e9.eu.ngrok.io"
+
 /***
  * Send a SMS
  *
@@ -157,8 +159,9 @@ fun getAideData() {
         val response =
             try {
                 client.get {
-                    url("http://10.0.2.2:8080/aideData")
+                    url("$URLServer/aideData")
                 }
+                client.close()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

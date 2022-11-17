@@ -189,8 +189,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         // L'Aidant est averti par SMS de l'échec.
                         var sms = getString(R.string.smsys05)
                         sms = sms.replace("§%", userData.nom)
-                        this.getSystemService(SmsManager::class.java)
-                            .sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
+                        sendSMS(this@WorkActivity, sms, userData.telephone)
 
                         // Retour à l'écran de rôle de l'Aidé.
                         val intent = Intent(this, AideActivity::class.java)

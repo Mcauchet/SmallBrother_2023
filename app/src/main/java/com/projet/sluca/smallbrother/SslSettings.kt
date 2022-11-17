@@ -1,6 +1,6 @@
 package com.projet.sluca.smallbrother
 
-import java.io.FileInputStream
+/*import java.io.FileInputStream
 import java.security.KeyStore
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
@@ -32,4 +32,4 @@ object SslSettings {
         return getTrustManagerFactory()?.trustManagers?.first { it is X509TrustManager }
                 as X509TrustManager
     }
-}
+}*/

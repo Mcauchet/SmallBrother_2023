@@ -8,10 +8,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.projet.sluca.smallbrother.R
-import com.projet.sluca.smallbrother.SmsReceiver
-import com.projet.sluca.smallbrother.SslSettings
-import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -41,20 +38,20 @@ class Launch1Activity : AppCompatActivity() {
 
         //This code access the Ktor client successfully
         //the { engine {...} } part is for SSL, might change in time
-        val client = HttpClient(Android) {
+        val client = HttpClient(Android) /*{
             engine {
                 sslManager = { httpsUrlConnection ->
                     httpsUrlConnection.sslSocketFactory = SslSettings.getSslContext()?.socketFactory
                 }
             }
-        }
+        }*/
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = client.get {
-                    url("http://10.0.2.2:8080/aideData")
+                    url("$URLServer/aideData")
                 }
                 client.close()
-                Log.d("BODY", response.body())
+                Log.d("BODY", response.status.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
             }

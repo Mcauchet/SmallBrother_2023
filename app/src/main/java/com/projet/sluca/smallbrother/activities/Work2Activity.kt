@@ -154,8 +154,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // --> [6] déterminer si en mouvement.
         val motion = if (userData.motion) "Oui" else "Non"
 
-        // --> [7] envoi de l'email d'urgence (avec Libs/Sender.java).
-
         // Affichage de l'action en cours.
         tvAction.text = getString(R.string.message12F)
 
@@ -181,6 +179,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             "é",
             "è"
         )
+
         particule =
             if (listOf(*voyelles).contains(particule)) " d'" else " de "
         val url = " <a href=\"$urlGoogleMap\">ouvrir dans GoogleMap</a>"
@@ -199,7 +198,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     Log.d("CLIENT", client.toString())
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val response = client.post("http://10.0.2.2:8080/aideData") {
+                            val response = client.post("$URLServer/aideData") {
                                 contentType(ContentType.Application.Json)
                                 setBody(AideData("odf", "dsf", true, 48, "sdiijij324234"))
                             }
