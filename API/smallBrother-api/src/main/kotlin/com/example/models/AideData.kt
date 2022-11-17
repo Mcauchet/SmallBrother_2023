@@ -3,6 +3,7 @@ package com.example.models
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 
+//TODO edit the data format once we know what we send, etc.
 @Serializable
 data class AideData(
     @Serializable

@@ -8,6 +8,7 @@ import com.example.models.AideData
  * @author Maxime Caucheteur (Updated on 04-11-22)
  */
 interface DAOFacade {
+    //TODO dev purpose, delete before prod
     suspend fun allAideData() : List<AideData>
     suspend fun getAideData(key: String): AideData?
     suspend fun addAideData(data: AideData)

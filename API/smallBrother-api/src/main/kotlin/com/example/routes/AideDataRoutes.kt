@@ -2,13 +2,11 @@ package com.example.routes
 
 import com.example.dao.dao
 import com.example.models.AideData
-import com.example.models.AideDatas
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import org.jetbrains.exposed.sql.select
 
 /***
  * manages all the routes to access (CRD) aide datas

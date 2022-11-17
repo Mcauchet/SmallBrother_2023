@@ -16,6 +16,7 @@ class DAOFacadeImpl : DAOFacade {
         key = row[AideDatas.key],
     )
 
+    //TODO this will have to be deleted, this access all users data, only for dev purpose.
     override suspend fun allAideData(): List<AideData> = dbQuery {
         AideDatas.selectAll().map(::resultRowToAideData)
     }
