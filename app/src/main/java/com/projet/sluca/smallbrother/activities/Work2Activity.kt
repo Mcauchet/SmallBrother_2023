@@ -34,7 +34,7 @@ import java.util.*
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 07-11-2022)
+ * @version 1.2 (Updated on 17-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -136,12 +136,14 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             paquet[numCell] = fichier3
         }
 
+        Log.d("FILES TO UPLOAD", paquet.toString())
+
         // Chemin de la future archive.
         val ziPath = userData.zipath
 
         // Lancement de la compression.
-        val c = Compress(paquet, ziPath)
-        c.zip()
+        val compressedFile = Compress(paquet, ziPath)
+        compressedFile.zip()
 
         // --> [5] niveau de batterie.
 
@@ -182,25 +184,32 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         particule =
             if (listOf(*voyelles).contains(particule)) " d'" else " de "
-        val url = " <a href=\"$urlGoogleMap\">ouvrir dans GoogleMap</a>"
-        val message = "<br><b>Localisation " + particule + nomAide + " :</b> " + url +
-                "<br><br>" +
-                "<b>Niveau de batterie :</b> " + batterie +
-                "<br><br>" +
-                "<b>En mouvement :</b> " + motion +
-                "<br><br>"
+
+        val message = "Localisation $particule$nomAide : $urlGoogleMap\n" +
+                "Niveau de batterie : $batterie\n" +
+                "En mouvement : $motion.\n"
+
+        //send localisation, battery and moving or not
+        sendSMS(this@Work2Activity, message, userData.telephone)
+
         //TODO create AideData object here, and then send it in object.run.try{}
         object : Thread() {
             override fun run() {
                 try {
-                    //TODO Envoi des données sur le serveur
+                    //TODO Envoi des données sur le serveur (2 photos, 1 fichier audio)
                     val client = HttpClient(Android)
                     Log.d("CLIENT", client.toString())
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             val response = client.post("$URLServer/aideData") {
                                 contentType(ContentType.Application.Json)
-                                setBody(AideData("odf", "dsf", true, 48, "sdiijij324234"))
+                                //sets the data to send to the server
+                                setBody(AideData(
+                                    randomString(12),
+                                    randomString(13),
+                                    randomString(8),
+                                    randomString(32)
+                                ))
                             }
                             client.close()
                             Log.d("BODY", response.toString())
@@ -246,6 +255,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 startActivity(intent)
             }
         }.start() // Envoi !
+    }
+
+    /***
+     * random string generator for testing purpose
+     */
+    fun randomString(length: Int): String {
+        val validChars: List<Char> =
+            ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return CharArray(length) { validChars.random() }.concatToString()
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}
