@@ -21,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 
+//Edit URL Server until it is redefined in deployment
 const val URLServer = "https://d163-2a02-a03f-ae4e-1900-f942-6d98-d528-86e9.eu.ngrok.io"
 
 /***

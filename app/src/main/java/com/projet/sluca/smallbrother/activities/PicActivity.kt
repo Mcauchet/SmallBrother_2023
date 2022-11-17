@@ -7,7 +7,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -26,7 +26,7 @@ import java.io.FileOutputStream
  * PicActivity manages the re-take of a picture after installation process
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 03-10-2022)
+ * @version 1.2 (Updated on 17-11-2022)
  */
 class PicActivity : AppCompatActivity() {
 
@@ -38,6 +38,10 @@ class PicActivity : AppCompatActivity() {
         // Etablissement de la liaison avec la vue res/layout/activity_installdantpic.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pic)
+
+        val btnBack: Button = findViewById(R.id.btn_retour)
+        val btnCapture: Button = findViewById(R.id.btn_capture)
+        val btnSave: Button = findViewById(R.id.btn_save)
 
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
@@ -51,15 +55,31 @@ class PicActivity : AppCompatActivity() {
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
 
-    // --> Au clic que le bouton "Capture".
-    fun capture(view:View) {
-        vibreur.vibration(this, 100)
+        btnBack.setOnClickListener {
+            vibreur.vibration(this, 100)
 
-        // Lancement de l'activité de capture.
-        val intent = Intent(this@PicActivity, MediaStore.ACTION_IMAGE_CAPTURE::class.java)
-        getResult.launch(intent)
+            // Transition vers la AidantActivity.
+            val intent = Intent(this, ReglagesActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnCapture.setOnClickListener {
+            vibreur.vibration(this, 100)
+
+            // Lancement de l'activité de capture.
+            val intent = Intent(this@PicActivity, MediaStore.ACTION_IMAGE_CAPTURE::class.java)
+            getResult.launch(intent)
+        }
+
+        btnSave.setOnClickListener {
+            vibreur.vibration(this, 100)
+            message(this, getString(R.string.message09), vibreur) // toast de confirmation.
+
+            // Transition vers l'activity suivante.
+            val intent = Intent(this, PhotoAide::class.java)
+            startActivity(intent)
+        }
     }
 
     private val getResult = registerForActivityResult(
@@ -76,25 +96,6 @@ class PicActivity : AppCompatActivity() {
             }
             apercu.setImageBitmap(bitmap)
         }
-    }
-
-    // --> Au clic que le bouton "Retour".
-    fun retour(view: View?) {
-        vibreur.vibration(this, 100)
-
-        // Transition vers la AidantActivity.
-        val intent = Intent(this, ReglagesActivity::class.java)
-        startActivity(intent)
-    }
-
-    // --> Au clic que le bouton "Terminer".
-    fun terminer(view: View?) {
-        vibreur.vibration(this, 100)
-        message(this, getString(R.string.message09), vibreur) // toast de confirmation.
-
-        // Transition vers l'activity suivante.
-        val intent = Intent(this, PhotoAide::class.java)
-        startActivity(intent)
     }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.

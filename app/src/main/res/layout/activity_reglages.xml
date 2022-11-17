@@ -46,18 +46,14 @@
 
                 <Button
                     android:id="@+id/btn_retour"
-                    android:layout_height="28dp"
-                    android:layout_width="28dp"
+                    android:layout_height="35dp"
+                    android:layout_width="35dp"
                     android:background="@drawable/retour"
-                    android:alpha="0.33"
-                    android:onClick="retour"
+                    android:alpha="0.5"
                     android:orientation="vertical"
-                    android:textSize="17sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
                     android:shadowRadius="5" />
 
             </LinearLayout>
@@ -90,18 +86,14 @@
 
                 <Button
                     android:id="@+id/btn_aide"
-                    android:layout_height="32dp"
-                    android:layout_width="32dp"
+                    android:layout_height="35dp"
+                    android:layout_width="35dp"
                     android:background="@drawable/aide"
-                    android:alpha="0.33"
-                    android:onClick="aide"
+                    android:alpha="0.5"
                     android:orientation="vertical"
-                    android:textSize="17sp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
                     android:shadowRadius="5" />
 
             </LinearLayout>
@@ -191,7 +183,6 @@
                     android:id="@+id/btn_reinit_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="reinitAidant"
                     android:orientation="vertical"
                     android:text="@string/btn_reinit_1"
                     android:textAllCaps="false"
@@ -201,8 +192,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
                     android:shadowRadius="5" />
 
             </FrameLayout>
@@ -230,7 +219,6 @@
                     android:id="@+id/btn_reinit_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="reinitAide"
                     android:orientation="vertical"
                     android:text="@string/btn_reinit_2"
                     android:textAllCaps="false"
@@ -240,8 +228,6 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="8dp"
                     android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
                     android:shadowRadius="5" />
 
             </FrameLayout>
@@ -273,7 +259,6 @@
                     android:id="@+id/btn_reinit_3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="refairePhoto"
                     android:orientation="vertical"
                     android:text="@string/btn_reinit_3"
                     android:textAllCaps="false"

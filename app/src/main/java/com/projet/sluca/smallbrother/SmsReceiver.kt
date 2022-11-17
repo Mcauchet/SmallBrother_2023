@@ -20,6 +20,7 @@ import com.projet.sluca.smallbrother.models.UserData
 class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
+
         val bundle = intent?.extras
         Log.d("ONRCV SMS", bundle.toString())
         userdata?.loadData()

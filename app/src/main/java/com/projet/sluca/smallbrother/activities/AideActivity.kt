@@ -13,7 +13,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
@@ -26,7 +25,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 14-11-22)
+ * @version 1.2 (updated on 17-11-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -71,10 +70,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         // Rafraîchissement de l'affichage.
         refresh()
-
-        // Réinitialisation de l'indicateur "Bit".
-        //userData.bit = 0
-        Log.d("BIT", userData.bit.toString())
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)

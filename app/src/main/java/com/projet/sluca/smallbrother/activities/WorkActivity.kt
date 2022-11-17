@@ -10,7 +10,6 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.telephony.SmsManager
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +23,7 @@ import java.io.IOException
  * class WorkActivity
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 10-10-2022)
+ * @version 1.2 (Updated on 17-11-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -70,7 +69,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
         // Récupération du numéro de l'appelant, suite à un appel reçu.
         appelant = PhoneStatReceiver.catchcallNumber()
-        appelant = appelant!!.replace("+32", "0")
+        if (appelant?.startsWith("+32") == true) appelant?.replace("+32", "0")
         PhoneStatReceiver.resetCallNumber()
 
         // SI APPEL RECU :
