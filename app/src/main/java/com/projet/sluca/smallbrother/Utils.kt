@@ -4,25 +4,30 @@ import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.CountDownTimer
 import android.telephony.SmsManager
+import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.getSystemService
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://d163-2a02-a03f-ae4e-1900-f942-6d98-d528-86e9.eu.ngrok.io"
+const val URLServer = "https://546a-2a02-a03f-ae4e-1900-514f-4b20-67f2-ac78.eu.ngrok.io"
 
 /***
  * Send a SMS
@@ -109,13 +114,49 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
  *
  * @return true if device connected, false otherwise
  */
-fun checkInternet(): Boolean {
+/*suspend fun checkInternet(): Boolean {
     val runtime = Runtime.getRuntime()
     try {
-        val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
-        val exitValue = ipProcess.waitFor()
+
+        val ipProcess = withContext(Dispatchers.IO) {
+            runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+        }
+        val exitValue = withContext(Dispatchers.IO) {
+            ipProcess.waitFor()
+        }
         return (exitValue==0)
     } catch (e: IOException) {
+        e.printStackTrace()
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+    }
+    return false
+}*/
+
+/***
+ * isOnline returns true if device has network capabilities (Cellular, Wifi or Ethernet)
+ *
+ * @return true if connected, false otherwise
+ */
+fun isOnline(context: Context): Boolean {
+    try {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+                as ConnectivityManager
+        val capabilities =
+            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                Log.i("Internet", "TRANSPORT_CELLULAR")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                Log.i("Internet", "TRANSPORT_WIFI")
+                return true
+            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                Log.i("Internet", "TRANSPORT_ETHERNET")
+                return true
+            }
+        }
+    } catch (e:IOException) {
         e.printStackTrace()
     } catch (e: InterruptedException) {
         e.printStackTrace()

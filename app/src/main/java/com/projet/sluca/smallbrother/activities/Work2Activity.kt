@@ -21,8 +21,10 @@ import com.projet.sluca.smallbrother.models.UserData
 
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +36,7 @@ import java.util.*
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 17-11-2022)
+ * @version 1.2 (Updated on 18-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -73,14 +75,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvAction.text = getString(R.string.message12B)
 
         // Lancement de la capture.
+        Log.d("PIC SERVICE", "PIC SERVICE STARTS")
         pictureService = PictureCapturingServiceImpl.getInstance(this)
         pictureService.startCapturing(this)
-
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     // Suite du processus après que les photos soient prises :
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
+        Log.d("PIC SERVICE", "PIC SERVICE STOPS")
         // --> [3] localisation de l'Aidé.
 
         // Affichage de l'action en cours.
@@ -113,13 +116,16 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvAction.text = getString(R.string.message12D)
 
         // Récupération des différents fichiers :
+        //TODO check what we keep between paquet & test if we store a zip
         val paquet = arrayOfNulls<String>(3) // liste des fichiers à zipper.
+        val test = arrayOfNulls<File>(3)
         var numCell = 0 // marqueur numérique incrémentable.
         val fichier1 = userData.path + "/SmallBrother/audio.ogg"
         val file1 = File(fichier1)
         if (file1.exists()) // Enregistrement audio.
         {
             paquet[numCell] = fichier1
+            test[numCell] = file1
             numCell++
         }
         val fichier2 = userData.getAutophotosPath(1)
@@ -127,6 +133,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         if (file2.exists()) // Autophoto 1.
         {
             paquet[numCell] = fichier2
+            test[numCell] = file2
             numCell++
         }
         val fichier3 = userData.getAutophotosPath(2)
@@ -134,9 +141,17 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         if (file3.exists()) // Autophoto 2.
         {
             paquet[numCell] = fichier3
+            test[numCell] = file3
         }
 
-        Log.d("FILES TO UPLOAD", paquet.toString())
+        val pcq = paquet.toString()
+        val tst = test.toString()
+
+        Log.d("FILES TO UPLOAD", pcq)
+        Log.d("FILES TO UPLOAD WITH FILES", tst)
+
+        //TEST
+        sendSMS(this@Work2Activity, "PAQUET: $pcq\n TEST: $tst", userData.telephone)
 
         // Chemin de la future archive.
         val ziPath = userData.zipath
@@ -197,7 +212,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             override fun run() {
                 try {
                     //TODO Envoi des données sur le serveur (2 photos, 1 fichier audio)
-                    val client = HttpClient(Android)
+                    val client = HttpClient(Android) {
+                        install(ContentNegotiation) {
+                            json()
+                        }
+                    }
                     Log.d("CLIENT", client.toString())
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
@@ -208,16 +227,18 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                     randomString(12),
                                     randomString(13),
                                     randomString(8),
-                                    randomString(32)
+                                    userData.motion,
+                                    level,
+                                    randomString(32),
                                 ))
                             }
                             client.close()
                             Log.d("BODY", response.toString())
+                            Log.d("DATA SENT", "data")
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
                     }
-                    Log.d("DATA SEND", "data")
                 } catch (_: Exception) {
                 }
 
@@ -231,7 +252,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 fileZ.delete()
 
                 // Rafraîchissement du Log en fonction de la réussite du processus.
-                if(checkInternet()) userData.refreshLog(11) else userData.refreshLog(15)
+                CoroutineScope(Dispatchers.IO).launch {
+                    if(isOnline(this@Work2Activity)) userData.refreshLog(11) else userData.refreshLog(15)
+                }
 
                 // Concoction et envoi du SMS à l'Aidant.
                 var sms = getString(R.string.smsys06)

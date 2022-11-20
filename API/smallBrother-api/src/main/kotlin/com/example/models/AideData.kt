@@ -7,11 +7,11 @@ import org.jetbrains.exposed.sql.*
 @Serializable
 data class AideData(
     @Serializable
-    val id: Int,
-    @Serializable
     val img1: String,
     @Serializable
     val img2: String,
+    @Serializable
+    val audio: String,
     @Serializable
     val motion: Boolean,
     @Serializable
@@ -21,11 +21,12 @@ data class AideData(
 )
 
 object AideDatas : Table() {
-    val id = integer("id").autoIncrement()
+    private val id = integer("id").autoIncrement()
     val img1 = varchar("image1", 128)
     val img2 = varchar("image2", 128)
-    val motion = bool("motion")
-    val battery = integer("battery")
+    val audio = varchar("audio", 128)
+    val motion = bool("motion").default(false)
+    val battery = integer("battery").default(50)
     val key = varchar("key", 128)
 
     override val primaryKey = PrimaryKey(id)

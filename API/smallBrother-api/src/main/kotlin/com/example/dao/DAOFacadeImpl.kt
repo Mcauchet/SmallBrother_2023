@@ -6,11 +6,17 @@ import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
+/***
+ * DAOFacadeImpl implements the DAOFacade methods.
+ *
+ * @author Maxime Caucheteur
+ * @version 1 (Updated on 20-11-2022)
+ */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
-        id = row[AideDatas.id],
         img1 = row[AideDatas.img1],
         img2 = row[AideDatas.img2],
+        audio = row[AideDatas.audio],
         motion = row[AideDatas.motion],
         battery = row[AideDatas.battery],
         key = row[AideDatas.key],
@@ -34,9 +40,9 @@ class DAOFacadeImpl : DAOFacade {
             editAideData(data)
         } else {
             AideDatas.insert {
-                it[id] = data.id
                 it[img1] = data.img1
                 it[img2] = data.img2
+                it[audio] = data.audio
                 it[motion] = data.motion
                 it[battery] = data.battery
                 it[key] = data.key
@@ -45,10 +51,10 @@ class DAOFacadeImpl : DAOFacade {
     }
 
     override suspend fun editAideData(data: AideData): Boolean = dbQuery {
-        val id = data.id
-        AideDatas.update({AideDatas.id eq id}) {
+        AideDatas.update({AideDatas.key eq data.key}) {
             it[img1] = data.img1
             it[img2] = data.img2
+            it[audio] = data.audio
             it[motion] = data.motion
             it[battery] = data.battery
             it[key] = data.key
@@ -67,7 +73,14 @@ class DAOFacadeImpl : DAOFacade {
 val dao: DAOFacade = DAOFacadeImpl().apply {
     runBlocking {
         if(allAideData().isEmpty()) {
-            addAideData(AideData(1, "img1", "img2", false, 76, "idsjfgijgsd23432"))
+            addAideData(AideData(
+                "Test1",
+                "Test2",
+                "TestAudio",
+                false,
+                76,
+                "TESTtestTestCLEcleClE"
+            ))
         }
     }
 }

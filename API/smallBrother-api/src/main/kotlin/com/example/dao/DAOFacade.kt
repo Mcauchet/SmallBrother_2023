@@ -5,7 +5,8 @@ import com.example.models.AideData
 /***
  * The interface of the DAO to access the database queries
  *
- * @author Maxime Caucheteur (Updated on 04-11-22)
+ * @author Maxime Caucheteur
+ * @version 1 (Updated on 04-11-22)
  */
 interface DAOFacade {
     //TODO dev purpose, delete before prod

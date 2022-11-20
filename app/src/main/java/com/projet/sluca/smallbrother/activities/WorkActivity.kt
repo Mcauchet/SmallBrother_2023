@@ -10,20 +10,26 @@ import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.libs.AccelerometerListener
 import com.projet.sluca.smallbrother.libs.AccelerometerManager
 import com.projet.sluca.smallbrother.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
 /***
  * class WorkActivity
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 17-11-2022)
+ * @version 1.2 (Updated on 20-11-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -40,9 +46,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private var magneto: MediaRecorder? = null // Création d'un recorder audio.
 
     // Variables pour déterminer l'état de mouvement.
-    private lateinit var checkMove1: FloatArray
-    private lateinit var checkMove2: FloatArray
-    private lateinit var keepMove: FloatArray
+    private var checkMove1: FloatArray? = null
+    private var checkMove2: FloatArray? = null
+    private var keepMove: FloatArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_work.xml.
@@ -103,97 +109,112 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     startActivity(intent)
                 }
                 "[#SB04]" -> {
+                    Toast.makeText(this, "This is an emergency", Toast.LENGTH_LONG).show()
+                    Log.d("SB04", "EXEC emergency")
+
+                    wakeup(window, this@WorkActivity)
+                    loading(tvLoading) // Déclenchement de l'animation de chargement.
 
                     // --> Vérification : l'appareil est bien connecté au Net.
-                    if (checkInternet()) {
-                        // Désactivation du SMSReceiver (pour éviter les cumuls de SMS).
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Log.d("CHK INT", "WAITING")
+                        if (isOnline(this@WorkActivity)) {
+                            Log.d("CHK INT", "OK")
+                            // Désactivation du SMSReceiver (pour éviter les cumuls de SMS).
 
-                        val pm = this@WorkActivity.packageManager
-                        val componentName = ComponentName(
-                            this@WorkActivity,
-                            SmsReceiver::class.java
-                        )
-                        pm.setComponentEnabledSetting(
-                            componentName,
-                            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                            PackageManager.DONT_KILL_APP
-                        )
-                        // Sortie de veille du téléphone et mise en avant-plan de cette appli.
-                        wakeup(window, this@WorkActivity)
-                        loading(tvLoading) // Déclenchement de l'animation de chargement.
+                            val pm = this@WorkActivity.packageManager
+                            val componentName = ComponentName(
+                                this@WorkActivity,
+                                SmsReceiver::class.java
+                            )
+                            pm.setComponentEnabledSetting(
+                                componentName,
+                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                                PackageManager.DONT_KILL_APP
+                            )
+                            Log.d("AFTER PKG MNG", "OK")
+                            // Sortie de veille du téléphone et mise en avant-plan de cette appli.
 
-                        // ================== [ Constitution du dossier joint ] ==================
 
-                        // --> [1] captation et enregistrement d'un extrait sonore de dix secondes.
-                        //     en parallèle se détermine également si le téléphone est en mouvement.
+                            // ================== [ Constitution du dossier joint ] ==================
 
-                        // Affichage de l'action en cours.
-                        tvAction.text = getString(R.string.message12A)
+                            // --> [1] captation et enregistrement d'un extrait sonore de dix secondes.
+                            //     en parallèle se détermine également si le téléphone est en mouvement.
 
-                        // Destination du futur fichier :
-                        val fichier = userData.path + "/SmallBrother/audio.ogg"
+                            // Affichage de l'action en cours.
+                            tvAction.text = getString(R.string.message12A)
 
-                        // Configuration du recorder "magneto".
-                        //TODO deprecated, change for cameraX
-                        magneto = MediaRecorder()
-                        magneto!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-                        magneto!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                        magneto!!.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-                        magneto!!.setOutputFile(fichier)
-                        try {
-                            magneto!!.prepare()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
+                            // Destination du futur fichier :
+                            val fichier = userData.path + "/SmallBrother/audio.ogg"
+
+                            // Configuration du recorder "magneto".
+                            //TODO deprecated, change for cameraX
+                            Log.d("MAGNETO", "INIT")
+                            magneto = MediaRecorder()
+                            magneto!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+                            magneto!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                            magneto!!.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+                            magneto!!.setOutputFile(fichier)
+                            try {
+                                magneto!!.prepare()
+                            } catch (e: IOException) {
+                                e.printStackTrace()
+                            }
+                            Log.d("MAGNETO", "MAGNETO STARTS")
+                            magneto!!.start() // Enregistrement lancé.
+
+                            // =======================================================================
+                        } else  // Si pas de connexion :
+                        {
+                            userData.refreshLog(12) // message de Log adéquat.
+
+                            // Alarme : son et vibrations
+                            val sound: MediaPlayer = MediaPlayer.create(this@WorkActivity, R.raw.alarme)
+                            sound.start()
+                            vibreur.vibration(this@WorkActivity, 5000)
+
+                            // L'Aidant est averti par SMS de l'échec.
+                            var sms = getString(R.string.smsys05)
+                            sms = sms.replace("§%", userData.nom)
+                            sendSMS(this@WorkActivity, sms, userData.telephone)
+
+                            // Retour à l'écran de rôle de l'Aidé.
+                            val intent = Intent(this@WorkActivity, AideActivity::class.java)
+                            startActivity(intent)
                         }
-                        magneto!!.start() // Enregistrement lancé.
-
-                        // Délai de 10 secondes :
-                        object : CountDownTimer(10010, 1) {
-                            override fun onTick(millisUntilFinished: Long) {
-                                // Aux secondes 9 et 2 sont capturé la position du téléphone.
-                                when {
-                                   millisUntilFinished > 9000 -> checkMove1 = keepMove
-                                   millisUntilFinished in 1001..1999 -> checkMove2 = keepMove
-                                }
-                            }
-
-                            override fun onFinish() // Fin du délai :
-                            {
-                                // Conclusion de l'enregistrement.
-                                magneto!!.stop()
-                                magneto!!.release()
-                                magneto = null
-
-                                // Déclaration : le téléphone est ou non en mouvement.
-                                val suspens = checkMove1.contentEquals(checkMove2)
-                                userData.motion = !suspens
-
-                                // Suite des évènements dans une autre activity pour éviter les
-                                // interférences entre les intents.
-                                val intent = Intent(this@WorkActivity, Work2Activity::class.java)
-                                startActivity(intent)
-                            }
-                        }.start()
-
-                        // =======================================================================
-                    } else  // Si pas de connexion :
-                    {
-                        userData.refreshLog(12) // message de Log adéquat.
-
-                        // Alarme : son et vibrations
-                        val sound: MediaPlayer = MediaPlayer.create(this, R.raw.alarme)
-                        sound.start()
-                        vibreur.vibration(this, 5000)
-
-                        // L'Aidant est averti par SMS de l'échec.
-                        var sms = getString(R.string.smsys05)
-                        sms = sms.replace("§%", userData.nom)
-                        sendSMS(this@WorkActivity, sms, userData.telephone)
-
-                        // Retour à l'écran de rôle de l'Aidé.
-                        val intent = Intent(this, AideActivity::class.java)
-                        startActivity(intent)
                     }
+
+                    // Délai de 10 secondes :
+                    object : CountDownTimer(10010, 1) {
+                        override fun onTick(millisUntilFinished: Long) {
+                            // Aux secondes 9 et 2 sont capturé la position du téléphone.
+                            when {
+                                millisUntilFinished > 9000
+                                -> checkMove1 = keepMove
+                                millisUntilFinished in 1001..1999
+                                -> checkMove2 = keepMove
+                            }
+                        }
+
+                        override fun onFinish() // Fin du délai :
+                        {
+                            // Conclusion de l'enregistrement.
+                            magneto!!.stop()
+                            Log.d("MAGNETO", "MAGNETO STOPS")
+                            magneto!!.release()
+                            magneto = null
+
+                            // Déclaration : le téléphone est ou non en mouvement.
+                            val suspens = checkMove1.contentEquals(checkMove2)
+                            userData.motion = !suspens
+                            Log.d("MOTION", userData.motion.toString())
+
+                            // Suite des évènements dans une autre activity pour éviter les
+                            // interférences entre les intents.
+                            val intent = Intent(this@WorkActivity, Work2Activity::class.java)
+                            startActivity(intent)
+                        }
+                    }.start()
                 }
                 "[#SB05]" -> {
                     userData.refreshLog(13) // message de Log adéquat.

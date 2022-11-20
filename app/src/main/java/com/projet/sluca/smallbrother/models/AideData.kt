@@ -12,6 +12,10 @@ data class AideData(
     val img2: String,
     @SerialName("audio")
     val audio: String,
+    @SerialName("motion")
+    val motion: Boolean,
+    @SerialName("battery")
+    val battery: Int,
     @SerialName("key")
     val key: String,
 )

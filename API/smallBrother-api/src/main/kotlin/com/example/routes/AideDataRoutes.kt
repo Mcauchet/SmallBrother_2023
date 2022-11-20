@@ -9,7 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
 /***
- * manages all the routes to access (CRD) aide datas
+ * manages all the routes to access aide datas
  */
 fun Route.aideDataRouting() {
     route("/aideData") {
