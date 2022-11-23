@@ -21,8 +21,10 @@ import com.projet.sluca.smallbrother.models.UserData
 
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
@@ -77,7 +79,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // Lancement de la capture.
         Log.d("PIC SERVICE", "PIC SERVICE STARTS")
         pictureService = PictureCapturingServiceImpl.getInstance(this)
-        pictureService.startCapturing(this)
+        pictureService.startCapturing(this, this)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
@@ -160,6 +162,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         val compressedFile = Compress(paquet, ziPath)
         compressedFile.zip()
 
+        Log.d("zipFile", this@Work2Activity.filesDir.path+ziPath)
+
         // --> [5] niveau de batterie.
 
         // Affichage de l'action en cours.
@@ -220,6 +224,14 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     Log.d("CLIENT", client.toString())
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
+                            val audioName = uploadAudio(client, file1)
+                            val img1Name = uploadImage(client, file2)
+                            val img2Name = uploadImage(client, file3)
+                            var zipName = ""
+                            if (File(ziPath).exists()) {
+                                Log.d("ziPath File", "ziPath exists")
+                                zipName = uploadZip(client, File(ziPath))
+                            }
                             val response = client.post("$URLServer/aideData") {
                                 contentType(ContentType.Application.Json)
                                 //sets the data to send to the server
@@ -232,6 +244,22 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                     randomString(32),
                                 ))
                             }
+                            val fileLocations = "Audio file: $URLServer/download/$audioName\n" +
+                                    "First image file: $URLServer/download/$img1Name\n" +
+                                    "Second image file: $URLServer/download/$img2Name\n" +
+                                    "Zip file: $URLServer/download/$zipName"
+
+                            Log.d("File locations", fileLocations)
+                            //sendSMS(this@Work2Activity, fileLocations, userData.telephone)
+                            // Suppression des captures.
+                            file1.delete()
+                            file2.delete()
+                            file3.delete()
+
+                            // Suppression du fichier ZIP.
+                            val fileZ = File(ziPath)
+                            fileZ.delete()
+
                             client.close()
                             Log.d("BODY", response.toString())
                             Log.d("DATA SENT", "data")
@@ -241,15 +269,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     }
                 } catch (_: Exception) {
                 }
-
-                // Suppression des captures.
-                file1.delete()
-                file2.delete()
-                file3.delete()
-
-                // Suppression du fichier ZIP.
-                val fileZ = File(ziPath)
-                fileZ.delete()
 
                 // Rafraîchissement du Log en fonction de la réussite du processus.
                 CoroutineScope(Dispatchers.IO).launch {
@@ -278,6 +297,76 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 startActivity(intent)
             }
         }.start() // Envoi !
+    }
+
+    suspend fun uploadImage(client: HttpClient, file: File): String {
+        val newName = UUID.randomUUID().toString().substring(0..24)
+        val finalName = "$newName.jpg"
+
+        client.post("$URLServer/upload") {
+            setBody(MultiPartFormDataContent(
+                formData {
+                    append("description", "Aide Pictures")
+                    append("image", file.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentType, "image/jpg")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
+                    })
+                },
+                boundary = "WebAppBoundary"
+            )
+            )
+            onUpload { bytesSentTotal, contentLength ->
+                println("Sent $bytesSentTotal bytes from $contentLength")
+            }
+        }
+        return finalName
+    }
+
+
+    suspend fun uploadAudio(client: HttpClient, file: File): String {
+        val newName = UUID.randomUUID().toString().substring(0..24)
+        val finalName = "$newName.ogg"
+
+        client.post("$URLServer/upload") {
+            setBody(MultiPartFormDataContent(
+                formData {
+                    append("description", "audio recording")
+                    append("audio", file.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentType, "audio/ogg")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
+                    })
+                },
+                boundary = "WebAppBoundary"
+            )
+            )
+            onUpload { bytesSentTotal, contentLength ->
+                println("Sent $bytesSentTotal bytes from $contentLength")
+            }
+        }
+        return finalName
+    }
+
+    suspend fun uploadZip(client: HttpClient, file: File): String {
+        val newName = UUID.randomUUID().toString().substring(0..24)
+        val finalName = "$newName.zip"
+
+        client.post("$URLServer/upload") {
+            setBody(MultiPartFormDataContent(
+                formData {
+                    append("description", "zipped files")
+                    append("zip", file.readBytes(), Headers.build {
+                        append(HttpHeaders.ContentType, "application/zip")
+                        append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
+                    })
+                },
+                boundary = "WebAppBoundary"
+            )
+            )
+            onUpload { bytesSentTotal, contentLength ->
+                println("Sent $bytesSentTotal bytes from $contentLength")
+            }
+        }
+        return finalName
     }
 
     /***

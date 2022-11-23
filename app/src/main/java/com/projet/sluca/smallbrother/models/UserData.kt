@@ -60,7 +60,7 @@ data class UserData(
 
     // -> Appel du chemin globalisé vers le zip d'un rapport de situation.
     //val zipath = "/sdcard/Download/SmallBrother/situation_partenaire.zip"
-    val zipath: String = Environment.getExternalStorageDirectory().path+"/situation_partenaire.zip"
+    val zipath: String = "$path/situation_partenaire.zip"
 
     // -> Donne l'URL de la racine du dossier Web de SB.
     // Centralisation des URL :

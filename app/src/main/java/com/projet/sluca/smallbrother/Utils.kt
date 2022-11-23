@@ -27,7 +27,7 @@ import kotlinx.coroutines.withContext
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://546a-2a02-a03f-ae4e-1900-514f-4b20-67f2-ac78.eu.ngrok.io"
+const val URLServer = "https://77ba-2a02-a03f-ae4e-1900-40fb-e858-38cb-ea12.eu.ngrok.io"
 
 /***
  * Send a SMS
@@ -192,20 +192,3 @@ fun loading(tvLoading: TextView) {
     vibreur.vibration(context, 100)
     activity.finish()
 }*/
-
-
-fun getAideData() {
-    //This code access the Ktor client successfully
-    val client = HttpClient(Android)
-    CoroutineScope(Dispatchers.IO).launch {
-        val response =
-            try {
-                client.get {
-                    url("$URLServer/aideData")
-                }
-                client.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-    }
-}

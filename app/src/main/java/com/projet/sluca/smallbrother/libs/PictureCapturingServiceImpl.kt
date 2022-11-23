@@ -2,6 +2,7 @@ package com.projet.sluca.smallbrother.libs
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.hardware.camera2.*
@@ -11,6 +12,7 @@ import android.media.ImageReader.OnImageAvailableListener
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.service.autofill.UserData
 import android.util.Log
 import android.util.Size
 import android.view.Surface
@@ -53,12 +55,15 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
     private var numeroImage // [SL:]  pour numéroter le nom de l'image.
             = 0
 
+    private var pathFile: String? = null
+
     /**
      * Starts pictures capturing treatment.
      *
      * @param listener picture capturing listener
      */
-    override fun startCapturing(listener: PictureCapturingListener?) {
+    override fun startCapturing(listener: PictureCapturingListener?, context: Context?) {
+        pathFile = context?.filesDir?.path
         numeroImage = 1 // [SL:] au lancement, réinitialiser numeroImage.
         picturesTaken = TreeMap()
         capturingListener = listener
@@ -226,12 +231,8 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
 
     private fun saveImageToDisk(bytes: ByteArray) {
         val cameraId = if (cameraDevice == null) UUID.randomUUID().toString() else cameraDevice!!.id
-
         // [SL:] Chemin d'enregistrement
-        val file =
-            File(Environment.
-            getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .absolutePath + "/SmallBrother/autophoto" + numeroImage + ".jpg")
+        val file = File("$pathFile/SmallBrother/autophoto$numeroImage.jpg")
         numeroImage++ // [SL:] incrémenter numeroImage.
         try {
             FileOutputStream(file).use { output ->

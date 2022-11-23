@@ -47,6 +47,6 @@ abstract class APictureCapturingService internal constructor(private val activit
      *
      * @param listener picture capturing listener
      */
-    abstract fun startCapturing(listener: PictureCapturingListener?)
+    abstract fun startCapturing(listener: PictureCapturingListener?, context: Context?)
 
 }

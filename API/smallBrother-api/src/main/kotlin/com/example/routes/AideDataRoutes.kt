@@ -3,15 +3,49 @@ package com.example.routes
 import com.example.dao.dao
 import com.example.models.AideData
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import java.io.File
+import java.util.UUID
 
 /***
  * manages all the routes to access aide datas
  */
 fun Route.aideDataRouting() {
+    route("/upload") {
+        var fileDescription = ""
+        var fileName = ""
+        post {
+            val multipartData = call.receiveMultipart()
+
+            multipartData.forEachPart { part ->
+                when (part) {
+                    is PartData.FormItem -> {
+                        fileDescription = part.value
+                    }
+                    is PartData.FileItem -> {
+                        fileName = part.originalFileName as String
+                        val fileBytes = part.streamProvider().readBytes()
+                        File("upload/$fileName").writeBytes(fileBytes)
+                    }
+                    else -> {}
+                }
+                part.dispose()
+            }
+            call.respondText("$fileDescription is uploaded to 'upload/$fileName'")
+        }
+    }
+
+    route("/download") {
+        get("/{key}"){
+            //TODO (download files for Aidant)
+            // fetch file in /upload/key/...
+        }
+    }
+
     route("/aideData") {
 
         get {
