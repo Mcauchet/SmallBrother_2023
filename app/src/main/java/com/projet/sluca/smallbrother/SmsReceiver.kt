@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 17-11-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 24-11-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -36,7 +36,7 @@ class SmsReceiver : BroadcastReceiver() {
         clef = message.substring(message.length - 7)
         val motsclef = arrayOf(
             "[#SB01]",  // -> réinit aidé
-            "[#SB02]",  // -> va bien reçu par aidé
+            "[#SB02]",  // -> va bien? reçu par aidé
             "[#SB03]",  // -> oui va bien reçu par aidant
             "[#SB04]",  // -> urgence reçue par aidé
             "[#SB05]",  // -> aidé pas connecté

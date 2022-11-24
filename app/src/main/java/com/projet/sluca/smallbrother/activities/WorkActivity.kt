@@ -112,6 +112,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     Toast.makeText(this, "This is an emergency", Toast.LENGTH_LONG).show()
                     Log.d("SB04", "EXEC emergency")
 
+                    // Sortie de veille du téléphone et mise en avant-plan de cette appli.
                     wakeup(window, this@WorkActivity)
                     loading(tvLoading) // Déclenchement de l'animation de chargement.
 
@@ -133,7 +134,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                                 PackageManager.DONT_KILL_APP
                             )
                             Log.d("AFTER PKG MNG", "OK")
-                            // Sortie de veille du téléphone et mise en avant-plan de cette appli.
+
 
 
                             // ================== [ Constitution du dossier joint ] ==================

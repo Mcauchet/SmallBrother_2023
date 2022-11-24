@@ -3,7 +3,7 @@ package com.projet.sluca.smallbrother
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.TextView
@@ -11,12 +11,11 @@ import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.models.UserData
 import java.io.File
 
-// --> Affichage de la photo de l'Aidé.
 /***
  * class PhotoAide allows the Aidant to show the picture of the Aide
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 07-11-2022)
+ * @version 1.2 (Updated on 24-11-2022)
  */
 class PhotoAide : AppCompatActivity() {
 
@@ -38,19 +37,18 @@ class PhotoAide : AppCompatActivity() {
         // Identification des éléments d'affichage.
         ivApercu = findViewById(R.id.apercu)
         tvLegende = findViewById(R.id.legende)
+        val btnBack: Button = findViewById(R.id.btn_retour)
 
         // Gestion de l'affichage, selon qu'un fichier existe ou non.
         val fichier = userdata.path + "/SmallBrother/photo_aide.jpg"
         val file = File(fichier)
         if(file.exists()) ivApercu.setImageURI(Uri.fromFile(file))
         else tvLegende.text = getString(R.string.nophoto)
-    }
 
-    // --> Au clic que le bouton "Retour".
-    fun retour(view: View) {
-        vibreur.vibration(this, 100)
-
-        val intent = Intent(this, AidantActivity::class.java)
-        startActivity(intent)
+        btnBack.setOnClickListener {
+            vibreur.vibration(this, 100)
+            val intent = Intent(this, AidantActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
