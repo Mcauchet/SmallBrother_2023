@@ -16,18 +16,13 @@ import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.getSystemService
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.request.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://77ba-2a02-a03f-ae4e-1900-40fb-e858-38cb-ea12.eu.ngrok.io"
+const val URLServer = "https://6312-2a02-a03f-ae4e-1900-802a-305-79e9-3aa.eu.ngrok.io"
 
 /***
  * Send a SMS
@@ -137,6 +132,7 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
  * isOnline returns true if device has network capabilities (Cellular, Wifi or Ethernet)
  *
  * @return true if connected, false otherwise
+ * @author Maxime Caucheteur (Updated on 24-11-2022)
  */
 fun isOnline(context: Context): Boolean {
     try {
@@ -168,11 +164,11 @@ fun isOnline(context: Context): Boolean {
  * Animation of loading
  *
  * @param [tvLoading] the TextView in which the animation takes place
+ * @author Maxime Caucheteur (Updated on 24-11-2022)
  */
 fun loading(tvLoading: TextView) {
     object : CountDownTimer(2000, 1) {
         override fun onTick(millisUntilFinished: Long) {
-            // A chaque 400ms passés, modifier le contenu l'objet TextView.
             when (millisUntilFinished) {
                 in 1601..2000 -> tvLoading.text = ""
                 in 1201..1600 -> tvLoading.text = "."
@@ -180,15 +176,6 @@ fun loading(tvLoading: TextView) {
                 in 0..800 -> tvLoading.text = "..."
             }
         }
-
         override fun onFinish(): Unit = loading(tvLoading)
-
     }.start()
 }
-
-//TODO Test this (with ux rework, might be better)
-/*fun precedent(context: Context, vibreur: Vibration, activity: AppCompatActivity) {
-    Log.d("PRECEDENT UTILS", "It works")
-    vibreur.vibration(context, 100)
-    activity.finish()
-}*/

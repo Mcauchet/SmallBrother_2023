@@ -16,7 +16,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.libs.*
-import com.projet.sluca.smallbrother.models.AideData
 import com.projet.sluca.smallbrother.models.UserData
 
 import io.ktor.client.*
@@ -30,22 +29,24 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.*
 
-import java.io.File
 import java.util.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 /***
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 18-11-2022)
+ * @version 1.2 (Updated on 24-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
     lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
-    private lateinit var tvLoading: TextView // Déclaration d'un objet TextView.
+    private lateinit var tvLoading: TextView
     private lateinit var tvAction: TextView // Déclaration du TextView pour l'action en cours.
     private var urlGoogleMap: String? = null // Retiendra l'url vers la carte avec positionnement.
     private var batterie: String? = null // Retiendra le niveau de batterie restant.
@@ -98,7 +99,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            return //TODO check this
+            return //TODO check this (permission must not be granted)
 
         // Récupération des données de latitude et longitude de l'appareil.
         val lm = getSystemService(LOCATION_SERVICE) as LocationManager
@@ -118,49 +119,23 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvAction.text = getString(R.string.message12D)
 
         // Récupération des différents fichiers :
-        //TODO check what we keep between paquet & test if we store a zip
-        val paquet = arrayOfNulls<String>(3) // liste des fichiers à zipper.
-        val test = arrayOfNulls<File>(3)
-        var numCell = 0 // marqueur numérique incrémentable.
+
         val fichier1 = userData.path + "/SmallBrother/audio.ogg"
         val file1 = File(fichier1)
-        if (file1.exists()) // Enregistrement audio.
-        {
-            paquet[numCell] = fichier1
-            test[numCell] = file1
-            numCell++
-        }
+
         val fichier2 = userData.getAutophotosPath(1)
         val file2 = File(fichier2)
-        if (file2.exists()) // Autophoto 1.
-        {
-            paquet[numCell] = fichier2
-            test[numCell] = file2
-            numCell++
-        }
+
         val fichier3 = userData.getAutophotosPath(2)
         val file3 = File(fichier3)
-        if (file3.exists()) // Autophoto 2.
-        {
-            paquet[numCell] = fichier3
-            test[numCell] = file3
-        }
-
-        val pcq = paquet.toString()
-        val tst = test.toString()
-
-        Log.d("FILES TO UPLOAD", pcq)
-        Log.d("FILES TO UPLOAD WITH FILES", tst)
-
-        //TEST
-        sendSMS(this@Work2Activity, "PAQUET: $pcq\n TEST: $tst", userData.telephone)
 
         // Chemin de la future archive.
-        val ziPath = userData.zipath
+        val ziPath = this@Work2Activity.filesDir.path+"/SmallBrother/zippedFiles.zip"
 
-        // Lancement de la compression.
-        val compressedFile = Compress(paquet, ziPath)
-        compressedFile.zip()
+        zipAll(
+            this@Work2Activity.filesDir.path+"/SmallBrother",
+            ziPath
+        )
 
         Log.d("zipFile", this@Work2Activity.filesDir.path+ziPath)
 
@@ -201,8 +176,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             "è"
         )
 
-        particule =
-            if (listOf(*voyelles).contains(particule)) " d'" else " de "
+        particule = if (listOf(*voyelles).contains(particule)) " d'" else " de "
 
         val message = "Localisation $particule$nomAide : $urlGoogleMap\n" +
                 "Niveau de batterie : $batterie\n" +
@@ -211,28 +185,24 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         //send localisation, battery and moving or not
         sendSMS(this@Work2Activity, message, userData.telephone)
 
-        //TODO create AideData object here, and then send it in object.run.try{}
         object : Thread() {
             override fun run() {
                 try {
-                    //TODO Envoi des données sur le serveur (2 photos, 1 fichier audio)
+                    //TODO Envoi des données zippées sur le serveur (2 photos, 1 fichier audio,
+                    // le fichier de données de l'aidé)
                     val client = HttpClient(Android) {
                         install(ContentNegotiation) {
                             json()
                         }
                     }
-                    Log.d("CLIENT", client.toString())
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            val audioName = uploadAudio(client, file1)
-                            val img1Name = uploadImage(client, file2)
-                            val img2Name = uploadImage(client, file3)
                             var zipName = ""
                             if (File(ziPath).exists()) {
                                 Log.d("ziPath File", "ziPath exists")
                                 zipName = uploadZip(client, File(ziPath))
                             }
-                            val response = client.post("$URLServer/aideData") {
+                            /*val response = client.post("$URLServer/aideData") {
                                 contentType(ContentType.Application.Json)
                                 //sets the data to send to the server
                                 setBody(AideData(
@@ -243,14 +213,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                     level,
                                     randomString(32),
                                 ))
-                            }
-                            val fileLocations = "Audio file: $URLServer/download/$audioName\n" +
-                                    "First image file: $URLServer/download/$img1Name\n" +
-                                    "Second image file: $URLServer/download/$img2Name\n" +
-                                    "Zip file: $URLServer/download/$zipName"
+                            }*/
+                            val fileLocation =
+                                "Zip file with Aide's Data: $URLServer/download/$zipName"
 
-                            Log.d("File locations", fileLocations)
-                            //sendSMS(this@Work2Activity, fileLocations, userData.telephone)
+                            Log.d("File locations", fileLocation)
+                            sendSMS(this@Work2Activity, fileLocation, userData.telephone)
+
                             // Suppression des captures.
                             file1.delete()
                             file2.delete()
@@ -261,8 +230,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             fileZ.delete()
 
                             client.close()
-                            Log.d("BODY", response.toString())
-                            Log.d("DATA SENT", "data")
+                            Log.d("EOU", "upload ended")
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -272,7 +240,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                 // Rafraîchissement du Log en fonction de la réussite du processus.
                 CoroutineScope(Dispatchers.IO).launch {
-                    if(isOnline(this@Work2Activity)) userData.refreshLog(11) else userData.refreshLog(15)
+                    if(isOnline(this@Work2Activity)) userData.refreshLog(11)
+                    else userData.refreshLog(15)
                 }
 
                 // Concoction et envoi du SMS à l'Aidant.
@@ -299,7 +268,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }.start() // Envoi !
     }
 
-    suspend fun uploadImage(client: HttpClient, file: File): String {
+    /*suspend fun uploadImage(client: HttpClient, file: File): String {
         val newName = UUID.randomUUID().toString().substring(0..24)
         val finalName = "$newName.jpg"
 
@@ -344,8 +313,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             }
         }
         return finalName
-    }
+    }*/
 
+    /***
+     * renames the zip file and uploads it to the server
+     *
+     * @param [client] the HttpClient used to access the server
+     * @param [file] the zip file to upload
+     * @return the final name of the file to put in the download URL
+     */
     suspend fun uploadZip(client: HttpClient, file: File): String {
         val newName = UUID.randomUUID().toString().substring(0..24)
         val finalName = "$newName.zip"
@@ -370,12 +346,58 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /***
-     * random string generator for testing purpose
+     * code snippet from https://www.folkstalk.com/tech/how-to-zip-folders-subfolders-with-files-in-it-in-kotlin-using-zipoutputstream-with-code-solution/
      */
-    fun randomString(length: Int): String {
-        val validChars: List<Char> =
-            ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return CharArray(length) { validChars.random() }.concatToString()
+    private fun zipAll(dir: String, zipFile: String) {
+        val sourceFile = File(dir)
+        ZipOutputStream(BufferedOutputStream(FileOutputStream(zipFile))).use { zipOutputStream ->
+            zipOutputStream.use { stream ->
+                zipFiles(stream, sourceFile, "")
+            }
+        }
+    }
+
+    /***
+     * code snippet from https://www.folkstalk.com/tech/how-to-zip-folders-subfolders-with-files-in-it-in-kotlin-using-zipoutputstream-with-code-solution/
+     */
+    private fun zipFiles(zipOut: ZipOutputStream, sourceFile: File, parentDirPath: String) {
+        val data = ByteArray(2048)
+        for (file in sourceFile.listFiles()!!) {
+            if(file.isDirectory) {
+                val entry = ZipEntry(file.name+File.separator)
+                entry.time = file.lastModified()
+                entry.isDirectory
+                entry.size = file.length()
+                Log.i("zip", "Adding Directory: " + file.name)
+                zipOut.putNextEntry(entry)
+                //Call recursively to add files within this directory
+                zipFiles(zipOut, file, file.name)
+            } else {
+                if (!file.name.contains(".zip")) { //If folder contains a file with extension ".zip", skip it
+                    FileInputStream(file).use { fileI ->
+                        BufferedInputStream(fileI).use { origin ->
+                            val path = parentDirPath + File.separator + file.name
+                            Log.i("zip", "Adding file: $path")
+                            val entry = ZipEntry(path)
+                            entry.time = file.lastModified()
+                            entry.isDirectory
+                            entry.size = file.length()
+                            zipOut.putNextEntry(entry)
+                            while (true) {
+                                val readBytes = origin.read(data)
+                                if (readBytes == -1) {
+                                    break
+                                }
+                                zipOut.write(data, 0, readBytes)
+                            }
+                        }
+                    }
+                } else {
+                    zipOut.closeEntry()
+                    zipOut.close()
+                }
+            }
+        }
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}
