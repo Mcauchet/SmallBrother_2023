@@ -22,7 +22,7 @@ import io.ktor.client.request.*
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://6312-2a02-a03f-ae4e-1900-802a-305-79e9-3aa.eu.ngrok.io"
+const val URLServer = "https://cd78-2a02-a03f-ae4e-1900-802a-305-79e9-3aa.eu.ngrok.io"
 
 /***
  * Send a SMS

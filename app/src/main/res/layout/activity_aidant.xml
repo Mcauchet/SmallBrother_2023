@@ -309,9 +309,37 @@
 
         </FrameLayout>
 
-        <!-- Bouton Urgence -->
+        <!--Bouton Fichiers-->
         <FrameLayout
             android:id="@+id/contour4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center" >
+
+            <Button
+                android:id="@+id/btn_files"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:text="@string/recuperer_les_donnees_de_l_aide"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:background="@drawable/boutonsshape"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:shadowColor="#000000"
+                android:shadowRadius="5" />
+
+        </FrameLayout>
+
+        <!-- Bouton QR CODE -->
+        <FrameLayout
+            android:id="@+id/contour5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="16dp"
@@ -333,8 +361,6 @@
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
             android:shadowColor="#000000"
-            android:shadowDx="0"
-            android:shadowDy="0"
             android:shadowRadius="5" />
 
     </FrameLayout>

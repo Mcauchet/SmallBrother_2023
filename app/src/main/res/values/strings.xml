@@ -178,5 +178,6 @@
     <string name="empty_string">" "</string>
     <string name="transfert_data">Transférer les données par QR Code</string>
     <string name="help_aide">J\'ai besoin d\'assistance</string>
+    <string name="recuperer_les_donnees_de_l_aide">Récupérer les données de l\'Aidé</string>
 
 </resources>

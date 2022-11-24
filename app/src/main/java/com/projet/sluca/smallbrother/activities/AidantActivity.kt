@@ -10,6 +10,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
@@ -19,13 +20,25 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 
 /***
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 01-11-2022)
+ * @version 1.2 (updated on 24-11-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -49,6 +62,8 @@ class AidantActivity : AppCompatActivity() {
         val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
+        val btnFiles: Button = findViewById(R.id.btn_files)
+        val btnTiers: Button = findViewById(R.id.btn_tiers)
 
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
@@ -57,7 +72,7 @@ class AidantActivity : AppCompatActivity() {
         tvLog = findViewById(R.id.log_texte)
 
         // Liaison avec le FrameLayout affichant le bouton Tiers.
-        flTiers = findViewById(R.id.contour4)
+        flTiers = findViewById(R.id.contour5)
 
         // Lancement de l'activité en arrière-plan (rafraîchissement).
         reloadLog.run()
@@ -147,6 +162,32 @@ class AidantActivity : AppCompatActivity() {
             }
             val dialog = builder.create()
             dialog.show()
+        }
+
+        btnFiles.setOnClickListener {
+            val client = HttpClient(Android) {
+                install(ContentNegotiation) {
+                    json()
+                }
+            }
+            val file = File(userdata.path+"/SmallBrother/", "Aide.zip")
+            file.createNewFile()
+            runBlocking {
+                val httpResponse: HttpResponse = client.get(
+                    "$URLServer/download/f039acad-ff93-434f-98aa-8"
+                ) {
+                    onDownload { bytesSentTotal, contentLength ->
+                        println("Receives $bytesSentTotal bytes from $contentLength")
+                    }
+                }
+                val responseBody: ByteArray = httpResponse.body()
+                file.writeBytes(responseBody)
+                println("A file saved to ${file.path}")
+            }
+        }
+
+        btnTiers.setOnClickListener {
+            tiers()
         }
     }
 

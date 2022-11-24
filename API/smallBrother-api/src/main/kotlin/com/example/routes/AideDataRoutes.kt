@@ -42,7 +42,17 @@ fun Route.aideDataRouting() {
     route("/download") {
         get("/{key}"){
             //TODO (download files for Aidant)
-            // fetch file in /upload/key/...
+            val key = call.parameters["key"]
+            val file = File("upload/$key.zip")
+            call.response.header(
+                HttpHeaders.ContentDisposition,
+                ContentDisposition.Attachment.withParameter(
+                    ContentDisposition.Parameters.FileName, "$key.zip"
+                ).toString()
+            )
+
+            //call.respondText("File downloading...")
+            call.respondFile(file)
         }
     }
 
