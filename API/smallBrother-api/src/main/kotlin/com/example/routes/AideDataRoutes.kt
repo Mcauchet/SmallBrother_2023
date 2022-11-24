@@ -9,10 +9,12 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
-import java.util.UUID
 
 /***
- * manages all the routes to access aide datas
+ * manages the upload and download of aide's files
+ *
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 24-11-2022)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -50,12 +52,11 @@ fun Route.aideDataRouting() {
                     ContentDisposition.Parameters.FileName, "$key.zip"
                 ).toString()
             )
-
-            //call.respondText("File downloading...")
             call.respondFile(file)
         }
     }
 
+    //TODO delete this if no use found
     route("/aideData") {
 
         get {
