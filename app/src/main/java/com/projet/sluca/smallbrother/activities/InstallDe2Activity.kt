@@ -25,7 +25,7 @@ class InstallDe2Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_install_de2)
 
-        userData.loadData()
+        userData = application as UserData
 
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 

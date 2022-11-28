@@ -39,7 +39,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 24-11-2022)
+ * @version 1.2 (Updated on 28-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -188,8 +188,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         object : Thread() {
             override fun run() {
                 try {
-                    //TODO Envoi des données zippées sur le serveur (2 photos, 1 fichier audio,
-                    // le fichier de données de l'aidé)
+                    //TODO chiffrage des données
                     val client = HttpClient(Android) {
                         install(ContentNegotiation) {
                             json()
@@ -199,25 +198,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         try {
                             var zipName = ""
                             if (File(ziPath).exists()) {
-                                Log.d("ziPath File", "ziPath exists")
                                 zipName = uploadZip(client, File(ziPath))
                             }
-                            /*val response = client.post("$URLServer/aideData") {
-                                contentType(ContentType.Application.Json)
-                                //sets the data to send to the server
-                                setBody(AideData(
-                                    randomString(12),
-                                    randomString(13),
-                                    randomString(8),
-                                    userData.motion,
-                                    level,
-                                    randomString(32),
-                                ))
-                            }*/
                             val fileLocation =
-                                "Zip file with Aide's Data: $URLServer/download/$zipName"
+                                "SmallBrother : $URLServer/download/$zipName [#SB10]"
 
-                            Log.d("File locations", fileLocation)
                             sendSMS(this@Work2Activity, fileLocation, userData.telephone)
 
                             // Suppression des captures.

@@ -45,7 +45,7 @@ fun Route.aideDataRouting() {
         get("/{key}"){
             //TODO (download files for Aidant)
             val key = call.parameters["key"]
-            val file = File("upload/$key.zip")
+            val file = File("upload/$key")
             call.response.header(
                 HttpHeaders.ContentDisposition,
                 ContentDisposition.Attachment.withParameter(

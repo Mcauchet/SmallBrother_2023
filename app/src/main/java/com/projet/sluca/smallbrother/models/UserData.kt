@@ -2,18 +2,12 @@ package com.projet.sluca.smallbrother.models
 
 import android.app.Application
 import android.content.Context
-import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
-import android.os.Build
-import android.os.Environment
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
 import org.apache.commons.io.IOUtils
 import java.io.*
-import java.nio.file.Paths
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,7 +27,6 @@ import java.util.*
  * @property log: log content
  * @property canGoBack: indicates if going back is possible
  * @property bit: on Sms received, change the log message
- * @property pubKey: pubKey for the Aide when encrypting data
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
@@ -44,7 +37,6 @@ data class UserData(
     var telephone: String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
     var log: String? = null, var canGoBack: Boolean = true, var bit: Int = 0,
-    var pubKey: String? = null,
 ) : Application() {
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
@@ -52,6 +44,10 @@ data class UserData(
     //val path = Environment
     //    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     //    .absolutePath + "/SmallBrother/"
+
+    var pubKey: String = ""
+
+    var urlToFile: String = ""
 
     //this path is configured at first launch of the app through configurePath(..)
     var path: String = ""
@@ -147,15 +143,6 @@ data class UserData(
      * @return true if data loaded, false otherwise
      */
     fun loadData(): Boolean {
-        //Check and ask permission to read files
-        if(File("SmallBrother", file).exists()) {
-            this.openFileInput("donnees.txt").bufferedReader().useLines { lines ->
-                lines.fold("") { some, text ->
-                    Log.d("OPEN", some + text)
-                    "$some\n$text"
-                }
-            }
-        }
 
         // Chargement du fichier TXT pointé par "path".
         val data = File(this.filesDir, "SmallBrother/$file")

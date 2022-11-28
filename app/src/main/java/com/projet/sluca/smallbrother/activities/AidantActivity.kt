@@ -10,8 +10,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -28,9 +26,6 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.serialization.kotlinx.json.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
@@ -38,7 +33,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 24-11-2022)
+ * @version 1.2 (updated on 28-11-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -179,7 +174,7 @@ class AidantActivity : AppCompatActivity() {
             file.createNewFile()
             runBlocking {
                 val httpResponse: HttpResponse = client.get(
-                    "$URLServer/download/f039acad-ff93-434f-98aa-8"
+                    userdata.urlToFile
                 ) {
                     onDownload { bytesSentTotal, contentLength ->
                         println("Receives $bytesSentTotal bytes from $contentLength")
@@ -238,8 +233,8 @@ class AidantActivity : AppCompatActivity() {
             }
 
             // Bouton Tiers :
-            if (userdata.pleineFiche()) flTiers.visibility = View.VISIBLE
-            else flTiers.visibility = View.GONE
+            /*if (userdata.pleineFiche()) flTiers.visibility = View.VISIBLE
+            else flTiers.visibility = View.GONE*/
 
             logHandler.postDelayed(this, 250) // rafraîchissement
         }
