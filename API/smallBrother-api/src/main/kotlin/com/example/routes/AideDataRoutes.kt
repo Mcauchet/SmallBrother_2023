@@ -14,7 +14,7 @@ import java.io.File
  * manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 24-11-2022)
+ * @version 1.2 (Updated on 28-11-2022)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
