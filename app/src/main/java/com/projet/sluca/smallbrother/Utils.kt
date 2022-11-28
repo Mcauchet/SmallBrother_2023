@@ -4,11 +4,13 @@ import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.CountDownTimer
 import android.telephony.SmsManager
+import android.util.Base64
 import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
@@ -20,6 +22,9 @@ import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.request.*
 import java.io.IOException
+import java.security.SecureRandom
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
 
 //Edit URL Server until it is redefined in deployment
 const val URLServer = "https://cd78-2a02-a03f-ae4e-1900-802a-305-79e9-3aa.eu.ngrok.io"
@@ -179,3 +184,18 @@ fun loading(tvLoading: TextView) {
         override fun onFinish(): Unit = loading(tvLoading)
     }.start()
 }
+
+/*@Throws(Exception::class)
+fun generateSecretKey(): SecretKey? {
+    val secureRandom = SecureRandom()
+    val keyGenerator = KeyGenerator.getInstance("AES")
+    keyGenerator?.init(192, secureRandom)
+    return keyGenerator?.generateKey()
+}
+
+fun saveSecretKey(sharedPref: SharedPreferences, secretKey: SecretKey): String {
+    val encodedKey = Base64.encodeToString(secretKey.encoded, Base64.NO_WRAP)
+    sharedPref.edit().putString(AppConstants.secreyKeyPref, encodedKey).apply()
+    return encodedKey
+}
+*/
