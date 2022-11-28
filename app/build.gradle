@@ -35,6 +35,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'androidx.appcompat:appcompat-resources:1.5.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.7.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
@@ -68,9 +69,13 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
+    //QRCODEGEN
+    implementation 'com.github.androidmads:QRGenerator:1.0.1'
+
     //Compose
     implementation "com.google.accompanist:accompanist-appcompat-theme:0.25.1"
 }
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }

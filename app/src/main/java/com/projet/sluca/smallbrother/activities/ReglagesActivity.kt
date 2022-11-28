@@ -7,17 +7,14 @@ import android.telephony.SmsManager
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.projet.sluca.smallbrother.R
-import com.projet.sluca.smallbrother.Vibration
-import com.projet.sluca.smallbrother.message
+import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
-import com.projet.sluca.smallbrother.sentPI
 
 /***
  * ReglagesActivity manages the resets of aide's and/or aidant's information and aide's picture
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 17-11-22)
+ * @version 1.2 (Updated on 24-11-22)
  */
 class ReglagesActivity : AppCompatActivity() {
 
@@ -34,6 +31,7 @@ class ReglagesActivity : AppCompatActivity() {
         val btnResetPicture: Button = findViewById(R.id.btn_reinit_3)
         val btnBack: Button = findViewById(R.id.btn_retour)
         val btnHelp: Button = findViewById(R.id.btn_aide)
+        val btnQRCode: Button = findViewById(R.id.btn_qr_code)
 
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
@@ -108,10 +106,7 @@ class ReglagesActivity : AppCompatActivity() {
 
         btnBack.setOnClickListener {
             vibreur.vibration(this, 100)
-
-            // Transition vers la AidantActivity.
-            val intent = Intent(this, AidantActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         btnHelp.setOnClickListener {
@@ -123,6 +118,13 @@ class ReglagesActivity : AppCompatActivity() {
                 Uri.parse(userdata.url + userdata.help)
             )
             startActivity(browserIntent)
+        }
+
+        btnQRCode.setOnClickListener {
+            vibreur.vibration(this, 100)
+
+            val intent = Intent(this, QRCodeActivity::class.java)
+            startActivity(intent)
         }
     }
 }

@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.SecurityUtils
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.message
 import com.projet.sluca.smallbrother.models.UserData
@@ -23,7 +24,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDantActivity manages the installation for the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 14-11-22)
+ * @version 1.2 (updated on 28-11-22)
  */
 class InstallDantActivity : AppCompatActivity() {
     var vibreur = Vibration() // Instanciation d'un vibreur.
@@ -57,6 +58,9 @@ class InstallDantActivity : AppCompatActivity() {
 
         // Lancement des demandes de permissions.
         demandesPermissions()
+
+        //Generate key pair
+        SecurityUtils.getKeyPair()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }

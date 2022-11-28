@@ -180,4 +180,11 @@
     <string name="help_aide">J\'ai besoin d\'assistance</string>
     <string name="recuperer_les_donnees_de_l_aide">Récupérer les données de l\'Aidé</string>
 
+    <string name="qr_code_aide">Générer un QR Code pour l\'aidé</string>
+    <string name="generate_qrCode">Générer un QR Code</string>
+    <string name="qr_code">QR Code</string>
+    <string name="qr_code_police">Générer un QR Code pour la police</string>
+    <string name="explication_qr_aide">QR Code à scanner par l\'aidé</string>
+    <string name="explication_qr_police">QR Code à scanner par la police pour télécharger les fichiers</string>
+
 </resources>
