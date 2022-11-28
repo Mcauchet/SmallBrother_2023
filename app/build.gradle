@@ -69,8 +69,11 @@ dependencies {
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
 
-    //QRCODEGEN
+    //QRCODE GENERATOR
     implementation 'com.github.androidmads:QRGenerator:1.0.1'
+
+    //QRCODE SCANNER
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
 
     //Compose
     implementation "com.google.accompanist:accompanist-appcompat-theme:0.25.1"

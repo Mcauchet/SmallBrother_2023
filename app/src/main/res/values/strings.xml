@@ -186,5 +186,7 @@
     <string name="qr_code_police">Générer un QR Code pour la police</string>
     <string name="explication_qr_aide">QR Code à scanner par l\'aidé</string>
     <string name="explication_qr_police">QR Code à scanner par la police pour télécharger les fichiers</string>
+    <string name="aide_install2">[Aidé] Installation (suite)</string>
+    <string name="explication_aide_scan">Veuillez scanner le QR Code sur le smartphone de l\'aidant. Il se trouve dans les paramètres de son application (symbole d\'engrenage)</string>
 
 </resources>

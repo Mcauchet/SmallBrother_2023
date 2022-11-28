@@ -21,7 +21,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 14-11-2022)
+ * @version 1.2 (Updated on 28-11-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 
@@ -105,7 +105,7 @@ class InstallDeActivity : AppCompatActivity() {
                 userData.canGoBack = true
 
                 // Transition vers l'activity suivante.
-                val intent = Intent(this, AideActivity::class.java)
+                val intent = Intent(this, InstallDe2Activity::class.java)
                 startActivity(intent)
             }
         }

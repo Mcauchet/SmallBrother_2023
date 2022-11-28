@@ -24,24 +24,27 @@ import java.util.*
  *
  * @property version: last version of SB
  * @property role: Aidant or Aidé
- * @property nom: user's name
- * @property telephone: user's phone
+ * @property nom: other one's name (if on aide's phone, nom = aidant's name)
+ * @property telephone: other one's phone (if on aide's phone, telephone = aidant's phone number)
  * @property motion: Is the user moving
  * @property prive: DND mode
  * @property delai: time spent in DND mode
  * @property esquive: avoid redundant handlers for AideActivity
  * @property log: log content
  * @property canGoBack: indicates if going back is possible
+ * @property bit: on Sms received, change the log message
+ * @property pubKey: pubKey for the Aide when encrypting data
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 28-10-22)
+ * @version 1.2 (modified on 28-11-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
     var telephone: String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
     var log: String? = null, var canGoBack: Boolean = true, var bit: Int = 0,
+    var pubKey: String? = null,
 ) : Application() {
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
