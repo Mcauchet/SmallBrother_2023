@@ -27,7 +27,7 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://cd78-2a02-a03f-ae4e-1900-802a-305-79e9-3aa.eu.ngrok.io"
+const val URLServer = "https://8522-2a02-a03f-ae4e-1900-8596-cce-7f45-b0ae.eu.ngrok.io"
 
 /***
  * Send a SMS

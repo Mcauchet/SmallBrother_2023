@@ -64,7 +64,7 @@ class QRCodeActivity : AppCompatActivity() {
      * @author androidmads (See github:https://github.com/androidmads/QRGenerator)
      */
     private fun qrEncoder(msg: String, iv: ImageView) {
-        val qrEncoder = QRGEncoder(msg, null, QRGContents.Type.TEXT, 600)
+        val qrEncoder = QRGEncoder(msg, null, QRGContents.Type.TEXT, 400)
 
         qrEncoder.colorBlack = Color.LTGRAY
         qrEncoder.colorWhite = Color.BLACK

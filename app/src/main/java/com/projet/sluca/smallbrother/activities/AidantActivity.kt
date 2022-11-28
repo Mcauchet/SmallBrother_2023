@@ -170,7 +170,12 @@ class AidantActivity : AppCompatActivity() {
                     json()
                 }
             }
-            val file = File(userdata.path+"/SmallBrother/", "Aide.zip")
+
+            val dir =
+                Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                .absolutePath
+            val file = File(dir, "SmallBrother_Aide.zip")
             file.createNewFile()
             runBlocking {
                 val httpResponse: HttpResponse = client.get(
