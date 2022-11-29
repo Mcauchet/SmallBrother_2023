@@ -181,7 +181,8 @@ class AidantActivity : AppCompatActivity() {
                     }
                 }
                 val responseBody: ByteArray = httpResponse.body()
-                file.writeBytes(responseBody)
+                val decryptedData = decryptFileData(responseBody)
+                file.writeBytes(decryptedData)
                 println("A file saved to ${file.path}")
             }
         }

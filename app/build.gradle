@@ -9,7 +9,7 @@ android {
     buildToolsVersion "30.0.3"
     defaultConfig {
         applicationId "com.projet.sluca.smallbrother"
-        minSdkVersion 23
+        minSdkVersion 26
         targetSdkVersion 33
         versionName '1.2'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -74,6 +74,9 @@ dependencies {
 
     //QRCODE SCANNER
     implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
+
+    //Crypto
+    implementation("androidx.security:security-crypto:1.0.0")
 
     //Compose
     implementation "com.google.accompanist:accompanist-appcompat-theme:0.25.1"

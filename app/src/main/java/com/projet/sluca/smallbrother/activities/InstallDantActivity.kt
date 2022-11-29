@@ -1,24 +1,21 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.provider.Telephony
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import com.projet.sluca.smallbrother.R
-import com.projet.sluca.smallbrother.SecurityUtils
-import com.projet.sluca.smallbrother.Vibration
-import com.projet.sluca.smallbrother.message
+import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /***
  * class InstallDantActivity manages the installation for the aidant
@@ -61,6 +58,18 @@ class InstallDantActivity : AppCompatActivity() {
 
         //Generate key pair
         SecurityUtils.getKeyPair()
+        Log.d("PubKey", SecurityUtils.getPublicKey().toString())
+        Log.d("PrivateKey", SecurityUtils.getPrivateKey().toString())
+
+        /*CoroutineScope(Dispatchers.IO).launch {
+            val test = "idjsgid"
+            val baTest = test.toByteArray()
+            Log.d("baTest", String(baTest))
+            val eBaTest = encryptFileData(baTest, SecurityUtils.getPublicKey())
+            Log.d("Encrypted data", String(eBaTest))
+            val dBaTest = decryptFileData(eBaTest)
+            Log.d("Decrypted data", String(dBaTest))
+        }*/
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }

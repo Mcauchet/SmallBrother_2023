@@ -7,10 +7,12 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
@@ -137,7 +139,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             ziPath
         )
 
-        Log.d("zipFile", this@Work2Activity.filesDir.path+ziPath)
 
         // --> [5] niveau de batterie.
 
@@ -311,11 +312,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         val newName = UUID.randomUUID().toString().substring(0..24)
         val finalName = "$newName.zip"
 
+        val encryptedData = encryptFileData(file.readBytes(), userData.pubKey)
+
         client.post("$URLServer/upload") {
             setBody(MultiPartFormDataContent(
                 formData {
                     append("description", "zipped files")
-                    append("zip", file.readBytes(), Headers.build {
+                    append("zip", encryptedData, Headers.build {
                         append(HttpHeaders.ContentType, "application/zip")
                         append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
                     })

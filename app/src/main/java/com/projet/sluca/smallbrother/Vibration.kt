@@ -29,11 +29,7 @@ class Vibration {
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            shake.vibrate(VibrationEffect
-                .createOneShot(duree.toLong(), VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            shake.vibrate(duree.toLong())
-        }
+        shake.vibrate(VibrationEffect
+            .createOneShot(duree.toLong(), VibrationEffect.DEFAULT_AMPLITUDE))
     }
 }

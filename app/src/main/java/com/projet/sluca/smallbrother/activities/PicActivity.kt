@@ -17,6 +17,10 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.message
 import com.projet.sluca.smallbrother.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -90,7 +94,11 @@ class PicActivity : AppCompatActivity() {
 
             val image = userdata.path + "/SmallBrother/photo_aide.jpg"
             try {
-                bitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.IO) {
+                        bitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
+                    }
+                }
             } catch (e:FileNotFoundException) {
                 e.printStackTrace()
             }

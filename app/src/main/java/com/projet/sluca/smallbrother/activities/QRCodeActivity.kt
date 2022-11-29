@@ -39,7 +39,7 @@ class QRCodeActivity : AppCompatActivity() {
         btnQrCodeAide.setOnClickListener {
             vibreur.vibration(this, 100)
             tvExplication.text = getString(R.string.explication_qr_aide)
-            qrEncoder(SecurityUtils.getPublicKey().toString(), ivQrCode)
+            qrEncoder(SecurityUtils.getPublicKey(), ivQrCode)
         }
 
         btnQrCodePolice.setOnClickListener {
@@ -63,7 +63,7 @@ class QRCodeActivity : AppCompatActivity() {
      *
      * @author androidmads (See github:https://github.com/androidmads/QRGenerator)
      */
-    private fun qrEncoder(msg: String, iv: ImageView) {
+    private fun qrEncoder(msg: String?, iv: ImageView) {
         val qrEncoder = QRGEncoder(msg, null, QRGContents.Type.TEXT, 400)
 
         qrEncoder.colorBlack = Color.LTGRAY

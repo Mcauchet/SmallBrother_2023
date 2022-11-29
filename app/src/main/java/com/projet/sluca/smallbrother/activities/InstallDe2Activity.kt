@@ -1,5 +1,6 @@
 package com.projet.sluca.smallbrother.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -44,7 +45,9 @@ class InstallDe2Activity : AppCompatActivity() {
             runOnUiThread {
                 Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
                 userData.pubKey = it.text
-                Log.d("pubKey", userData.pubKey.toString())
+                Log.d("pubKey", userData.pubKey)
+                val intent = Intent(this, AideActivity::class.java)
+                startActivity(intent)
             }
         }
         codeScanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS

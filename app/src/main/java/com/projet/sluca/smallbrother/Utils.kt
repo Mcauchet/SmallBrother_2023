@@ -4,30 +4,33 @@ import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.CountDownTimer
 import android.telephony.SmsManager
-import android.util.Base64
 import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.request.*
+import io.ktor.utils.io.core.*
 import java.io.IOException
-import java.security.SecureRandom
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
+import android.util.Base64
+import java.security.Key
+import java.security.KeyFactory
+import java.security.spec.X509EncodedKeySpec
+import javax.crypto.Cipher
+import kotlin.text.toByteArray
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://8522-2a02-a03f-ae4e-1900-8596-cce-7f45-b0ae.eu.ngrok.io"
+const val URLServer = "https://404d-2a02-a03f-ae4e-1900-294f-e03d-b870-93de.eu.ngrok.io"
 
 /***
  * Send a SMS
@@ -185,17 +188,38 @@ fun loading(tvLoading: TextView) {
     }.start()
 }
 
-/*@Throws(Exception::class)
-fun generateSecretKey(): SecretKey? {
-    val secureRandom = SecureRandom()
-    val keyGenerator = KeyGenerator.getInstance("AES")
-    keyGenerator?.init(192, secureRandom)
-    return keyGenerator?.generateKey()
+/*fun encryptFileData(data: ByteArray, publicKey: String): ByteArray {
+    val publicBytes = Base64.decode(publicKey, Base64.DEFAULT)
+    val keySpec = X509EncodedKeySpec(publicBytes)
+    val keyFactory = KeyFactory.getInstance("RSA")
+    val pubKey = keyFactory.generatePublic(keySpec)
+    val cipher: Cipher = Cipher.getInstance("RSA/ECB/NoPadding")
+    cipher.init(Cipher.ENCRYPT_MODE, pubKey)
+    return cipher.doFinal(data)
 }
 
-fun saveSecretKey(sharedPref: SharedPreferences, secretKey: SecretKey): String {
-    val encodedKey = Base64.encodeToString(secretKey.encoded, Base64.NO_WRAP)
-    sharedPref.edit().putString(AppConstants.secreyKeyPref, encodedKey).apply()
-    return encodedKey
+fun decryptFileData(data: ByteArray): ByteArray {
+    val cipher: Cipher = Cipher.getInstance("RSA/ECB/NoPadding")
+    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey())
+    return cipher.doFinal(data)
+}*/
+
+fun loadPublicKey(publicKey: String): Key {
+    val data: ByteArray = Base64.decode(publicKey.toByteArray(), Base64.DEFAULT)
+    val spec = X509EncodedKeySpec(data)
+    val fact = KeyFactory.getInstance("RSA")
+    return fact.generatePublic(spec)
 }
-*/
+
+fun encryptFileData(data:ByteArray, publicKey: String): ByteArray {
+    val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+    cipher.init(Cipher.ENCRYPT_MODE, loadPublicKey(publicKey))
+    return cipher.doFinal(data)
+}
+
+fun decryptFileData(data: ByteArray): ByteArray {
+    val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey())
+    return cipher.doFinal(data)
+}
+

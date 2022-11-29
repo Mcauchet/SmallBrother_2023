@@ -16,7 +16,7 @@ import java.util.*
 object SecurityUtils {
 
     private const val KEYSTORE_ALIAS =
-        "com.projet.sluca.smallbrother.key"
+        "aaaaa"
 
 
     fun getKeyPair(): KeyPair? {
@@ -24,31 +24,23 @@ object SecurityUtils {
             load(null)
         }
         val aliases: Enumeration<String> = ks.aliases()
-        val keyPair: KeyPair?
 
         /**
          * Check whether the keypair with the alias [KEYSTORE_ALIAS] exists.
          */
-        if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS } == null) {
+        val keyPair: KeyPair? = if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS } == null) {
             // If it doesn't exist, generate new keypair
             val kpg: KeyPairGenerator = KeyPairGenerator.getInstance(
-                KeyProperties.KEY_ALGORITHM_EC,
-                "AndroidKeyStore"
+                "RSA"
             )
-            val parameterSpec: KeyGenParameterSpec = KeyGenParameterSpec.Builder(
-                KEYSTORE_ALIAS,
-                KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY
-            ).run {
-                setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-                build()
-            }
-            kpg.initialize(parameterSpec)
 
-            keyPair = kpg.generateKeyPair()
+            kpg.initialize(2048)
+
+            kpg.generateKeyPair()
         } else {
             // If it exists, load the existing keypair
             val entry = ks.getEntry(KEYSTORE_ALIAS, null) as? KeyStore.PrivateKeyEntry
-            keyPair = KeyPair(entry?.certificate?.publicKey, entry?.privateKey)
+            KeyPair(entry?.certificate?.publicKey, entry?.privateKey)
         }
         return keyPair
     }
@@ -67,6 +59,6 @@ object SecurityUtils {
      */
     fun getPrivateKey(): PrivateKey? {
         val keyPair = getKeyPair()
-        return keyPair?.private
+        return keyPair?.private ?: return null
     }
 }
