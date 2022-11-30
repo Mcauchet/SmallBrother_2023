@@ -8,7 +8,6 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
 import org.apache.commons.io.IOUtils
 import java.io.*
-import java.security.KeyPair
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -31,13 +30,14 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 28-11-22)
+ * @version 1.2 (modified on 30-11-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
     var telephone: String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
     var log: String? = null, var canGoBack: Boolean = true, var bit: Int = 0,
+    var pubKey: String = ""
 ) : Application() {
 
     // -> Appel du chemin globalisé vers le dossier "SmallBrother".
@@ -45,10 +45,6 @@ data class UserData(
     //val path = Environment
     //    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     //    .absolutePath + "/SmallBrother/"
-
-    var keyPair: KeyPair? = null
-
-    var pubKey: String = ""
 
     var urlToFile: String = ""
 
@@ -91,7 +87,7 @@ data class UserData(
      */
     fun saveData(context: Context?) {
         // Structuration du contenu du futur fichier (info, retour-charriot).
-        val contenu = version + "\r" + role + "\r" + nom + "\r" + telephone
+        val contenu = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey
 
         Log.d("CONTENU", contenu)
 
@@ -167,10 +163,7 @@ data class UserData(
                 role = dataTab[1]
                 nom = dataTab[2]
                 telephone = dataTab[3]
-                if (dataTab.size > 4) // Si compte de l'Aidé :
-                {
-                    Log.d("AIDEDATA", "test")
-                }
+                pubKey = dataTab[4]
                 return true
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()

@@ -46,7 +46,7 @@ class QRCodeActivity : AppCompatActivity() {
         btnQrCodeAide.setOnClickListener {
             vibreur.vibration(this, 100)
             tvExplication.text = getString(R.string.explication_qr_aide)
-            qrEncoder(SecurityUtils.getPublicKey(userdata.keyPair), ivQrCode)
+            qrEncoder(SecurityUtils.getPublicKey(), ivQrCode)
         }
 
         btnQrCodePolice.setOnClickListener {

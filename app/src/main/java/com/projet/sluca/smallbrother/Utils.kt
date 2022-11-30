@@ -31,7 +31,7 @@ import javax.crypto.Cipher
 import kotlin.text.toByteArray
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://404d-2a02-a03f-ae4e-1900-294f-e03d-b870-93de.eu.ngrok.io"
+const val URLServer = "https://7229-2a02-a03f-ae4e-1900-c04f-25df-f554-cb6b.eu.ngrok.io"
 
 /***
  * Send a SMS
@@ -214,13 +214,14 @@ fun loadPublicKey(publicKey: String): Key {
 
 fun encryptFileData(data:ByteArray, publicKey: String): ByteArray {
     val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+    Log.d("PUBKEY IN ENCRYPT", Base64.encode(loadPublicKey(publicKey).encoded, Base64.NO_WRAP).toString())
     cipher.init(Cipher.ENCRYPT_MODE, loadPublicKey(publicKey))
     return cipher.doFinal(data)
 }
 
-fun decryptFileData(data: ByteArray, keyPair: KeyPair?): ByteArray {
+fun decryptFileData(data: ByteArray): ByteArray {
     val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey(keyPair))
+    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey())
     return cipher.doFinal(data)
 }
 

@@ -58,19 +58,17 @@ class InstallDantActivity : AppCompatActivity() {
         demandesPermissions()
 
         //Generate key pair
-        userdata.keyPair = SecurityUtils.getKeyPair()
-        Log.d("PubKey", SecurityUtils.getPublicKey(userdata.keyPair).toString())
-        Log.d("PrivateKey", SecurityUtils.getPrivateKey(userdata.keyPair).toString())
-        userdata.pubKey = String(Base64.encode(userdata.keyPair?.public?.encoded, Base64.DEFAULT))
-
+        SecurityUtils.getKeyPair()
+        /*Log.d("PubKey", SecurityUtils.getPublicKey())
+        Log.d("PrivateKey", SecurityUtils.getPrivateKey().toString())
 
         val testData = "idjsgid"
         val baTestData = testData.toByteArray()
         Log.d("baTest", String(baTestData))
-        val eBaTestData = SecurityUtils.getPublicKey(userdata.keyPair)?.let { encryptFileData(baTestData, it) }
-        Log.d("Encrypted data", eBaTestData?.let { String(it) }.toString())
-        val dBaTestData = eBaTestData?.let { decryptFileData(it, userdata.keyPair) }
-        Log.d("Decrypted data", dBaTestData?.let { String(it) }.toString())
+        val eBaTestData = encryptFileData(baTestData, SecurityUtils.getPublicKey())
+        Log.d("Encrypted data", String(eBaTestData))
+        val dBaTestData = decryptFileData(eBaTestData)
+        Log.d("Decrypted data", String(dBaTestData))*/
 
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)

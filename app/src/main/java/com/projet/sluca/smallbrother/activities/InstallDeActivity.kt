@@ -100,12 +100,15 @@ class InstallDeActivity : AppCompatActivity() {
                 userData.telephone = telephone
                 userData.version = version
 
-                userData.saveData(this)
+                //userData.saveData(this)
 
                 userData.canGoBack = true
 
                 // Transition vers l'activity suivante.
                 val intent = Intent(this, InstallDe2Activity::class.java)
+                intent.putExtra("nom", nom)
+                intent.putExtra("telephone", telephone)
+                intent.putExtra("version", version)
                 startActivity(intent)
             }
         }

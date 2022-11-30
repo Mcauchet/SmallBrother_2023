@@ -28,6 +28,11 @@ class InstallDe2Activity : AppCompatActivity() {
 
         userData = application as UserData
 
+        userData.nom = intent.getStringExtra("nom").toString()
+        userData.telephone = intent.getStringExtra("telephone").toString()
+        userData.version = intent.getStringExtra("version").toString()
+
+
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 
         codeScanner = CodeScanner(this, scannerView)
@@ -45,6 +50,7 @@ class InstallDe2Activity : AppCompatActivity() {
             runOnUiThread {
                 Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
                 userData.pubKey = it.text
+                userData.saveData(this)
                 Log.d("pubKey", userData.pubKey)
                 val intent = Intent(this, AideActivity::class.java)
                 startActivity(intent)

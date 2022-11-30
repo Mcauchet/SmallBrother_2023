@@ -10,8 +10,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Base64
-import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -35,7 +33,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 28-11-2022)
+ * @version 1.2 (updated on 30-11-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -78,11 +76,6 @@ class AidantActivity : AppCompatActivity() {
         wakeup(window, this@AidantActivity)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
-        Log.d("USER KPAIR", userdata.keyPair.toString())
-
-        Log.d("AidantPubKey", String(Base64.encode(userdata.keyPair?.public?.encoded, Base64.DEFAULT)))
-        Log.d("TESTBOOL", (userdata.pubKey == String(Base64.encode(userdata.keyPair?.public?.encoded, Base64.DEFAULT))).toString())
 
         btnSettings.setOnClickListener {
             vibreur.vibration(this, 100)
@@ -188,7 +181,7 @@ class AidantActivity : AppCompatActivity() {
                     }
                 }
                 val responseBody: ByteArray = httpResponse.body()
-                val decryptedData = decryptFileData(responseBody, userdata.keyPair)
+                val decryptedData = decryptFileData(responseBody)
                 file.writeBytes(decryptedData)
                 println("A file saved to ${file.path}")
             }
