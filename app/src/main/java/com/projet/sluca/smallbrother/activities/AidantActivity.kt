@@ -10,6 +10,8 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Base64
+import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -76,6 +78,11 @@ class AidantActivity : AppCompatActivity() {
         wakeup(window, this@AidantActivity)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        Log.d("USER KPAIR", userdata.keyPair.toString())
+
+        Log.d("AidantPubKey", String(Base64.encode(userdata.keyPair?.public?.encoded, Base64.DEFAULT)))
+        Log.d("TESTBOOL", (userdata.pubKey == String(Base64.encode(userdata.keyPair?.public?.encoded, Base64.DEFAULT))).toString())
 
         btnSettings.setOnClickListener {
             vibreur.vibration(this, 100)
@@ -181,7 +188,7 @@ class AidantActivity : AppCompatActivity() {
                     }
                 }
                 val responseBody: ByteArray = httpResponse.body()
-                val decryptedData = decryptFileData(responseBody)
+                val decryptedData = decryptFileData(responseBody, userdata.keyPair)
                 file.writeBytes(decryptedData)
                 println("A file saved to ${file.path}")
             }

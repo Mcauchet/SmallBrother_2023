@@ -4,6 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,6 +14,7 @@ import androidmads.library.qrgenearator.QRGEncoder
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SecurityUtils
 import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.models.UserData
 
 /***
  * Manages the creation of the QR Codes for public key (aide's installation)
@@ -26,6 +29,8 @@ class QRCodeActivity : AppCompatActivity() {
 
     lateinit var bitmap: Bitmap
 
+    lateinit var userdata: UserData
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qrcode)
@@ -36,10 +41,12 @@ class QRCodeActivity : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btn_retour)
         val tvExplication: TextView = findViewById(R.id.QrCode_explication)
 
+        userdata = application as UserData
+
         btnQrCodeAide.setOnClickListener {
             vibreur.vibration(this, 100)
             tvExplication.text = getString(R.string.explication_qr_aide)
-            qrEncoder(SecurityUtils.getPublicKey(), ivQrCode)
+            qrEncoder(SecurityUtils.getPublicKey(userdata.keyPair), ivQrCode)
         }
 
         btnQrCodePolice.setOnClickListener {

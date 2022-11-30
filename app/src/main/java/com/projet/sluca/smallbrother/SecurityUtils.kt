@@ -1,10 +1,14 @@
 package com.projet.sluca.smallbrother
 
+import android.security.KeyPairGeneratorSpec
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
+import android.util.Log
 import java.security.*
 import java.util.*
+import javax.security.auth.x500.X500Principal
+
 
 /***
  * manages the public/private keys
@@ -16,7 +20,7 @@ import java.util.*
 object SecurityUtils {
 
     private const val KEYSTORE_ALIAS =
-        "aaaaa"
+        "ksa.test0"
 
 
     fun getKeyPair(): KeyPair? {
@@ -34,7 +38,16 @@ object SecurityUtils {
                 "RSA"
             )
 
-            kpg.initialize(2048)
+            kpg.initialize(
+                KeyGenParameterSpec.Builder(
+                    KEYSTORE_ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT
+                ).setEncryptionPaddings(
+                    KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1
+                ).setKeySize(
+                    2048
+                ).setCertificateSubject(X500Principal("CN=test"))
+                    .build()
+            )
 
             kpg.generateKeyPair()
         } else {
@@ -48,8 +61,9 @@ object SecurityUtils {
     /**
      * Returns the public key with alias [KEYSTORE_ALIAS].
      */
-    fun getPublicKey(): String? {
-        val keyPair = getKeyPair()
+    fun getPublicKey(keyPair: KeyPair?): String? {
+        Log.d("keypair1", keyPair.toString())
+        Log.d("PubKey1", String(Base64.encode(keyPair?.public?.encoded, Base64.DEFAULT)))
         val publicKey = keyPair?.public ?: return null
         return String(Base64.encode(publicKey.encoded, Base64.DEFAULT))
     }
@@ -57,8 +71,9 @@ object SecurityUtils {
     /**
      * Returns the private key with alias [KEYSTORE_ALIAS].
      */
-    fun getPrivateKey(): PrivateKey? {
-        val keyPair = getKeyPair()
+    fun getPrivateKey(keyPair: KeyPair?): PrivateKey? {
+        Log.d("keypair2", keyPair.toString())
+        Log.d("PubKey2", String(Base64.encode(keyPair?.public?.encoded, Base64.DEFAULT)))
         return keyPair?.private ?: return null
     }
 }

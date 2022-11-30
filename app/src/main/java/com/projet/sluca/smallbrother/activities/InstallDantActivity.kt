@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -57,19 +58,20 @@ class InstallDantActivity : AppCompatActivity() {
         demandesPermissions()
 
         //Generate key pair
-        SecurityUtils.getKeyPair()
-        Log.d("PubKey", SecurityUtils.getPublicKey().toString())
-        Log.d("PrivateKey", SecurityUtils.getPrivateKey().toString())
+        userdata.keyPair = SecurityUtils.getKeyPair()
+        Log.d("PubKey", SecurityUtils.getPublicKey(userdata.keyPair).toString())
+        Log.d("PrivateKey", SecurityUtils.getPrivateKey(userdata.keyPair).toString())
+        userdata.pubKey = String(Base64.encode(userdata.keyPair?.public?.encoded, Base64.DEFAULT))
 
-        /*CoroutineScope(Dispatchers.IO).launch {
-            val test = "idjsgid"
-            val baTest = test.toByteArray()
-            Log.d("baTest", String(baTest))
-            val eBaTest = encryptFileData(baTest, SecurityUtils.getPublicKey())
-            Log.d("Encrypted data", String(eBaTest))
-            val dBaTest = decryptFileData(eBaTest)
-            Log.d("Decrypted data", String(dBaTest))
-        }*/
+
+        val testData = "idjsgid"
+        val baTestData = testData.toByteArray()
+        Log.d("baTest", String(baTestData))
+        val eBaTestData = SecurityUtils.getPublicKey(userdata.keyPair)?.let { encryptFileData(baTestData, it) }
+        Log.d("Encrypted data", eBaTestData?.let { String(it) }.toString())
+        val dBaTestData = eBaTestData?.let { decryptFileData(it, userdata.keyPair) }
+        Log.d("Decrypted data", dBaTestData?.let { String(it) }.toString())
+
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }

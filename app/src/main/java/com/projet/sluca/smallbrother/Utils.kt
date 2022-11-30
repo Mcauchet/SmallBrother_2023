@@ -25,6 +25,7 @@ import java.io.IOException
 import android.util.Base64
 import java.security.Key
 import java.security.KeyFactory
+import java.security.KeyPair
 import java.security.spec.X509EncodedKeySpec
 import javax.crypto.Cipher
 import kotlin.text.toByteArray
@@ -217,9 +218,9 @@ fun encryptFileData(data:ByteArray, publicKey: String): ByteArray {
     return cipher.doFinal(data)
 }
 
-fun decryptFileData(data: ByteArray): ByteArray {
+fun decryptFileData(data: ByteArray, keyPair: KeyPair?): ByteArray {
     val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey())
+    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey(keyPair))
     return cipher.doFinal(data)
 }
 

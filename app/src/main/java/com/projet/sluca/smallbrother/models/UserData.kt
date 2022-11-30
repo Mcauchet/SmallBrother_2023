@@ -8,6 +8,7 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
 import org.apache.commons.io.IOUtils
 import java.io.*
+import java.security.KeyPair
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -44,6 +45,8 @@ data class UserData(
     //val path = Environment
     //    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     //    .absolutePath + "/SmallBrother/"
+
+    var keyPair: KeyPair? = null
 
     var pubKey: String = ""
 
