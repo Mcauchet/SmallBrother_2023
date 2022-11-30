@@ -16,6 +16,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.libs.*
+import com.projet.sluca.smallbrother.models.AideData
 import com.projet.sluca.smallbrother.models.UserData
 
 import io.ktor.client.*
@@ -279,7 +280,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         Log.d("AES ENC KEY", aesEncKey)
 
         //envoi données chiffrées + clé AES chiffrée
-        client.post("$URLServer/upload/$aesEncKey") {
+        client.post("$URLServer/upload") {
             setBody(MultiPartFormDataContent(
                 formData {
                     append("description", "zipped files")
@@ -294,6 +295,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             onUpload { bytesSentTotal, contentLength ->
                 println("Sent $bytesSentTotal bytes from $contentLength")
             }
+        }
+        client.post("$URLServer/upload/aes") {
+            contentType(ContentType.Application.Json)
+            setBody(AideData("$URLServer/upload/$finalName", aesEncKey))
         }
         return finalName
     }

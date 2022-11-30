@@ -20,10 +20,8 @@ fun Route.aideDataRouting() {
     route("/upload") {
         var fileDescription = ""
         var fileName = ""
-        post("/{aesKey}") {
+        post {
             val multipartData = call.receiveMultipart()
-            val aesKey = call.parameters["aesKey"]
-                ?: return@post call.respondText("AES key not valid", status = HttpStatusCode.NotFound)
 
             multipartData.forEachPart { part ->
                 when (part) {
@@ -33,16 +31,17 @@ fun Route.aideDataRouting() {
                     is PartData.FileItem -> {
                         fileName = part.originalFileName as String
                         val fileBytes = part.streamProvider().readBytes()
-                        val uri = "upload/$fileName"
-                        File(uri).writeBytes(fileBytes)
-                        val aideData = AideData(uri, aesKey)
-                        dao.addAideData(aideData)
+                        File("upload/$fileName").writeBytes(fileBytes)
                     }
                     else -> {}
                 }
                 part.dispose()
             }
             call.respondText("$fileDescription is uploaded to 'upload/$fileName'")
+        }
+        post("/aes") {
+            val aideData = call.receive<AideData>()
+            dao.addAideData(aideData)
         }
     }
 
