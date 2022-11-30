@@ -27,7 +27,9 @@ class PhoneStatReceiver : BroadcastReceiver() {
             //TODO see deprecated
             if (tm.callState == TelephonyManager.CALL_STATE_RINGING) {
                 // Set du numéro de l'appelant.
-                callNumber = intent.getStringExtra("incoming_number").toString()
+                if(intent.hasExtra("incoming_number")) {
+                    callNumber = intent.getStringExtra("incoming_number").toString()
+                }
                 if (userdata.bit == 1) // Si le Mode Privé est activé.
                 {
                     // Avertir :

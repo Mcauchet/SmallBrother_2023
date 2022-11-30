@@ -172,16 +172,31 @@ class AidantActivity : AppCompatActivity() {
                 .absolutePath
             val file = File(dir, "SmallBrother_Aide.zip")
             file.createNewFile()
+            if(intent.hasExtra("url")) {
+                userdata.urlToFile = intent.getStringExtra("url").toString()
+            }
             runBlocking {
                 val httpResponse: HttpResponse = client.get(
-                    userdata.urlToFile
+                    "$URLServer/download/${userdata.urlToFile}"
                 ) {
                     onDownload { bytesSentTotal, contentLength ->
                         println("Receives $bytesSentTotal bytes from $contentLength")
                     }
                 }
+                val aesHttp: HttpResponse = client.get(
+                    "$URLServer/aes/${userdata.urlToFile}"
+                )
+
+                //retrieve AES encrypted KEY, decrypt it and use it to decrypt the data
+                val aesBody: String = aesHttp.body()
+                val aesDecKey = java.util.Base64.getDecoder().decode(aesBody)
+
+                //retrieve zip data ByteArray
                 val responseBody: ByteArray = httpResponse.body()
-                val decryptedData = decryptFileData(responseBody)
+
+                //decrypt data with the decrypted AES key
+                val decryptedData = SecurityUtils.decryptDataAes(responseBody, aesDecKey)
+                //val decryptedData = decryptFileData(responseBody)
                 file.writeBytes(decryptedData)
                 println("A file saved to ${file.path}")
             }

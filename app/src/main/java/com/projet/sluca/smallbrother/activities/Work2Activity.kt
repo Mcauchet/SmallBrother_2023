@@ -7,12 +7,10 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.os.BatteryManager
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback
@@ -32,6 +30,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.*
+import java.security.PublicKey
 
 import java.util.*
 import java.util.zip.ZipEntry
@@ -41,7 +40,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 28-11-2022)
+ * @version 1.2 (Updated on 30-11-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -199,6 +198,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         try {
                             var zipName = ""
                             if (File(ziPath).exists()) {
+                                Log.d("zip file", "exists")
                                 zipName = uploadZip(client, File(ziPath))
                             }
                             val fileLocation =
@@ -254,53 +254,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }.start() // Envoi !
     }
 
-    /*suspend fun uploadImage(client: HttpClient, file: File): String {
-        val newName = UUID.randomUUID().toString().substring(0..24)
-        val finalName = "$newName.jpg"
-
-        client.post("$URLServer/upload") {
-            setBody(MultiPartFormDataContent(
-                formData {
-                    append("description", "Aide Pictures")
-                    append("image", file.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentType, "image/jpg")
-                        append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
-                    })
-                },
-                boundary = "WebAppBoundary"
-            )
-            )
-            onUpload { bytesSentTotal, contentLength ->
-                println("Sent $bytesSentTotal bytes from $contentLength")
-            }
-        }
-        return finalName
-    }
-
-
-    suspend fun uploadAudio(client: HttpClient, file: File): String {
-        val newName = UUID.randomUUID().toString().substring(0..24)
-        val finalName = "$newName.ogg"
-
-        client.post("$URLServer/upload") {
-            setBody(MultiPartFormDataContent(
-                formData {
-                    append("description", "audio recording")
-                    append("audio", file.readBytes(), Headers.build {
-                        append(HttpHeaders.ContentType, "audio/ogg")
-                        append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
-                    })
-                },
-                boundary = "WebAppBoundary"
-            )
-            )
-            onUpload { bytesSentTotal, contentLength ->
-                println("Sent $bytesSentTotal bytes from $contentLength")
-            }
-        }
-        return finalName
-    }*/
-
     /***
      * renames the zip file and uploads it to the server
      *
@@ -312,9 +265,21 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         val newName = UUID.randomUUID().toString().substring(0..24)
         val finalName = "$newName.zip"
 
-        val encryptedData = encryptFileData(file.readBytes(), userData.pubKey)
+        //val encryptedData = encryptFileData(file.readBytes(), userData.pubKey)
 
-        client.post("$URLServer/upload") {
+        Log.d("before", "encryption")
+        // chiffrement des données avec clé AES
+        val encryptedData = SecurityUtils.encryptDataAes(file.readBytes())
+
+        //chiffrement de la clé AES avec RSA+
+        val aesEncKey = String(android.util.Base64.encode(
+            SecurityUtils.encryptAESKey(
+                loadPublicKey(userData.pubKey) as PublicKey), android.util.Base64.NO_WRAP)
+        )
+        Log.d("AES ENC KEY", aesEncKey)
+
+        //envoi données chiffrées + clé AES chiffrée
+        client.post("$URLServer/upload/$aesEncKey") {
             setBody(MultiPartFormDataContent(
                 formData {
                     append("description", "zipped files")

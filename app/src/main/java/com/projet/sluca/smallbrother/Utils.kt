@@ -15,7 +15,6 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
@@ -25,13 +24,11 @@ import java.io.IOException
 import android.util.Base64
 import java.security.Key
 import java.security.KeyFactory
-import java.security.KeyPair
 import java.security.spec.X509EncodedKeySpec
-import javax.crypto.Cipher
 import kotlin.text.toByteArray
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://7229-2a02-a03f-ae4e-1900-c04f-25df-f554-cb6b.eu.ngrok.io"
+const val URLServer = "https://9548-2a02-a03f-ae4e-1900-c04f-25df-f554-cb6b.eu.ngrok.io"
 
 /***
  * Send a SMS
@@ -212,7 +209,7 @@ fun loadPublicKey(publicKey: String): Key {
     return fact.generatePublic(spec)
 }
 
-fun encryptFileData(data:ByteArray, publicKey: String): ByteArray {
+/*fun encryptFileData(data:ByteArray, publicKey: String): ByteArray {
     val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
     Log.d("PUBKEY IN ENCRYPT", Base64.encode(loadPublicKey(publicKey).encoded, Base64.NO_WRAP).toString())
     cipher.init(Cipher.ENCRYPT_MODE, loadPublicKey(publicKey))
@@ -223,5 +220,4 @@ fun decryptFileData(data: ByteArray): ByteArray {
     val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
     cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey())
     return cipher.doFinal(data)
-}
-
+}*/

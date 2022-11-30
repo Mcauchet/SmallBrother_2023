@@ -14,14 +14,16 @@ import java.io.File
  * manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 28-11-2022)
+ * @version 1.2 (Updated on 30-11-2022)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
         var fileDescription = ""
         var fileName = ""
-        post {
+        post("/{aesKey}") {
             val multipartData = call.receiveMultipart()
+            val aesKey = call.parameters["aesKey"]
+                ?: return@post call.respondText("AES key not valid", status = HttpStatusCode.NotFound)
 
             multipartData.forEachPart { part ->
                 when (part) {
@@ -31,7 +33,10 @@ fun Route.aideDataRouting() {
                     is PartData.FileItem -> {
                         fileName = part.originalFileName as String
                         val fileBytes = part.streamProvider().readBytes()
-                        File("upload/$fileName").writeBytes(fileBytes)
+                        val uri = "upload/$fileName"
+                        File(uri).writeBytes(fileBytes)
+                        val aideData = AideData(uri, aesKey)
+                        dao.addAideData(aideData)
                     }
                     else -> {}
                 }
@@ -41,17 +46,33 @@ fun Route.aideDataRouting() {
         }
     }
 
+    route("/aes") {
+        get("/{key}") {
+            val key = call.parameters["key"]
+                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
+            val aideData = dao.getAideData(key)
+            if (aideData != null) {
+                call.respond(aideData.AESKey)
+            } else {
+                call.respond("AES key not found")
+            }
+        }
+    }
+
     route("/download") {
         get("/{key}"){
             //TODO (download files for Aidant)
             val key = call.parameters["key"]
             val file = File("upload/$key")
-            call.response.header(
-                HttpHeaders.ContentDisposition,
-                ContentDisposition.Attachment.withParameter(
-                    ContentDisposition.Parameters.FileName, "$key.zip"
-                ).toString()
-            )
+            val aideData = dao.getAideData("upload/$key")
+            if (aideData != null) {
+                call.response.header(
+                    HttpHeaders.ContentDisposition,
+                    ContentDisposition.Attachment.withParameter(
+                        ContentDisposition.Parameters.FileName, "${aideData.AESKey}.zip"
+                    ).toString()
+                )
+            }
             call.respondFile(file)
         }
     }

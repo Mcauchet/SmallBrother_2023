@@ -1,6 +1,5 @@
 package com.projet.sluca.smallbrother
 
-import android.security.KeyPairGeneratorSpec
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
@@ -8,6 +7,10 @@ import android.util.Log
 import java.security.*
 import java.security.KeyStore.PrivateKeyEntry
 import java.util.*
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 import javax.security.auth.x500.X500Principal
 
 
@@ -22,6 +25,9 @@ object SecurityUtils {
 
     private const val KEYSTORE_ALIAS =
         "ksa.test6"
+
+    private const val KEYSTORE_ALIAS_AES =
+        "ksa.aes"
 
 
     fun getKeyPair() {
@@ -80,5 +86,66 @@ object SecurityUtils {
         }
         val entry = ks.getEntry(KEYSTORE_ALIAS, null) as PrivateKeyEntry
         return entry.privateKey
+    }
+
+    /***
+     * fun to get the AES key
+     */
+    fun getAESKey(): SecretKey {
+        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
+            load(null)
+        }
+        val aliases: Enumeration<String> = ks.aliases()
+        return if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS_AES } == null) {
+            val generator: KeyGenerator = KeyGenerator.getInstance("AES")
+            generator.init(192)
+            val aesKey = generator.generateKey()
+            Log.d("AES key 1", String(Base64.encode(aesKey.encoded, Base64.NO_WRAP)))
+            return aesKey
+        } else {
+            ks.getEntry(KEYSTORE_ALIAS_AES, null) as SecretKey
+        }
+    }
+
+    /***
+     * fun to encrypt the zip file
+     */
+    fun encryptDataAes(data:ByteArray): ByteArray {
+        val aesCipher = Cipher.getInstance("AES")
+        aesCipher.init(Cipher.ENCRYPT_MODE, getAESKey())
+        Log.d("AES key", String(Base64.encode(getAESKey().encoded, Base64.NO_WRAP)))
+        return aesCipher.doFinal(data)
+    }
+
+    /***
+     * fun to encrypt the AES key with the public RSA key
+     *
+     * @param publicKey the public key of the aidant
+     */
+    fun encryptAESKey(publicKey: PublicKey): ByteArray {
+        val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
+        cipher.init(Cipher.PUBLIC_KEY, publicKey)
+        return cipher.doFinal(getAESKey().encoded)
+    }
+
+    /***
+     * fun to decrypt the key with the private key
+     *
+     * @param encKey the AES key used to encrypt the data by the aide
+     */
+    private fun decryptAESKey(encKey: ByteArray): ByteArray {
+        val aesCipher = Cipher.getInstance("AES")
+        aesCipher.init(Cipher.PRIVATE_KEY, getPrivateKey())
+        return aesCipher.doFinal(encKey)
+    }
+
+    fun decryptDataAes(data:ByteArray, encKey: ByteArray):ByteArray {
+        val decryptedKey = decryptAESKey(encKey)
+        val originalKey = SecretKeySpec(decryptedKey, 0, decryptedKey.count(), "AES")
+        Log.d("Decrypted key count", decryptedKey.count().toString())
+        Log.d("Decrpted key size", decryptedKey.size.toString())
+        val aesCipher = Cipher.getInstance("AES")
+        aesCipher.init(Cipher.DECRYPT_MODE, originalKey)
+        return aesCipher.doFinal(data)
     }
 }

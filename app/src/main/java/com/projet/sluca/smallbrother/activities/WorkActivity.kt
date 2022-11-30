@@ -152,17 +152,17 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             //TODO deprecated, change for cameraX
                             Log.d("MAGNETO", "INIT")
                             magneto = MediaRecorder()
-                            magneto!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-                            magneto!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                            magneto!!.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-                            magneto!!.setOutputFile(fichier)
+                            magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
+                            magneto?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                            magneto?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+                            magneto?.setOutputFile(fichier)
                             try {
-                                magneto!!.prepare()
+                                magneto?.prepare()
                             } catch (e: IOException) {
                                 e.printStackTrace()
                             }
                             Log.d("MAGNETO", "MAGNETO STARTS")
-                            magneto!!.start() // Enregistrement lancé.
+                            magneto?.start() // Enregistrement lancé.
 
                             // =======================================================================
                         } else  // Si pas de connexion :
@@ -200,9 +200,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         override fun onFinish() // Fin du délai :
                         {
                             // Conclusion de l'enregistrement.
-                            magneto!!.stop()
+                            magneto?.stop()
                             Log.d("MAGNETO", "MAGNETO STOPS")
-                            magneto!!.release()
+                            magneto?.release()
                             magneto = null
 
                             // Déclaration : le téléphone est ou non en mouvement.

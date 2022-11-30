@@ -43,5 +43,5 @@ POST http://127.0.0.1:8080/aideData/delete/
 Accept: application/json
 
 ###
-GET http://127.0.0.1:8080/download/f039acad-ff93-434f-98aa-8
+GET http://127.0.0.1:8080/download/f039acad-ff93-434f-98aa-8.zip
 Accept: application/zip

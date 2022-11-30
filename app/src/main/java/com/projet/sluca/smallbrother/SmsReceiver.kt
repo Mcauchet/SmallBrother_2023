@@ -10,13 +10,12 @@ import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.activities.WorkActivity
 import com.projet.sluca.smallbrother.models.UserData
 
-//TODO check if this class works and get rid of comments if it does (and document the process)
 /***
  * SmsReceiver updates aide's log depending on received messages coming from the aidant
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 28-11-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 30-11-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -52,9 +51,10 @@ class SmsReceiver : BroadcastReceiver() {
 
         if(userdata.role == "Aidant") {
             if (clef == "[#SB10]") {
-                val urlFile = message.subSequence(15, message.length - 8).toString()
+                val urlFile = message.subSequence(message.length - 37, message.length - 8).toString()
                 userdata.urlToFile = urlFile
                 val intnt = Intent(context, AidantActivity::class.java)
+                intnt.putExtra("url", urlFile)
                 intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 context.startActivity(intnt)
             }

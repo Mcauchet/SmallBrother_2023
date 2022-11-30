@@ -10,16 +10,12 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
  * DAOFacadeImpl implements the DAOFacade methods.
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 20-11-2022)
+ * @version 1 (Updated on 30-11-2022)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
-        img1 = row[AideDatas.img1],
-        img2 = row[AideDatas.img2],
-        audio = row[AideDatas.audio],
-        motion = row[AideDatas.motion],
-        battery = row[AideDatas.battery],
-        key = row[AideDatas.key],
+        uri = row[AideDatas.uri],
+        AESKey = row[AideDatas.AESKey],
     )
 
     //TODO this will have to be deleted, this access all users data, only for dev purpose.
@@ -27,42 +23,34 @@ class DAOFacadeImpl : DAOFacade {
         AideDatas.selectAll().map(::resultRowToAideData)
     }
 
-    override suspend fun getAideData(key: String): AideData? = dbQuery {
+    override suspend fun getAideData(uri: String): AideData? = dbQuery {
         AideDatas
-            .select {AideDatas.key eq key}
+            .select {AideDatas.uri eq uri}
             .map(::resultRowToAideData)
             .singleOrNull()
     }
 
     override suspend fun addAideData(data: AideData): Unit = dbQuery {
-        val notExists = AideDatas.select {AideDatas.key eq data.key}.empty()
+        val notExists = AideDatas.select {AideDatas.uri eq data.uri}.empty()
         if (!notExists) {
             editAideData(data)
         } else {
             AideDatas.insert {
-                it[img1] = data.img1
-                it[img2] = data.img2
-                it[audio] = data.audio
-                it[motion] = data.motion
-                it[battery] = data.battery
-                it[key] = data.key
+                it[uri] = data.uri
+                it[AESKey] = data.AESKey
             }
         }
     }
 
     override suspend fun editAideData(data: AideData): Boolean = dbQuery {
-        AideDatas.update({AideDatas.key eq data.key}) {
-            it[img1] = data.img1
-            it[img2] = data.img2
-            it[audio] = data.audio
-            it[motion] = data.motion
-            it[battery] = data.battery
-            it[key] = data.key
+        AideDatas.update({AideDatas.uri eq data.uri}) {
+            it[uri] = data.uri
+            it[AESKey] = data.AESKey
         } > 0
     }
 
-    override suspend fun deleteAideData(key: String): Boolean = dbQuery {
-        AideDatas.deleteWhere { AideDatas.key eq key } > 0
+    override suspend fun deleteAideData(uri: String): Boolean = dbQuery {
+        AideDatas.deleteWhere { AideDatas.uri eq uri } > 0
     }
 
     override suspend fun deleteAideDatas(): Boolean = dbQuery {
@@ -74,12 +62,8 @@ val dao: DAOFacade = DAOFacadeImpl().apply {
     runBlocking {
         if(allAideData().isEmpty()) {
             addAideData(AideData(
-                "Test1",
-                "Test2",
-                "TestAudio",
-                false,
-                76,
-                "TESTtestTestCLEcleClE"
+                "upload/f039acad-ff93-434f-98aa-8.zip",
+                "fsduhfudshi234463jisdjfidguhuéu",
             ))
         }
     }
