@@ -202,10 +202,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                 Log.d("zip file", "exists")
                                 zipName = uploadZip(client, File(ziPath))
                             }
-                            val fileLocation =
+                            //Nothing can be passed after the $urlserver link (file location)
+                            //+ the #SB number.
+                            val message =
                                 "SmallBrother : $URLServer/download/$zipName [#SB10]"
 
-                            sendSMS(this@Work2Activity, fileLocation, userData.telephone)
+                            sendSMS(this@Work2Activity, message, userData.telephone)
 
                             // Suppression des captures.
                             file1.delete()
@@ -270,13 +272,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         Log.d("before", "encryption")
         // chiffrement des données avec clé AES
-        val encryptedData = SecurityUtils.encryptDataAes(file.readBytes())
+        val aesKey = SecurityUtils.getAESKey()
+        val encryptedData = SecurityUtils.encryptDataAes(file.readBytes(), aesKey)
 
         //chiffrement de la clé AES avec RSA+
-        val aesEncKey = String(android.util.Base64.encode(
+        /*val aesEncKey = String(android.util.Base64.encode(
             SecurityUtils.encryptAESKey(
-                loadPublicKey(userData.pubKey) as PublicKey), android.util.Base64.NO_WRAP)
-        )
+                loadPublicKey(userData.pubKey) as PublicKey, aesKey), android.util.Base64.NO_WRAP)
+        )*/
+        val aesEncKey = Base64.getEncoder().encodeToString(SecurityUtils.encryptAESKey(loadPublicKey(userData.pubKey) as PublicKey, aesKey))
         Log.d("AES ENC KEY", aesEncKey)
 
         //envoi données chiffrées + clé AES chiffrée
@@ -298,7 +302,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }
         client.post("$URLServer/upload/aes") {
             contentType(ContentType.Application.Json)
-            setBody(AideData("$URLServer/upload/$finalName", aesEncKey))
+            setBody(AideData(finalName, aesEncKey))
         }
         return finalName
     }

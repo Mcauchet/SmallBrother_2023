@@ -10,6 +10,7 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -183,12 +184,14 @@ class AidantActivity : AppCompatActivity() {
                         println("Receives $bytesSentTotal bytes from $contentLength")
                     }
                 }
+                Log.d("urlToFile", userdata.urlToFile)
                 val aesHttp: HttpResponse = client.get(
                     "$URLServer/aes/${userdata.urlToFile}"
                 )
 
                 //retrieve AES encrypted KEY, decrypt it and use it to decrypt the data
                 val aesBody: String = aesHttp.body()
+                Log.d("aesBody", aesBody)
                 val aesDecKey = java.util.Base64.getDecoder().decode(aesBody)
 
                 //retrieve zip data ByteArray

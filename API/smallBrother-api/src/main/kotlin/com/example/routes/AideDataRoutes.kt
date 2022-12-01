@@ -14,7 +14,7 @@ import java.io.File
  * manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 30-11-2022)
+ * @version 1.2 (Updated on 01-12-2022)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -41,7 +41,9 @@ fun Route.aideDataRouting() {
         }
         post("/aes") {
             val aideData = call.receive<AideData>()
+            println(aideData.toString())
             dao.addAideData(aideData)
+            call.respondText("AideData stored correctly", status = HttpStatusCode.Created)
         }
     }
 
@@ -51,9 +53,9 @@ fun Route.aideDataRouting() {
                 ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
             val aideData = dao.getAideData(key)
             if (aideData != null) {
-                call.respond(aideData.AESKey)
+                call.respond(aideData.aesKey)
             } else {
-                call.respond("AES key not found")
+                call.respondText("AES key not found", status = HttpStatusCode.NotFound)
             }
         }
     }
@@ -63,12 +65,12 @@ fun Route.aideDataRouting() {
             //TODO (download files for Aidant)
             val key = call.parameters["key"]
             val file = File("upload/$key")
-            val aideData = dao.getAideData("upload/$key")
+            val aideData = dao.getAideData("$key")
             if (aideData != null) {
                 call.response.header(
                     HttpHeaders.ContentDisposition,
                     ContentDisposition.Attachment.withParameter(
-                        ContentDisposition.Parameters.FileName, "${aideData.AESKey}.zip"
+                        ContentDisposition.Parameters.FileName, aideData.uri
                     ).toString()
                 )
             }
@@ -77,7 +79,7 @@ fun Route.aideDataRouting() {
     }
 
     //TODO delete this if no use found
-    route("/aideData") {
+    /*route("/aideData") {
 
         get {
             val aideDatas: List<AideData> = dao.allAideData()
@@ -114,5 +116,5 @@ fun Route.aideDataRouting() {
             call.respondText("Database reset", status = HttpStatusCode.Accepted)
         }
 
-    }
+    }*/
 }

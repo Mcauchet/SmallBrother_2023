@@ -7,5 +7,5 @@ data class AideData(
     @Serializable
     val uri: String,
     @Serializable
-    val AESKey: String,
+    val aesKey: String,
 )

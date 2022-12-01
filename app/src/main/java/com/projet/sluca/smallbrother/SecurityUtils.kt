@@ -80,7 +80,7 @@ object SecurityUtils {
     /**
      * Returns the private key with alias [KEYSTORE_ALIAS].
      */
-    fun getPrivateKey(): PrivateKey {
+    private fun getPrivateKey(): PrivateKey {
         val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
             load(null)
         }
@@ -100,8 +100,9 @@ object SecurityUtils {
             val generator: KeyGenerator = KeyGenerator.getInstance("AES")
             generator.init(192)
             val aesKey = generator.generateKey()
-            Log.d("AES key 1", String(Base64.encode(aesKey.encoded, Base64.NO_WRAP)))
-            return aesKey
+            Log.d("AES KEY CREATION REF", aesKey.toString())
+            Log.d("getAESKey()", String(Base64.encode(aesKey.encoded, Base64.NO_WRAP)))
+            aesKey
         } else {
             ks.getEntry(KEYSTORE_ALIAS_AES, null) as SecretKey
         }
@@ -110,10 +111,11 @@ object SecurityUtils {
     /***
      * fun to encrypt the zip file
      */
-    fun encryptDataAes(data:ByteArray): ByteArray {
+    fun encryptDataAes(data:ByteArray, aesKey: SecretKey): ByteArray {
         val aesCipher = Cipher.getInstance("AES")
-        aesCipher.init(Cipher.ENCRYPT_MODE, getAESKey())
-        Log.d("AES key", String(Base64.encode(getAESKey().encoded, Base64.NO_WRAP)))
+        aesCipher.init(Cipher.ENCRYPT_MODE, aesKey)
+        Log.d("AES KEY USE REF", aesKey.toString())
+        Log.d("encryptDataAes()", String(Base64.encode(aesKey.encoded, Base64.NO_WRAP)))
         return aesCipher.doFinal(data)
     }
 
@@ -122,10 +124,10 @@ object SecurityUtils {
      *
      * @param publicKey the public key of the aidant
      */
-    fun encryptAESKey(publicKey: PublicKey): ByteArray {
+    fun encryptAESKey(publicKey: PublicKey, aesKey: SecretKey): ByteArray {
         val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
         cipher.init(Cipher.PUBLIC_KEY, publicKey)
-        return cipher.doFinal(getAESKey().encoded)
+        return cipher.doFinal(aesKey.encoded)
     }
 
     /***
@@ -134,7 +136,7 @@ object SecurityUtils {
      * @param encKey the AES key used to encrypt the data by the aide
      */
     private fun decryptAESKey(encKey: ByteArray): ByteArray {
-        val aesCipher = Cipher.getInstance("AES")
+        val aesCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
         aesCipher.init(Cipher.PRIVATE_KEY, getPrivateKey())
         return aesCipher.doFinal(encKey)
     }

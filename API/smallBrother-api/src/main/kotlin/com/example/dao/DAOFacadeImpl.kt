@@ -2,7 +2,6 @@ package com.example.dao
 
 import com.example.dao.DatabaseFactory.dbQuery
 import com.example.models.*
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 
@@ -10,12 +9,12 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
  * DAOFacadeImpl implements the DAOFacade methods.
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 30-11-2022)
+ * @version 1 (Updated on 01-12-2022)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
         uri = row[AideDatas.uri],
-        AESKey = row[AideDatas.AESKey],
+        aesKey = row[AideDatas.aesKey],
     )
 
     //TODO this will have to be deleted, this access all users data, only for dev purpose.
@@ -37,7 +36,7 @@ class DAOFacadeImpl : DAOFacade {
         } else {
             AideDatas.insert {
                 it[uri] = data.uri
-                it[AESKey] = data.AESKey
+                it[aesKey] = data.aesKey
             }
         }
     }
@@ -45,7 +44,7 @@ class DAOFacadeImpl : DAOFacade {
     override suspend fun editAideData(data: AideData): Boolean = dbQuery {
         AideDatas.update({AideDatas.uri eq data.uri}) {
             it[uri] = data.uri
-            it[AESKey] = data.AESKey
+            it[aesKey] = data.aesKey
         } > 0
     }
 
@@ -58,13 +57,4 @@ class DAOFacadeImpl : DAOFacade {
     }
 }
 
-val dao: DAOFacade = DAOFacadeImpl().apply {
-    runBlocking {
-        if(allAideData().isEmpty()) {
-            addAideData(AideData(
-                "upload/f039acad-ff93-434f-98aa-8.zip",
-                "fsduhfudshi234463jisdjfidguhuéu",
-            ))
-        }
-    }
-}
+val dao: DAOFacade = DAOFacadeImpl()
