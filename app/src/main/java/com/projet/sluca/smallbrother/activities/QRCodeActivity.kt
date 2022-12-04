@@ -4,8 +4,6 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -21,7 +19,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * and files transfer to the police
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 28-11-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class QRCodeActivity : AppCompatActivity() {
 
