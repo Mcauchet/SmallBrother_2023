@@ -41,7 +41,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 30-11-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -114,6 +114,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             // Construction de l'URL GoogleMap avec les coordonnées.
             urlGoogleMap = "http://maps.google.com/maps?q=$latitude,$longitude"
         }
+        Log.d("URL GOOGLE MAP", urlGoogleMap.toString())
 
         // --> [4] assemblage d'une archive ZIP.
 
@@ -122,14 +123,14 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         // Récupération des différents fichiers :
 
-        val fichier1 = userData.path + "/SmallBrother/audio.ogg"
-        val file1 = File(fichier1)
+        val pathAudio = userData.path + "/SmallBrother/audio.ogg"
+        val file1 = File(pathAudio)
 
-        val fichier2 = userData.getAutophotosPath(1)
-        val file2 = File(fichier2)
+        val pathPhoto1 = userData.getAutophotosPath(1)
+        val file2 = File(pathPhoto1)
 
-        val fichier3 = userData.getAutophotosPath(2)
-        val file3 = File(fichier3)
+        val pathPhoto2 = userData.getAutophotosPath(2)
+        val file3 = File(pathPhoto2)
 
         // Chemin de la future archive.
         val ziPath = this@Work2Activity.filesDir.path+"/SmallBrother/zippedFiles.zip"
@@ -189,7 +190,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         object : Thread() {
             override fun run() {
                 try {
-                    //TODO chiffrage des données
                     val client = HttpClient(Android) {
                         install(ContentNegotiation) {
                             json()
@@ -202,12 +202,14 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                 Log.d("zip file", "exists")
                                 zipName = uploadZip(client, File(ziPath))
                             }
-                            //Nothing can be passed after the $urlserver link (file location)
-                            //+ the #SB number.
-                            val message =
-                                "SmallBrother : $URLServer/download/$zipName [#SB10]"
+                            client.close()
+                            //todo test this msg
+                            val fileLoc =
+                                "SmallBrother : L'application va télécharger le fichier" +
+                                        " $particule$nomAide \n" +
+                                        " $URLServer/download/$zipName [#SB10]"
 
-                            sendSMS(this@Work2Activity, message, userData.telephone)
+                            sendSMS(this@Work2Activity, fileLoc, userData.telephone)
 
                             // Suppression des captures.
                             file1.delete()
@@ -218,7 +220,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             val fileZ = File(ziPath)
                             fileZ.delete()
 
-                            client.close()
                             Log.d("EOU", "upload ended")
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -232,12 +233,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     if(isOnline(this@Work2Activity)) userData.refreshLog(11)
                     else userData.refreshLog(15)
                 }
-
-                // Concoction et envoi du SMS à l'Aidant.
-                var sms = getString(R.string.smsys06)
-                sms = sms.replace("§%", userData.nom)
-
-                sendSMS(this@Work2Activity, sms, userData.telephone)
 
                 vibreur.vibration(this@Work2Activity, 330) // vibration.
 
@@ -268,19 +263,19 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         val newName = UUID.randomUUID().toString().substring(0..24)
         val finalName = "$newName.zip"
 
-        //val encryptedData = encryptFileData(file.readBytes(), userData.pubKey)
-
         Log.d("before", "encryption")
         // chiffrement des données avec clé AES
         val aesKey = SecurityUtils.getAESKey()
         val encryptedData = SecurityUtils.encryptDataAes(file.readBytes(), aesKey)
 
         //chiffrement de la clé AES avec RSA+
-        /*val aesEncKey = String(android.util.Base64.encode(
-            SecurityUtils.encryptAESKey(
-                loadPublicKey(userData.pubKey) as PublicKey, aesKey), android.util.Base64.NO_WRAP)
-        )*/
-        val aesEncKey = Base64.getEncoder().encodeToString(SecurityUtils.encryptAESKey(loadPublicKey(userData.pubKey) as PublicKey, aesKey))
+        val aesEncKey = Base64.getEncoder()
+            .encodeToString(
+                SecurityUtils.encryptAESKey(
+                    loadPublicKey(userData.pubKey) as PublicKey,
+                    aesKey
+                )
+            )
         Log.d("AES ENC KEY", aesEncKey)
 
         //envoi données chiffrées + clé AES chiffrée
