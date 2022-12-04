@@ -51,6 +51,7 @@ class InstallDe2Activity : AppCompatActivity() {
                 Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
                 userData.pubKey = it.text
                 userData.saveData(this) // save pertinent aide data in a file
+                userData.canGoBack = true
                 Log.d("pubKey", userData.pubKey)
                 val intent = Intent(this, AideActivity::class.java)
                 startActivity(intent)

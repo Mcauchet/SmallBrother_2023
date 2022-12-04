@@ -21,7 +21,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 28-11-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 
@@ -62,10 +62,8 @@ class InstallDeActivity : AppCompatActivity() {
 
     private fun continuer() {
         // > Récupération du contenu des inputs :
-        // Nom :
         val etNom = findViewById<EditText>(R.id.input_nom)
         val nom = etNom.text.toString()
-        // Téléphone :
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
@@ -99,10 +97,6 @@ class InstallDeActivity : AppCompatActivity() {
                 userData.nom = nom
                 userData.telephone = telephone
                 userData.version = version
-
-                //userData.saveData(this)
-
-                userData.canGoBack = true
 
                 // Transition vers l'activity suivante.
                 val intent = Intent(this, InstallDe2Activity::class.java)
