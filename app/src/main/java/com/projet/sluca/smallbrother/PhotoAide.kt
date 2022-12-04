@@ -15,7 +15,7 @@ import java.io.File
  * class PhotoAide allows the Aidant to show the picture of the Aide
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 24-11-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class PhotoAide : AppCompatActivity() {
 
