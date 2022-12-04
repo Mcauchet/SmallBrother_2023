@@ -111,30 +111,6 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
 }
 
 /***
- * checkInternet returns true if device is connected to Internet
- *
- * @return true if device connected, false otherwise
- */
-/*suspend fun checkInternet(): Boolean {
-    val runtime = Runtime.getRuntime()
-    try {
-
-        val ipProcess = withContext(Dispatchers.IO) {
-            runtime.exec("/system/bin/ping -c 1 8.8.8.8")
-        }
-        val exitValue = withContext(Dispatchers.IO) {
-            ipProcess.waitFor()
-        }
-        return (exitValue==0)
-    } catch (e: IOException) {
-        e.printStackTrace()
-    } catch (e: InterruptedException) {
-        e.printStackTrace()
-    }
-    return false
-}*/
-
-/***
  * isOnline returns true if device has network capabilities (Cellular, Wifi or Ethernet)
  *
  * @return true if connected, false otherwise
@@ -186,38 +162,16 @@ fun loading(tvLoading: TextView) {
     }.start()
 }
 
-/*fun encryptFileData(data: ByteArray, publicKey: String): ByteArray {
-    val publicBytes = Base64.decode(publicKey, Base64.DEFAULT)
-    val keySpec = X509EncodedKeySpec(publicBytes)
-    val keyFactory = KeyFactory.getInstance("RSA")
-    val pubKey = keyFactory.generatePublic(keySpec)
-    val cipher: Cipher = Cipher.getInstance("RSA/ECB/NoPadding")
-    cipher.init(Cipher.ENCRYPT_MODE, pubKey)
-    return cipher.doFinal(data)
-}
-
-fun decryptFileData(data: ByteArray): ByteArray {
-    val cipher: Cipher = Cipher.getInstance("RSA/ECB/NoPadding")
-    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey())
-    return cipher.doFinal(data)
-}*/
-
+/***
+ * Transform a String into a Key object used as a public key
+ *
+ * @param publicKey the String to transform into a Key
+ * @return the Key object
+ * @author Maxime Caucheteur (Updated on 04-12-2022)
+ */
 fun loadPublicKey(publicKey: String): Key {
     val data: ByteArray = Base64.decode(publicKey.toByteArray(), Base64.DEFAULT)
     val spec = X509EncodedKeySpec(data)
     val fact = KeyFactory.getInstance("RSA")
     return fact.generatePublic(spec)
 }
-
-/*fun encryptFileData(data:ByteArray, publicKey: String): ByteArray {
-    val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    Log.d("PUBKEY IN ENCRYPT", Base64.encode(loadPublicKey(publicKey).encoded, Base64.NO_WRAP).toString())
-    cipher.init(Cipher.ENCRYPT_MODE, loadPublicKey(publicKey))
-    return cipher.doFinal(data)
-}
-
-fun decryptFileData(data: ByteArray): ByteArray {
-    val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-    cipher.init(Cipher.DECRYPT_MODE, SecurityUtils.getPrivateKey())
-    return cipher.doFinal(data)
-}*/
