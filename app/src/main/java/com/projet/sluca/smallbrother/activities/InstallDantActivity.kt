@@ -109,7 +109,7 @@ class InstallDantActivity : AppCompatActivity() {
                 userdata.saveData(this)
 
                 // Création de la fiche de l'Aidé.
-                userdata.createFiche(this)
+                //userdata.createFiche(this)
 
                 // Transition vers l'activity suivante.
                 val intent = Intent(this, InstallDantPicActivity::class.java)

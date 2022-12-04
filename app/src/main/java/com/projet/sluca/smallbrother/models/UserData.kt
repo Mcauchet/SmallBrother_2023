@@ -40,12 +40,6 @@ data class UserData(
     var pubKey: String = ""
 ) : Application() {
 
-    // -> Appel du chemin globalisé vers le dossier "SmallBrother".
-    // Centralisation des chemins de fichiers :
-    //val path = Environment
-    //    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    //    .absolutePath + "/SmallBrother/"
-
     var urlToFile: String = ""
 
     //this path is configured at first launch of the app through configurePath(..)
@@ -54,11 +48,6 @@ data class UserData(
     private val file = "donnees.txt" // datas de l'utilisateur
     private val fiche = "fiche_aide.txt" // fiche de l'Aidé
     private val date = "date.txt" // date de création de la fiche de l'Aidé
-    //private val photo = "photo_aide.jpg" // photo de l'Aidé
-
-    // -> Appel du chemin globalisé vers le zip d'un rapport de situation.
-    //val zipath = "/sdcard/Download/SmallBrother/situation_partenaire.zip"
-    val zipath: String = "$path/situation_partenaire.zip"
 
     // -> Donne l'URL de la racine du dossier Web de SB.
     // Centralisation des URL :
@@ -93,18 +82,14 @@ data class UserData(
 
         // Enregistrement :
         try {
-            // Création du dossier "Downloads/SmallBrother", s'il n'existe pas déjà.
-            /*val dossier = File(
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    .absolutePath, "SmallBrother")*/
+            // Création du dossier "/SmallBrother" dans l'arborescence de l'application,
+            // s'il n'existe pas déjà.
+
             val dossier = File(this.filesDir, "SmallBrother")
-            if (!dossier.exists()) {
-                dossier.mkdirs()
-            }
+            if (!dossier.exists()) dossier.mkdirs()
 
             // Création du fichier "donnees.txt" dans ce dossier, via la variable "path".
             val testFile = File(dossier, file)
-            testFile.parent?.let { Log.d("PARENT", it) }
             Log.d("DONNEES.TXT BEFORE", testFile.exists().toString())
 
             // Suppression du fichier de données s'il existe déjà.
@@ -176,12 +161,6 @@ data class UserData(
         return false
     }
 
-    // -> Appel du chemin globalisé vers la photo d'identité de l'aidé.
-    //val photoIdentPath: String = "$path/SmallBrother/$photo"
-
-    // -> Appel du chemin globalisé vers la capture audio.
-    //val audioPath: String = "$path/SmallBrother/audio.ogg"
-
     /***
      * getAutophotosPath retrieves the path of the captured pictures (1 and 2)
      *
@@ -189,9 +168,6 @@ data class UserData(
      * @return the path of the pictures
      */
     fun getAutophotosPath(num: Int): String = "$path/SmallBrother/autophoto$num.jpg"
-
-    // -> Appel du chemin globalisé vers la fiche de l'aidé.
-    //val fichePath: String = "$path/SmallBrother/$fiche"
 
     /***
      * refreshLog sets the log accordingly to the code entered as a parameter
@@ -249,7 +225,7 @@ data class UserData(
      *
      * @param [context] context of the activity running
      */
-    fun createFiche(context: Context?) {
+    /*fun createFiche(context: Context?) {
         var texte = "" // Futur contenu du fichier texte.
         val champs = arrayOf(
             "Concerne : Mr/Mme ... ",
@@ -281,7 +257,7 @@ data class UserData(
         // Mémorisation de la date de création de la fiche :
         val datation = File("$path/SmallBrother/$date")
         writeFile(datation, toDayte, context)
-    }
+    }*/
 
     // -> Centralisation de l'écriture de fichier
     /***
@@ -291,7 +267,7 @@ data class UserData(
      * @param [texte] the text to write in [file]
      * @param [context] the context of the activity running
      */
-    private fun writeFile(file: File, texte: String?, context: Context?) {
+    /*private fun writeFile(file: File, texte: String?, context: Context?) {
         try {
             if (file.exists()) return // Créer uniquement si non déjà existant.
             file.createNewFile()
@@ -304,31 +280,31 @@ data class UserData(
         } catch (e: IOException) {
             Log.e("WRITEFILE", e.toString())
         }
-    }
+    }*/
 
-    private val toDayte: String = DateFormat.getDateTimeInstance().format(Date())
+    //private val toDayte: String = DateFormat.getDateTimeInstance().format(Date())
 
     /***
      * dateFichier retrieves the modification date of a file given his path and transforms it
      * into a string
      *
-     * @param [chemin] the path of the file
+     * @param [path] the path of the file
      * @return the date of the last modification as a String
      * @see [pleineFiche] for usage
      */
-    private fun dateFichier(chemin: String): String {
-        val file = File(chemin)
+    /*private fun dateFichier(path: String): String {
+        val file = File(path)
         val lastModDate = Date(file.lastModified())
         return lastModDate.toString()
-    }
+    }*/
 
     /***
-     * pleineFiche checks if the "Aidé's fiche" exists (and is completed?)
+     * pleineFiche checks if the "Aidé's fiche" exists (and is completed)
      *
-     * @return true if the fiche exists, false otherwise
+     * @return true if the fiche exists and is completed, false otherwise
      * @see [AidantActivity.reloadLog] for usage
      */
-    fun pleineFiche(): Boolean {
+    /*fun pleineFiche(): Boolean {
         // Chargement du fichier TXT retenant la date de création de la fiche de l'Aidé.
         val dataD = File("$path/SmallBrother/$date")
         val dataF = File("$path/SmallBrother/$fiche")
@@ -337,6 +313,6 @@ data class UserData(
                 && dataF.exists()
                 && (dateFichier("$path/SmallBrother/$date")
                 != dateFichier("$path/SmallBrother/$fiche"))
-    }
+    }*/
 
 }
