@@ -30,7 +30,7 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 30-11-22)
+ * @version 1.2 (modified on 04-12-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
