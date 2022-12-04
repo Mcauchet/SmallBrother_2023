@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
  * class InstallDantActivity manages the installation for the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 28-11-22)
+ * @version 1.2 (updated on 04-12-22)
  */
 class InstallDantActivity : AppCompatActivity() {
     var vibreur = Vibration() // Instanciation d'un vibreur.
