@@ -11,7 +11,7 @@ import com.projet.sluca.smallbrother.models.UserData
 /***
  * PhoneStatReceiver
  *
- * @author Sébastien Luca & Maxime Caucheteur (Updated on 07-11-22)
+ * @author Sébastien Luca & Maxime Caucheteur (Updated on 04-12-22)
  */
 class PhoneStatReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -52,10 +52,10 @@ class PhoneStatReceiver : BroadcastReceiver() {
         var callNumber = ""
         lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
 
-        fun catchcallNumber(): String = callNumber // Getter du numéro de l'appelant.
+        fun catchCallNumber(): String = callNumber
 
         fun resetCallNumber() {
             callNumber = ""
-        } // Réinitialiser.
+        }
     }
 }

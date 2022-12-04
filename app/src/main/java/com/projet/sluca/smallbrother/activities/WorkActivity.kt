@@ -73,7 +73,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
 
         // Récupération du numéro de l'appelant, suite à un appel reçu.
-        appelant = PhoneStatReceiver.catchcallNumber()
+        appelant = PhoneStatReceiver.catchCallNumber()
         if (appelant?.startsWith("+32") == true) appelant?.replace("+32", "0")
         PhoneStatReceiver.resetCallNumber()
 
