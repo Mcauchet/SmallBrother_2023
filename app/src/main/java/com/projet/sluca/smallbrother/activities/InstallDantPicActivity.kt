@@ -1,5 +1,6 @@
 package com.projet.sluca.smallbrother.activities
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -9,10 +10,15 @@ import android.provider.MediaStore
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -21,7 +27,7 @@ import java.io.FileOutputStream
  * class InstallDantPicActivity manages the capture of the aidé picture
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 14-11-2022)
+ * @version 1.2 (updated on 04-12-2022)
  */
 class InstallDantPicActivity : AppCompatActivity() {
 
@@ -45,8 +51,8 @@ class InstallDantPicActivity : AppCompatActivity() {
         apercu = findViewById(R.id.apercu)
 
         // Par défaut : afficher la photo enregistrée, s'il y en a une.
-        val fichier = userData.path + "/SmallBrother/photo_aide.jpg"
-        val file = File(fichier)
+        val path = userData.path + "/SmallBrother/photo_aide.jpg"
+        val file = File(path)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 
         btnCapture.setOnClickListener {
@@ -54,7 +60,9 @@ class InstallDantPicActivity : AppCompatActivity() {
 
             // Lancement de l'activité de capture.
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            startActivityForResult(intent, 7)
+            intent.putExtra("requestCode", 7)
+            getResult.launch(intent)
+            //startActivityForResult(intent, 7)
         }
 
         btnBack.setOnClickListener {
@@ -74,8 +82,35 @@ class InstallDantPicActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
+    //todo test this instead of deprecated function
+    private val getResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        if(it.resultCode == Activity.RESULT_OK)
+        {
+            if(intent.hasExtra("requestCode")
+                && intent.getIntExtra("requestCode", 0) == 7) {
+                val bitmap = it.data?.extras?.get("data") as Bitmap // Récupération de la photo
+
+                // -> Sauvegarde de la photo.
+                val image =
+                    userData.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
+                try {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        withContext(Dispatchers.IO) {
+                            bitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
+                        }
+                    }
+                } catch (e: FileNotFoundException) {
+                    e.printStackTrace()
+                }
+                apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
+            }
+        }
+    }
+
     // --> Au retour à la présente actvité, si une photo a été prise :
-    @Deprecated("Deprecated in Java")
+    /*@Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 7 && resultCode == RESULT_OK) {
@@ -90,7 +125,7 @@ class InstallDantPicActivity : AppCompatActivity() {
             }
             apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
         }
-    }
+    }*/
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
