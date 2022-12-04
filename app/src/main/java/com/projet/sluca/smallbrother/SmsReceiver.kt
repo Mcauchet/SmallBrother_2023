@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 30-11-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 04-12-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -51,7 +51,11 @@ class SmsReceiver : BroadcastReceiver() {
 
         if(userdata.role == "Aidant") {
             if (clef == "[#SB10]") {
-                val urlFile = message.subSequence(message.length - 37, message.length - 8).toString()
+                //The subsequence depends on the URL to the file, if it changes, the subsequence
+                //must be changed too
+                val urlFile = message
+                    .subSequence(message.length - 37, message.length - 8)
+                    .toString()
                 userdata.urlToFile = urlFile
                 val intnt = Intent(context, AidantActivity::class.java)
                 intnt.putExtra("url", urlFile)
