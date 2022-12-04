@@ -11,7 +11,7 @@ import android.os.VibratorManager
  * class Vibration creates a Vibrator and manages the vibrations made by all activities
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 24-10-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class Vibration {
 
@@ -26,6 +26,7 @@ class Vibration {
                 context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
             vibratorManager.defaultVibrator
         } else {
+            @Suppress("DEPRECATION")
             context.getSystemService(VIBRATOR_SERVICE) as Vibrator
         }
 
