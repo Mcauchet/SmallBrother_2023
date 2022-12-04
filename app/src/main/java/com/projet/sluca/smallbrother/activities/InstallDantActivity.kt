@@ -3,6 +3,7 @@ package com.projet.sluca.smallbrother.activities
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -66,11 +67,9 @@ class InstallDantActivity : AppCompatActivity() {
 
     private fun continuer() {
         // > Récupération du contenu des inputs :
-        // Nom :
         val etNom = findViewById<EditText>(R.id.input_nom)
         val nom = etNom.text.toString()
 
-        // Téléphone :
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
@@ -84,16 +83,29 @@ class InstallDantActivity : AppCompatActivity() {
 
             else -> {
                 // Récupération de la version de SB en cours.
-                var version: String? = ""
+                var version = ""
                 try {
-                    version = this.packageManager.getPackageInfo(this.packageName, 0).versionName
+                    version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        this.packageManager
+                            .getPackageInfo(
+                                this.packageName,
+                                PackageManager.PackageInfoFlags.of(0)
+                            ).versionName
+                    } else {
+                        @Suppress("DEPRECATION")
+                        this.packageManager
+                            .getPackageInfo(
+                                this.packageName,
+                                0
+                            ).versionName
+                    }
                 } catch (e: PackageManager.NameNotFoundException) {
                     e.printStackTrace()
                 }
 
                 // Sauvegarde en globale des valeurs entrées.
                 userdata.role = "Aidant"
-                userdata.version = version!!
+                userdata.version = version
                 userdata.nom = nom
                 userdata.telephone = telephone
 
@@ -128,6 +140,7 @@ class InstallDantActivity : AppCompatActivity() {
                     Manifest.permission.RECEIVE_SMS,  // -> recevoir des SMS, et ça
                     Manifest.permission.RECEIVE_BOOT_COMPLETED,  // -> lancement d'activité
                     Manifest.permission.READ_PHONE_STATE,  // -> infos du téléphones
+                    //todo see if needed
                     Manifest.permission.PROCESS_OUTGOING_CALLS // -> passer des appels
                 ), 1
             )
