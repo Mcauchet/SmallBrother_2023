@@ -5,13 +5,11 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
 import io.ktor.client.*
-import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +20,7 @@ import kotlinx.coroutines.launch
  * class Launch1Activity is the starting point of the application.
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 01-11-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class Launch1Activity : AppCompatActivity() {
 
@@ -45,7 +43,7 @@ class Launch1Activity : AppCompatActivity() {
                 }
             }
         }*/
-        CoroutineScope(Dispatchers.IO).launch {
+        /*CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = client.get {
                     url("$URLServer/aideData")
@@ -55,7 +53,7 @@ class Launch1Activity : AppCompatActivity() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-        }
+        }*/
 
         // Etablissement de la liaison avec la classe UserData.
         userdata = application as UserData
