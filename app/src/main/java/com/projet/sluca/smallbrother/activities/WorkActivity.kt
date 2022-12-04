@@ -22,14 +22,13 @@ import com.projet.sluca.smallbrother.models.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
 /***
  * class WorkActivity
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 20-11-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -146,7 +145,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             tvAction.text = getString(R.string.message12A)
 
                             // Destination du futur fichier :
-                            val fichier = userData.path + "/SmallBrother/audio.ogg"
+                            val path = userData.path + "/SmallBrother/audio.ogg"
 
                             // Configuration du recorder "magneto".
                             //TODO deprecated, change for cameraX
@@ -155,7 +154,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
                             magneto?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
                             magneto?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-                            magneto?.setOutputFile(fichier)
+                            magneto?.setOutputFile(path)
                             try {
                                 magneto?.prepare()
                             } catch (e: IOException) {
@@ -257,15 +256,13 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         }
     }
 
-
-    // --> Par sécurité : retrait du retour en arrière dans cette activity.
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             moveTaskToBack(false)
         }
     }
 
-    // Fonctions relatives à la consultation de l'accéléromètre (mouvement).
+    /* -------------- Functions related to the Accelerometer -------------- */
     override fun onResume() {
         super.onResume()
         if (AccelerometerManager.isSupported(this) && (userData.role == "Aidé")) {
