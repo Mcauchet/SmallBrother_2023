@@ -40,8 +40,8 @@ class PhotoAide : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btn_retour)
 
         // Gestion de l'affichage, selon qu'un fichier existe ou non.
-        val fichier = userdata.path + "/SmallBrother/photo_aide.jpg"
-        val file = File(fichier)
+        val path = userdata.path + "/SmallBrother/photo_aide.jpg"
+        val file = File(path)
         if(file.exists()) ivApercu.setImageURI(Uri.fromFile(file))
         else tvLegende.text = getString(R.string.nophoto)
 
