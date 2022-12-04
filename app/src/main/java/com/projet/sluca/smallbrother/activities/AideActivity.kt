@@ -25,7 +25,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 17-11-22)
+ * @version 1.2 (updated on 04-12-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -200,7 +200,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
     }
 
-    // -->
     private fun changeSwitch() {
         vibreur.vibration(this, 250)
         refresh()
