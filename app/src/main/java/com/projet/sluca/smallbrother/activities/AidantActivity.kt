@@ -5,11 +5,11 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.*
-import android.os.StrictMode.VmPolicy
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Base64
 import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
@@ -34,7 +34,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 30-11-2022)
+ * @version 1.2 (updated on 04-12-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -193,6 +193,9 @@ class AidantActivity : AppCompatActivity() {
                 val aesBody: String = aesHttp.body()
                 Log.d("aesBody", aesBody)
                 val aesDecKey = java.util.Base64.getDecoder().decode(aesBody)
+                // TEST This to be able to make : API min == 23
+                val aesDecKey2 = Base64.decode(aesBody, Base64.NO_WRAP)
+                Log.d("javaB64 vs androidB64", (aesDecKey.contentEquals(aesDecKey2)).toString())
 
                 //retrieve zip data ByteArray
                 val responseBody: ByteArray = httpResponse.body()
@@ -210,11 +213,11 @@ class AidantActivity : AppCompatActivity() {
         }
     }
 
-    //TODO ajouter la création de QR Code avec les informations reçues du serveur
     fun tiers() {
         vibreur.vibration(this, 200)
         userdata.loadData() // Raptatriement des données de l'utilisateur.
 
+        /* TODO virer ce code, remplacer par la fonctionnalité permettant de partager à la police
         // Préparation d'un email avec fichier joint.
         val emailIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
         emailIntent.type = "plain/text"
@@ -235,6 +238,7 @@ class AidantActivity : AppCompatActivity() {
         // Appel du choix des services mail disponibles.
         emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, listUri)
         startActivity(Intent.createChooser(emailIntent, "Quel service email utiliser ?"))
+        */
     }
 
     // --> Rafraîchissement automatique toutes les 250 ms du TextView de Log et des boutons.
@@ -252,8 +256,7 @@ class AidantActivity : AppCompatActivity() {
             }
 
             // Bouton Tiers :
-            /*if (userdata.pleineFiche()) flTiers.visibility = View.VISIBLE
-            else flTiers.visibility = View.GONE*/
+            /* TODO afficher le bouton Tiers si le document zip est présent dans les downloads */
 
             logHandler.postDelayed(this, 250) // rafraîchissement
         }
