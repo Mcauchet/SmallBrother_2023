@@ -9,7 +9,7 @@ import com.projet.sluca.smallbrother.activities.WorkActivity
 import com.projet.sluca.smallbrother.models.UserData
 
 /***
- * PhoneStatReceiver
+ * PhoneStatReceiver manages information when a phone call is made between aidant and aide
  *
  * @author Sébastien Luca & Maxime Caucheteur (Updated on 04-12-22)
  */
