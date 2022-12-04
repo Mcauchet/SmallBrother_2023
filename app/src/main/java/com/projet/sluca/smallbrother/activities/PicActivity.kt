@@ -25,12 +25,11 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
-// --> Refaire la photo de l'Aidé.
 /***
  * PicActivity manages the re-take of a picture after installation process
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 17-11-2022)
+ * @version 1.2 (Updated on 04-12-2022)
  */
 class PicActivity : AppCompatActivity() {
 
@@ -54,8 +53,8 @@ class PicActivity : AppCompatActivity() {
         apercu = findViewById(R.id.apercu)
 
         // Par défaut : afficher la photo enregistrée, s'il y en a une.
-        val fichier = userdata.path + "/SmallBrother/photo_aide.jpg"
-        val file = File(fichier)
+        val path = userdata.path + "/SmallBrother/photo_aide.jpg"
+        val file = File(path)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -72,13 +71,15 @@ class PicActivity : AppCompatActivity() {
             vibreur.vibration(this, 100)
 
             // Lancement de l'activité de capture.
-            val intent = Intent(this@PicActivity, MediaStore.ACTION_IMAGE_CAPTURE::class.java)
+            val intent = Intent(this@PicActivity,
+                MediaStore.ACTION_IMAGE_CAPTURE::class.java)
             getResult.launch(intent)
         }
 
         btnSave.setOnClickListener {
             vibreur.vibration(this, 100)
-            message(this, getString(R.string.message09), vibreur) // toast de confirmation.
+            // toast de confirmation.
+            message(this, getString(R.string.message09), vibreur)
 
             // Transition vers l'activity suivante.
             val intent = Intent(this, PhotoAide::class.java)
@@ -106,7 +107,6 @@ class PicActivity : AppCompatActivity() {
         }
     }
 
-    // --> Par sécurité : retrait du retour en arrière dans cette activity.
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             moveTaskToBack(false)
