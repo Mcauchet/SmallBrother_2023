@@ -14,6 +14,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -34,7 +35,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 04-12-2022)
+ * @version 1.2 (updated on 07-12-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -161,6 +162,7 @@ class AidantActivity : AppCompatActivity() {
         }
 
         btnFiles.setOnClickListener {
+            Toast.makeText(this, "Téléchargement du fichier en cours...", Toast.LENGTH_SHORT).show()
             val client = HttpClient(Android) {
                 install(ContentNegotiation) {
                     json()
@@ -191,21 +193,18 @@ class AidantActivity : AppCompatActivity() {
 
                 //retrieve AES encrypted KEY, decrypt it and use it to decrypt the data
                 val aesBody: String = aesHttp.body()
-                Log.d("aesBody", aesBody)
-                val aesDecKey = java.util.Base64.getDecoder().decode(aesBody)
-                // TEST This to be able to make : API min == 23
-                val aesDecKey2 = Base64.decode(aesBody, Base64.NO_WRAP)
-                Log.d("javaB64 vs androidB64", (aesDecKey.contentEquals(aesDecKey2)).toString())
+
+                val aesDecKey = Base64.decode(aesBody, Base64.NO_WRAP)
 
                 //retrieve zip data ByteArray
                 val responseBody: ByteArray = httpResponse.body()
 
                 //decrypt data with the decrypted AES key
                 val decryptedData = SecurityUtils.decryptDataAes(responseBody, aesDecKey)
-                //val decryptedData = decryptFileData(responseBody)
                 file.writeBytes(decryptedData)
-                println("A file saved to ${file.path}")
             }
+            Toast.makeText(this, "Téléchargement du fichier terminé, il se trouve dans votre " +
+                    "dossier de téléchargement.", Toast.LENGTH_SHORT).show()
         }
 
         btnTiers.setOnClickListener {
@@ -218,6 +217,7 @@ class AidantActivity : AppCompatActivity() {
         userdata.loadData() // Raptatriement des données de l'utilisateur.
 
         /* TODO virer ce code, remplacer par la fonctionnalité permettant de partager à la police
+        TODO mettre un mdp sur le fichier zip, chiffrer ce mdp avec la clé publique RSA
         // Préparation d'un email avec fichier joint.
         val emailIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
         emailIntent.type = "plain/text"

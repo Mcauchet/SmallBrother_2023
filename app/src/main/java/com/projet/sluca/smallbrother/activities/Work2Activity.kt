@@ -205,9 +205,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             client.close()
                             //todo test this msg
                             val fileLoc =
-                                "SmallBrother : L'application va télécharger le fichier" +
-                                        " $particule$nomAide \n" +
-                                        " $URLServer/download/$zipName [#SB10]"
+                                "SmallBrother : $URLServer/download/$zipName [#SB10]"
 
                             sendSMS(this@Work2Activity, fileLoc, userData.telephone)
 

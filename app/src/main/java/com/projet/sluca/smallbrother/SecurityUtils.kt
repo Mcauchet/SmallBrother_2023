@@ -73,7 +73,6 @@ object SecurityUtils {
         }
         val entry = ks.getEntry(KEYSTORE_ALIAS, null) as PrivateKeyEntry
         val pubKey = entry.certificate.publicKey
-        Log.d("getPublicKey()", String(Base64.encode(pubKey.encoded, Base64.NO_WRAP)))
         return String(Base64.encode(pubKey.encoded, Base64.DEFAULT))
     }
 
@@ -90,6 +89,8 @@ object SecurityUtils {
 
     /***
      * fun to get the AES key
+     *
+     * @return the AES key as a SecretKey
      */
     fun getAESKey(): SecretKey {
         val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
@@ -100,8 +101,6 @@ object SecurityUtils {
             val generator: KeyGenerator = KeyGenerator.getInstance("AES")
             generator.init(192)
             val aesKey = generator.generateKey()
-            Log.d("AES KEY CREATION REF", aesKey.toString())
-            Log.d("getAESKey()", String(Base64.encode(aesKey.encoded, Base64.NO_WRAP)))
             aesKey
         } else {
             ks.getEntry(KEYSTORE_ALIAS_AES, null) as SecretKey
@@ -110,12 +109,14 @@ object SecurityUtils {
 
     /***
      * fun to encrypt the zip file
+     *
+     * @param data the file's ByteArray
+     * @param aesKey the key to encrypt the data
+     * @return the encrypted file as a ByteArray
      */
     fun encryptDataAes(data:ByteArray, aesKey: SecretKey): ByteArray {
         val aesCipher = Cipher.getInstance("AES")
         aesCipher.init(Cipher.ENCRYPT_MODE, aesKey)
-        Log.d("AES KEY USE REF", aesKey.toString())
-        Log.d("encryptDataAes()", String(Base64.encode(aesKey.encoded, Base64.NO_WRAP)))
         return aesCipher.doFinal(data)
     }
 
@@ -123,6 +124,8 @@ object SecurityUtils {
      * fun to encrypt the AES key with the public RSA key
      *
      * @param publicKey the public key of the aidant
+     * @param aesKey the key to encrypt
+     * @return the encrypted aesKey as a ByteArray
      */
     fun encryptAESKey(publicKey: PublicKey, aesKey: SecretKey): ByteArray {
         val cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
@@ -134,6 +137,7 @@ object SecurityUtils {
      * fun to decrypt the key with the private key
      *
      * @param encKey the AES key used to encrypt the data by the aide
+     * @return the decrypted AESKey as a ByteArray
      */
     private fun decryptAESKey(encKey: ByteArray): ByteArray {
         val aesCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
@@ -141,11 +145,16 @@ object SecurityUtils {
         return aesCipher.doFinal(encKey)
     }
 
+    /***
+     * fun to decrypt the data (previously encrypted with AES key)
+     *
+     * @param data the encrypted data
+     * @param encKey the encrypted AES key
+     * @return the decrypted file data as a ByteArray
+     */
     fun decryptDataAes(data:ByteArray, encKey: ByteArray):ByteArray {
         val decryptedKey = decryptAESKey(encKey)
         val originalKey = SecretKeySpec(decryptedKey, 0, decryptedKey.count(), "AES")
-        Log.d("Decrypted key count", decryptedKey.count().toString())
-        Log.d("Decrpted key size", decryptedKey.size.toString())
         val aesCipher = Cipher.getInstance("AES")
         aesCipher.init(Cipher.DECRYPT_MODE, originalKey)
         return aesCipher.doFinal(data)
