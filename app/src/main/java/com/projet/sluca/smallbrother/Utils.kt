@@ -16,10 +16,6 @@ import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import io.ktor.client.*
-import io.ktor.client.engine.android.*
-import io.ktor.client.request.*
-import io.ktor.utils.io.core.*
 import java.io.IOException
 import android.util.Base64
 import java.security.Key
@@ -28,7 +24,7 @@ import java.security.spec.X509EncodedKeySpec
 import kotlin.text.toByteArray
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://a132-2a02-a03f-ae4e-1900-a1a8-d38b-af07-2432.eu.ngrok.io"
+const val URLServer = "https://196b-138-48-114-153.eu.ngrok.io"
 
 /***
  * Send a SMS
