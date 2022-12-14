@@ -18,7 +18,8 @@ import java.util.*
  *
  * @property version: last version of SB
  * @property role: Aidant or Aidé
- * @property nom: other one's name (if on aide's phone, nom = aidant's name)
+ * @property nom: self name
+ * @property nomPartner: other one's name
  * @property telephone: other one's phone (if on aide's phone, telephone = aidant's phone number)
  * @property motion: Is the user moving
  * @property prive: DND mode
@@ -30,11 +31,11 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 04-12-22)
+ * @version 1.2 (modified on 14-12-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
-    var telephone: String = "", var motion: Boolean = false,
+    var nomPartner: String = "", var telephone: String = "", var motion: Boolean = false,
     var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
     var log: String? = null, var canGoBack: Boolean = true, var bit: Int = 0,
     var pubKey: String = ""

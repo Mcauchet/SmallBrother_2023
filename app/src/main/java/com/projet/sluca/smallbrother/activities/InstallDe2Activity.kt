@@ -12,8 +12,8 @@ import com.projet.sluca.smallbrother.models.UserData
 /***
  * Gets the Aidant's public key through QR Code
  *
- *
- * Source: https://github.com/yuriy-budiyev/code-scanner
+ * @author https://github.com/yuriy-budiyev/code-scanner
+ * @version 1.2 (Updated on 14-12-2022)
  */
 class InstallDe2Activity : AppCompatActivity() {
 
@@ -29,6 +29,7 @@ class InstallDe2Activity : AppCompatActivity() {
         userData = application as UserData
 
         userData.nom = intent.getStringExtra("nom").toString()
+        userData.nomPartner = intent.getStringExtra("nomPartner").toString()
         userData.telephone = intent.getStringExtra("telephone").toString()
         userData.version = intent.getStringExtra("version").toString()
 

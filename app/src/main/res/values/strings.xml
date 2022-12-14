@@ -55,7 +55,7 @@
     <string name="btn_capture2">Prendre la Photo</string>
     <string name="btn_sms_va_dant">Envoi SMS : Tout va bien ?</string>
     <string name="btn_sms_va_de">Envoi SMS : Oui, tout va bien</string>
-    <string name="btn_appel">Appeler</string>
+    <string name="btn_appel">Appeler §%</string>
     <string name="btn_urgence">Vérifier la situation de l\'Aidé</string>
     <string name="btn_tiers">Envoyer les info par mail à ...</string>
     <string name="btn_reinit_1">Réinitialiser mes informations</string>
@@ -190,5 +190,6 @@
     <string name="explication_aide_scan">Veuillez scanner le QR Code sur le smartphone de l\'aidant. Il se trouve dans les paramètres de son application (symbole d\'engrenage)</string>
     <string name="installAide2">[INSTALLATION] Veuillez scanner le QR code sur le smartphone de l\'aidant</string>
     <string name="installQRAidant">[INSTALLATION] Scannez ce QR code avec le smartphone de l\'aidé, puis appuyez sur le bouton Terminer</string>
+    <string name="nomAide">Nom de l\'Aidé</string>
 
 </resources>

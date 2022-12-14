@@ -50,6 +50,9 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
 
+        val newText = getString(R.string.btn_appel)
+        newText.replace("§%", userData.nomPartner)
+
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
         userData.loadData()

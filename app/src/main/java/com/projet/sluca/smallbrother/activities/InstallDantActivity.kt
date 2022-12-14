@@ -66,6 +66,9 @@ class InstallDantActivity : AppCompatActivity() {
         val etNom = findViewById<EditText>(R.id.input_nom)
         val nom = etNom.text.toString()
 
+        val etNomPartner = findViewById<EditText>(R.id.input_nom_Aide)
+        val nomPartner = etNomPartner.text.toString()
+
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
@@ -76,6 +79,9 @@ class InstallDantActivity : AppCompatActivity() {
 
             nom.matches("".toRegex()) || telephone.matches("".toRegex())
                 -> message(this, getString(R.string.error03), vibreur)
+
+            nomPartner.matches("".toRegex()) || telephone.matches("".toRegex())
+            -> message(this, getString(R.string.error03), vibreur)
 
             else -> {
                 // Récupération de la version de SB en cours.
@@ -103,6 +109,7 @@ class InstallDantActivity : AppCompatActivity() {
                 userdata.role = "Aidant"
                 userdata.version = version
                 userdata.nom = nom
+                userdata.nomPartner = nomPartner
                 userdata.telephone = telephone
 
                 // Enregistrement de la DB.

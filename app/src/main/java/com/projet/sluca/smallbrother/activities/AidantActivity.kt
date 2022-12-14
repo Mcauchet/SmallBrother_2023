@@ -40,7 +40,7 @@ import java.io.File
 class AidantActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
     private lateinit var tvLog: TextView // Déclaration du TextView pour le Log.
 
     // Handler pour rafraîchissement log.
@@ -62,8 +62,12 @@ class AidantActivity : AppCompatActivity() {
         val btnFiles: Button = findViewById(R.id.btn_files)
         val btnTiers: Button = findViewById(R.id.btn_tiers)
 
+        val newText = getString(R.string.btn_appel)
+        newText.replace("§%", userData.nomPartner)
+
+
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
@@ -103,28 +107,28 @@ class AidantActivity : AppCompatActivity() {
 
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 200)
-            userdata.loadData() // Raptatriement des données de l'utilisateur.
+            userData.loadData() // Raptatriement des données de l'utilisateur.
 
             // Concoction et envoi du SMS.
             var sms = getString(R.string.smsys02)
-            sms = sms.replace("§%", userdata.nom)
+            sms = sms.replace("§%", userData.nom)
 
-            sendSMS(this, sms, userdata.telephone)
+            sendSMS(this, sms, userData.telephone)
 
             message(this, getString(R.string.message04), vibreur) // toast de confirmation.
-            userdata.refreshLog(4) // rafraîchissement du Log.
+            userData.refreshLog(4) // rafraîchissement du Log.
         }
 
         btnCall.setOnClickListener {
             vibreur.vibration(this, 200)
-            userdata.loadData() // Raptatriement des données de l'utilisateur.
+            userData.loadData() // Raptatriement des données de l'utilisateur.
 
             // Lancement de l'appel.
             val callIntent = Intent(Intent.ACTION_CALL)
-            callIntent.data = Uri.parse("tel:" + userdata.telephone)
+            callIntent.data = Uri.parse("tel:" + userData.telephone)
             startActivity(callIntent)
             message(this, getString(R.string.message05), vibreur) // toast de confirmation.
-            userdata.refreshLog(7) // rafraîchissement du Log.
+            userData.refreshLog(7) // rafraîchissement du Log.
         }
 
         btnEmergency.setOnClickListener {
@@ -140,16 +144,16 @@ class AidantActivity : AppCompatActivity() {
             ) { _, _ ->
                 // Si choix = "OUI" :
                 vibreur.vibration(this, 200)
-                userdata.loadData() // Raptatriement des données de l'utilisateur.
+                userData.loadData() // Raptatriement des données de l'utilisateur.
 
                 // Concoction et envoi du SMS.
                 var sms = getString(R.string.smsys04)
-                sms = sms.replace("§%", userdata.nom)
+                sms = sms.replace("§%", userData.nom)
 
-                sendSMS(this, sms, userdata.telephone)
+                sendSMS(this, sms, userData.telephone)
 
                 message(this, getString(R.string.message07), vibreur) // toast de confirmation.
-                userdata.refreshLog(10) // rafraîchissement du Log.
+                userData.refreshLog(10) // rafraîchissement du Log.
             }
             builder.setNegativeButton(
                 android.R.string.cancel
@@ -176,19 +180,19 @@ class AidantActivity : AppCompatActivity() {
             val file = File(dir, "SmallBrother_Aide.zip")
             file.createNewFile()
             if(intent.hasExtra("url")) {
-                userdata.urlToFile = intent.getStringExtra("url").toString()
+                userData.urlToFile = intent.getStringExtra("url").toString()
             }
             runBlocking {
                 val httpResponse: HttpResponse = client.get(
-                    "$URLServer/download/${userdata.urlToFile}"
+                    "$URLServer/download/${userData.urlToFile}"
                 ) {
                     onDownload { bytesSentTotal, contentLength ->
                         println("Receives $bytesSentTotal bytes from $contentLength")
                     }
                 }
-                Log.d("urlToFile", userdata.urlToFile)
+                Log.d("urlToFile", userData.urlToFile)
                 val aesHttp: HttpResponse = client.get(
-                    "$URLServer/aes/${userdata.urlToFile}"
+                    "$URLServer/aes/${userData.urlToFile}"
                 )
 
                 //retrieve AES encrypted KEY, decrypt it and use it to decrypt the data
@@ -214,7 +218,7 @@ class AidantActivity : AppCompatActivity() {
 
     fun tiers() {
         vibreur.vibration(this, 200)
-        userdata.loadData() // Raptatriement des données de l'utilisateur.
+        userData.loadData() // Raptatriement des données de l'utilisateur.
 
         /* TODO virer ce code, remplacer par la fonctionnalité permettant de partager à la police
         TODO mettre un mdp sur le fichier zip, chiffrer ce mdp avec la clé publique RSA
@@ -226,13 +230,13 @@ class AidantActivity : AppCompatActivity() {
         StrictMode.setVmPolicy(builder.build())
 
         // Ajout de la fiche de l'Aidé.
-        val uri = Uri.fromFile(File(userdata.path + "/SmallBrother/fiche_aide.txt"))
+        val uri = Uri.fromFile(File(userData.path + "/SmallBrother/fiche_aide.txt"))
         listUri.add(uri)
 
         // Ajout de la photo de l'Aidé, s'il y en a une.
-        val photoident = File(userdata.path + "/SmallBrother/photo_aide.jpg")
+        val photoident = File(userData.path + "/SmallBrother/photo_aide.jpg")
         if (photoident.exists()) {
-            val uri2 = Uri.fromFile(File(userdata.path + "/SmallBrother/photo_aide.jpg"))
+            val uri2 = Uri.fromFile(File(userData.path + "/SmallBrother/photo_aide.jpg"))
             listUri.add(uri2)
         }
         // Appel du choix des services mail disponibles.
@@ -245,9 +249,9 @@ class AidantActivity : AppCompatActivity() {
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
             // Log :
-            if (userdata.log != null) {
+            if (userData.log != null) {
                 // Coloration en vert et mise en gras de la date (19 premiers caras).
-                val sb = SpannableStringBuilder(userdata.log)
+                val sb = SpannableStringBuilder(userData.log)
                 val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
                 val bss = StyleSpan(Typeface.BOLD)
                 sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)

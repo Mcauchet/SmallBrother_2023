@@ -64,6 +64,10 @@ class InstallDeActivity : AppCompatActivity() {
         // > Récupération du contenu des inputs :
         val etNom = findViewById<EditText>(R.id.input_nom)
         val nom = etNom.text.toString()
+
+        val etNomPartner = findViewById<EditText>(R.id.input_partner)
+        val nomPartner = etNomPartner.text.toString()
+
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
@@ -92,9 +96,13 @@ class InstallDeActivity : AppCompatActivity() {
             nom.matches("".toRegex()) || telephone.matches("".toRegex())
                 -> message(this, getString(R.string.error03), vibreur)
 
+            nomPartner.matches("".toRegex()) || telephone.matches("".toRegex())
+            -> message(this, getString(R.string.error03), vibreur)
+
             else -> {
                 // Sauvegarde en globale des valeurs entrées.
                 userData.nom = nom
+                userData.nomPartner = nomPartner
                 userData.telephone = telephone
                 userData.version = version
 
@@ -103,6 +111,7 @@ class InstallDeActivity : AppCompatActivity() {
                 intent.putExtra("nom", nom)
                 intent.putExtra("telephone", telephone)
                 intent.putExtra("version", version)
+                intent.putExtra("nomPartner", nomPartner)
                 startActivity(intent)
             }
         }
