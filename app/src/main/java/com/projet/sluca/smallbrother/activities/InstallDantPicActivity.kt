@@ -27,7 +27,7 @@ import java.io.FileOutputStream
  * class InstallDantPicActivity manages the capture of the aidé picture
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 04-12-2022)
+ * @version 1.2 (updated on 14-12-2022)
  */
 class InstallDantPicActivity : AppCompatActivity() {
 
@@ -75,7 +75,7 @@ class InstallDantPicActivity : AppCompatActivity() {
             // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
             userData.canGoBack = true
             // Transition vers l'activity suivante.
-            val intent = Intent(this, AidantActivity::class.java)
+            val intent = Intent(this, InstallDant2Activity::class.java)
             startActivity(intent)
         }
 
@@ -88,24 +88,21 @@ class InstallDantPicActivity : AppCompatActivity() {
     ) {
         if(it.resultCode == Activity.RESULT_OK)
         {
-            if(intent.hasExtra("requestCode")
-                && intent.getIntExtra("requestCode", 0) == 7) {
-                val bitmap = it.data?.extras?.get("data") as Bitmap // Récupération de la photo
+            val bitmap = it.data?.extras?.get("data") as Bitmap // Récupération de la photo
 
-                // -> Sauvegarde de la photo.
-                val image =
-                    userData.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
-                try {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        withContext(Dispatchers.IO) {
-                            bitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
-                        }
+            // -> Sauvegarde de la photo.
+            val image =
+                userData.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
+                    withContext(Dispatchers.IO) {
+                        bitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
                     }
-                } catch (e: FileNotFoundException) {
-                    e.printStackTrace()
                 }
-                apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
             }
+            apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
         }
     }
 

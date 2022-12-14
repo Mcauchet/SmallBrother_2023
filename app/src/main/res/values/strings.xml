@@ -188,5 +188,7 @@
     <string name="explication_qr_police">QR Code à scanner par la police pour télécharger les fichiers</string>
     <string name="aide_install2">[Aidé] Installation (suite)</string>
     <string name="explication_aide_scan">Veuillez scanner le QR Code sur le smartphone de l\'aidant. Il se trouve dans les paramètres de son application (symbole d\'engrenage)</string>
+    <string name="installAide2">[INSTALLATION] Veuillez scanner le QR code sur le smartphone de l\'aidant</string>
+    <string name="installQRAidant">[INSTALLATION] Scannez ce QR code avec le smartphone de l\'aidé, puis appuyez sur le bouton Terminer</string>
 
 </resources>

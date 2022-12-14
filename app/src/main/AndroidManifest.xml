@@ -45,7 +45,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity
+            android:name=".InstallDant2Activity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <!-- Déclaration launcher activity -->
         <activity
             android:name=".activities.Launch1Activity"
@@ -55,9 +61,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- Déclaration d'Activities -->
+        </activity> <!-- Déclaration d'Activities -->
         <activity
             android:name=".activities.InstallDe2Activity"
             android:screenOrientation="fullSensor">
