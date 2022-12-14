@@ -29,12 +29,12 @@ import java.io.FileOutputStream
  * PicActivity manages the re-take of a picture after installation process
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 04-12-2022)
+ * @version 1.2 (Updated on 14-12-2022)
  */
 class PicActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
     private lateinit var apercu: ImageView // Instanciation de l'aperçu.
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,13 +47,13 @@ class PicActivity : AppCompatActivity() {
         val btnSave: Button = findViewById(R.id.btn_save)
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
 
         // Identification de l'aperçu.
         apercu = findViewById(R.id.apercu)
 
         // Par défaut : afficher la photo enregistrée, s'il y en a une.
-        val path = userdata.path + "/SmallBrother/photo_aide.jpg"
+        val path = userData.path + "/SmallBrother/photo_aide.jpg"
         val file = File(path)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 
@@ -93,7 +93,7 @@ class PicActivity : AppCompatActivity() {
         if (it.resultCode == Activity.RESULT_OK) {
             val bitmap = it.data?.extras?.get("data") as Bitmap
 
-            val image = userdata.path + "/SmallBrother/photo_aide.jpg"
+            val image = userData.path + "/SmallBrother/photo_aide.jpg"
             try {
                 CoroutineScope(Dispatchers.IO).launch {
                     withContext(Dispatchers.IO) {

@@ -14,12 +14,12 @@ import com.projet.sluca.smallbrother.models.UserData
  * ReglagesActivity manages the resets of aide's and/or aidant's information and aide's picture
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 24-11-22)
+ * @version 1.2 (Updated on 14-12-22)
  */
 class ReglagesActivity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_reglages.xml.
@@ -34,7 +34,7 @@ class ReglagesActivity : AppCompatActivity() {
         val btnQRCode: Button = findViewById(R.id.btn_qr_code)
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
 
         btnResetAidant.setOnClickListener {
             vibreur.vibration(this, 330)
@@ -48,7 +48,7 @@ class ReglagesActivity : AppCompatActivity() {
             { _, _ ->
                 // Si choix = "OUI" :
                 vibreur.vibration(this, 100)
-                userdata.byeData() // Suppression des données de l'utilisateur.
+                userData.byeData() // Suppression des données de l'utilisateur.
                 message(this, getString(R.string.message03A), vibreur) // toast de confirmation.
 
                 // Redémarrage de l'appli.
@@ -76,15 +76,15 @@ class ReglagesActivity : AppCompatActivity() {
             { _, _ ->
                 // Si choix = "OUI" :
                 vibreur.vibration(this, 200)
-                userdata.loadData() // Raptatriement des données de l'utilisateur.
+                userData.loadData() // Raptatriement des données de l'utilisateur.
 
                 // Concoction et envoi du SMS.
                 var sms = getString(R.string.smsys01)
-                sms = sms.replace("§%", userdata.nom)
+                sms = sms.replace("§%", userData.nom)
                 this.getSystemService(SmsManager::class.java)
-                    .sendTextMessage(userdata.telephone, null, sms, sentPI(this), null)
+                    .sendTextMessage(userData.telephone, null, sms, sentPI(this), null)
                 message(this, getString(R.string.message03B), vibreur) // toast de confirmation.
-                userdata.refreshLog(3) // message de Log adéquat.
+                userData.refreshLog(3) // message de Log adéquat.
             }
             builder.setNegativeButton(
                 android.R.string.cancel
@@ -115,7 +115,7 @@ class ReglagesActivity : AppCompatActivity() {
             // Ouverture de l'aide.
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(userdata.url + userdata.help)
+                Uri.parse(userData.url + userData.help)
             )
             startActivity(browserIntent)
         }

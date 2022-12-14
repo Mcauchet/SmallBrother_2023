@@ -19,7 +19,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * and files transfer to the police
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 04-12-2022)
+ * @version 1.2 (Updated on 14-12-2022)
  */
 class QRCodeActivity : AppCompatActivity() {
 
@@ -27,7 +27,7 @@ class QRCodeActivity : AppCompatActivity() {
 
     lateinit var bitmap: Bitmap
 
-    lateinit var userdata: UserData
+    lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,7 @@ class QRCodeActivity : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btn_retour)
         val tvExplication: TextView = findViewById(R.id.QrCode_explication)
 
-        userdata = application as UserData
+        userData = application as UserData
 
         btnQrCodeAide.setOnClickListener {
             vibreur.vibration(this, 100)

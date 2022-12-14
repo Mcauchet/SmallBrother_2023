@@ -15,16 +15,16 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 04-12-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 14-12-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
 
-        userdata = context.applicationContext as UserData
+        userData = context.applicationContext as UserData
 
         val bundle = intent.extras
-        userdata.loadData()
+        userData.loadData()
         val message = getTextFromSms(bundle)
         Log.d("MSG SMSRCV", message)
         clef = ""
@@ -49,14 +49,14 @@ class SmsReceiver : BroadcastReceiver() {
         //Si la clef n'est pas contenue dans la liste des mots clés, on quitte la fonction
         if (!listOf(*motsclef).contains(clef)) return
 
-        if(userdata.role == "Aidant") {
+        if(userData.role == "Aidant") {
             if (clef == "[#SB10]") {
                 //The subsequence depends on the URL to the file, if it changes, the subsequence
                 //must be changed too
                 val urlFile = message
                     .subSequence(message.length - 37, message.length - 8)
                     .toString()
-                userdata.urlToFile = urlFile
+                userData.urlToFile = urlFile
                 val intnt = Intent(context, AidantActivity::class.java)
                 intnt.putExtra("url", urlFile)
                 intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -66,11 +66,11 @@ class SmsReceiver : BroadcastReceiver() {
         }
 
         //La clef est dans la liste
-        if (userdata.bit == 1) // Si le Mode Privé est activé.
+        if (userData.bit == 1) // Si le Mode Privé est activé.
         {
             // Avertir :
-            if (clef == "[#SB02]") userdata.bit = 2 // cas d'un SMS
-            else if (clef == "[#SB04]") userdata.bit = 4 // cas d'un email
+            if (clef == "[#SB02]") userData.bit = 2 // cas d'un SMS
+            else if (clef == "[#SB04]") userData.bit = 4 // cas d'un email
         } else {
             if (clef == "[#SB07]") // Récupération du temps restant si Mode Privé.
             {
@@ -78,7 +78,7 @@ class SmsReceiver : BroadcastReceiver() {
                     message.substring(message.indexOf("(") + 1, message.indexOf(")"))
                 tempsrestant = extrait
             }
-            if(userdata.role != "Aidé") return
+            if(userData.role != "Aidé") return
             // lancement de la "WorkActivity".
             val intnt2 = Intent(context, WorkActivity::class.java)
             intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -126,6 +126,6 @@ class SmsReceiver : BroadcastReceiver() {
 
         lateinit var tempsrestant: String // Retiendra le temps restant de Mode Privé pour l'Aidant.
 
-        lateinit var userdata: UserData// Liaison avec les données globales de l'utilisateur.
+        lateinit var userData: UserData// Liaison avec les données globales de l'utilisateur.
     }
 }

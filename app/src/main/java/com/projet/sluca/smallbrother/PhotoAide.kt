@@ -20,7 +20,7 @@ import java.io.File
 class PhotoAide : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
 
     // Eléments d'affichage (photo et légende);
     private lateinit var ivApercu: ImageView
@@ -32,7 +32,7 @@ class PhotoAide : AppCompatActivity() {
         setContentView(R.layout.activity_photo)
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
 
         // Identification des éléments d'affichage.
         ivApercu = findViewById(R.id.apercu)
@@ -40,7 +40,7 @@ class PhotoAide : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btn_retour)
 
         // Gestion de l'affichage, selon qu'un fichier existe ou non.
-        val path = userdata.path + "/SmallBrother/photo_aide.jpg"
+        val path = userData.path + "/SmallBrother/photo_aide.jpg"
         val file = File(path)
         if(file.exists()) ivApercu.setImageURI(Uri.fromFile(file))
         else tvLegende.text = getString(R.string.nophoto)

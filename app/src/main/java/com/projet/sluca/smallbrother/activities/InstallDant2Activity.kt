@@ -26,7 +26,7 @@ class InstallDant2Activity : AppCompatActivity() {
 
     lateinit var bitmap: Bitmap
 
-    lateinit var userdata: UserData
+    lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +35,7 @@ class InstallDant2Activity : AppCompatActivity() {
         val ivQrCode: ImageView = findViewById(R.id.ivqrcode)
         val btnEnd: Button = findViewById(R.id.btn_terminer)
 
-        userdata = application as UserData
+        userData = application as UserData
         qrEncoder(SecurityUtils.getPublicKey(), ivQrCode)
 
         btnEnd.setOnClickListener {

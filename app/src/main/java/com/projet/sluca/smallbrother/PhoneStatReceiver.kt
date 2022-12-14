@@ -11,11 +11,11 @@ import com.projet.sluca.smallbrother.models.UserData
 /***
  * PhoneStatReceiver manages information when a phone call is made between aidant and aide
  *
- * @author Sébastien Luca & Maxime Caucheteur (Updated on 04-12-22)
+ * @author Sébastien Luca & Maxime Caucheteur (Updated on 14-12-22)
  */
 class PhoneStatReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        userdata.loadData()
+        userData.loadData()
         if (intent.action == Intent.ACTION_NEW_OUTGOING_CALL) {
             /*
         incomingFlag = false;
@@ -30,14 +30,14 @@ class PhoneStatReceiver : BroadcastReceiver() {
                 if(intent.hasExtra("incoming_number")) {
                     callNumber = intent.getStringExtra("incoming_number").toString()
                 }
-                if (userdata.bit == 1) // Si le Mode Privé est activé.
+                if (userData.bit == 1) // Si le Mode Privé est activé.
                 {
                     // Avertir :
-                    userdata.bit = 3 // cas d'un appel
+                    userData.bit = 3 // cas d'un appel
                 } else {
                     // Déclaration d'un passage dans la WorkActivity pour éviter que, au retour dans
                     // AideActivity, ne soit généré un doublon du Handler local.
-                    userdata.esquive = true
+                    userData.esquive = true
 
                     // lancement de la "WorkActivity".
                     val intnt = Intent(context, WorkActivity::class.java)
@@ -50,7 +50,7 @@ class PhoneStatReceiver : BroadcastReceiver() {
 
     companion object {
         var callNumber = ""
-        lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+        lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
 
         fun catchCallNumber(): String = callNumber
 

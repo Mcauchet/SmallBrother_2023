@@ -19,11 +19,11 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDantActivity manages the installation for the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 04-12-22)
+ * @version 1.2 (updated on 14-12-22)
  */
 class InstallDantActivity : AppCompatActivity() {
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_installdant.xml.
         super.onCreate(savedInstanceState)
@@ -33,11 +33,11 @@ class InstallDantActivity : AppCompatActivity() {
         val btnContinue: Button = findViewById(R.id.btn_continue)
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
-        Log.d("USERDATA", userdata.toString())
+        userData = application as UserData
+        Log.d("USERDATA", userData.toString())
 
         // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
-        if (!userdata.canGoBack) {
+        if (!userData.canGoBack) {
             btnBack.visibility = View.INVISIBLE
         }
 
@@ -106,17 +106,17 @@ class InstallDantActivity : AppCompatActivity() {
                 }
 
                 // Sauvegarde en globale des valeurs entrées.
-                userdata.role = "Aidant"
-                userdata.version = version
-                userdata.nom = nom
-                userdata.nomPartner = nomPartner
-                userdata.telephone = telephone
+                userData.role = "Aidant"
+                userData.version = version
+                userData.nom = nom
+                userData.nomPartner = nomPartner
+                userData.telephone = telephone
 
                 // Enregistrement de la DB.
-                userdata.saveData(this)
+                userData.saveData(this)
 
                 // Création de la fiche de l'Aidé.
-                //userdata.createFiche(this)
+                //userData.createFiche(this)
 
                 // Transition vers l'activity suivante.
                 val intent = Intent(this, InstallDantPicActivity::class.java)

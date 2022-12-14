@@ -20,12 +20,12 @@ import kotlinx.coroutines.launch
  * class Launch1Activity is the starting point of the application.
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 04-12-2022)
+ * @version 1.2 (Updated on 14-12-2022)
  */
 class Launch1Activity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata: UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_launch1.xml.
@@ -56,10 +56,10 @@ class Launch1Activity : AppCompatActivity() {
         }*/
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
         vibreur.vibration(this, 100)
 
-        userdata.configurePath(this)
+        userData.configurePath(this)
 
         // Réactivation du SmsReceiver (en cas de coupure inopinée de l'appli).
         val pm = this@Launch1Activity.packageManager
@@ -75,8 +75,8 @@ class Launch1Activity : AppCompatActivity() {
         // Vérification : tout premier démarrage ?
 
         // Cas 1 : data existant : redirection vers l'écran de rôle.
-        if (userdata.loadData()) {
-            when (userdata.role) {
+        if (userData.loadData()) {
+            when (userData.role) {
                 "Aidant" -> {
                     //Activité aidant
                     val intent = Intent(this, AidantActivity::class.java)
@@ -88,11 +88,11 @@ class Launch1Activity : AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-        } else if (userdata.role != null) {
+        } else if (userData.role != null) {
             // Désactivation des boutons retour (car suite de Reglages Activity).
-            userdata.canGoBack = false
-            userdata.refreshLog(2) // message de Log adéquat.
-            when (userdata.role) {
+            userData.canGoBack = false
+            userData.refreshLog(2) // message de Log adéquat.
+            when (userData.role) {
                 "Aidant" -> {
                     //Installation aidant
                     val intent = Intent(this, InstallDantActivity::class.java)
@@ -105,8 +105,8 @@ class Launch1Activity : AppCompatActivity() {
                 }
             }
         } else {
-            userdata.canGoBack = true // activation des boutons retour.
-            userdata.refreshLog(1) // message de Log de commencement.
+            userData.canGoBack = true // activation des boutons retour.
+            userData.refreshLog(1) // message de Log de commencement.
         }
 
         btnStart.setOnClickListener {

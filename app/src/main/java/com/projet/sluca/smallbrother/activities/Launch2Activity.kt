@@ -17,7 +17,7 @@ import com.projet.sluca.smallbrother.models.UserData
 class Launch2Activity : AppCompatActivity() {
 
     var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userdata : UserData // Liaison avec les données globales de l'utilisateur.
+    lateinit var userData : UserData // Liaison avec les données globales de l'utilisateur.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_launch2.xml.
@@ -28,11 +28,11 @@ class Launch2Activity : AppCompatActivity() {
         val btnRoleAide: Button = findViewById(R.id.btn_role2)
 
         // Etablissement de la liaison avec la classe UserData.
-        userdata = application as UserData
+        userData = application as UserData
 
         btnRoleAidant.setOnClickListener {
             vibreur.vibration(this, 100)
-            userdata.role = "Aidant"
+            userData.role = "Aidant"
 
             // Transition vers l'activity suivante.
             val intent = Intent(this, InstallDantActivity::class.java)
@@ -41,7 +41,7 @@ class Launch2Activity : AppCompatActivity() {
 
         btnRoleAide.setOnClickListener {
             vibreur.vibration(this, 100)
-            userdata.role = "Aidé"
+            userData.role = "Aidé"
 
             // Transition vers l'activity suivante.
             val intent = Intent(this, InstallDeActivity::class.java)

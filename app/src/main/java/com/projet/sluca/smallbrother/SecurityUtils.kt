@@ -23,7 +23,7 @@ import javax.security.auth.x500.X500Principal
  */
 object SecurityUtils {
 
-    private const val KEYSTORE_ALIAS =
+    private const val KEYSTORE_ALIAS_RSA =
         "ksa.test6"
 
     private const val KEYSTORE_ALIAS_AES =
@@ -37,9 +37,9 @@ object SecurityUtils {
         val aliases: Enumeration<String> = ks.aliases()
 
         /**
-         * Check whether the keypair with the alias [KEYSTORE_ALIAS] exists.
+         * Check whether the keypair with the alias [KEYSTORE_ALIAS_RSA] exists.
          */
-        if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS } == null) {
+        if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS_RSA } == null) {
             // If it doesn't exist, generate new keypair
             val kpg: KeyPairGenerator = KeyPairGenerator.getInstance(
                 "RSA"
@@ -47,7 +47,8 @@ object SecurityUtils {
 
             kpg.initialize(
                 KeyGenParameterSpec.Builder(
-                    KEYSTORE_ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT
+                    KEYSTORE_ALIAS_RSA,
+                    KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT
                 ).setEncryptionPaddings(
                     KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1
                 ).setKeySize(
@@ -59,31 +60,45 @@ object SecurityUtils {
             kpg.generateKeyPair()
         } else {
             // If it exists, load the existing keypair
-            val entry = ks.getEntry(KEYSTORE_ALIAS, null) as? PrivateKeyEntry
+            val entry = ks.getEntry(KEYSTORE_ALIAS_RSA, null) as? PrivateKeyEntry
             KeyPair(entry?.certificate?.publicKey, entry?.privateKey)
         }
     }
 
     /**
-     * Returns the public key with alias [KEYSTORE_ALIAS].
+     * deletes the AES Key entry
+     */
+    fun deleteAESKeyEntry() {
+        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
+            load(null)
+        }
+        ks.deleteEntry(KEYSTORE_ALIAS_AES)
+    }
+
+    /**
+     * Returns the public key with alias [KEYSTORE_ALIAS_RSA].
+     *
+     * @return the public key as a String
      */
     fun getPublicKey(): String {
         val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
             load(null)
         }
-        val entry = ks.getEntry(KEYSTORE_ALIAS, null) as PrivateKeyEntry
+        val entry = ks.getEntry(KEYSTORE_ALIAS_RSA, null) as PrivateKeyEntry
         val pubKey = entry.certificate.publicKey
         return String(Base64.encode(pubKey.encoded, Base64.DEFAULT))
     }
 
     /**
-     * Returns the private key with alias [KEYSTORE_ALIAS].
+     * Returns the private key with alias [KEYSTORE_ALIAS_RSA].
+     *
+     * @return the reference to the private key
      */
     private fun getPrivateKey(): PrivateKey {
         val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
             load(null)
         }
-        val entry = ks.getEntry(KEYSTORE_ALIAS, null) as PrivateKeyEntry
+        val entry = ks.getEntry(KEYSTORE_ALIAS_RSA, null) as PrivateKeyEntry
         return entry.privateKey
     }
 
