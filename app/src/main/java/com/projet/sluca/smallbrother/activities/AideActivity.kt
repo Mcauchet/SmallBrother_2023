@@ -25,7 +25,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 04-12-22)
+ * @version 1.2 (updated on 15-12-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -45,10 +45,10 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aide)
 
-        val btnHelp: Button = findViewById(R.id.btn_aide)
         val btnReduct: Button = findViewById(R.id.btn_reduire)
         val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
+        val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
         val newText = getString(R.string.btn_appel)
         newText.replace("§%", userData.nomPartner)
@@ -81,25 +81,14 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-        btnHelp.setOnClickListener {
-            vibreur.vibration(this, 100)
-
-            // Ouverture de l'aide.
-            val browserIntent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(userData.url + userData.help)
-            )
-            startActivity(browserIntent)
-        }
-
         btnReduct.setOnClickListener {
-            vibreur.vibration(this, 200)
+            vibreur.vibration(this, 100)
             message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
             moveTaskToBack(true) // Mise de l'appli en arrière-plan.
         }
 
         btnSmsAidant.setOnClickListener {
-            vibreur.vibration(this, 200)
+            vibreur.vibration(this, 100)
             userData.loadData() // Raptatriement des données de l'utilisateur.
 
             // Concoction et envoi du SMS.
@@ -113,7 +102,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
 
         btnCall.setOnClickListener {
-            vibreur.vibration(this, 200)
+            vibreur.vibration(this, 100)
             userData.loadData() // Raptatriement des données de l'utilisateur.
 
             // Balance contre l'interférence de l'Intent ci-dessous dans l'équilibre Work-Aide activity.
@@ -126,13 +115,21 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             message(this, getString(R.string.message05), vibreur) // toast de confirmation.
             userData.refreshLog(7) // rafraîchissement du Log.
         }
+
+        btnEmergency.setOnClickListener {
+            vibreur.vibration(this, 100)
+            val intent = Intent(Intent.ACTION_CALL)
+            intent.data = Uri.parse("tel:"+"112")
+            startActivity(intent)
+            message(this, getString(R.string.message05), vibreur)
+        }
     }
 
     // --> Traitement des postions ON/OFF du bouton "Mode Privé".
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         if (isChecked && !userData.prive) // Si "Mode Privé" demandé.
         {
-            vibreur.vibration(this, 200)
+            vibreur.vibration(this, 100)
 
             // Instanciaition d'une boîte de dialogue.
             val li = LayoutInflater.from(this)
@@ -199,12 +196,12 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             userData.bit = 0 // Cookie : Mode Privé OFF.
             userData.delai = 0
             refresh()
-            vibreur.vibration(this, 330)
+            vibreur.vibration(this, 200)
         }
     }
 
     private fun changeSwitch() {
-        vibreur.vibration(this, 250)
+        vibreur.vibration(this, 200)
         refresh()
     }
 
