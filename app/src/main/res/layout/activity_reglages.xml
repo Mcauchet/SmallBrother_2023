@@ -318,7 +318,7 @@
             android:alpha="0.1" />
 
         <!-- Logo UNamur -->
-        <ImageView
+        <!--<ImageView
             android:id="@+id/unamur"
             android:layout_width="104dp"
             android:layout_height="56dp"
@@ -326,7 +326,7 @@
             android:layout_gravity="center"
             android:orientation="vertical"
             android:src="@drawable/unamur"
-            android:alpha="0.60" />
+            android:alpha="0.60" />-->
 
     </LinearLayout>
 

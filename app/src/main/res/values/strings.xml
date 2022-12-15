@@ -27,14 +27,15 @@
     <string name="log_intitule">Dernière nouvelle :</string>
     <string name="reglages_intitule">Réglages</string>
     <string name="reglages_note">
-        Mettre à jour vos informations ou celles de votre partenaire.
+        Ce menu vous permet de réinitialiser vos informations ou celles de l\'aidé. Vous pouvez également refaire la photo de l\'aidé. \n
+        Attention, si vous réinitialiser vos informations, vous devrez réinstaller l\'application sur les deux smartphones.
     </string>
     <string name="chargement">Chargement en cours </string>
     <string name="cheminphoto">Stockage Interne/Download/SmallBrother/photo_aide.jpg</string>
     <string name="nophoto">Aucun fichier trouvé.</string>
     <string name="reacpitulatif_cln1">→ Nom : \n→ Numéro de l\'Aidé : </string>
     <string name="popup1">
-        Entrez une durée en minutes (maximum 120) durant laquelle vous refuser
+        Entrez une durée en minutes (maximum 120) durant laquelle vous ne souhaitez pas
         que votre partenaire puisse vérifier vos informations :
     </string>
     <string name="intitule_delai">Temps restant : </string>
@@ -69,8 +70,8 @@
     <!-- Messages -->
     <string name="oui">Oui</string>
     <string name="message01">SmallBrother reste actif en arrière-plan.</string>
-    <string name="message02_titre">Réinitialiser</string>
-    <string name="message02_texte">Confirmez-vous cette action ?</string>
+    <string name="message02_titre">Réinitialiser l\'application</string>
+    <string name="message02_texte">Confirmez-vous cette action ? Vous devrez réinstaller l\'application sur les deux smartphones pour pouvoir l\'utiliser à nouveau</string>
     <string name="message03A">Suppression effectuée.</string>
     <string name="message03B">Un SMS de déclenchement a été envoyé à votre partenaire.</string>
     <string name="message04">SMS envoyé.</string>
@@ -103,17 +104,11 @@
         batterie de votre téléphone.
     </string>
     <string name="message13C">Information :</string>
-    <string name="message13D">
-        Le contenu entré dans les champs ci-dessus ne quittera pas votre smartphone :
-        il est uniquement destiné à établir la connexion avec Gmail, dans le but de
-        faire parvenir vos informations contextuelles à votre partenaire.
-    </string>
 
     <!-- Erreurs -->
     <string name="error01">
         Le numéro doit être au format GSM belge standard (04 puis huit chiffres).
     </string>
-    <string name="error02">L\'adresse email entrée est invalide.</string>
     <string name="error03">Tous les champs doivent être complétés.</string>
 
 
@@ -147,26 +142,11 @@
         Vous avez demandé à vérifier la situation de l\'Aidé.
         Le traitement est en cours, veuillez patienter ...
     </string>
-    <string name="log11">Votre partenaire a reçu l\'email de rapport sur votre situation.</string>
     <string name="log12">
         Votre partenaire tente vérifier votre situation.
         Pourquoi ne pas l\'appeler ?
     </string>
-    <string name="log13">
-        Echec de l\'envoi de l\'email. Votre partenaire n\'a pas accès au Net actuellement.
-    </string>
-    <string name="log14">
-        Vous avez reçu le rapport sur la situation de l\'Aidé. Veuillez consulter vos emails.
-    </string>
-    <string name="log15">
-        Echec de l\'envoi de l\'email  : vous avez perdu votre connexion à Internet.
-        Veuillez svp appeler partenaire !
-    </string>
     <string name="log16">Vous signalez à votre partenaire que tout va bien.</string>
-    <string name="log17">
-        Demande d\'email d\'urgence : temps d\'attente anormalement long.
-        Le téléphone de votre partenaire est peut-être éteint ou ne capte pas de réseau.
-    </string>
     <string name="log18">Le délai du Mode Privé est écoulé.</string>
     <string name="log19">
         Votre partenaire souhaite ne pas être dérangé durant les N# prochaines minutes.
@@ -188,9 +168,10 @@
     <string name="explication_qr_police">QR Code à scanner par la police pour télécharger les fichiers</string>
     <string name="aide_install2">[Aidé] Installation (suite)</string>
     <string name="explication_aide_scan">Veuillez scanner le QR Code sur le smartphone de l\'aidant. Il se trouve dans les paramètres de son application (symbole d\'engrenage)</string>
-    <string name="installAide2">[INSTALLATION] Veuillez scanner le QR code sur le smartphone de l\'aidant</string>
+    <string name="installAide2">[INSTALLATION] Veuillez scanner le QR code sur le smartphone de l\'aidant pour terminer l'installation</string>
     <string name="installQRAidant">[INSTALLATION] Scannez ce QR code avec le smartphone de l\'aidé, puis appuyez sur le bouton Terminer</string>
     <string name="nomAide">Nom de l\'Aidé</string>
     <string name="blank" />
+    <string name="duree_prive_base">15</string>
 
 </resources>

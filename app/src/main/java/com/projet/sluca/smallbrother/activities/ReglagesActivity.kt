@@ -14,7 +14,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * ReglagesActivity manages the resets of aide's and/or aidant's information and aide's picture
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 14-12-22)
+ * @version 1.2 (Updated on 15-12-22)
  */
 class ReglagesActivity : AppCompatActivity() {
 

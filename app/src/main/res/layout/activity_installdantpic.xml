@@ -73,10 +73,10 @@
             android:layout_marginRight="80dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            android:background="@drawable/boutons2shape"
+            android:background="@drawable/boutonsshape"
             android:textColor="#FFFFFF"
             android:text="@string/btn_capture"
-            android:textSize="15sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
