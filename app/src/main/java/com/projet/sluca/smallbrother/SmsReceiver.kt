@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 14-12-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 15-12-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -94,6 +94,7 @@ class SmsReceiver : BroadcastReceiver() {
      * kotlin/com/joekickass/mondaymadness/SmsReceiver.kt)
      */
     private fun getTextFromSms(extras: Bundle?): String {
+        @Suppress("DEPRECATION")
         val pdus = extras?.get("pdus") as Array<*>
         val format = extras.getString("format")
         var txt = ""

@@ -5,7 +5,6 @@
     <!-- Ajout des permissions -->
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -45,13 +44,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".InstallDant2Activity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+
         <!-- Déclaration launcher activity -->
         <activity
             android:name=".activities.Launch1Activity"
@@ -61,7 +54,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- Déclaration d'Activities -->
+        </activity>
+        <!-- Déclaration d'Activities -->
         <activity
             android:name=".activities.InstallDe2Activity"
             android:screenOrientation="fullSensor">
@@ -108,7 +102,16 @@
             android:screenOrientation="fullSensor" />
         <activity
             android:name=".activities.Work2Activity"
-            android:screenOrientation="fullSensor" /> <!-- SmsReceiver -->
+            android:screenOrientation="fullSensor" />
+        <activity
+            android:name=".activities.InstallDant2Activity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+
+        <!-- SmsReceiver -->
         <receiver
             android:name=".SmsReceiver"
             android:enabled="true"
@@ -118,6 +121,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
     </application>
 
 </manifest>

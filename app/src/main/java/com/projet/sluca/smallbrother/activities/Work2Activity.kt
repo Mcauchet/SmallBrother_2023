@@ -194,6 +194,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         install(ContentNegotiation) {
                             json()
                         }
+                        install(HttpRequestRetry) {
+                            retryOnServerErrors(maxRetries = 3)
+                            exponentialDelay()
+                        }
                     }
                     CoroutineScope(Dispatchers.IO).launch {
                         try {

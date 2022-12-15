@@ -31,7 +31,7 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 14-12-22)
+ * @version 1.2 (modified on 15-12-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -77,7 +77,8 @@ data class UserData(
      */
     fun saveData(context: Context?) {
         // Structuration du contenu du futur fichier (info, retour-charriot).
-        val contenu = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey
+        val contenu = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
+                nomPartner
 
         Log.d("CONTENU", contenu)
 
@@ -150,6 +151,7 @@ data class UserData(
                 nom = dataTab[2]
                 telephone = dataTab[3]
                 pubKey = dataTab[4]
+                nomPartner = dataTab[5]
                 return true
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
@@ -193,13 +195,8 @@ data class UserData(
             8 -> texte += getString(R.string.log08)
             9 -> texte += getString(R.string.log09)
             10 -> texte += getString(R.string.log10)
-            11 -> texte += getString(R.string.log11)
             12 -> texte += getString(R.string.log12)
-            13 -> texte += getString(R.string.log13)
-            14 -> texte += getString(R.string.log14)
-            15 -> texte += getString(R.string.log15)
             16 -> texte += getString(R.string.log16)
-            17 -> texte += getString(R.string.log17)
             18 -> texte += getString(R.string.log18)
             19 -> {
                 // Message avec insertion du temps de Mode Privé restant.

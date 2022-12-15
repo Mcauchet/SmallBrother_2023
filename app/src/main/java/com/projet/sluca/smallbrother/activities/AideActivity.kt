@@ -50,12 +50,15 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnCall: Button = findViewById(R.id.btn_appel)
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
-        val newText = getString(R.string.btn_appel)
-        newText.replace("§%", userData.nomPartner)
+
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
         userData.loadData()
+
+        val newText = getString(R.string.btn_appel)
+        val btnText = newText.replace("§%", userData.nomPartner)
+        btnCall.text = btnText
 
         // Liaison avec les TextViews du délai.
         tvDelai = findViewById(R.id.decompte)

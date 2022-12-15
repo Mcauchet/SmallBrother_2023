@@ -6,12 +6,15 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
@@ -22,12 +25,15 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /***
  * class InstallDantPicActivity manages the capture of the aidé picture
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 14-12-2022)
+ * @version 1.2 (updated on 15-12-2022)
  */
 class InstallDantPicActivity : AppCompatActivity() {
 
@@ -52,6 +58,7 @@ class InstallDantPicActivity : AppCompatActivity() {
 
         // Par défaut : afficher la photo enregistrée, s'il y en a une.
         val path = userData.path + "/SmallBrother/photo_aide.jpg"
+        Log.d("path picture", path)
         val file = File(path)
         if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 
@@ -61,8 +68,8 @@ class InstallDantPicActivity : AppCompatActivity() {
             // Lancement de l'activité de capture.
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             intent.putExtra("requestCode", 7)
-            getResult.launch(intent)
-            //startActivityForResult(intent, 7)
+            //getResult.launch(intent)
+            startActivityForResult(intent, 7)
         }
 
         btnBack.setOnClickListener {
@@ -86,8 +93,10 @@ class InstallDantPicActivity : AppCompatActivity() {
     private val getResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
+        Log.d("result code", it.resultCode.toString())
         if(it.resultCode == Activity.RESULT_OK)
         {
+            @Suppress("DEPRECATION")
             val bitmap = it.data?.extras?.get("data") as Bitmap // Récupération de la photo
 
             // -> Sauvegarde de la photo.
@@ -104,17 +113,22 @@ class InstallDantPicActivity : AppCompatActivity() {
             }
             apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
         }
+        else{
+            Log.d("result canceled", "canceled")
+        }
     }
 
     // --> Au retour à la présente actvité, si une photo a été prise :
-    /*@Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Log.d("result code", resultCode.toString())
         if (requestCode == 7 && resultCode == RESULT_OK) {
             val bitmap = data!!.extras!!["data"] as Bitmap? // Récupération de la photo
 
             // -> Sauvegarde de la photo.
-            val image = userData.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
+            val image =
+                userData.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
             try {
                 bitmap!!.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
             } catch (e: FileNotFoundException) {
@@ -122,7 +136,7 @@ class InstallDantPicActivity : AppCompatActivity() {
             }
             apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
         }
-    }*/
+    }
 
     // --> Par sécurité : retrait du retour en arrière dans cette activity.
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
