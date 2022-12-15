@@ -191,5 +191,6 @@
     <string name="installAide2">[INSTALLATION] Veuillez scanner le QR code sur le smartphone de l\'aidant</string>
     <string name="installQRAidant">[INSTALLATION] Scannez ce QR code avec le smartphone de l\'aidé, puis appuyez sur le bouton Terminer</string>
     <string name="nomAide">Nom de l\'Aidé</string>
+    <string name="blank" />
 
 </resources>
