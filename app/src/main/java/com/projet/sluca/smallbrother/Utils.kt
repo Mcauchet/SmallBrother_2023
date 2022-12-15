@@ -32,8 +32,8 @@ const val URLServer = "https://196b-138-48-114-153.eu.ngrok.io"
  * @param [context] context of the activity
  * @param [msg] body of the SMS
  * @param [receiver] receiver of the SMS
- *
- * @author Maxime Caucheteur (Updated on 01-12-2022)
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 01-12-2022)
  */
 fun sendSMS(context: Context, msg: String, receiver: String) {
     val subscriptionId: Int = SmsManager.getDefaultSmsSubscriptionId()
@@ -53,7 +53,8 @@ fun sendSMS(context: Context, msg: String, receiver: String) {
  *
  * @param [context] the context of the activity
  * @return the PendingIntent for the SMS
- * @author Maxime Caucheteur (Updated on 28-10-2022)
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 28-10-2022)
  */
 fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
     context,
@@ -62,17 +63,18 @@ fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
     0)
 
 /***
- * creates a toast with a msg to print
+ * creates a toast with a msg to print and vibrate
  *
  * @param [context] the context of the activity
  * @param [msg] the message to print
  * @param [vibreur] the phone Vibration system
  * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 15-12-22)
  */
 fun message(context: Context, msg: String, vibreur: Vibration) {
     val toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT)
     toast.show()
-    vibreur.vibration(context, 330)
+    vibreur.vibration(context, 300)
 }
 
 /***
@@ -80,6 +82,8 @@ fun message(context: Context, msg: String, vibreur: Vibration) {
  *
  * @param [window] the window of the application
  * @param [activity] the activity to put on screen
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on ??-10-22)
  */
 fun wakeup(window: Window, activity: AppCompatActivity) {
     @Suppress("DEPRECATION")
@@ -110,7 +114,8 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
  * isOnline returns true if device has network capabilities (Cellular, Wifi or Ethernet)
  *
  * @return true if connected, false otherwise
- * @author Maxime Caucheteur (Updated on 24-11-2022)
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 24-11-22)
  */
 fun isOnline(context: Context): Boolean {
     try {
@@ -142,16 +147,17 @@ fun isOnline(context: Context): Boolean {
  * Animation of loading
  *
  * @param [tvLoading] the TextView in which the animation takes place
- * @author Maxime Caucheteur (Updated on 24-11-2022)
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 15-12-2022)
  */
 fun loading(tvLoading: TextView) {
     object : CountDownTimer(2000, 1) {
         override fun onTick(millisUntilFinished: Long) {
             when (millisUntilFinished) {
-                in 1601..2000 -> tvLoading.text = ""
-                in 1201..1600 -> tvLoading.text = "."
-                in 801..1200 -> tvLoading.text = ".."
-                in 0..800 -> tvLoading.text = "..."
+                in 1501..2000 -> tvLoading.text = ""
+                in 1001..1500 -> tvLoading.text = "."
+                in 501..1000 -> tvLoading.text = ".."
+                in 0..500 -> tvLoading.text = "..."
             }
         }
         override fun onFinish(): Unit = loading(tvLoading)
@@ -163,7 +169,8 @@ fun loading(tvLoading: TextView) {
  *
  * @param publicKey the String to transform into a Key
  * @return the Key object
- * @author Maxime Caucheteur (Updated on 04-12-2022)
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-12-2022)
  */
 fun loadPublicKey(publicKey: String): Key {
     val data: ByteArray = Base64.decode(publicKey.toByteArray(), Base64.DEFAULT)
