@@ -21,7 +21,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 04-12-2022)
+ * @version 1.2 (Updated on 18-12-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 
@@ -133,6 +133,7 @@ class InstallDeActivity : AppCompatActivity() {
                     Manifest.permission.CALL_PHONE,  // -> passer des appels
                     Manifest.permission.READ_SMS,  // -> lire les SMS
                     Manifest.permission.RECEIVE_SMS,  // -> recevoir des SMS
+                    Manifest.permission.BROADCAST_SMS, // -> utiliser sms receiver
                     Manifest.permission.RECEIVE_BOOT_COMPLETED,  // -> lancement d'activité
                     Manifest.permission.READ_PHONE_STATE,  // -> infos du téléphones
                     Manifest.permission.PROCESS_OUTGOING_CALLS,  // -> passer des appels
