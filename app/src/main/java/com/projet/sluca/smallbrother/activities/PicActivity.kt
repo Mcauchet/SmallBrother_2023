@@ -7,6 +7,7 @@ import android.graphics.Bitmap.CompressFormat
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
@@ -71,9 +72,10 @@ class PicActivity : AppCompatActivity() {
             vibreur.vibration(this, 100)
 
             // Lancement de l'activité de capture.
-            val intent = Intent(this@PicActivity,
-                MediaStore.ACTION_IMAGE_CAPTURE::class.java)
-            getResult.launch(intent)
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            intent.putExtra("requestCode", 7)
+            //getResult.launch(intent)
+            startActivityForResult(intent, 7)
         }
 
         btnSave.setOnClickListener {
@@ -104,6 +106,25 @@ class PicActivity : AppCompatActivity() {
                 e.printStackTrace()
             }
             apercu.setImageBitmap(bitmap)
+        }
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("result code", resultCode.toString())
+        if (requestCode == 7 && resultCode == RESULT_OK) {
+            val bitmap = data!!.extras!!["data"] as Bitmap? // Récupération de la photo
+
+            // -> Sauvegarde de la photo.
+            val image =
+                userData.path + "/SmallBrother/photo_aide.jpg" // chemin de fichier globalisé.
+            try {
+                bitmap!!.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            }
+            apercu.setImageBitmap(bitmap) // Affichage de la photo dans l'ImageView "aperçu".
         }
     }
 

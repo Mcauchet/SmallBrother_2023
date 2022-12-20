@@ -43,7 +43,7 @@ class ReglagesActivity : AppCompatActivity() {
             val builder = AlertDialog.Builder(this)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.message02_titre))
-            builder.setMessage(getString(R.string.message02_texte))
+            builder.setMessage(getString(R.string.message02_settings))
             builder.setPositiveButton(getString(R.string.oui))
             { _, _ ->
                 // Si choix = "OUI" :

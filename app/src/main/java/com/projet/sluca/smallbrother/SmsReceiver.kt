@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 15-12-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 19-12-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -48,6 +48,8 @@ class SmsReceiver : BroadcastReceiver() {
 
         //Si la clef n'est pas contenue dans la liste des mots clés, on quitte la fonction
         if (!listOf(*motsclef).contains(clef)) return
+
+        //TODO launch app here
 
         if(userData.role == "Aidant") {
             if (clef == "[#SB10]") {

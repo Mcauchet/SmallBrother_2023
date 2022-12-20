@@ -71,7 +71,8 @@
     <string name="oui">Oui</string>
     <string name="message01">SmallBrother reste actif en arrière-plan.</string>
     <string name="message02_titre">Réinitialiser l\'application</string>
-    <string name="message02_texte">Confirmez-vous cette action ? Vous devrez réinstaller l\'application sur les deux smartphones pour pouvoir l\'utiliser à nouveau</string>
+    <string name="message02_texte">Confirmez-vous cette action ?</string>
+    <string name="message02_settings">Confirmez-vous cette action ? Vous devrez réinstaller l\'application sur les deux smartphones pour pouvoir l\'utiliser à nouveau</string>
     <string name="message03A">Suppression effectuée.</string>
     <string name="message03B">Un SMS de déclenchement a été envoyé à votre partenaire.</string>
     <string name="message04">SMS envoyé.</string>

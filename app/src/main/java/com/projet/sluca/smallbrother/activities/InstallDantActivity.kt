@@ -14,6 +14,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /***
  * class InstallDantActivity manages the installation for the aidant
@@ -55,7 +58,9 @@ class InstallDantActivity : AppCompatActivity() {
         demandesPermissions()
 
         //Generate key pair
-        SecurityUtils.getKeyPair()
+        CoroutineScope(Dispatchers.IO).launch {
+            SecurityUtils.getKeyPair()
+        }
 
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
