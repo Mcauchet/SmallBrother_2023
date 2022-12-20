@@ -58,53 +58,54 @@
         <!-- Déclaration d'Activities -->
         <activity
             android:name=".activities.InstallDe2Activity"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="locked">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.QRCodeActivity"
-            android:screenOrientation="fullSensor">
+            android:screenOrientation="locked">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".activities.Launch2Activity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".PhotoAide"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.AidantActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.AideActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.InstallDantActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.InstallDantPicActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.InstallDeActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.PicActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.ReglagesActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.WorkActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.Work2Activity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="locked" />
         <activity
             android:name=".activities.InstallDant2Activity"
+            android:screenOrientation="locked"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

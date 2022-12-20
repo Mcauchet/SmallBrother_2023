@@ -35,6 +35,7 @@ class SmsReceiver : BroadcastReceiver() {
         // Si SMS destiné à l'appli.
         // Isolement du code d'identification, en fin de SMS (7 caras).
         clef = message.substring(message.length - 7)
+        Log.d("clef", clef.toString())
         val motsclef = arrayOf(
             "[#SB01]",  // -> réinit aidé
             "[#SB02]",  // -> va bien? reçu par aidé
@@ -80,7 +81,10 @@ class SmsReceiver : BroadcastReceiver() {
                     message.substring(message.indexOf("(") + 1, message.indexOf(")"))
                 tempsrestant = extrait
             }
-            if(userData.role != "Aidé") return
+            if(userData.role != "Aidé") {
+                Log.d("role", userData.role.toString())
+                return
+            }
             // lancement de la "WorkActivity".
             val intnt2 = Intent(context, WorkActivity::class.java)
             intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
