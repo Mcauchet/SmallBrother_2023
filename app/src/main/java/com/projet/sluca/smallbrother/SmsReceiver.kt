@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 19-12-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 22-12-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -44,6 +44,7 @@ class SmsReceiver : BroadcastReceiver() {
             "[#SB05]",  // -> aidé pas connecté
             "[#SB06]",  // -> mail d'urgence reçu
             "[#SB07]", // -> mode privé activé
+            "[#SB08]", // -> aide needs help
             "[#SB10]", // -> aidant receives url to files
         )
 
@@ -53,19 +54,27 @@ class SmsReceiver : BroadcastReceiver() {
         //TODO launch app here
 
         if(userData.role == "Aidant") {
-            if (clef == "[#SB10]") {
-                //The subsequence depends on the URL to the file, if it changes, the subsequence
-                //must be changed too
-                val urlFile = message
-                    .subSequence(message.length - 37, message.length - 8)
-                    .toString()
-                userData.urlToFile = urlFile
-                val intnt = Intent(context, AidantActivity::class.java)
-                intnt.putExtra("url", urlFile)
-                intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                context.startActivity(intnt)
+            when (clef) {
+                "[#SB10]" -> {
+                    //The subsequence depends on the URL to the file, if it changes, the subsequence
+                    //must be changed too
+                    val urlFile = message
+                        .subSequence(message.length - 37, message.length - 8)
+                        .toString()
+                    userData.urlToFile = urlFile
+                    val intnt = Intent(context, AidantActivity::class.java)
+                    intnt.putExtra("url", urlFile)
+                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(intnt)
+                }
+                "[#SB08]" -> {
+                    val intnt = Intent(context, AidantActivity::class.java)
+                    intnt.putExtra("emergency", 1)
+                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(intnt)
+                }
+                else -> return
             }
-            else return
         }
 
         //La clef est dans la liste
@@ -87,6 +96,7 @@ class SmsReceiver : BroadcastReceiver() {
             }
             // lancement de la "WorkActivity".
             val intnt2 = Intent(context, WorkActivity::class.java)
+            //TODO see real usage of this
             intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intnt2)
         }

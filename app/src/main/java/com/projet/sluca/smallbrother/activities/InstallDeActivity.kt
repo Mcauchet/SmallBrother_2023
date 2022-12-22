@@ -21,7 +21,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 18-12-2022)
+ * @version 1.2 (Updated on 22-12-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 
@@ -141,7 +141,8 @@ class InstallDeActivity : AppCompatActivity() {
                     Manifest.permission.CAMERA,  // -> utiliser l'appareil photo.
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,  // -> enregistrer un fichier.
                     Manifest.permission.SEND_SMS,  // -> envoyer des SMS
-                    Manifest.permission.ACCESS_FINE_LOCATION // -> localiser.
+                    Manifest.permission.ACCESS_FINE_LOCATION, // -> localiser.
+                    Manifest.permission.ACCESS_COARSE_LOCATION
                 ), 1
             )
         }

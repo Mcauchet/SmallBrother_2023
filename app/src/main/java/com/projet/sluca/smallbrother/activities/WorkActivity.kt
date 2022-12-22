@@ -28,7 +28,7 @@ import java.io.IOException
  * class WorkActivity
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 04-12-2022)
+ * @version 1.2 (Updated on 22-12-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -48,6 +48,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private var checkMove1: FloatArray? = null
     private var checkMove2: FloatArray? = null
     private var keepMove: FloatArray? = null
+
+    private var emergency: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_work.xml.
@@ -71,6 +73,12 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
         // Récupération d'un mot-clef reçu par SMS, s'il en est.
         if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
+
+        //Set clef value if aide initiates the capture
+        if (intent.hasExtra("clef")) {
+            clef = intent.getStringExtra("clef").toString()
+            emergency = true
+        }
 
         // Récupération du numéro de l'appelant, suite à un appel reçu.
         appelant = PhoneStatReceiver.catchCallNumber()
@@ -212,6 +220,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             // Suite des évènements dans une autre activity pour éviter les
                             // interférences entre les intents.
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
+                            if(emergency) intent.putExtra("emergency", true)
                             startActivity(intent)
                         }
                     }.start()

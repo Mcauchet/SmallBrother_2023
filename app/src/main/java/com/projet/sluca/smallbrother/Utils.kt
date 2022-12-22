@@ -24,7 +24,7 @@ import java.security.spec.X509EncodedKeySpec
 import kotlin.text.toByteArray
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://bda3-2a02-a03f-ae4e-1900-207e-be86-cbe9-c72f.eu.ngrok.io"
+const val URLServer = "https://a136-2a02-a03f-ae4e-1900-6052-e0b4-1a73-cd91.eu.ngrok.io"
 
 /***
  * Send a SMS

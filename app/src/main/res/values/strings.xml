@@ -126,6 +126,7 @@
     <string name="smsys05">SmallBrother : §% n\'est actuellement pas connecté à Internet ! [#SB05]</string>
     <string name="smsys06">SmallBrother : §% a transféré ses informations sur le serveur. [#SB06]</string>
     <string name="smsys07">SmallBrother : §% a activé le Mode Privé. (N#)[#SB07]</string>
+    <string name="smsys08">SmallBrother : §% a besoin d\'assistance immédiatement! [#SB08]</string>
 
 
     <!-- Log -->
@@ -174,5 +175,6 @@
     <string name="nomAide">Nom de l\'Aidé</string>
     <string name="blank" />
     <string name="duree_prive_base">15</string>
+    <string name="aide_needs_help">§% a besoin d\'aide immédiatement. Il est actuellement en ligne avec la police.</string>
 
 </resources>

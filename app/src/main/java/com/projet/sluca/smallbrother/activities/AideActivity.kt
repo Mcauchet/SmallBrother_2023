@@ -20,6 +20,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /***
  * class AideActivity manages the actions available to the "aidé".
@@ -112,17 +115,34 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             //userdata.setEsquive(false);
 
             // Lancement de l'appel.
-            val callIntent = Intent(Intent.ACTION_CALL)
-            callIntent.data = Uri.parse("tel:" + userData.telephone)
+            val callIntent = Intent(Intent.ACTION_CALL).apply {
+                data = Uri.parse("tel:" + userData.telephone)
+            }
             startActivity(callIntent)
             message(this, getString(R.string.message05), vibreur) // toast de confirmation.
             userData.refreshLog(7) // rafraîchissement du Log.
         }
 
+        //TODO test this functionality (it should send a file on the server then call aidant)
         btnEmergency.setOnClickListener {
             vibreur.vibration(this, 100)
-            val intent = Intent(Intent.ACTION_CALL)
-            intent.data = Uri.parse("tel:"+"112")
+
+            var sms = getString(R.string.smsys08)
+            sms = sms.replace("§%", userData.nom)
+
+            sendSMS(this, sms, userData.telephone)
+
+            //captures the context
+            val workIntent = Intent(this, WorkActivity::class.java)
+            workIntent.putExtra("clef", "[#SB04]")
+            CoroutineScope(Dispatchers.Main).launch {
+                startActivity(workIntent)
+            }
+
+            //calls the police
+            val intent = Intent(Intent.ACTION_CALL).apply {
+                data = Uri.parse("tel:${userData.telephone}")
+            }
             startActivity(intent)
             message(this, getString(R.string.message05), vibreur)
         }

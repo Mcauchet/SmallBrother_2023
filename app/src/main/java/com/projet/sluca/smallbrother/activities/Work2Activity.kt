@@ -1,13 +1,20 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.BatteryManager
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -41,7 +48,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 07-12-2022)
+ * @version 1.2 (Updated on 22-12-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -56,6 +63,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     // Attribut de permission pour l'appel aux méthodes de "APictureCapturingService".
     // Must not be nullable in Kotlin in order for it to work
     private lateinit var pictureService: APictureCapturingService
+
+    lateinit var locationManager: LocationManager
+    private var hasGps = false
+    private var hasNetwork = false
+    private var locationGps: Location? = null
+    private var locationNetwork: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_work.xml (même écran).
@@ -93,28 +106,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         // Affichage de l'action en cours.
         tvAction.text = getString(R.string.message12C)
-        val latitude: String // Retiendra la coordonnée de latitiude.
-        val longitude: String // Retiendra la coordonnée de longitude.
 
-        // Vérification obligatoire des permissions.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-            && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            return //TODO check this (permission must not be granted)
-
-        // Récupération des données de latitude et longitude de l'appareil.
-        val lm = getSystemService(LOCATION_SERVICE) as LocationManager
-        val location = lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        if (location != null) {
-            // Mémorisation des coordonnées récupérées.
-            latitude = location.latitude.toString() // latitude
-            longitude = location.longitude.toString() // longitude
-
-            // Construction de l'URL GoogleMap avec les coordonnées.
-            urlGoogleMap = "http://maps.google.com/maps?q=$latitude,$longitude"
-        }
-        Log.d("URL GOOGLE MAP", urlGoogleMap.toString())
+        val location: String = getLocation()
 
         // --> [4] assemblage d'une archive ZIP.
 
@@ -131,15 +124,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         val pathPhoto2 = userData.getAutophotosPath(2)
         val file3 = File(pathPhoto2)
-
-        // Chemin de la future archive.
-        val ziPath = this@Work2Activity.filesDir.path+"/SmallBrother/zippedFiles.zip"
-
-        zipAll(
-            this@Work2Activity.filesDir.path+"/SmallBrother",
-            ziPath
-        )
-
 
         // --> [5] niveau de batterie.
 
@@ -180,12 +164,25 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         particule = if (listOf(*voyelles).contains(particule)) " d'" else " de "
 
-        val message = "Localisation $particule$nomAide : $urlGoogleMap\n" +
+        val informations = "Localisation $particule$nomAide : $location\n" +
                 "Niveau de batterie : $batterie\n" +
                 "En mouvement : $motion.\n"
 
-        //send localisation, battery and moving or not
-        sendSMS(this@Work2Activity, message, userData.telephone)
+        //add informations in a txt that is added to the zip archive
+        val file4 = File(userData.path + "/SmallBrother/informations.txt")
+        file4.createNewFile()
+        val bufferedWriter = BufferedWriter(FileWriter(file4))
+
+        bufferedWriter.write(informations)
+        bufferedWriter.close()
+
+        // Chemin de la future archive.
+        val ziPath = this@Work2Activity.filesDir.path+"/SmallBrother/zippedFiles.zip"
+        //Zip all files
+        zipAll(
+            this@Work2Activity.filesDir.path+"/SmallBrother",
+            ziPath
+        )
 
         object : Thread() {
             override fun run() {
@@ -207,7 +204,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                 zipName = uploadZip(client, File(ziPath))
                             }
                             client.close()
-                            //todo test this msg
+
                             val fileLoc =
                                 "SmallBrother : $URLServer/download/$zipName [#SB10]"
 
@@ -217,6 +214,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             file1.delete()
                             file2.delete()
                             file3.delete()
+                            file4.delete()
 
                             // Suppression du fichier ZIP.
                             val fileZ = File(ziPath)
@@ -247,11 +245,76 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     PackageManager.DONT_KILL_APP
                 )
 
+                Log.d("emergencyIntent", intent.hasExtra("emergency").toString())
+                if(intent.hasExtra("emergency")) {
+                    val intent = Intent(Intent.ACTION_CALL).apply {
+                        data = Uri.parse("tel:${userData.telephone}")
+                    }
+                    startActivity(intent)
+                    finish()
+                }
+
                 // Retour à l'écran de rôle de l'Aidé.
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)
                 startActivity(intent)
             }
         }.start() // Envoi !
+    }
+
+    /***
+     * function to get Location of Aide's phone
+     *
+     * @return a String with the address of the Aide or an error message if permissions not granted
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 22-12-2022)
+     */
+    private fun getLocation() : String {
+        // Vérification obligatoire des permissions.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return "Permission non accordée"//TODO check this (permission must not be granted)
+
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        when {
+            hasGps -> {
+                val localGpsLocation = locationManager
+                    .getLastKnownLocation(LocationManager.GPS_PROVIDER)
+                locationGps = localGpsLocation
+            }
+            hasNetwork -> {
+                val localNetworkLocation = locationManager
+                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                locationNetwork = localNetworkLocation
+            }
+            else -> {
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+        }
+        return if(locationGps != null || locationNetwork != null) {
+            getAddress()
+        } else {
+            "Permission non accordée."
+        }
+    }
+
+    /***
+     * function to get an address from a Location object
+     */
+    private fun getAddress() : String {
+        val geoCoder = Geocoder(this, Locale.getDefault())
+        var adresses : List<Address>? = null
+        if(locationGps != null) {
+            adresses = geoCoder
+                .getFromLocation(locationGps!!.latitude, locationGps!!.longitude, 1)
+        } else if (locationNetwork != null) {
+            adresses = geoCoder
+                .getFromLocation(locationNetwork!!.latitude, locationNetwork!!.longitude, 1)
+        }
+        return adresses?.get(0)?.getAddressLine(0).toString()
     }
 
     /***

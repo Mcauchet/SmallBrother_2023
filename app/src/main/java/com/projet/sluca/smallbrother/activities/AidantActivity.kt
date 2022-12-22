@@ -35,7 +35,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 15-12-2022)
+ * @version 1.2 (updated on 22-12-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -66,12 +66,17 @@ class AidantActivity : AppCompatActivity() {
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
 
-        val newText = getString(R.string.btn_appel)
-        val btnText = newText.replace("§%", userData.nomPartner)
+        val btnText = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
         btnCall.text = btnText
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
+
+        if (intent.hasExtra("emergency")) {
+            val logText = getString(R.string.aide_needs_help)
+                .replace("§%", userData.nomPartner)
+            tvLog.text = logText
+        }
 
         // Liaison avec le FrameLayout affichant le bouton Tiers.
         flTiers = findViewById(R.id.contour5)
