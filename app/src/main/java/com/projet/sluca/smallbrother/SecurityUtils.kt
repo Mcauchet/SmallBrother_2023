@@ -3,9 +3,6 @@ package com.projet.sluca.smallbrother
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import android.util.Log
-import io.ktor.client.*
-import io.ktor.client.request.*
 import java.security.*
 import java.security.KeyStore.PrivateKeyEntry
 import java.util.*
@@ -14,7 +11,6 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 import javax.security.auth.x500.X500Principal
-import kotlin.math.sign
 
 
 /**
