@@ -13,9 +13,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.SecurityUtils
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.message
 import com.projet.sluca.smallbrother.models.UserData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 /***
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
@@ -39,10 +43,14 @@ class InstallDeActivity : AppCompatActivity() {
         userData = application as UserData
         Log.d("USERDATA", userData.toString())
 
-
         // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
         if (!userData.canGoBack) {
             btnBack.visibility = View.INVISIBLE
+        }
+
+        // Generate public and private keys using RSA algorithm
+        CoroutineScope(Dispatchers.IO).launch {
+            SecurityUtils.getKeyPair()
         }
 
         btnBack.setOnClickListener {

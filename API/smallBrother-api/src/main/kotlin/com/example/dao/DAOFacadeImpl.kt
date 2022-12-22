@@ -4,12 +4,13 @@ import com.example.dao.DatabaseFactory.dbQuery
 import com.example.models.*
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.javatime.CurrentDateTime
 
 /***
  * DAOFacadeImpl implements the DAOFacade methods.
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 01-12-2022)
+ * @version 1 (Updated on 22-12-2022)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
@@ -37,6 +38,7 @@ class DAOFacadeImpl : DAOFacade {
             AideDatas.insert {
                 it[uri] = data.uri
                 it[aesKey] = data.aesKey
+                it[createdAt] = CurrentDateTime
             }
         }
     }

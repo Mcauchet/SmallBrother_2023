@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 15-12-22)
+ * @version 1.2 (updated on 22-12-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -52,8 +52,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
-
-
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
@@ -123,7 +121,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             userData.refreshLog(7) // rafraîchissement du Log.
         }
 
-        //TODO test this functionality (it should send a file on the server then call aidant)
         btnEmergency.setOnClickListener {
             vibreur.vibration(this, 100)
 

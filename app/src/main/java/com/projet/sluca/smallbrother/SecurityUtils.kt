@@ -4,6 +4,8 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
+import io.ktor.client.*
+import io.ktor.client.request.*
 import java.security.*
 import java.security.KeyStore.PrivateKeyEntry
 import java.util.*
@@ -12,9 +14,10 @@ import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.SecretKeySpec
 import javax.security.auth.x500.X500Principal
+import kotlin.math.sign
 
 
-/***
+/**
  * manages the public/private keys
  *
  * @author https://github.com/hanmajid
@@ -102,7 +105,7 @@ object SecurityUtils {
         return entry.privateKey
     }
 
-    /***
+    /**
      * fun to get the AES key
      *
      * @return the AES key as a SecretKey
@@ -122,20 +125,7 @@ object SecurityUtils {
         }
     }
 
-    /***
-     * fun to encrypt the zip file
-     *
-     * @param data the file's ByteArray
-     * @param aesKey the key to encrypt the data
-     * @return the encrypted file as a ByteArray
-     */
-    fun encryptDataAes(data:ByteArray, aesKey: SecretKey): ByteArray {
-        val aesCipher = Cipher.getInstance("AES")
-        aesCipher.init(Cipher.ENCRYPT_MODE, aesKey)
-        return aesCipher.doFinal(data)
-    }
-
-    /***
+    /**
      * fun to encrypt the AES key with the public RSA key
      *
      * @param publicKey the public key of the aidant
@@ -148,7 +138,7 @@ object SecurityUtils {
         return cipher.doFinal(aesKey.encoded)
     }
 
-    /***
+    /**
      * fun to decrypt the key with the private key
      *
      * @param encKey the AES key used to encrypt the data by the aide
@@ -160,7 +150,20 @@ object SecurityUtils {
         return aesCipher.doFinal(encKey)
     }
 
-    /***
+    /**
+     * fun to encrypt the zip file
+     *
+     * @param data the file's ByteArray
+     * @param aesKey the key to encrypt the data
+     * @return the encrypted file as a ByteArray
+     */
+    fun encryptDataAes(data:ByteArray, aesKey: SecretKey): ByteArray {
+        val aesCipher = Cipher.getInstance("AES")
+        aesCipher.init(Cipher.ENCRYPT_MODE, aesKey)
+        return aesCipher.doFinal(data)
+    }
+
+    /**
      * fun to decrypt the data (previously encrypted with AES key)
      *
      * @param data the encrypted data
@@ -173,5 +176,32 @@ object SecurityUtils {
         val aesCipher = Cipher.getInstance("AES")
         aesCipher.init(Cipher.DECRYPT_MODE, originalKey)
         return aesCipher.doFinal(data)
+    }
+
+    //TODO test this chunk
+    /**
+     * signs the zip file with the private key
+     * @param data the zip files ByteArray
+     * @return the signed data
+     */
+    fun signFile(data: ByteArray): ByteArray? {
+        val privateKey = getPrivateKey()
+        val signature = Signature.getInstance("SHA256withRSA")
+        signature.initSign(privateKey)
+        signature.update(data)
+        return signature.sign()
+    }
+
+    /**
+     * verify the signature to authenticate the origin
+     * @param data the signed ByteArray
+     * @param pubKey the public key of the signer
+     * @return true if file is verified, false otherwise
+     */
+    fun verifyFile(data: ByteArray, pubKey:PublicKey): Boolean {
+        val signature = Signature.getInstance("SHA256withRSA")
+        signature.initVerify(pubKey)
+        signature.update(data)
+        return signature.verify(data)
     }
 }

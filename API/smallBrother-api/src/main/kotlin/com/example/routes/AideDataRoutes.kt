@@ -14,7 +14,7 @@ import java.io.File
  * manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 01-12-2022)
+ * @version 1.2 (Updated on 22-12-2022)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -41,7 +41,6 @@ fun Route.aideDataRouting() {
         }
         post("/aes") {
             val aideData = call.receive<AideData>()
-            println(aideData.toString())
             dao.addAideData(aideData)
             call.respondText("AideData stored correctly", status = HttpStatusCode.Created)
         }
@@ -62,7 +61,6 @@ fun Route.aideDataRouting() {
 
     route("/download") {
         get("/{key}"){
-            //TODO (download files for Aidant)
             val key = call.parameters["key"]
             val file = File("upload/$key")
             val aideData = dao.getAideData("$key")

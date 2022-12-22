@@ -2,6 +2,7 @@ package com.example.models
 
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.javatime.datetime
 
 /***
  * Represents the pair URI/AESKey uploaded to the server by the aidé
@@ -10,7 +11,7 @@ import org.jetbrains.exposed.sql.*
  * @property aesKey the encrypted AESKey given to the Aidant to decrypt the data
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 01-12-2022)
+ * @version 1 (Updated on 22-12-2022)
  */
 @Serializable
 data class AideData(
@@ -24,6 +25,7 @@ object AideDatas : Table() {
     private val id = integer("id").autoIncrement()
     val uri = varchar("uri", 128)
     val aesKey = varchar("aesKEY", 2048)
+    val createdAt = datetime("date_created")
 
     override val primaryKey = PrimaryKey(id)
 }
