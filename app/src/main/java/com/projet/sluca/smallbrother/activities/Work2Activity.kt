@@ -48,7 +48,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 22-12-2022)
+ * @version 1.2 (Updated on 23-12-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -191,7 +191,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             json()
                         }
                         install(HttpRequestRetry) {
-                            retryOnServerErrors(maxRetries = 3)
+                            retryOnServerErrors(maxRetries = 5)
                             exponentialDelay()
                         }
                     }

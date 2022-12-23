@@ -19,6 +19,20 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(AideDatas)
         }
+
+        //Adds a trigger to delete rows from database that are more than 24 hours old
+        transaction {
+            val sql = """
+            CREATE TRIGGER IF NOT EXISTS delete_old_rows 
+            AFTER 
+            INSERT 
+            ON aidedatas FOR EACH ROW
+            CALL "com.example.DeleteTrigger"
+        """
+            val con = TransactionManager.current().connection
+            val statement = con.prepareStatement(sql, false)
+            statement.executeUpdate()
+        }
     }
 
     suspend fun <T> dbQuery(block: suspend()->T): T =

@@ -23,10 +23,10 @@ import javax.security.auth.x500.X500Principal
 object SecurityUtils {
 
     private const val KEYSTORE_ALIAS_RSA =
-        "ksa.test6"
+        "ksa.test10"
 
     private const val KEYSTORE_ALIAS_AES =
-        "ksa.aes"
+        "ksa.aes10"
 
 
     fun getKeyPair() {

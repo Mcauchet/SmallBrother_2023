@@ -171,7 +171,9 @@
     <string name="aide_install2">[Aidé] Installation (suite)</string>
     <string name="explication_aide_scan">Veuillez scanner le QR Code sur le smartphone de l\'aidant. Il se trouve dans les paramètres de son application (symbole d\'engrenage)</string>
     <string name="installAide2">[INSTALLATION] Veuillez scanner le QR code sur le smartphone de l\'aidant pour terminer l\'installation</string>
+    <string name="installAidant3">[INSTALLATION] Veuillez scanner le QR code sur le smartphone de l\'aidé pour terminer l\'installation</string>
     <string name="installQRAidant">[INSTALLATION] Scannez ce QR code avec le smartphone de l\'aidé, puis appuyez sur le bouton Terminer</string>
+    <string name="installQRAide">[INSTALLATION] Scannez ce QR code avec le smartphone de l\'aidant, puis appuyez sur le bouton Terminer</string>
     <string name="nomAide">Nom de l\'Aidé</string>
     <string name="blank" />
     <string name="duree_prive_base">15</string>

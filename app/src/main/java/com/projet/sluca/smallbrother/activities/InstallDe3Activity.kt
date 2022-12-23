@@ -14,13 +14,13 @@ import com.projet.sluca.smallbrother.SecurityUtils
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
 
-/***
- * Manages the aidant's public key exchange to Aidé
+/**
+ * manages the exchange of aide's public key to aidant
  *
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 23-12-2022)
  */
-class InstallDant2Activity : AppCompatActivity() {
+class InstallDe3Activity : AppCompatActivity() {
 
     var vibreur = Vibration()
 
@@ -30,7 +30,7 @@ class InstallDant2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_install_dant2)
+        setContentView(R.layout.activity_install_de3)
 
         val ivQrCode: ImageView = findViewById(R.id.ivqrcode)
         val btnEnd: Button = findViewById(R.id.btn_terminer)
@@ -40,7 +40,7 @@ class InstallDant2Activity : AppCompatActivity() {
 
         btnEnd.setOnClickListener {
             vibreur.vibration(this, 100)
-            val intent = Intent(this, InstallDant3Activity::class.java)
+            val intent = Intent(this, AideActivity::class.java)
             startActivity(intent)
         }
     }

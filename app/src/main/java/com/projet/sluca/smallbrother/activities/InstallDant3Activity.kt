@@ -5,17 +5,22 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.budiyev.android.codescanner.*
+import com.budiyev.android.codescanner.AutoFocusMode
+import com.budiyev.android.codescanner.CodeScanner
+import com.budiyev.android.codescanner.CodeScannerView
+import com.budiyev.android.codescanner.DecodeCallback
+import com.budiyev.android.codescanner.ErrorCallback
+import com.budiyev.android.codescanner.ScanMode
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.models.UserData
 
 /***
- * Gets the Aidant's public key through QR Code
+ * Gets the Aide's public key through QR Code
  *
  * @author https://github.com/yuriy-budiyev/code-scanner
  * @version 1.2 (Updated on 23-12-2022)
  */
-class InstallDe2Activity : AppCompatActivity() {
+class InstallDant3Activity : AppCompatActivity() {
 
     private lateinit var codeScanner: CodeScanner
 
@@ -24,15 +29,9 @@ class InstallDe2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_install_de2)
+        setContentView(R.layout.activity_install_dant3)
 
         userData = application as UserData
-
-        userData.nom = intent.getStringExtra("nom").toString()
-        userData.nomPartner = intent.getStringExtra("nomPartner").toString()
-        userData.telephone = intent.getStringExtra("telephone").toString()
-        userData.version = intent.getStringExtra("version").toString()
-
 
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 
@@ -52,8 +51,11 @@ class InstallDe2Activity : AppCompatActivity() {
                 Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
                 userData.pubKey = it.text
                 userData.saveData(this) // save pertinent aide data in a file
+                Log.d("userdata infos", userData.nom)
+                Log.d("userdata infos", userData.role.toString())
                 userData.canGoBack = true
-                val intent = Intent(this, InstallDe3Activity::class.java)
+                Log.d("pubKey", userData.pubKey)
+                val intent = Intent(this, AidantActivity::class.java)
                 startActivity(intent)
             }
         }

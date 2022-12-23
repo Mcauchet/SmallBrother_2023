@@ -44,8 +44,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
-        <!-- Déclaration launcher activity -->
+         <!-- Déclaration launcher activity -->
         <activity
             android:name=".activities.Launch1Activity"
             android:exported="true">
@@ -54,8 +53,7 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <!-- Déclaration d'Activities -->
+        </activity> <!-- Déclaration d'Activities -->
         <activity
             android:name=".activities.InstallDe2Activity"
             android:screenOrientation="locked">
@@ -105,13 +103,26 @@
             android:screenOrientation="locked" />
         <activity
             android:name=".activities.InstallDant2Activity"
-            android:screenOrientation="locked"
+            android:exported="false"
+            android:screenOrientation="locked">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".activities.InstallDe3Activity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
+        <activity
+            android:name=".activities.InstallDant3Activity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <!-- SmsReceiver -->
         <receiver
             android:name=".SmsReceiver"
@@ -122,7 +133,6 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
-
     </application>
 
 </manifest>
