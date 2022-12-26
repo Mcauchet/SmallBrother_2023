@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.CountDownTimer
+import android.provider.Settings
 import android.telephony.SmsManager
 import android.util.Log
 import android.view.Window
@@ -33,9 +34,13 @@ const val URLServer = "https://2413-2a02-a03f-ae4e-1900-4497-8e81-74d6-4f6f.eu.n
  * @param [msg] body of the SMS
  * @param [receiver] receiver of the SMS
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 01-12-2022)
+ * @version 1.2 (Updated on 26-12-2022)
  */
 fun sendSMS(context: Context, msg: String, receiver: String) {
+    if (!smsAvailable(context)) {
+        Toast.makeText(context, "Veuillez retirer le mode avion", Toast.LENGTH_LONG).show()
+        return
+    }
     val subscriptionId: Int = SmsManager.getDefaultSmsSubscriptionId()
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         context.getSystemService(SmsManager::class.java).createForSubscriptionId(subscriptionId)
@@ -46,6 +51,21 @@ fun sendSMS(context: Context, msg: String, receiver: String) {
             .getDefault()
             .sendTextMessage(receiver, null, msg, sentPI(context), null)
     }
+}
+
+/**
+ * Checks if the app is in airplane mode to see if sms is available
+ *
+ * @param [context] the context of the activity
+ * @return true if airplane mode off, false otherwise
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 26-12-22)
+ */
+fun smsAvailable(context: Context): Boolean {
+    return Settings.Global.getInt(
+        context.contentResolver,
+        Settings.Global.AIRPLANE_MODE_ON, 0
+    ) != 0
 }
 
 /***
