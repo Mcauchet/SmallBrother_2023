@@ -5,6 +5,7 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import java.security.*
 import java.security.KeyStore.PrivateKeyEntry
+import java.security.spec.X509EncodedKeySpec
 import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
@@ -199,5 +200,20 @@ object SecurityUtils {
         signature.initVerify(pubKey)
         signature.update(data)
         return signature.verify(data)
+    }
+
+    /***
+     * Transform a String into a Key object used as a public key
+     *
+     * @param publicKey the String to transform into a Key
+     * @return the Key object
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-12-2022)
+     */
+    fun loadPublicKey(publicKey: String): Key {
+        val data: ByteArray = Base64.decode(publicKey.toByteArray(), Base64.DEFAULT)
+        val spec = X509EncodedKeySpec(data)
+        val fact = KeyFactory.getInstance("RSA")
+        return fact.generatePublic(spec)
     }
 }

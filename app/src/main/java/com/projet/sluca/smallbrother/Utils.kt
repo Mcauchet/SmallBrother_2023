@@ -186,18 +186,3 @@ fun loading(tvLoading: TextView) {
         override fun onFinish(): Unit = loading(tvLoading)
     }.start()
 }
-
-/***
- * Transform a String into a Key object used as a public key
- *
- * @param publicKey the String to transform into a Key
- * @return the Key object
- * @author Maxime Caucheteur
- * @version 1.2 (Updated on 04-12-2022)
- */
-fun loadPublicKey(publicKey: String): Key {
-    val data: ByteArray = Base64.decode(publicKey.toByteArray(), Base64.DEFAULT)
-    val spec = X509EncodedKeySpec(data)
-    val fact = KeyFactory.getInstance("RSA")
-    return fact.generatePublic(spec)
-}

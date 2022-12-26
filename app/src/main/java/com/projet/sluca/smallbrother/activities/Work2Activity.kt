@@ -48,7 +48,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 23-12-2022)
+ * @version 1.2 (Updated on 26-12-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -336,7 +336,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         val aesEncKey = android.util.Base64
             .encodeToString(
                 SecurityUtils.encryptAESKey(
-                    loadPublicKey(userData.pubKey) as PublicKey,
+                    SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
                     aesKey
                 ),
                 android.util.Base64.NO_WRAP
