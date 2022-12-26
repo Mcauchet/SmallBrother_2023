@@ -92,11 +92,10 @@ fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
  * @param [msg] the message to print
  * @param [vibreur] the phone Vibration system
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 15-12-22)
+ * @version 1.2 (Updated on 26-12-22)
  */
 fun message(context: Context, msg: String, vibreur: Vibration) {
-    val toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT)
-    toast.show()
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     vibreur.vibration(context, 300)
 }
 
