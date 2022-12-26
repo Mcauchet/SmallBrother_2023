@@ -38,7 +38,10 @@ const val URLServer = "https://2413-2a02-a03f-ae4e-1900-4497-8e81-74d6-4f6f.eu.n
  */
 fun sendSMS(context: Context, msg: String, receiver: String) {
     if (!smsAvailable(context)) {
-        Toast.makeText(context, "Veuillez retirer le mode avion", Toast.LENGTH_LONG).show()
+        Toast.makeText(context,
+            "Veuillez retirer le mode avion pour envoyer un SMS.",
+            Toast.LENGTH_LONG
+        ).show()
         return
     }
     val subscriptionId: Int = SmsManager.getDefaultSmsSubscriptionId()
