@@ -28,7 +28,7 @@ import java.io.IOException
  * class WorkActivity
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 22-12-2022)
+ * @version 1.2 (Updated on 27-12-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -94,8 +94,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             when (clef) {
                 "[#SB01]" -> {
                     vibreur.vibration(this, 330)
-                    userData.byeData() // Suppression des données de l'utilisateur.
                     userData.refreshLog(3) // message de Log adéquat.
+                    userData.byeData() // Suppression des données de l'utilisateur.
 
                     // Redémarrage de l'appli.
                     val mIntent = Intent(this, Launch1Activity::class.java)

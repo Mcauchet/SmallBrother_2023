@@ -11,16 +11,12 @@ import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
-import io.ktor.client.request.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /***
  * class Launch1Activity is the starting point of the application.
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 14-12-2022)
+ * @version 1.2 (Updated on 27-12-2022)
  */
 class Launch1Activity : AppCompatActivity() {
 
@@ -34,36 +30,13 @@ class Launch1Activity : AppCompatActivity() {
 
         val btnStart: Button = findViewById(R.id.btn_commencer)
 
-        //This code access the Ktor client successfully
-        //the { engine {...} } part is for SSL, might change in time
-        val client = HttpClient(Android) /*{
-            engine {
-                sslManager = { httpsUrlConnection ->
-                    httpsUrlConnection.sslSocketFactory = SslSettings.getSslContext()?.socketFactory
-                }
-            }
-        }*/
-        /*CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val response = client.get {
-                    url("$URLServer/aideData")
-                }
-                client.close()
-                Log.d("BODY", response.status.toString())
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }*/
-
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
-        vibreur.vibration(this, 100)
 
         userData.configurePath(this)
 
         // Réactivation du SmsReceiver (en cas de coupure inopinée de l'appli).
         val pm = this@Launch1Activity.packageManager
-        Log.d("PACKAGE MNG", pm.toString())
         val componentName = ComponentName(this@Launch1Activity, SmsReceiver::class.java)
         pm.setComponentEnabledSetting(
             componentName,

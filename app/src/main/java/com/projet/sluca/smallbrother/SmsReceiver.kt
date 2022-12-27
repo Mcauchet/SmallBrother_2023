@@ -42,7 +42,7 @@ class SmsReceiver : BroadcastReceiver() {
             "[#SB03]",  // -> oui va bien reçu par aidant
             "[#SB04]",  // -> urgence reçue par aidé
             "[#SB05]",  // -> aidé pas connecté
-            "[#SB06]",  // -> mail d'urgence reçu
+            "[#SB06]",  // -> fichier sur serveur
             "[#SB07]", // -> mode privé activé
             "[#SB08]", // -> aide needs help
             "[#SB10]", // -> aidant receives url to files
@@ -76,20 +76,21 @@ class SmsReceiver : BroadcastReceiver() {
             }
         }
 
+        if(userData.role != "Aidé") {
+            Log.d("role", userData.role.toString())
+            return
+        }
+
         //La clef est dans la liste
         if (userData.bit == 1) // Si le Mode Privé est activé.
         {
             // Avertir :
             if (clef == "[#SB02]") userData.bit = 2 // cas d'un SMS
-            else if (clef == "[#SB04]") userData.bit = 4 // cas d'un email
+            else if (clef == "[#SB04]") userData.bit = 4 // cas d'une capture de contexte
         } else {
-            if (clef == "[#SB07]") // Récupération du temps restant si Mode Privé.
-            {
+            //TODO see if works
+            if(clef == "[#SB07]") {
                 tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
-            }
-            if(userData.role != "Aidé") {
-                Log.d("role", userData.role.toString())
-                return
             }
             // lancement de la "WorkActivity".
             val intnt2 = Intent(context, WorkActivity::class.java)

@@ -9,7 +9,6 @@ import com.projet.sluca.smallbrother.SmsReceiver
 import com.projet.sluca.smallbrother.particule
 import org.apache.commons.io.IOUtils
 import java.io.*
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,7 +31,7 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (modified on 15-12-22)
+ * @version 1.2 (updated on 27-12-22)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -195,7 +194,8 @@ data class UserData(
             8 -> getString(R.string.log08)
             9 -> getString(R.string.log09)
             10 -> getString(R.string.log10)
-            11 -> getString(R.string.aide_needs_help).replace("§%", this.nomPartner)
+            11 -> getString(R.string.aide_needs_help)
+                .replace("§%", this.nomPartner)
             12 -> getString(R.string.log12)
             13 -> {
                 val particule = particule(this.nomPartner)
@@ -204,7 +204,8 @@ data class UserData(
             }
             16 -> getString(R.string.log16)
             18 -> getString(R.string.log18)
-            19 -> getString(R.string.log19).replace("N#", SmsReceiver.tempsrestant)
+            19 -> getString(R.string.log19)
+                .replace("N#", SmsReceiver.tempsrestant)
             else -> ""
         }
         log = texte // Set du Log.
