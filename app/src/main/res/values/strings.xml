@@ -15,15 +15,12 @@
     </string>
     <string name="install_note2">Veuillez svp compléter ces champs :</string>
     <string name="install_note3">
-        [ Facultatif ] : prendre une photo de la personne aidée pour les cas d\'urgence.
+        [Facultatif] : prendre une photo de la personne aidée pour les cas d\'urgence.
     </string>
     <string name="input1A">Nom de l\'Aidant</string>
     <string name="input1B">Nom de l\'Aidé</string>
     <string name="input2A">N° de portable de l\'Aidé</string>
     <string name="input2B">N° de portable de l\'Aidant</string>
-    <string name="input3">Adresse email de l\'Aidant</string>
-    <string name="input4">Votre adresse Gmail (Aidé)</string>
-    <string name="input5">Votre mot de passe de Gmail</string>
     <string name="log_intitule">Dernière nouvelle :</string>
     <string name="reglages_intitule">Réglages</string>
     <string name="reglages_note">
@@ -58,7 +55,7 @@
     <string name="btn_sms_va_de">Envoi SMS: Oui, tout va bien</string>
     <string name="btn_appel">Appeler §%</string>
     <string name="btn_urgence">Capturer le contexte de l\'Aidé</string>
-    <string name="btn_tiers">Envoyer les info par mail à ...</string>
+    <string name="btn_tiers">Envoyer les info par mail à …</string>
     <string name="btn_reinit_1">Réinitialiser mes informations</string>
     <string name="btn_reinit_2">Réinitialiser les informations de l\'Aidé</string>
     <string name="btn_reinit_3">Refaire la photo de l\'Aidé</string>
@@ -78,7 +75,7 @@
     <string name="message04">SMS envoyé.</string>
     <string name="message05">L\'appel est lancé.</string>
     <string name="message06">
-        Votre partenaire tente de vérifier de votre situation.\n\n
+        Votre partenaire tente de vérifier votre situation.\n\n
         Veuillez patienter pendant que SmallBrother réalise les actions requises.
     </string>
     <string name="message06B">
@@ -127,6 +124,7 @@
     <string name="smsys06">SmallBrother : §% a transféré ses informations sur le serveur. [#SB06]</string>
     <string name="smsys07">SmallBrother : §% a activé le Mode Privé. (N#)[#SB07]</string>
     <string name="smsys08">SmallBrother : §% a besoin d\'assistance immédiatement! [#SB08]</string>
+    <string name="smsys10">"SmallBrother : §% [#SB10]"</string>
 
 
     <!-- Log -->
@@ -142,10 +140,10 @@
     <string name="log09">Vous avez manqué un appel de votre partenaire.</string>
     <string name="log10">
         Vous avez demandé à vérifier la situation de l\'Aidé.
-        Le traitement est en cours, veuillez patienter ...
+        Le traitement est en cours, veuillez patienter …
     </string>
     <string name="log12">
-        Votre partenaire tente vérifier votre situation.
+        Votre partenaire tente de vérifier votre situation.
         Pourquoi ne pas l\'appeler ?
     </string>
     <string name="log16">Vous signalez à votre partenaire que tout va bien.</string>

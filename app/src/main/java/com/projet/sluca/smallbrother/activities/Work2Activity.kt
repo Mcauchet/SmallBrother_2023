@@ -1,7 +1,6 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -48,7 +47,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 26-12-2022)
+ * @version 1.2 (Updated on 27-12-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -59,7 +58,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private lateinit var tvAction: TextView // Déclaration du TextView pour l'action en cours.
     private var batterie: String? = null // Retiendra le niveau de batterie restant.
 
-    // Attribut de permission pour l'appel aux méthodes de "APictureCapturingService".
     // Must not be nullable in Kotlin in order for it to work
     private lateinit var pictureService: APictureCapturingService
 
@@ -70,11 +68,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private var locationNetwork: Location? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Etablissement de la liaison avec la vue res/layout/activity_work.xml (même écran).
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_work)
 
-        // Liaison et remplissage des objets TextView.
         tvLoading = findViewById(R.id.loading)
         tvAction = findViewById(R.id.action)
         tvLoading.text = ""
@@ -84,7 +80,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         userData = application as UserData
         loading(tvLoading) // Déclenchement de l'animation de chargement.
 
-        // ================== [ Constitution du dossier joint ] ==================
+        // ================== [ Constitution du fichier zip ] ==================
 
         // --> [2] prise de deux photos automatiquement.
 
@@ -92,7 +88,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvAction.text = getString(R.string.message12B)
 
         // Lancement de la capture.
-        Log.d("PIC SERVICE", "PIC SERVICE STARTS")
         pictureService = PictureCapturingServiceImpl.getInstance(this)
         pictureService.startCapturing(this, this)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -100,7 +95,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
     // Suite du processus après que les photos soient prises :
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
-        Log.d("PIC SERVICE", "PIC SERVICE STOPS")
         // --> [3] localisation de l'Aidé.
 
         // Affichage de l'action en cours.
@@ -138,7 +132,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // Affichage de l'action en cours.
         tvAction.text = getString(R.string.message12F)
 
-        // Détermine la synthaxe du message selon la première lettre du nom de l'Aidé.
+        // Détermine la syntaxe du message selon la première lettre du nom de l'Aidé.
         val nomAide = userData.nom
         var particule = nomAide[0].toString()
         val voyelles = arrayOf(
@@ -204,10 +198,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             }
                             client.close()
 
-                            val fileLoc =
-                                "SmallBrother : $URLServer/download/$zipName [#SB10]"
+                            //TODO Test SMS
+                            val fileLocMsg = getString(R.string.smsys10)
+                                .replace("§%", "$URLServer/download/$zipName")
 
-                            sendSMS(this@Work2Activity, fileLoc, userData.telephone)
+                            sendSMS(this@Work2Activity, fileLocMsg, userData.telephone)
 
                             // Suppression des captures.
                             file1.delete()
@@ -327,7 +322,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         val newName = UUID.randomUUID().toString().substring(0..24)
         val finalName = "$newName.zip"
 
-        Log.d("before", "encryption")
         // chiffrement des données avec clé AES
         val aesKey = SecurityUtils.getAESKey()
         val encryptedData = SecurityUtils.encryptDataAes(file.readBytes(), aesKey)
@@ -341,7 +335,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 ),
                 android.util.Base64.NO_WRAP
             )
-        Log.d("AES ENC KEY", aesEncKey)
 
         //envoi données chiffrées + clé AES chiffrée
         client.post("$URLServer/upload") {
@@ -368,6 +361,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /***
+     * zips all file in a given dir
+     * @param [dir] the directory where the files are
+     * @param [zipFile] the name of the final zip file
      * code snippet from https://www.folkstalk.com/tech/how-to-zip-folders-subfolders-with-files-in-it-in-kotlin-using-zipoutputstream-with-code-solution/
      */
     private fun zipAll(dir: String, zipFile: String) {
@@ -380,6 +376,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /***
+     * Zips a file
+     * @param [zipOut] the zip output stream
+     * @param [sourceFile] the File to zip
+     * @param [parentDirPath] the path of the sourceFile's parent
      * code snippet from https://www.folkstalk.com/tech/how-to-zip-folders-subfolders-with-files-in-it-in-kotlin-using-zipoutputstream-with-code-solution/
      */
     private fun zipFiles(zipOut: ZipOutputStream, sourceFile: File, parentDirPath: String) {
