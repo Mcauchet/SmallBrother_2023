@@ -6,6 +6,7 @@ import android.media.MediaScannerConnection
 import android.util.Log
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
+import com.projet.sluca.smallbrother.particule
 import org.apache.commons.io.IOUtils
 import java.io.*
 import java.text.DateFormat
@@ -183,27 +184,28 @@ data class UserData(
         val df = SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.FRENCH)
         val date = df.format(c.time)
         var texte = "$date : " // Début de message.
-        //TODO see if possible to put texte += when (code) {...} instead of 19 times texte += ...
-        when (code) {
-            1 -> texte += getString(R.string.log01)
-            2 -> texte += getString(R.string.log02)
-            3 -> texte += getString(R.string.log03)
-            4 -> texte += getString(R.string.log04)
-            5 -> texte += getString(R.string.log05)
-            6 -> texte += getString(R.string.log06)
-            7 -> texte += getString(R.string.log07)
-            8 -> texte += getString(R.string.log08)
-            9 -> texte += getString(R.string.log09)
-            10 -> texte += getString(R.string.log10)
-            12 -> texte += getString(R.string.log12)
-            16 -> texte += getString(R.string.log16)
-            18 -> texte += getString(R.string.log18)
-            19 -> {
-                // Message avec insertion du temps de Mode Privé restant.
-                texte += getString(R.string.log19)
-                texte = texte.replace("N#", SmsReceiver.tempsrestant)
+        texte += when (code) {
+            1 -> getString(R.string.log01)
+            2 -> getString(R.string.log02)
+            3 -> getString(R.string.log03)
+            4 -> getString(R.string.log04)
+            5 -> getString(R.string.log05)
+            6 -> getString(R.string.log06)
+            7 -> getString(R.string.log07)
+            8 -> getString(R.string.log08)
+            9 -> getString(R.string.log09)
+            10 -> getString(R.string.log10)
+            11 -> getString(R.string.aide_needs_help).replace("§%", this.nomPartner)
+            12 -> getString(R.string.log12)
+            13 -> {
+                val particule = particule(this.nomPartner)
+                getString(R.string.log11)
+                    .replace("§%", "$particule${this.nomPartner}")
             }
-            else -> texte += ""
+            16 -> getString(R.string.log16)
+            18 -> getString(R.string.log18)
+            19 -> getString(R.string.log19).replace("N#", SmsReceiver.tempsrestant)
+            else -> ""
         }
         log = texte // Set du Log.
     }

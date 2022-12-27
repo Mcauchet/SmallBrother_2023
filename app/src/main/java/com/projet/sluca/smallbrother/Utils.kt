@@ -18,23 +18,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
-import android.util.Base64
-import java.security.Key
-import java.security.KeyFactory
-import java.security.spec.X509EncodedKeySpec
-import kotlin.text.toByteArray
 
 //Edit URL Server until it is redefined in deployment
 const val URLServer = "https://2413-2a02-a03f-ae4e-1900-4497-8e81-74d6-4f6f.eu.ngrok.io"
 
 /***
- * Send a SMS
+ * Sends an SMS
  *
  * @param [context] context of the activity
  * @param [msg] body of the SMS
  * @param [receiver] receiver of the SMS
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 26-12-2022)
+ * @version 1.2 (Updated on 27-12-2022)
  */
 fun sendSMS(context: Context, msg: String, receiver: String) {
     if (!smsAvailable(context)) {
@@ -184,4 +179,36 @@ fun loading(tvLoading: TextView) {
         }
         override fun onFinish(): Unit = loading(tvLoading)
     }.start()
+}
+
+/**
+ * Returns the particule before the name of the user
+ * @param [name] the name of the user
+ * @return the particule needed before the name
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (java version))
+ * @version 1.2 (Updated on 27-12-22)
+ */
+fun particule(name: String) : String {
+    val particule = name[0].toString()
+    val voyelles = arrayOf(
+        "A",
+        "E",
+        "Y",
+        "U",
+        "I",
+        "O",
+        "É",
+        "È",
+        "Œ",
+        "a",
+        "e",
+        "y",
+        "u",
+        "i",
+        "o",
+        "é",
+        "è"
+    )
+
+    return if (listOf(*voyelles).contains(particule)) "d'" else "de "
 }

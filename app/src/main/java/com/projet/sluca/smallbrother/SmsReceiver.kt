@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 22-12-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 27-12-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -26,7 +26,6 @@ class SmsReceiver : BroadcastReceiver() {
         val bundle = intent.extras
         userData.loadData()
         val message = getTextFromSms(bundle)
-        Log.d("MSG SMSRCV", message)
         clef = ""
 
         //Si SMS pas destiné à l'appli, on quitte la fonction
@@ -34,6 +33,7 @@ class SmsReceiver : BroadcastReceiver() {
 
         // Si SMS destiné à l'appli.
         // Isolement du code d'identification, en fin de SMS (7 caras).
+        // Can't exceed 100 #SB code
         clef = message.substring(message.length - 7)
         Log.d("clef", clef.toString())
         val motsclef = arrayOf(
@@ -51,13 +51,12 @@ class SmsReceiver : BroadcastReceiver() {
         //Si la clef n'est pas contenue dans la liste des mots clés, on quitte la fonction
         if (!listOf(*motsclef).contains(clef)) return
 
-        //TODO launch app here
-
         if(userData.role == "Aidant") {
             when (clef) {
                 "[#SB10]" -> {
-                    //The subsequence depends on the URL to the file, if it changes, the subsequence
-                    //must be changed too
+                    userData.bit = 10
+                    // The subsequence depends on the URL to the file, if its length changes,
+                    // the subsequence must be changed too
                     val urlFile = message
                         .subSequence(message.length - 37, message.length - 8)
                         .toString()
@@ -68,8 +67,8 @@ class SmsReceiver : BroadcastReceiver() {
                     context.startActivity(intnt)
                 }
                 "[#SB08]" -> {
+                    userData.bit = 8
                     val intnt = Intent(context, AidantActivity::class.java)
-                    intnt.putExtra("emergency", 1)
                     intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startActivity(intnt)
                 }
@@ -86,9 +85,7 @@ class SmsReceiver : BroadcastReceiver() {
         } else {
             if (clef == "[#SB07]") // Récupération du temps restant si Mode Privé.
             {
-                val extrait =
-                    message.substring(message.indexOf("(") + 1, message.indexOf(")"))
-                tempsrestant = extrait
+                tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
             }
             if(userData.role != "Aidé") {
                 Log.d("role", userData.role.toString())
@@ -96,7 +93,6 @@ class SmsReceiver : BroadcastReceiver() {
             }
             // lancement de la "WorkActivity".
             val intnt2 = Intent(context, WorkActivity::class.java)
-            //TODO see real usage of this
             intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intnt2)
         }

@@ -35,7 +35,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Sébastien Luca and Maxime Caucheteur
- * @version 1.2 (updated on 22-12-2022)
+ * @version 1.2 (updated on 27-12-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -71,12 +71,6 @@ class AidantActivity : AppCompatActivity() {
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
-
-        if (intent.hasExtra("emergency")) {
-            val logText = getString(R.string.aide_needs_help)
-                .replace("§%", userData.nomPartner)
-            tvLog.text = logText
-        }
 
         // Liaison avec le FrameLayout affichant le bouton Tiers.
         flTiers = findViewById(R.id.contour5)
@@ -222,42 +216,22 @@ class AidantActivity : AppCompatActivity() {
         }
 
         btnTiers.setOnClickListener {
-            tiers()
+            //tiers()
         }
     }
 
-    fun tiers() {
+    /*fun tiers() {
         vibreur.vibration(this, 200)
         userData.loadData() // Raptatriement des données de l'utilisateur.
-
-        /* TODO virer ce code, remplacer par la fonctionnalité permettant de partager à la police
-        TODO mettre un mdp sur le fichier zip, chiffrer ce mdp avec la clé publique RSA
-        // Préparation d'un email avec fichier joint.
-        val emailIntent = Intent(Intent.ACTION_SEND_MULTIPLE)
-        emailIntent.type = "plain/text"
-        val listUri = ArrayList<Uri>()
-        val builder = VmPolicy.Builder()
-        StrictMode.setVmPolicy(builder.build())
-
-        // Ajout de la fiche de l'Aidé.
-        val uri = Uri.fromFile(File(userData.path + "/SmallBrother/fiche_aide.txt"))
-        listUri.add(uri)
-
-        // Ajout de la photo de l'Aidé, s'il y en a une.
-        val photoident = File(userData.path + "/SmallBrother/photo_aide.jpg")
-        if (photoident.exists()) {
-            val uri2 = Uri.fromFile(File(userData.path + "/SmallBrother/photo_aide.jpg"))
-            listUri.add(uri2)
-        }
-        // Appel du choix des services mail disponibles.
-        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, listUri)
-        startActivity(Intent.createChooser(emailIntent, "Quel service email utiliser ?"))
-        */
-    }
+    }*/
 
     // --> Rafraîchissement automatique toutes les 250 ms du TextView de Log et des boutons.
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
+            when (userData.bit) {
+                8 ->  userData.refreshLog(11)
+                10 -> userData.refreshLog(13)
+            }
             // Log :
             if (userData.log != null) {
                 // Coloration en vert et mise en gras de la date (19 premiers caras).

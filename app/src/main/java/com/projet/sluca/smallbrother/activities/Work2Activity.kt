@@ -134,28 +134,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         // Détermine la syntaxe du message selon la première lettre du nom de l'Aidé.
         val nomAide = userData.nom
-        var particule = nomAide[0].toString()
-        val voyelles = arrayOf(
-            "A",
-            "E",
-            "Y",
-            "U",
-            "I",
-            "O",
-            "É",
-            "È",
-            "Œ",
-            "a",
-            "e",
-            "y",
-            "u",
-            "i",
-            "o",
-            "é",
-            "è"
-        )
 
-        particule = if (listOf(*voyelles).contains(particule)) " d'" else " de "
+        val particule = particule(nomAide)
 
         val informations = "Localisation $particule$nomAide : $location\n" +
                 "Niveau de batterie : $batterie\n" +
@@ -395,7 +375,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 //Call recursively to add files within this directory
                 zipFiles(zipOut, file, file.name)
             } else {
-                if (!file.name.contains(".zip")) { //If folder contains a file with extension ".zip", skip it
+                //If folder contains a file with extension ".zip", skip it
+                if (!file.name.contains(".zip")) {
                     FileInputStream(file).use { fileI ->
                         BufferedInputStream(fileI).use { origin ->
                             val path = parentDirPath + File.separator + file.name
