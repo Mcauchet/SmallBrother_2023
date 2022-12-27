@@ -1,6 +1,5 @@
 package com.projet.sluca.smallbrother.activities
 
-import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
@@ -11,17 +10,12 @@ import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.PhotoAide
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.message
 import com.projet.sluca.smallbrother.models.UserData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -30,7 +24,7 @@ import java.io.FileOutputStream
  * PicActivity manages the re-take of a picture after installation process
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 14-12-2022)
+ * @version 1.2 (Updated on 27-12-2022)
  */
 class PicActivity : AppCompatActivity() {
 
@@ -73,8 +67,7 @@ class PicActivity : AppCompatActivity() {
 
             // Lancement de l'activité de capture.
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            intent.putExtra("requestCode", 7)
-            //getResult.launch(intent)
+            intent.putExtra("requestCode", 7) //see if needed
             startActivityForResult(intent, 7)
         }
 
@@ -86,26 +79,6 @@ class PicActivity : AppCompatActivity() {
             // Transition vers l'activity suivante.
             val intent = Intent(this, PhotoAide::class.java)
             startActivity(intent)
-        }
-    }
-
-    private val getResult = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            val bitmap = it.data?.extras?.get("data") as Bitmap
-
-            val image = userData.path + "/SmallBrother/photo_aide.jpg"
-            try {
-                CoroutineScope(Dispatchers.IO).launch {
-                    withContext(Dispatchers.IO) {
-                        bitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(image))
-                    }
-                }
-            } catch (e:FileNotFoundException) {
-                e.printStackTrace()
-            }
-            apercu.setImageBitmap(bitmap)
         }
     }
 
