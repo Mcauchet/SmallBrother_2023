@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 /***
  * class InstallDantActivity manages the installation for the aidant
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (updated on 14-12-22)
  */
 class InstallDantActivity : AppCompatActivity() {

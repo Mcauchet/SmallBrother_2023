@@ -29,7 +29,7 @@ import java.io.FileOutputStream
 /***
  * PicActivity manages the re-take of a picture after installation process
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 14-12-2022)
  */
 class PicActivity : AppCompatActivity() {

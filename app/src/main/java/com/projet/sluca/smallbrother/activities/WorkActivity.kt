@@ -27,7 +27,7 @@ import java.io.IOException
 /***
  * class WorkActivity
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 27-12-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {

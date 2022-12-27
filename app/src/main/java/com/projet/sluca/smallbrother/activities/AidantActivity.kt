@@ -34,7 +34,7 @@ import java.io.File
 /***
  * class AidantActivity manages the actions the Aidant can make
  *
- * @author Sébastien Luca and Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (updated on 27-12-2022)
  */
 class AidantActivity : AppCompatActivity() {

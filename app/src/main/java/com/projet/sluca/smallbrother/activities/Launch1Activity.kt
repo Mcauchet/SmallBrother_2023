@@ -4,18 +4,15 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
-import io.ktor.client.*
-import io.ktor.client.engine.android.*
 
 /***
  * class Launch1Activity is the starting point of the application.
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 27-12-2022)
  */
 class Launch1Activity : AppCompatActivity() {

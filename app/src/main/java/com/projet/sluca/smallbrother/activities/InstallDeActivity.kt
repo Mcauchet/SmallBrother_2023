@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 /***
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 22-12-2022)
  */
 class InstallDeActivity : AppCompatActivity() {

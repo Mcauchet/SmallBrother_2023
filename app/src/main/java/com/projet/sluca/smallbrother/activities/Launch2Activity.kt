@@ -11,7 +11,7 @@ import com.projet.sluca.smallbrother.models.UserData
 /***
  * Launch2Activity class manages the role chosen for the device
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 14-11-22)
  */
 class Launch2Activity : AppCompatActivity() {

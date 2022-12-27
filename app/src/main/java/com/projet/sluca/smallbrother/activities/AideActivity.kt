@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 /***
  * class AideActivity manages the actions available to the "aidé".
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (updated on 22-12-22)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
