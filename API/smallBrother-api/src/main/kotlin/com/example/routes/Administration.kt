@@ -40,7 +40,7 @@ fun Route.adminRouting() {
             val formParameters = call.receiveParameters()
             if(formParameters.getOrFail("_action") == "Clean") {
                 val existingEntries = dao.allAideData()
-                lateinit var existingUris: List<String>
+                val existingUris: MutableList<String> = mutableListOf()
                 for (entry in existingEntries) {
                     existingUris += entry.uri
                 }

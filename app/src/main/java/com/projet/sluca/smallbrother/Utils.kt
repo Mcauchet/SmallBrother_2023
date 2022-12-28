@@ -25,7 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://2413-2a02-a03f-ae4e-1900-4497-8e81-74d6-4f6f.eu.ngrok.io"
+const val URLServer = "https://14fa-2a02-a03f-ae4e-1900-6c6a-1bc0-e867-b0b1.eu.ngrok.io"
 
 /***
  * Sends an SMS
@@ -68,7 +68,7 @@ fun smsAvailable(context: Context): Boolean {
     return Settings.Global.getInt(
         context.contentResolver,
         Settings.Global.AIRPLANE_MODE_ON, 0
-    ) != 0
+    ) == 0
 }
 
 /***

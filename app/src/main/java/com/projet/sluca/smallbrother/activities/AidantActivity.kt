@@ -35,7 +35,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 27-12-2022)
+ * @version 1.2 (updated on 28-12-2022)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -66,8 +66,13 @@ class AidantActivity : AppCompatActivity() {
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
 
-        val btnText = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
-        btnCall.text = btnText
+        btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
+
+        btnFiles.text = getString(R.string.recuperer_les_donnees_de_l_aide)
+            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
+
+        btnEmergency.text = getString(R.string.btn_urgence)
+            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
 
         // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
@@ -137,7 +142,8 @@ class AidantActivity : AppCompatActivity() {
             // Demande de confirmation.
             val builder = AlertDialog.Builder(this)
             builder.setCancelable(true)
-            builder.setTitle(getString(R.string.btn_urgence))
+            builder.setTitle(getString(R.string.btn_urgence)
+                .replace("§%", particule(userData.nomPartner)+userData.nomPartner))
             builder.setMessage(getString(R.string.message02_texte))
             builder.setPositiveButton(
                 getString(R.string.oui)
@@ -166,53 +172,55 @@ class AidantActivity : AppCompatActivity() {
         }
 
         btnFiles.setOnClickListener {
-            Toast.makeText(this, "Téléchargement du fichier en cours...", Toast.LENGTH_SHORT).show()
-            val client = HttpClient(Android) {
-                install(ContentNegotiation) {
-                    json()
-                }
-                install(HttpRequestRetry) {
-                    retryOnServerErrors(maxRetries = 3)
-                    exponentialDelay()
-                }
-            }
-
-            val dir =
-                Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                .absolutePath
-            val file = File(dir, "SmallBrother_Aide.zip")
-            file.createNewFile()
-            if(intent.hasExtra("url")) {
-                userData.urlToFile = intent.getStringExtra("url").toString()
-            }
-            runBlocking {
-                val httpResponse: HttpResponse = client.get(
-                    "$URLServer/download/${userData.urlToFile}"
-                ) {
-                    onDownload { bytesSentTotal, contentLength ->
-                        println("Receives $bytesSentTotal bytes from $contentLength")
+            if (userData.urlToFile != ""){
+                Toast.makeText(this, "Téléchargement du fichier en cours...", Toast.LENGTH_SHORT).show()
+                val client = HttpClient(Android) {
+                    install(ContentNegotiation) {
+                        json()
+                    }
+                    install(HttpRequestRetry) {
+                        retryOnServerErrors(maxRetries = 3)
+                        exponentialDelay()
                     }
                 }
-                Log.d("urlToFile", userData.urlToFile)
-                val aesHttp: HttpResponse = client.get(
-                    "$URLServer/aes/${userData.urlToFile}"
-                )
 
-                //retrieve AES encrypted KEY, decrypt it and use it to decrypt the data
-                val aesBody: String = aesHttp.body()
+                val dir =
+                    Environment
+                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                        .absolutePath
+                val file = File(dir, "SmallBrother_Aide.zip")
+                file.createNewFile()
+                if(intent.hasExtra("url")) {
+                    userData.urlToFile = intent.getStringExtra("url").toString()
+                }
+                runBlocking {
+                    val httpResponse: HttpResponse = client.get(
+                        "$URLServer/download/${userData.urlToFile}"
+                    ) {
+                        onDownload { bytesSentTotal, contentLength ->
+                            println("Receives $bytesSentTotal bytes from $contentLength")
+                        }
+                    }
+                    Log.d("urlToFile", userData.urlToFile)
+                    val aesHttp: HttpResponse = client.get(
+                        "$URLServer/aes/${userData.urlToFile}"
+                    )
 
-                val aesDecKey = Base64.decode(aesBody, Base64.NO_WRAP)
+                    //retrieve AES encrypted KEY, decrypt it and use it to decrypt the data
+                    val aesBody: String = aesHttp.body()
 
-                //retrieve zip data ByteArray
-                val responseBody: ByteArray = httpResponse.body()
+                    val aesDecKey = Base64.decode(aesBody, Base64.NO_WRAP)
 
-                //decrypt data with the decrypted AES key
-                val decryptedData = SecurityUtils.decryptDataAes(responseBody, aesDecKey)
-                file.writeBytes(decryptedData)
+                    //retrieve zip data ByteArray
+                    val responseBody: ByteArray = httpResponse.body()
+
+                    //decrypt data with the decrypted AES key
+                    val decryptedData = SecurityUtils.decryptDataAes(responseBody, aesDecKey)
+                    file.writeBytes(decryptedData)
+                }
+                Toast.makeText(this, "Téléchargement du fichier terminé, il se trouve dans votre " +
+                        "dossier de téléchargement.", Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(this, "Téléchargement du fichier terminé, il se trouve dans votre " +
-                    "dossier de téléchargement.", Toast.LENGTH_SHORT).show()
         }
 
         btnTiers.setOnClickListener {

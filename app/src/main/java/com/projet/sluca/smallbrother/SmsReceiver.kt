@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 27-12-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 28-12-22)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -52,7 +52,24 @@ class SmsReceiver : BroadcastReceiver() {
         if (!listOf(*motsclef).contains(clef)) return
 
         if(userData.role == "Aidant") {
+            val intnt = Intent(context, AidantActivity::class.java)
             when (clef) {
+                "[#SB03]" -> {
+                    userData.refreshLog(5) // message de Log adéquat.
+                }
+                "[#SB05]" -> {
+                    userData.refreshLog(13) // message de Log adéquat.
+                }
+                "[#SB06]" -> {
+                    userData.refreshLog(14) // message de Log adéquat.
+                }
+                "[#SB07]" -> {
+                    userData.refreshLog(19) // message de Log adéquat.
+                }
+                "[#SB08]" -> {
+                    userData.bit = 8
+                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
                 "[#SB10]" -> {
                     userData.bit = 10
                     // The subsequence depends on the URL to the file, if its length changes,
@@ -61,19 +78,11 @@ class SmsReceiver : BroadcastReceiver() {
                         .subSequence(message.length - 37, message.length - 8)
                         .toString()
                     userData.urlToFile = urlFile
-                    val intnt = Intent(context, AidantActivity::class.java)
                     intnt.putExtra("url", urlFile)
                     intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intnt)
                 }
-                "[#SB08]" -> {
-                    userData.bit = 8
-                    val intnt = Intent(context, AidantActivity::class.java)
-                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intnt)
-                }
-                else -> return
             }
+            context.startActivity(intnt)
         }
 
         if(userData.role != "Aidé") {

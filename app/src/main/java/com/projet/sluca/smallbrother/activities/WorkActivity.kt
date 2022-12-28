@@ -24,7 +24,6 @@ import com.projet.sluca.smallbrother.models.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.IOException
 
 /***
@@ -46,6 +45,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private var appelant: String? = null // Récupération du numéro d'un appelant.
 
     private var magneto: MediaRecorder? = null // Création d'un recorder audio.
+
+    var ambientLightLux: Float = 0.0f
 
     // Variables pour déterminer l'état de mouvement.
     private var checkMove1: FloatArray? = null
@@ -111,13 +112,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     val intent = Intent(this, AideActivity::class.java)
                     startActivity(intent)
                 }
-                "[#SB03]" -> {
-                    userData.refreshLog(5) // message de Log adéquat.
-
-                    // Retour à l'écran de rôle de l'Aidant.
-                    val intent = Intent(this, AidantActivity::class.java)
-                    startActivity(intent)
-                }
                 "[#SB04]" -> {
                     Toast.makeText(this, "This is an emergency", Toast.LENGTH_LONG).show()
                     Log.d("SB04", "EXEC emergency")
@@ -153,7 +147,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             val path = userData.path + "/SmallBrother/audio.ogg"
 
                             // Configuration du recorder "magneto".
-                            //TODO deprecated, change for cameraX
                             Log.d("MAGNETO", "INIT")
                             magneto = MediaRecorder()
                             magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -218,13 +211,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                                     SensorManager
                             val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
 
-                            var ambientLightLux = 0f
-
                             val sensorEventListener = object : SensorEventListener {
                                 override fun onSensorChanged(event: SensorEvent) {
                                     ambientLightLux = event.values[0]
+                                    sensorManager.unregisterListener(this)
                                 }
-
                                 override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
                             }
 
@@ -239,27 +230,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             startActivity(intent)
                         }
                     }.start()
-                }
-                "[#SB05]" -> {
-                    userData.refreshLog(13) // message de Log adéquat.
-
-                    // Retour à l'écran de rôle de l'Aidant.
-                    val intent = Intent(this, AidantActivity::class.java)
-                    startActivity(intent)
-                }
-                "[#SB06]" -> {
-                    userData.refreshLog(14) // message de Log adéquat.
-
-                    // Retour à l'écran de rôle de l'Aidant.
-                    val intent = Intent(this, AidantActivity::class.java)
-                    startActivity(intent)
-                }
-                "[#SB07]" -> {
-                    userData.refreshLog(19) // message de Log adéquat.
-
-                    // Retour à l'écran de rôle de l'Aidant.
-                    val intent = Intent(this, AidantActivity::class.java)
-                    startActivity(intent)
                 }
             }
         }
