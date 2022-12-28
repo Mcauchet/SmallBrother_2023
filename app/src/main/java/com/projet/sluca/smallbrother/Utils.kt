@@ -4,6 +4,8 @@ import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -14,8 +16,11 @@ import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidmads.library.qrgenearator.QRGContents
+import androidmads.library.qrgenearator.QRGEncoder
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 
@@ -211,4 +216,26 @@ fun particule(name: String) : String {
     )
 
     return if (listOf(*voyelles).contains(particule)) "d'" else "de "
+}
+
+/***
+ * Generate the QR code with the public key
+ *
+ * @param [msg] the message in the QR Code
+ * @param [iv] the ImageView where the QR Code is shown
+ *
+ * @author androidmads (See github:https://github.com/androidmads/QRGenerator)
+ */
+fun qrEncoder(msg: String?, iv: ImageView) {
+    val qrEncoder = QRGEncoder(msg, null, QRGContents.Type.TEXT, 400)
+
+    qrEncoder.colorBlack = Color.LTGRAY
+    qrEncoder.colorWhite = Color.BLACK
+
+    try {
+        val bitmap = qrEncoder.bitmap
+        iv.setImageBitmap(bitmap)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
 }

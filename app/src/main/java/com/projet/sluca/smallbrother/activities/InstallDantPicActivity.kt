@@ -71,7 +71,7 @@ class InstallDantPicActivity : AppCompatActivity() {
             // Rétablissement des boutons retour, au cas où désactivé par ReglagesActivity.
             userData.canGoBack = true
             // Transition vers l'activity suivante.
-            val intent = Intent(this, InstallDant2Activity::class.java)
+            val intent = Intent(this, QRCodeInstallActivity::class.java)
             startActivity(intent)
         }
 

@@ -52,7 +52,7 @@ class InstallDe2Activity : AppCompatActivity() {
                 userData.pubKey = it.text
                 userData.saveData(this) // save pertinent aide data in a file
                 userData.canGoBack = true
-                val intent = Intent(this, InstallDe3Activity::class.java)
+                val intent = Intent(this, QRCodeInstallActivity::class.java)
                 startActivity(intent)
             }
         }

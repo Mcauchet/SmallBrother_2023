@@ -102,16 +102,9 @@
             android:name=".activities.Work2Activity"
             android:screenOrientation="locked" />
         <activity
-            android:name=".activities.InstallDant2Activity"
+            android:name=".activities.QRCodeInstallActivity"
             android:exported="false"
             android:screenOrientation="locked">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".activities.InstallDe3Activity"
-            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
