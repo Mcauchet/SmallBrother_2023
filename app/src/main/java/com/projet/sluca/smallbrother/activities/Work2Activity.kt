@@ -47,7 +47,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 27-12-2022)
+ * @version 1.2 (Updated on 28-12-2022)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -129,6 +129,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // --> [6] déterminer si en mouvement.
         val motion = if (userData.motion) "Oui" else "Non"
 
+        // --> [7] Light level
+        val light = if(intent.hasExtra("light")) intent.getFloatExtra("light", -1f) else -1f
+
         // Affichage de l'action en cours.
         tvAction.text = getString(R.string.message12F)
 
@@ -139,7 +142,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         val informations = "Localisation $particule$nomAide : $location\n" +
                 "Niveau de batterie : $batterie\n" +
-                "En mouvement : $motion.\n"
+                "En mouvement : $motion.\n" +
+                "Niveau de lumière (en lux) : $light.\n" // TODO Explicit interpretation needed
 
         //add informations in a txt that is added to the zip archive
         val file4 = File(userData.path + "/SmallBrother/informations.txt")

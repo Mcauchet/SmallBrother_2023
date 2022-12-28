@@ -1,11 +1,13 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -22,13 +24,14 @@ import com.projet.sluca.smallbrother.models.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 /***
  * class WorkActivity
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 27-12-2022)
+ * @version 1.2 (Updated on 28-12-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -125,11 +128,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                     // --> Vérification : l'appareil est bien connecté au Net.
                     CoroutineScope(Dispatchers.IO).launch {
-                        Log.d("CHK INT", "WAITING")
                         if (isOnline(this@WorkActivity)) {
-                            Log.d("CHK INT", "OK")
                             // Désactivation du SMSReceiver (pour éviter les cumuls de SMS).
-
                             val pm = this@WorkActivity.packageManager
                             val componentName = ComponentName(
                                 this@WorkActivity,
@@ -140,9 +140,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                                 PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                                 PackageManager.DONT_KILL_APP
                             )
-                            Log.d("AFTER PKG MNG", "OK")
-
-
 
                             // ================== [ Constitution du dossier joint ] ==================
 
@@ -177,8 +174,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             userData.refreshLog(12) // message de Log adéquat.
 
                             // Alarme : son et vibrations
-                            val sound: MediaPlayer = MediaPlayer.create(this@WorkActivity, R.raw.alarme)
-                            sound.start()
+                            MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
                             vibreur.vibration(this@WorkActivity, 5000)
 
                             // L'Aidant est averti par SMS de l'échec.
@@ -217,9 +213,28 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             userData.motion = !suspens
                             Log.d("MOTION", userData.motion.toString())
 
+                            //Capture light level
+                            val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
+                                    SensorManager
+                            val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+
+                            var ambientLightLux = 0f
+
+                            val sensorEventListener = object : SensorEventListener {
+                                override fun onSensorChanged(event: SensorEvent) {
+                                    ambientLightLux = event.values[0]
+                                }
+
+                                override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
+                            }
+
+                            sensorManager.registerListener(sensorEventListener, lightSensor,
+                            SensorManager.SENSOR_DELAY_NORMAL)
+
                             // Suite des évènements dans une autre activity pour éviter les
                             // interférences entre les intents.
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
+                            intent.putExtra("light", ambientLightLux)
                             if(emergency) intent.putExtra("emergency", true)
                             startActivity(intent)
                         }
@@ -293,4 +308,24 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onSensorChanged(event: SensorEvent) {}
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
     override fun onShake(force: Float) {}
+
+    /*-------------Functions related to the light sensor----------*/
+    fun registerLightSensor() {
+        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
+                SensorManager
+        val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
+
+        var ambientLightLux: Float
+
+        val sensorEventListener = object : SensorEventListener {
+            override fun onSensorChanged(event: SensorEvent) {
+                ambientLightLux = event.values[0]
+            }
+
+            override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
+        }
+
+        sensorManager.registerListener(sensorEventListener, lightSensor,
+            SensorManager.SENSOR_DELAY_NORMAL)
+    }
 }
