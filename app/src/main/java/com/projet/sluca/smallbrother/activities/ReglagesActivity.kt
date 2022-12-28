@@ -14,7 +14,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * ReglagesActivity manages the resets of aide's and/or aidant's information and aide's picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 15-12-22)
+ * @version 1.2 (Updated on 28-12-22)
  */
 class ReglagesActivity : AppCompatActivity() {
 
@@ -31,7 +31,6 @@ class ReglagesActivity : AppCompatActivity() {
         val btnResetPicture: Button = findViewById(R.id.btn_reinit_3)
         val btnBack: Button = findViewById(R.id.btn_retour)
         val btnHelp: Button = findViewById(R.id.btn_aide)
-        val btnQRCode: Button = findViewById(R.id.btn_qr_code)
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
@@ -97,11 +96,11 @@ class ReglagesActivity : AppCompatActivity() {
         }
 
         btnResetPicture.setOnClickListener {
-            vibreur.vibration(this, 200)
+            vibreur.vibration(this, 100)
 
             // Changement d'activité.
-            val mIntent = Intent(this, PicActivity::class.java)
-            startActivity(mIntent)
+            val intent = Intent(this, PicActivity::class.java)
+            startActivity(intent)
         }
 
         btnBack.setOnClickListener {
@@ -118,13 +117,6 @@ class ReglagesActivity : AppCompatActivity() {
                 Uri.parse(userData.url + userData.help)
             )
             startActivity(browserIntent)
-        }
-
-        btnQRCode.setOnClickListener {
-            vibreur.vibration(this, 100)
-
-            val intent = Intent(this, QRCodeActivity::class.java)
-            startActivity(intent)
         }
     }
 }

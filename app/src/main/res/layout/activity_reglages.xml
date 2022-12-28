@@ -274,35 +274,6 @@
 
             </FrameLayout>
 
-            <!-- Bouton QR Code aidé -->
-            <FrameLayout
-                android:id="@+id/contour4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:layout_gravity="center" >
-
-                <Button
-                    android:id="@+id/btn_qr_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:text="@string/qr_code_aide"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:background="@drawable/boutons2shape"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:shadowColor="#000000"
-                    android:shadowRadius="5" />
-
-            </FrameLayout>
-
-
         </LinearLayout>
 
         <!-- Ligne -->

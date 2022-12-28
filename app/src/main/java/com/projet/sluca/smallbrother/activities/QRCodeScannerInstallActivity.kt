@@ -5,22 +5,17 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.budiyev.android.codescanner.AutoFocusMode
-import com.budiyev.android.codescanner.CodeScanner
-import com.budiyev.android.codescanner.CodeScannerView
-import com.budiyev.android.codescanner.DecodeCallback
-import com.budiyev.android.codescanner.ErrorCallback
-import com.budiyev.android.codescanner.ScanMode
+import com.budiyev.android.codescanner.*
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.models.UserData
 
 /***
- * Gets the Aide's public key through QR Code
+ * Opens a qr code scanner to get the public key of the partner
  *
- * @author https://github.com/yuriy-budiyev/code-scanner
- * @version 1.2 (Updated on 23-12-2022)
+ * @author Maxime Caucheteur (with help of https://github.com/yuriy-budiyev/code-scanner)
+ * @version 1.2 (Updated on 28-12-2022)
  */
-class InstallDant3Activity : AppCompatActivity() {
+class QRCodeScannerInstallActivity : AppCompatActivity() {
 
     private lateinit var codeScanner: CodeScanner
 
@@ -29,9 +24,16 @@ class InstallDant3Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_install_dant3)
+        setContentView(R.layout.activity_qr_code_scanner_install)
 
         userData = application as UserData
+
+        if (userData.role == "Aidé") {
+            userData.nom = intent.getStringExtra("nom").toString()
+            userData.nomPartner = intent.getStringExtra("nomPartner").toString()
+            userData.telephone = intent.getStringExtra("telephone").toString()
+            userData.version = intent.getStringExtra("version").toString()
+        }
 
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 
@@ -54,8 +56,12 @@ class InstallDant3Activity : AppCompatActivity() {
                 Log.d("userdata infos", userData.nom)
                 Log.d("userdata infos", userData.role.toString())
                 userData.canGoBack = true
-                Log.d("pubKey", userData.pubKey)
-                val intent = Intent(this, AidantActivity::class.java)
+                lateinit var intent: Intent
+                if (userData.role == "Aidé") {
+                    intent = Intent(this, QRCodeInstallActivity::class.java)
+                } else if (userData.role == "Aidant") {
+                    intent = Intent(this, AidantActivity::class.java)
+                }
                 startActivity(intent)
             }
         }

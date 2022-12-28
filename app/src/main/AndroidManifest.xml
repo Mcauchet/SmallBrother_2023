@@ -55,7 +55,7 @@
             </intent-filter>
         </activity> <!-- Déclaration d'Activities -->
         <activity
-            android:name=".activities.InstallDe2Activity"
+            android:name=".activities.QRCodeScannerInstallActivity"
             android:screenOrientation="locked">
             <meta-data
                 android:name="android.app.lib_name"
@@ -105,13 +105,6 @@
             android:name=".activities.QRCodeInstallActivity"
             android:exported="false"
             android:screenOrientation="locked">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".activities.InstallDant3Activity"
-            android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />

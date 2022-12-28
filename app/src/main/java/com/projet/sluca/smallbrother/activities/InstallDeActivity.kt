@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 22-12-2022)
+ * @version 1.2 (Updated on 28-12-2022)
  */
 class InstallDeActivity : AppCompatActivity() {
 
@@ -41,7 +41,6 @@ class InstallDeActivity : AppCompatActivity() {
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
-        Log.d("USERDATA", userData.toString())
 
         // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
         if (!userData.canGoBack) {
@@ -115,7 +114,7 @@ class InstallDeActivity : AppCompatActivity() {
                 userData.version = version
 
                 // Transition vers l'activity suivante.
-                val intent = Intent(this, InstallDe2Activity::class.java)
+                val intent = Intent(this, QRCodeScannerInstallActivity::class.java)
                 intent.putExtra("nom", nom)
                 intent.putExtra("telephone", telephone)
                 intent.putExtra("version", version)

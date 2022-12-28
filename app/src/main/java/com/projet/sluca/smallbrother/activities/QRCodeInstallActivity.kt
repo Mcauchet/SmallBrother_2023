@@ -25,7 +25,7 @@ class QRCodeInstallActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_install_dant2)
+        setContentView(R.layout.activity_qr_code_install)
 
         val ivQrCode: ImageView = findViewById(R.id.ivqrcode)
         val btnEnd: Button = findViewById(R.id.btn_terminer)
@@ -37,7 +37,7 @@ class QRCodeInstallActivity : AppCompatActivity() {
             vibreur.vibration(this, 100)
             lateinit var intent: Intent
             if(userData.role == "Aidant") {
-                intent = Intent(this, InstallDant3Activity::class.java)
+                intent = Intent(this, QRCodeScannerInstallActivity::class.java)
             } else if(userData.role == "Aidé") {
                 intent = Intent(this, AideActivity::class.java)
             }
