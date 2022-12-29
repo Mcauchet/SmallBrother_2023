@@ -4,10 +4,13 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.Camera
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.hardware.camera2.CameraAccessException
+import android.hardware.camera2.CameraManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -25,12 +28,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.util.*
 
 /***
- * class WorkActivity
+ * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 28-12-2022)
+ * @version 1.2 (Updated on 29-12-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -143,23 +147,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             // Affichage de l'action en cours.
                             tvAction.text = getString(R.string.message12A)
 
-                            // Destination du futur fichier :
-                            val path = userData.path + "/SmallBrother/audio.ogg"
-
-                            // Configuration du recorder "magneto".
-                            Log.d("MAGNETO", "INIT")
-                            magneto = MediaRecorder()
-                            magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
-                            magneto?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-                            magneto?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-                            magneto?.setOutputFile(path)
-                            try {
-                                magneto?.prepare()
-                            } catch (e: IOException) {
-                                e.printStackTrace()
-                            }
-                            Log.d("MAGNETO", "MAGNETO STARTS")
-                            magneto?.start() // Enregistrement lancé.
+                            audioCapture()
 
                             // =======================================================================
                         } else  // Si pas de connexion :
@@ -235,6 +223,31 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         }
     }
 
+    /**
+     * Manages the capture of an audio
+     *
+     * @author Maxime Caucheteur (with contribution of Sébastien Luca (java version))
+     * @version 1.2 (Updated on 29-12-2022)
+     */
+    private fun audioCapture() {
+        // Destination du futur fichier :
+        val path = userData.path + "/SmallBrother/audio.ogg"
+
+        // Configuration du recorder "magneto".
+        Log.d("MAGNETO", "INIT")
+        magneto = MediaRecorder()
+        magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
+        magneto?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        magneto?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+        magneto?.setOutputFile(path)
+        try {
+            magneto?.prepare()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        Log.d("MAGNETO", "MAGNETO STARTS")
+        magneto?.start() // Enregistrement lancé.
+    }
 
     // --> Retour à l'écran de rôle adéquat.
     fun retour() {

@@ -25,7 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://14fa-2a02-a03f-ae4e-1900-6c6a-1bc0-e867-b0b1.eu.ngrok.io"
+const val URLServer = "https://6429-2a02-a03f-ae4e-1900-5173-5349-3121-16b2.eu.ngrok.io"
 
 /***
  * Sends an SMS
