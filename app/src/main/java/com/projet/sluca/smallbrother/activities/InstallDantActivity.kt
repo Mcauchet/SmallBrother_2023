@@ -22,11 +22,13 @@ import kotlinx.coroutines.launch
  * class InstallDantActivity manages the installation for the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 14-12-22)
+ * @version 1.2 (updated on 31-12-22)
  */
 class InstallDantActivity : AppCompatActivity() {
+
     var vibreur = Vibration() // Instanciation d'un vibreur.
     lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // Etablissement de la liaison avec la vue res/layout/activity_installdant.xml.
         super.onCreate(savedInstanceState)

@@ -1,21 +1,23 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
+import androidmads.library.qrgenearator.QRGContents
+import androidmads.library.qrgenearator.QRGEncoder
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SecurityUtils
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
-import com.projet.sluca.smallbrother.qrEncoder
 
 /***
  * Manages the public key exchange between Aidé and Aidant through QR Code
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 28-12-2022)
+ * @version 1.2 (Updated on 31-12-2022)
  */
 class QRCodeInstallActivity : AppCompatActivity() {
 
@@ -42,6 +44,28 @@ class QRCodeInstallActivity : AppCompatActivity() {
                 intent = Intent(this, AideActivity::class.java)
             }
             startActivity(intent)
+        }
+    }
+
+    /***
+     * Generate the QR code with the public key
+     *
+     * @param [msg] the message in the QR Code
+     * @param [iv] the ImageView where the QR Code is shown
+     *
+     * @author androidmads (See github:https://github.com/androidmads/QRGenerator)
+     */
+    private fun qrEncoder(msg: String?, iv: ImageView) {
+        val qrEncoder = QRGEncoder(msg, null, QRGContents.Type.TEXT, 400)
+
+        qrEncoder.colorBlack = Color.LTGRAY
+        qrEncoder.colorWhite = Color.BLACK
+
+        try {
+            val bitmap = qrEncoder.bitmap
+            iv.setImageBitmap(bitmap)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

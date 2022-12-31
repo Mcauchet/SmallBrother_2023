@@ -8,7 +8,6 @@ import android.hardware.SensorManager
 import kotlin.math.abs
 
 class AccelerometerManager {
-    lateinit var checkMove: FloatArray
 
     companion object {
         private var threshold = 15.0f

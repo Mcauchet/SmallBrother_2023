@@ -4,13 +4,10 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.hardware.Camera
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.hardware.camera2.CameraAccessException
-import android.hardware.camera2.CameraManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -28,13 +25,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.util.*
 
 /***
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 29-12-2022)
+ * @version 1.2 (Updated on 31-12-2022)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -195,20 +191,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             Log.d("MOTION", userData.motion.toString())
 
                             //Capture light level
-                            val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
-                                    SensorManager
-                            val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-
-                            val sensorEventListener = object : SensorEventListener {
-                                override fun onSensorChanged(event: SensorEvent) {
-                                    ambientLightLux = event.values[0]
-                                    sensorManager.unregisterListener(this)
-                                }
-                                override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
-                            }
-
-                            sensorManager.registerListener(sensorEventListener, lightSensor,
-                            SensorManager.SENSOR_DELAY_NORMAL)
+                            registerLightSensor()
 
                             // Suite des évènements dans une autre activity pour éviter les
                             // interférences entre les intents.
@@ -250,7 +233,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     }
 
     // --> Retour à l'écran de rôle adéquat.
-    fun retour() {
+    private fun retour() {
         when (userData.role) {
             "Aidant" -> {
                 val intent = Intent(this, AidantActivity::class.java)
@@ -293,12 +276,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onShake(force: Float) {}
 
     /*-------------Functions related to the light sensor----------*/
-    fun registerLightSensor() {
+    private fun registerLightSensor() {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
                 SensorManager
         val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-
-        var ambientLightLux: Float
 
         val sensorEventListener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent) {

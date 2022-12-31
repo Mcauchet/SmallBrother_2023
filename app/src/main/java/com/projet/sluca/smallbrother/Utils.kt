@@ -217,25 +217,3 @@ fun particule(name: String) : String {
 
     return if (listOf(*voyelles).contains(particule)) "d'" else "de "
 }
-
-/***
- * Generate the QR code with the public key
- *
- * @param [msg] the message in the QR Code
- * @param [iv] the ImageView where the QR Code is shown
- *
- * @author androidmads (See github:https://github.com/androidmads/QRGenerator)
- */
-fun qrEncoder(msg: String?, iv: ImageView) {
-    val qrEncoder = QRGEncoder(msg, null, QRGContents.Type.TEXT, 400)
-
-    qrEncoder.colorBlack = Color.LTGRAY
-    qrEncoder.colorWhite = Color.BLACK
-
-    try {
-        val bitmap = qrEncoder.bitmap
-        iv.setImageBitmap(bitmap)
-    } catch (e: Exception) {
-        e.printStackTrace()
-    }
-}
