@@ -11,7 +11,7 @@
         </p>
     </div>
     </#list>
-
+    <hr>
     <div>
         <form action="/admin/clean" method="post">
             <p>
@@ -19,5 +19,4 @@
             </p>
         </form>
     </div>
-    <hr>
 </@layout.header>

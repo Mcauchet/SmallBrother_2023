@@ -28,6 +28,9 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.serialization.kotlinx.json.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.io.File
 
@@ -65,6 +68,8 @@ class AidantActivity : AppCompatActivity() {
 
         // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
+        userData.loadData()
+        Log.d("nomPartner", userData.nomPartner)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
@@ -188,12 +193,12 @@ class AidantActivity : AppCompatActivity() {
                     Environment
                         .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                         .absolutePath
-                val file = File(dir, "SmallBrother_Aide.zip")
+                val file = File(dir, "SmallBrother_Aide_${userData.urlToFile}.zip")
                 file.createNewFile()
                 if(intent.hasExtra("url")) {
                     userData.urlToFile = intent.getStringExtra("url").toString()
                 }
-                runBlocking {
+                CoroutineScope(Dispatchers.IO).launch {
                     val httpResponse: HttpResponse = client.get(
                         "$URLServer/download/${userData.urlToFile}"
                     ) {
@@ -218,8 +223,11 @@ class AidantActivity : AppCompatActivity() {
                     val decryptedData = SecurityUtils.decryptDataAes(responseBody, aesDecKey)
                     file.writeBytes(decryptedData)
                 }
-                Toast.makeText(this, "Téléchargement du fichier terminé, il se trouve dans votre " +
-                        "dossier de téléchargement.", Toast.LENGTH_SHORT).show()
+                message(this, "Téléchargement du fichier terminé, il se trouve dans votre dossier" +
+                        " de téléchargement.", vibreur)
+            } else {
+                message(this, "Il n'y a pas de fichier appartenant à ${userData.nomPartner} " +
+                        "sur le serveur, veuillez effectuer une capture de contexte.", vibreur)
             }
         }
 

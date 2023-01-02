@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.telephony.SmsManager
+import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -19,7 +20,7 @@ import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://6429-2a02-a03f-ae4e-1900-5173-5349-3121-16b2.eu.ngrok.io"
+const val URLServer = "https://2fd7-2a02-a03f-ae4e-1900-e1c1-1a0b-5bd9-140c.eu.ngrok.io"
 
 /***
  * Sends an SMS
@@ -152,7 +153,6 @@ fun isOnline(context: Context): Boolean {
             }*/
             return when {
                 capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
                         (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
                                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
                                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||

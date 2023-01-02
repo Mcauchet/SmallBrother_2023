@@ -10,6 +10,7 @@ import android.content.pm.PackageManager
 import android.location.*
 import android.net.Uri
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -39,6 +40,9 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import java.io.*
 import java.security.PublicKey
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 import java.util.*
 import java.util.zip.ZipEntry
@@ -48,7 +52,7 @@ import java.util.zip.ZipOutputStream
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 28-12-2022)
+ * @version 1.2 (Updated on 02-01-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -163,10 +167,22 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         "Erreur lors de la récupération de la position"
                     }
 
+                    val currentTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val date = LocalDateTime.now()
+                        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+                        date.format(formatter)
+                    } else {
+                        val date = Calendar.getInstance().time
+                        val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
+                        formatter.format(date)
+                    }
+
                     val informations = "Localisation $particule$nomAide : $location\n" +
                             "Niveau de batterie : $batterie\n" +
                             "En mouvement : $motion.\n" +
-                            "Niveau de lumière (en lux) : $light.\n" // TODO Explicit interpretation needed
+                            "Niveau de lumière (en lux) : $light.\n" + // TODO Explicit interpretation needed
+                            "Date de la capture : $currentTime\n" +
+                            "Numero de GSM $particule$nomAide : ${userData.telephone}"
 
                     Log.d("infos", informations)
 
@@ -197,7 +213,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             val fileLocMsg = getString(R.string.smsys10)
                                 .replace("§%", "$URLServer/download/$zipName")
 
-                            //sendSMS(this@Work2Activity, fileLocMsg, userData.telephone)
+                            sendSMS(this@Work2Activity, fileLocMsg, userData.telephone)
 
                             // Suppression des captures.
                             file1.delete()

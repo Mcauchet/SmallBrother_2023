@@ -24,8 +24,8 @@
     <string name="log_intitule">Dernière nouvelle :</string>
     <string name="reglages_intitule">Réglages</string>
     <string name="reglages_note">
-        Ce menu vous permet de réinitialiser vos informations ou celles de l\'aidé. Vous pouvez également refaire la photo de l\'aidé. \n
-        Attention, si vous réinitialiser vos informations, vous devrez réinstaller l\'application sur les deux smartphones.
+        Ce menu vous permet de réinitialiser vos information et celles de l\'aidé. Vous pouvez également refaire la photo de l\'aidé. \n
+        Attention, si vous réinitialiser les informations, vous devrez réinstaller l\'application sur les deux smartphones.
     </string>
     <string name="chargement">Chargement en cours </string>
     <string name="cheminphoto">Stockage Interne/Download/SmallBrother/photo_aide.jpg</string>
@@ -56,8 +56,7 @@
     <string name="btn_appel">Appeler §%</string>
     <string name="btn_urgence">Capturer le contexte §%</string>
     <string name="btn_tiers">Envoyer les info par mail à …</string>
-    <string name="btn_reinit_1">Réinitialiser mes informations</string>
-    <string name="btn_reinit_2">Réinitialiser les informations de l\'Aidé</string>
+    <string name="btn_reinit_1">Réinitialiser les informations</string>
     <string name="btn_reinit_3">Refaire la photo de l\'Aidé</string>
     <string name="btn_switch">Mode Privé </string>
 
@@ -69,7 +68,11 @@
     <string name="message01">SmallBrother reste actif en arrière-plan.</string>
     <string name="message02_titre">Réinitialiser l\'application</string>
     <string name="message02_texte">Confirmez-vous cette action ?</string>
-    <string name="message02_settings">Confirmez-vous cette action ? Vous devrez réinstaller l\'application sur les deux smartphones pour pouvoir l\'utiliser à nouveau</string>
+    <string name="message02_settings">Confirmez-vous cette action ? Vous devrez réinstaller
+        l\'application sur les deux smartphones pour pouvoir l\'utiliser à nouveau. Cette action
+        entraînera la suppression des données en lien avec l\'application sur les smartphones de
+        l\'aidant et de l\'aidé (informations, photo). Les captures de contexte seront toujours
+        disponibles dans votre dossier de téléchargement.</string>
     <string name="message03A">Suppression effectuée.</string>
     <string name="message03B">Un SMS de déclenchement a été envoyé à votre partenaire.</string>
     <string name="message04">SMS envoyé.</string>

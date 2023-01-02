@@ -9,7 +9,6 @@
     <h1>SmallBrother Admin Panel </h1>
     <hr>
     <#nested>
-    <a href="/admin">Back to the main page</a>
     </body>
     </html>
 </#macro>

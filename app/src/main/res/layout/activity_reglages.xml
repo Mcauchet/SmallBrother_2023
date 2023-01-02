@@ -206,32 +206,6 @@
                 android:background="#404040"
                 android:alpha="0.1" />
 
-            <!-- Bouton Effacer Aidé -->
-            <FrameLayout
-                android:id="@+id/contour2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_gravity="center" >
-
-                <Button
-                    android:id="@+id/btn_reinit_2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:text="@string/btn_reinit_2"
-                    android:textAllCaps="false"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:background="@drawable/boutons2shape"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:shadowColor="#000000"
-                    android:shadowRadius="5" />
-
-            </FrameLayout>
-
             <!-- Ligne -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -275,29 +249,6 @@
             </FrameLayout>
 
         </LinearLayout>
-
-        <!-- Ligne -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:orientation="vertical"
-            android:background="#404040"
-            android:alpha="0.1" />
-
-        <!-- Logo UNamur -->
-        <!--<ImageView
-            android:id="@+id/unamur"
-            android:layout_width="104dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:src="@drawable/unamur"
-            android:alpha="0.60" />-->
 
     </LinearLayout>
 

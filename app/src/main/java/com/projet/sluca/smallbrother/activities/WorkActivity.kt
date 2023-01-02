@@ -98,7 +98,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     userData.refreshLog(3)
                     userData.byeData() // Delete user's data file
 
-                    while(userData.loadData()) Log.d("file", "still present")
                     // Checks if the donnees.txt file is gone before restarting the install process
                     if(!userData.loadData()){
                         val mIntent = Intent(this, Launch1Activity::class.java)
@@ -112,7 +111,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     startActivity(intent)
                 }
                 "[#SB04]" -> {
-                    Toast.makeText(this, "This is an emergency", Toast.LENGTH_LONG).show()
                     Log.d("SB04", "EXEC emergency")
 
                     // Put the app on foreground
@@ -152,11 +150,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             // Vibrate (and emit a sound if phone not in silent mode)
                             MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
                             vibreur.vibration(this@WorkActivity, 5000)
-                            message(
-                                this@WorkActivity,
-                                "Veuillez vous connecter à Internet.",
-                                vibreur
-                            )
 
                             // Aidant is notified that Aide is not connected.
                             var sms = getString(R.string.smsys05)

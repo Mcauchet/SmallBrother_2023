@@ -17,4 +17,7 @@
             </form>
         </div>
     </div>
+    <div>
+        <a href="/admin">Back to the main page</a>
+    </div>
 </@layout.header>

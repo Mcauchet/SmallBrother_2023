@@ -105,9 +105,6 @@ data class UserData(
             val writer = BufferedWriter(FileWriter(testFile, true))
             writer.write(contenu)
 
-            Log.d("TESTFILE", testFile.canRead().toString())
-            testFile.forEachLine { Log.d("WRITING", it) }
-
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
         } catch (e: IOException) {
@@ -121,6 +118,14 @@ data class UserData(
     fun byeData() {
         val data = File("$path/SmallBrother/$file")
         data.delete()
+    }
+
+    /**
+     * deletePicture deletes the picture of the Aide on the device
+     */
+    fun deletePicture() {
+        val file = File("$path/SmallBrother/photo_aide.jpg")
+        if(file.exists()) file.delete()
     }
 
     /***
