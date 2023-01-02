@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 28-12-22)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 02-01-23)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -28,43 +28,46 @@ class SmsReceiver : BroadcastReceiver() {
         val message = getTextFromSms(bundle)
         clef = ""
 
-        //Si SMS pas destiné à l'appli, on quitte la fonction
+        // If SMS is not for the application, return
         if (!message.startsWith("SmallBrother :")) return
+        // if SMS is for the application but comes from an unknown source, return
+        if (numero != userData.telephone) return
 
-        // Si SMS destiné à l'appli.
-        // Isolement du code d'identification, en fin de SMS (7 caras).
+        // If SMS is for the application and comes from the partner :
+        // Fetch the #SBxx code of the SMS
         // Can't exceed 100 #SB code
         clef = message.substring(message.length - 7)
-        Log.d("clef", clef.toString())
         val motsclef = arrayOf(
-            "[#SB01]",  // -> réinit aidé
-            "[#SB02]",  // -> va bien? reçu par aidé
-            "[#SB03]",  // -> oui va bien reçu par aidant
-            "[#SB04]",  // -> urgence reçue par aidé
-            "[#SB05]",  // -> aidé pas connecté
-            "[#SB06]",  // -> fichier sur serveur
-            "[#SB07]", // -> mode privé activé
+            "[#SB01]",  // -> reinitialisation of data
+            "[#SB02]",  // -> aidant asks aide if everything's ok
+            "[#SB03]",  // -> aide is alright
+            "[#SB04]",  // -> context capture
+            "[#SB05]",  // -> aide not connected
+            "[#SB06]",  // -> file uploaded to server
+            "[#SB07]", // -> private mode ON
             "[#SB08]", // -> aide needs help
             "[#SB10]", // -> aidant receives url to files
         )
 
-        //Si la clef n'est pas contenue dans la liste des mots clés, on quitte la fonction
+        // If the #SBxx code is not in the list above, return
         if (!listOf(*motsclef).contains(clef)) return
 
         if(userData.role == "Aidant") {
             val intnt = Intent(context, AidantActivity::class.java)
             when (clef) {
                 "[#SB03]" -> {
-                    userData.refreshLog(5) // message de Log adéquat.
+                    userData.refreshLog(5)
                 }
                 "[#SB05]" -> {
-                    userData.refreshLog(13) // message de Log adéquat.
+                    userData.refreshLog(13)
                 }
                 "[#SB06]" -> {
-                    userData.refreshLog(14) // message de Log adéquat.
+                    userData.refreshLog(14)
                 }
                 "[#SB07]" -> {
-                    userData.refreshLog(19) // message de Log adéquat.
+                    //TODO see if temprestant works
+                    tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
+                    userData.refreshLog(19)
                 }
                 "[#SB08]" -> {
                     userData.bit = 8
@@ -85,22 +88,18 @@ class SmsReceiver : BroadcastReceiver() {
             context.startActivity(intnt)
         }
 
+        //TODO for test purpose
         if(userData.role != "Aidé") {
             Log.d("role", userData.role.toString())
             return
         }
 
-        //La clef est dans la liste
-        if (userData.bit == 1) // Si le Mode Privé est activé.
+        //TODO see if aidant ever uses this, otherwise add role check for aide
+        if (userData.bit == 1) // Private mode ON
         {
-            // Avertir :
-            if (clef == "[#SB02]") userData.bit = 2 // cas d'un SMS
-            else if (clef == "[#SB04]") userData.bit = 4 // cas d'une capture de contexte
+            if (clef == "[#SB02]") userData.bit = 2
+            else if (clef == "[#SB04]") userData.bit = 4 // Aidant wants to capture the context
         } else {
-            //TODO see if works
-            if(clef == "[#SB07]") {
-                tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
-            }
             // lancement de la "WorkActivity".
             val intnt2 = Intent(context, WorkActivity::class.java)
             intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -125,6 +124,8 @@ class SmsReceiver : BroadcastReceiver() {
             val subMsg = smsMsg?.displayMessageBody
             subMsg?.let {txt = "$txt$it"}
             numero = smsMsg?.originatingAddress
+            //TODO test
+            Log.d("numero smsrcv", numero.toString())
         }
         return txt
     }
