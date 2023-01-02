@@ -24,31 +24,32 @@ import com.projet.sluca.smallbrother.models.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
 /***
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 31-12-2022)
+ * @version 1.2 (Updated on 02-01-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
-    var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
-    private lateinit var tvLoading: TextView // Déclaration d'un objet TextView.
+    var vibreur = Vibration()
+    lateinit var userData: UserData
+    private lateinit var tvLoading: TextView
 
-    private lateinit var tvAction: TextView // Déclaration du TextView pour l'action en cours.
+    private lateinit var tvAction: TextView
 
-    private lateinit var clef: String // Récupération d'un mot-clef reçu par SMS.
+    private lateinit var clef: String
 
-    private var appelant: String? = null // Récupération du numéro d'un appelant.
+    private var appelant: String? = null // variable for caller's phone number
 
-    private var magneto: MediaRecorder? = null // Création d'un recorder audio.
+    private var magneto: MediaRecorder? = null // Declare MediaRecorder
 
     var ambientLightLux: Float = 0.0f
 
-    // Variables pour déterminer l'état de mouvement.
+    // Variables for movement determination
     private var checkMove1: FloatArray? = null
     private var checkMove2: FloatArray? = null
     private var keepMove: FloatArray? = null
@@ -56,26 +57,22 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private var emergency: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Etablissement de la liaison avec la vue res/layout/activity_work.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_work)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-        // Liaison et remplissage des objets TextView.
         tvLoading = findViewById(R.id.loading)
         tvAction = findViewById(R.id.action)
         tvLoading.text = ""
         tvAction.text = ""
 
-        // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
 
-        // Déclaration d'un passage dans la WorkActivity pour éviter que, au retour dans
-        // AideActivity, ne soit généré un doublon du Handler local.
+        // To avoid, on return to AideActivity, the creation of a new Handler
         userData.esquive = true
 
-        // Récupération d'un mot-clef reçu par SMS, s'il en est.
+        // fetch the code in the SMS, if present
         if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
 
         //Set clef value if aide initiates the capture
@@ -84,31 +81,33 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             emergency = true
         }
 
-        // Récupération du numéro de l'appelant, suite à un appel reçu.
+        // fetch caller's phone number
         appelant = PhoneStatReceiver.catchCallNumber()
         if (appelant?.startsWith("+32") == true) appelant?.replace("+32", "0")
         PhoneStatReceiver.resetCallNumber()
 
-        // SI APPEL RECU :
+        // On phone call
         if (appelant != "" && userData.telephone == appelant) {
-            // Si l'appelant est bien le partenaire : màj du Log.
+            // If caller is the partner, update log
             userData.refreshLog(8)
-            retour() // Retour à l'écran de rôle.
+            retour()
         } else {
             when (clef) {
                 "[#SB01]" -> {
                     vibreur.vibration(this, 330)
-                    userData.refreshLog(3) // message de Log adéquat.
-                    userData.byeData() // Suppression des données de l'utilisateur.
+                    userData.refreshLog(3)
+                    userData.byeData() // Delete user's data file
 
-                    // Redémarrage de l'appli.
-                    val mIntent = Intent(this, Launch1Activity::class.java)
-                    startActivity(mIntent)
+                    while(userData.loadData()) Log.d("file", "still present")
+                    // Checks if the donnees.txt file is gone before restarting the install process
+                    if(!userData.loadData()){
+                        val mIntent = Intent(this, Launch1Activity::class.java)
+                        startActivity(mIntent)
+                    }
                 }
                 "[#SB02]" -> {
-                    userData.refreshLog(6) // message de Log adéquat.
+                    userData.refreshLog(6)
 
-                    // Retour à l'écran de rôle de l'Aidé.
                     val intent = Intent(this, AideActivity::class.java)
                     startActivity(intent)
                 }
@@ -116,14 +115,16 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     Toast.makeText(this, "This is an emergency", Toast.LENGTH_LONG).show()
                     Log.d("SB04", "EXEC emergency")
 
-                    // Sortie de veille du téléphone et mise en avant-plan de cette appli.
+                    // Put the app on foreground
                     wakeup(window, this@WorkActivity)
-                    loading(tvLoading) // Déclenchement de l'animation de chargement.
+                    loading(tvLoading)
 
-                    // --> Vérification : l'appareil est bien connecté au Net.
+                    // Checks if mobile phone is connected to internet before making the
+                    // context capture
                     CoroutineScope(Dispatchers.IO).launch {
                         if (isOnline(this@WorkActivity)) {
-                            // Désactivation du SMSReceiver (pour éviter les cumuls de SMS).
+                            Log.d("isOnline", "true")
+                            // De-activate SMSReceiver to avoid conflict
                             val pm = this@WorkActivity.packageManager
                             val componentName = ComponentName(
                                 this@WorkActivity,
@@ -137,38 +138,40 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                             // ================== [ Constitution du dossier joint ] ==================
 
-                            // --> [1] captation et enregistrement d'un extrait sonore de dix secondes.
-                            //     en parallèle se détermine également si le téléphone est en mouvement.
+                            // --> [1] Records a 10 seconds audio of the aide's environment
 
-                            // Affichage de l'action en cours.
                             tvAction.text = getString(R.string.message12A)
 
                             audioCapture()
 
                             // =======================================================================
-                        } else  // Si pas de connexion :
+                        } else  // Device not connected to internet
                         {
-                            userData.refreshLog(12) // message de Log adéquat.
+                            userData.refreshLog(12)
 
-                            // Alarme : son et vibrations
+                            // Vibrate (and emit a sound if phone not in silent mode)
                             MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
                             vibreur.vibration(this@WorkActivity, 5000)
+                            message(
+                                this@WorkActivity,
+                                "Veuillez vous connecter à Internet.",
+                                vibreur
+                            )
 
-                            // L'Aidant est averti par SMS de l'échec.
+                            // Aidant is notified that Aide is not connected.
                             var sms = getString(R.string.smsys05)
                             sms = sms.replace("§%", userData.nom)
                             sendSMS(this@WorkActivity, sms, userData.telephone)
 
-                            // Retour à l'écran de rôle de l'Aidé.
                             val intent = Intent(this@WorkActivity, AideActivity::class.java)
                             startActivity(intent)
                         }
                     }
 
-                    // Délai de 10 secondes :
+                    // 10 seconds countdown
                     object : CountDownTimer(10010, 1) {
                         override fun onTick(millisUntilFinished: Long) {
-                            // Aux secondes 9 et 2 sont capturé la position du téléphone.
+                            // position captured at seconds 2 and 9 of the record
                             when {
                                 millisUntilFinished > 9000
                                 -> checkMove1 = keepMove
@@ -177,24 +180,22 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             }
                         }
 
-                        override fun onFinish() // Fin du délai :
+                        override fun onFinish()
                         {
-                            // Conclusion de l'enregistrement.
+                            // Release MediaRecorder
                             magneto?.stop()
                             Log.d("MAGNETO", "MAGNETO STOPS")
                             magneto?.release()
                             magneto = null
 
-                            // Déclaration : le téléphone est ou non en mouvement.
+                            // Determine if Aide's phone is moving or not
                             val suspens = checkMove1.contentEquals(checkMove2)
                             userData.motion = !suspens
                             Log.d("MOTION", userData.motion.toString())
 
-                            //Capture light level
+                            // Capture light level
                             registerLightSensor()
 
-                            // Suite des évènements dans une autre activity pour éviter les
-                            // interférences entre les intents.
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
                             intent.putExtra("light", ambientLightLux)
                             if(emergency) intent.putExtra("emergency", true)
@@ -213,10 +214,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
      * @version 1.2 (Updated on 29-12-2022)
      */
     private fun audioCapture() {
-        // Destination du futur fichier :
+        // File path
         val path = userData.path + "/SmallBrother/audio.ogg"
 
-        // Configuration du recorder "magneto".
+        // Init and configure MediaRecorder
         Log.d("MAGNETO", "INIT")
         magneto = MediaRecorder()
         magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -229,10 +230,16 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             e.printStackTrace()
         }
         Log.d("MAGNETO", "MAGNETO STARTS")
-        magneto?.start() // Enregistrement lancé.
+        magneto?.start()
     }
 
-    // --> Retour à l'écran de rôle adéquat.
+    // Redirect to adequate activity
+    /**
+     * Redirects to the adequate activity
+     *
+     * @author Maxime Caucheteur (with contribution of Sébastien Luca (java version))
+     * @version 1.2 (Updated on 02-01-2023)
+     */
     private fun retour() {
         when (userData.role) {
             "Aidant" -> {
@@ -261,8 +268,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     }
 
     override fun onAccelerationChanged(x: Float, y: Float, z: Float) {
-        // Récupération des coordonnées de position du téléphone.
-        // Imposition marge d'erreur (int val*10) pour contrer grande sensibilité capteurs.
+        // Fetch phone's coordinates
+        // Error margin (*10) to compensate the accelerometer high sensibility
         val tmp = floatArrayOf(
             (x.toInt() * 10).toFloat(),
             (y.toInt() * 10).toFloat(),

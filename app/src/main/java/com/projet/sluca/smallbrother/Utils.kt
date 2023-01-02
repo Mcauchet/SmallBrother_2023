@@ -4,23 +4,17 @@ import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.telephony.SmsManager
-import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidmads.library.qrgenearator.QRGContents
-import androidmads.library.qrgenearator.QRGEncoder
 import androidx.appcompat.app.AppCompatActivity
 import java.io.IOException
 
@@ -133,11 +127,11 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
 }
 
 /***
- * isOnline returns true if device has network capabilities (Cellular, Wifi or Ethernet)
+ * isOnline returns true if device has validated network capabilities (Cellular, Wifi or Ethernet)
  *
  * @return true if connected, false otherwise
- * @author Maxime Caucheteur
- * @version 1.2 (Updated on 24-11-22)
+ * @author Maxime Caucheteur (inspired by https://medium.com/@veniamin.vynohradov/monitoring-internet-connection-state-in-android-da7ad915b5e5)
+ * @version 1.2 (Updated on 02-01-23)
  */
 fun isOnline(context: Context): Boolean {
     try {
@@ -146,7 +140,7 @@ fun isOnline(context: Context): Boolean {
         val capabilities =
             connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
-            if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+            /*if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
                 Log.i("Internet", "TRANSPORT_CELLULAR")
                 return true
             } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
@@ -155,6 +149,16 @@ fun isOnline(context: Context): Boolean {
             } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
                 Log.i("Internet", "TRANSPORT_ETHERNET")
                 return true
+            }*/
+            return when {
+                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                        capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) &&
+                        (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+                -> true
+                else -> false
             }
         }
     } catch (e:IOException) {
