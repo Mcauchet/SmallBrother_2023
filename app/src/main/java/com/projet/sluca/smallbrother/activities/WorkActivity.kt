@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
@@ -24,14 +23,13 @@ import com.projet.sluca.smallbrother.models.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.IOException
 
 /***
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 02-01-2023)
+ * @version 1.2 (Updated on 03-01-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -90,7 +88,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         if (appelant != "" && userData.telephone == appelant) {
             // If caller is the partner, update log
             userData.refreshLog(8)
-            retour()
+            redirectRole(this@WorkActivity, userData)
         } else {
             when (clef) {
                 "[#SB01]" -> {
@@ -224,26 +222,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         }
         Log.d("MAGNETO", "MAGNETO STARTS")
         magneto?.start()
-    }
-
-    // Redirect to adequate activity
-    /**
-     * Redirects to the adequate activity
-     *
-     * @author Maxime Caucheteur (with contribution of Sébastien Luca (java version))
-     * @version 1.2 (Updated on 02-01-2023)
-     */
-    private fun retour() {
-        when (userData.role) {
-            "Aidant" -> {
-                val intent = Intent(this, AidantActivity::class.java)
-                startActivity(intent)
-            }
-            "Aidé" -> {
-                val intent = Intent(this, AideActivity::class.java)
-                startActivity(intent)
-            }
-        }
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

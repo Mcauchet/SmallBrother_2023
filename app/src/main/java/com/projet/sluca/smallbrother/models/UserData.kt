@@ -12,7 +12,6 @@ import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-// Mémorisation et gestion des données globales de l'utilisateur et autres données utiles, en session et en DB.
 /***
  * creates an object UserData which contains all pieces of information about the user
  *
@@ -30,8 +29,8 @@ import java.util.*
  * @property bit: on Sms received, change the log message
  * @constructor creates a user with default properties
  *
- * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (updated on 27-12-22)
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
+ * @version 1.2 (updated on 03-01-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -51,7 +50,6 @@ data class UserData(
     private val date = "date.txt" // date de création de la fiche de l'Aidé
 
     // -> Donne l'URL de la racine du dossier Web de SB.
-    // Centralisation des URL :
     val url = "https://projects.info.unamur.be/geras/projects/smallbrother/"
 
     // -> Donne la part d'URL nécessaire pour accéder à l'aide de SB.
@@ -66,8 +64,6 @@ data class UserData(
     fun configurePath(context: Context?) {
         val tmpPath: String? = context?.filesDir?.path
         if(tmpPath != null) path = tmpPath
-
-        Log.d("TMPPATH", tmpPath.toString())
     }
 
     /***
@@ -76,35 +72,26 @@ data class UserData(
      * @param [context] the context of the activity running
      */
     fun saveData(context: Context?) {
-        // Structuration du contenu du futur fichier (info, retour-charriot).
+        // Prepare data for the .txt file
         val contenu = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
                 nomPartner
 
-        Log.d("CONTENU", contenu)
-
-        // Enregistrement :
+        // Save :
         try {
-            // Création du dossier "/SmallBrother" dans l'arborescence de l'application,
-            // s'il n'existe pas déjà.
-
+            // Create the SmallBrother directory if it doesn't exist
             val dossier = File(this.filesDir, "SmallBrother")
             if (!dossier.exists()) dossier.mkdirs()
 
-            // Création du fichier "donnees.txt" dans ce dossier, via la variable "path".
+            // Create the donnees.txt file
             val testFile = File(dossier, file)
-            Log.d("DONNEES.TXT BEFORE", testFile.exists().toString())
 
-            // Suppression du fichier de données s'il existe déjà.
+            // If donnees.txt doesn't exist, create new file, delete it otherwise
             if(!testFile.exists()) testFile.createNewFile()
             else byeData()
 
-            Log.d("DONNEES.TXT AFTER", testFile.exists().toString())
-            Log.d("DONNEES PATH", testFile.path)
-
-            // Ecriture.
+            // Write data in the new file
             val writer = BufferedWriter(FileWriter(testFile, true))
             writer.write(contenu)
-
             writer.close()
             MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
         } catch (e: IOException) {
@@ -134,21 +121,19 @@ data class UserData(
      * @return true if data loaded, false otherwise
      */
     fun loadData(): Boolean {
-
-        // Chargement du fichier TXT pointé par "path".
         val data = File(this.filesDir, "SmallBrother/$file")
-        Log.d("DATA", data.toString())
-        Log.d("donnees exists", data.exists().toString())
-        Log.d("PERMISSION", data.canRead().toString())
         if (data.exists() && data.canRead()) {
-            Log.d("IFLOOP", "I'm in")
-            try  // Récupération du contenu du fichier :
-            {
-                // Placement des données dans un array, séparation par le retour-charriot.
+            // Retrieve the data
+            try {
                 val br = BufferedReader(FileReader(data))
                 val dataLine = IOUtils.toString(br)
                 val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
-                Log.d("DATATAB", dataTab[0])
+                Log.d("DATATAB0", dataTab[0])
+                Log.d("DATATAB1", dataTab[1])
+                Log.d("DATATAB2", dataTab[2])
+                Log.d("DATATAB3", dataTab[3])
+                Log.d("DATATAB4", dataTab[4])
+                Log.d("DATATAB5", dataTab[5])
 
                 // Rapatriement des données :
                 version = dataTab[0]
@@ -183,11 +168,10 @@ data class UserData(
      * @param [code] the code associated to the log message
      */
     fun refreshLog(code: Int) {
-        // Capture de la date et de l'heure actuelles.
-        val c = Calendar.getInstance()
-        val df = SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.FRENCH)
-        val date = df.format(c.time)
-        var texte = "$date : " // Début de message.
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.FRENCH)
+        val date = dateFormat.format(calendar.time)
+        var texte = "$date : "
         texte += when (code) {
             1 -> getString(R.string.log01)
             2 -> getString(R.string.log02)
@@ -213,7 +197,7 @@ data class UserData(
                 .replace("N#", SmsReceiver.tempsrestant)
             else -> ""
         }
-        log = texte // Set du Log.
+        log = texte
     }
 
     /***

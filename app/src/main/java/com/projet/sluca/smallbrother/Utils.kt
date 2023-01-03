@@ -17,6 +17,10 @@ import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
+import com.projet.sluca.smallbrother.activities.AidantActivity
+import com.projet.sluca.smallbrother.activities.AideActivity
+import com.projet.sluca.smallbrother.models.UserData
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
@@ -220,4 +224,23 @@ fun particule(name: String) : String {
     )
 
     return if (listOf(*voyelles).contains(particule)) "d'" else "de "
+}
+
+/**
+ * Redirects to the adequate activity
+ *
+ * @author Maxime Caucheteur (with contribution of Sébastien Luca (java version))
+ * @version 1.2 (Updated on 03-01-2023)
+ */
+fun redirectRole(context: Context, userData: UserData) {
+    when (userData.role) {
+        "Aidant" -> {
+            val intent = Intent(context, AidantActivity::class.java)
+            startActivity(context, intent, null)
+        }
+        "Aidé" -> {
+            val intent = Intent(context, AideActivity::class.java)
+            startActivity(context, intent, null)
+        }
+    }
 }

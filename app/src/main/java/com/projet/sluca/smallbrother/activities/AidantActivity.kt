@@ -31,45 +31,42 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 
 /***
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 28-12-2022)
+ * @version 1.2 (updated on 03-01-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
-    var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
-    private lateinit var tvLog: TextView // Déclaration du TextView pour le Log.
+    var vibreur = Vibration()
+    lateinit var userData: UserData
+    private lateinit var tvLog: TextView
 
-    // Handler pour rafraîchissement log.
     private val logHandler: Handler = Handler(Looper.getMainLooper())
 
-    private lateinit var flTiers: FrameLayout // Déclaration du FrameLayout pour le bouton Tiers.
+    private lateinit var flTiers: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Etablissement de la liaison avec la vue res/layout/activity_aidant.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aidant)
 
         val btnSettings: Button = findViewById(R.id.btn_reglages)
         val btnPicture: Button = findViewById(R.id.btn_photo)
         val btnReduct: Button = findViewById(R.id.btn_reduire)
+
         val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
+
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
         val btnFiles: Button = findViewById(R.id.btn_files)
         val btnTiers: Button = findViewById(R.id.btn_tiers)
 
 
-        // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
         userData.loadData()
-        Log.d("nomPartner", userData.nomPartner)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
@@ -79,16 +76,12 @@ class AidantActivity : AppCompatActivity() {
         btnEmergency.text = getString(R.string.btn_urgence)
             .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
 
-        // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
 
-        // Liaison avec le FrameLayout affichant le bouton Tiers.
         flTiers = findViewById(R.id.contour5)
 
-        // Lancement de l'activité en arrière-plan (rafraîchissement).
         reloadLog.run()
 
-        // Sortie de veille du téléphone et mise en avant-plan de cette appli.
         wakeup(window, this@AidantActivity)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -96,7 +89,6 @@ class AidantActivity : AppCompatActivity() {
         btnSettings.setOnClickListener {
             vibreur.vibration(this, 100)
 
-            // Transition vers la ReglagesActivity.
             val intent = Intent(this, ReglagesActivity::class.java)
             startActivity(intent)
         }
@@ -104,47 +96,47 @@ class AidantActivity : AppCompatActivity() {
         btnPicture.setOnClickListener {
             vibreur.vibration(this, 100)
 
-            // Transition vers la ReglagesActivity.
             val intent = Intent(this, PhotoAide::class.java)
             startActivity(intent)
         }
 
+        // Moves app to background
         btnReduct.setOnClickListener {
             vibreur.vibration(this, 200)
-            message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
-            moveTaskToBack(true) // Mise de l'appli en arrière-plan.
+            message(this, getString(R.string.message01), vibreur)
+            moveTaskToBack(true)
         }
 
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 200)
-            userData.loadData() // Raptatriement des données de l'utilisateur.
+            //userData.loadData()
 
-            // Concoction et envoi du SMS.
+            // Prepare and send SMS
             var sms = getString(R.string.smsys02)
             sms = sms.replace("§%", userData.nom)
 
             sendSMS(this, sms, userData.telephone)
 
-            message(this, getString(R.string.message04), vibreur) // toast de confirmation.
-            userData.refreshLog(4) // rafraîchissement du Log.
+            message(this, getString(R.string.message04), vibreur)
+            userData.refreshLog(4)
         }
 
         btnCall.setOnClickListener {
             vibreur.vibration(this, 200)
-            userData.loadData() // Raptatriement des données de l'utilisateur.
+            //userData.loadData()
 
-            // Lancement de l'appel.
+            // Calls the Aidant
             val callIntent = Intent(Intent.ACTION_CALL)
             callIntent.data = Uri.parse("tel:" + userData.telephone)
             startActivity(callIntent)
-            message(this, getString(R.string.message05), vibreur) // toast de confirmation.
-            userData.refreshLog(7) // rafraîchissement du Log.
+            message(this, getString(R.string.message05), vibreur)
+            userData.refreshLog(7)
         }
 
         btnEmergency.setOnClickListener {
             vibreur.vibration(this, 330)
 
-            // Demande de confirmation.
+            // Ask for confirmation
             val builder = AlertDialog.Builder(this)
             builder.setCancelable(true)
             builder.setTitle(getString(R.string.btn_urgence)
@@ -153,7 +145,7 @@ class AidantActivity : AppCompatActivity() {
             builder.setPositiveButton(
                 getString(R.string.oui)
             ) { _, _ ->
-                // Si choix = "OUI" :
+                // If choice == "OUI"
                 vibreur.vibration(this, 200)
                 userData.loadData() // Raptatriement des données de l'utilisateur.
 
@@ -163,14 +155,14 @@ class AidantActivity : AppCompatActivity() {
 
                 sendSMS(this, sms, userData.telephone)
 
-                message(this, getString(R.string.message07), vibreur) // toast de confirmation.
-                userData.refreshLog(10) // rafraîchissement du Log.
+                message(this, getString(R.string.message07), vibreur)
+                userData.refreshLog(10)
             }
             builder.setNegativeButton(
                 android.R.string.cancel
             ) { _, _ ->
-                // Si choix = "ANNULER" :
-                /* rien */
+                // If choice == "ANNULER" :
+                /* dialog window closes */
             }
             val dialog = builder.create()
             dialog.show()
@@ -211,15 +203,15 @@ class AidantActivity : AppCompatActivity() {
                         "$URLServer/aes/${userData.urlToFile}"
                     )
 
-                    //retrieve AES encrypted KEY, decrypt it and use it to decrypt the data
+                    // retrieve AES encrypted KEY
                     val aesBody: String = aesHttp.body()
 
                     val aesDecKey = Base64.decode(aesBody, Base64.NO_WRAP)
 
-                    //retrieve zip data ByteArray
+                    // retrieve zip data ByteArray
                     val responseBody: ByteArray = httpResponse.body()
 
-                    //decrypt data with the decrypted AES key
+                    // decrypt AES key then decrypt data with the decrypted AES key
                     val decryptedData = SecurityUtils.decryptDataAes(responseBody, aesDecKey)
                     file.writeBytes(decryptedData)
                 }
@@ -238,10 +230,10 @@ class AidantActivity : AppCompatActivity() {
 
     /*fun tiers() {
         vibreur.vibration(this, 200)
-        userData.loadData() // Raptatriement des données de l'utilisateur.
+        userData.loadData()
     }*/
 
-    // --> Rafraîchissement automatique toutes les 250 ms du TextView de Log et des boutons.
+    // Auto refresh the log every 250 ms
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
             when (userData.bit) {
@@ -250,7 +242,7 @@ class AidantActivity : AppCompatActivity() {
             }
             // Log :
             if (userData.log != null) {
-                // Coloration en vert et mise en gras de la date (19 premiers caras).
+                // Color the date and bolds it (take off if date leaves)
                 val sb = SpannableStringBuilder(userData.log)
                 val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
                 val bss = StyleSpan(Typeface.BOLD)
@@ -262,7 +254,7 @@ class AidantActivity : AppCompatActivity() {
             // Bouton Tiers :
             /* TODO afficher le bouton Tiers si le document zip est présent dans les downloads */
 
-            logHandler.postDelayed(this, 250) // rafraîchissement
+            logHandler.postDelayed(this, 250)
         }
     }
 

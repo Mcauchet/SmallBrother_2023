@@ -13,26 +13,24 @@ import com.projet.sluca.smallbrother.models.UserData
  * class Launch1Activity is the starting point of the application.
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 27-12-2022)
+ * @version 1.2 (Updated on 03-01-2023)
  */
 class Launch1Activity : AppCompatActivity() {
 
-    var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
+    var vibreur = Vibration()
+    lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Etablissement de la liaison avec la vue res/layout/activity_launch1.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_launch1)
 
         val btnStart: Button = findViewById(R.id.btn_commencer)
 
-        // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
 
         userData.configurePath(this)
 
-        // Réactivation du SmsReceiver (en cas de coupure inopinée de l'appli).
+        // Activate SmsReceiver in case application crashes (as it's the launcher activity)
         val pm = this@Launch1Activity.packageManager
         val componentName = ComponentName(this@Launch1Activity, SmsReceiver::class.java)
         pm.setComponentEnabledSetting(
@@ -41,48 +39,31 @@ class Launch1Activity : AppCompatActivity() {
             PackageManager.DONT_KILL_APP
         )
 
-
-        // Vérification : tout premier démarrage ?
-
-        // Cas 1 : data existant : redirection vers l'écran de rôle.
+        // Check if this is first launch of app
+        // 1st case : data present in files, redirect to adequate activity
         if (userData.loadData()) {
-            when (userData.role) {
-                "Aidant" -> {
-                    //Activité aidant
-                    val intent = Intent(this, AidantActivity::class.java)
-                    startActivity(intent)
-                }
-                "Aidé" -> {
-                    //Activité aidé
-                    val intent = Intent(this, AideActivity::class.java)
-                    startActivity(intent)
-                }
-            }
+            redirectRole(this, userData)
         } else if (userData.role != null) {
-            // Désactivation des boutons retour (car suite de Reglages Activity).
+            // Deactivate back button (as previous activity is the settings (through data reset))
             userData.canGoBack = false
-            userData.refreshLog(2) // message de Log adéquat.
+            userData.refreshLog(2)
             when (userData.role) {
                 "Aidant" -> {
-                    //Installation aidant
                     val intent = Intent(this, InstallDantActivity::class.java)
                     startActivity(intent)
                 }
                 "Aidé" -> {
-                    //Installation aidé
                     val intent = Intent(this, InstallDeActivity::class.java)
                     startActivity(intent)
                 }
             }
         } else {
-            userData.canGoBack = true // activation des boutons retour.
-            userData.refreshLog(1) // message de Log de commencement.
+            userData.canGoBack = true
+            userData.refreshLog(1)
         }
 
         btnStart.setOnClickListener {
             vibreur.vibration(this, 100)
-
-            // Transition vers l'activity suivante.
             val intent = Intent(this, Launch2Activity::class.java)
             startActivity(intent)
         }
