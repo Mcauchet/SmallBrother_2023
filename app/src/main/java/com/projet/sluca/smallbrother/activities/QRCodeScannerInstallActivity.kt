@@ -30,36 +30,18 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
 
         userData = application as UserData
 
-        if (userData.role == "Aidé") {
-            fetchAideData()
-        }
-
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 
         codeScanner = CodeScanner(this, scannerView)
 
-        codeScanner.camera = CodeScanner.CAMERA_BACK
-        codeScanner.formats = CodeScanner.ALL_FORMATS
-
-        codeScanner.autoFocusMode = AutoFocusMode.SAFE
-        codeScanner.scanMode = ScanMode.SINGLE // or CONTINUOUS or PREVIEW
-        codeScanner.isAutoFocusEnabled = true // Whether to enable auto focus or not
-        codeScanner.isFlashEnabled = false // Whether to enable flash or not
+        configureCodeScanner()
 
         // Callbacks
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
                 message(this, "Scan result: ${it.text}", vibreur)
                 userData.pubKey = it.text
-                userData.saveData(this)
-                userData.canGoBack = true
-                lateinit var intent: Intent
-                if (userData.role == "Aidé") {
-                    intent = Intent(this, QRCodeInstallActivity::class.java)
-                } else if (userData.role == "Aidant") {
-                    intent = Intent(this, AidantActivity::class.java)
-                }
-                startActivity(intent)
+                processScanResult()
             }
         }
         codeScanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
@@ -84,15 +66,33 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
     }
 
     /**
-     * Gets the aide's data present in the intent extras.
-     *
+     * Configure the code scanner with different options
+     * @author Maxime Caucheteur (with help of https://github.com/yuriy-budiyev/code-scanner)
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun configureCodeScanner() {
+        codeScanner.camera = CodeScanner.CAMERA_BACK
+        codeScanner.formats = CodeScanner.ALL_FORMATS
+        codeScanner.autoFocusMode = AutoFocusMode.SAFE
+        codeScanner.scanMode = ScanMode.SINGLE // or CONTINUOUS or PREVIEW
+        codeScanner.isAutoFocusEnabled = true // Whether to enable auto focus or not
+        codeScanner.isFlashEnabled = false // Whether to enable flash or not
+    }
+
+    /**
+     * Save the public key and redirect based on user's role
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 04-01-2023)
      */
-    private fun fetchAideData() {
-        userData.nom = intent.getStringExtra("nom").toString()
-        userData.nomPartner = intent.getStringExtra("nomPartner").toString()
-        userData.telephone = intent.getStringExtra("telephone").toString()
-        userData.version = intent.getStringExtra("version").toString()
+    private fun processScanResult() {
+        userData.saveData(this)
+        userData.canGoBack = true
+        lateinit var intent: Intent
+        if (userData.role == "Aidé") {
+            intent = Intent(this, QRCodeInstallActivity::class.java)
+        } else if (userData.role == "Aidant") {
+            intent = Intent(this, AidantActivity::class.java)
+        }
+        startActivity(intent)
     }
 }
