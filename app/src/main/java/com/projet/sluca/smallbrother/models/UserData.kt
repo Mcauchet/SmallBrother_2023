@@ -30,7 +30,7 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 03-01-2023)
+ * @version 1.2 (updated on 04-01-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -42,17 +42,15 @@ data class UserData(
 
     var urlToFile: String = ""
 
-    //this path is configured at first launch of the app through configurePath(..)
+    // this path is configured at first launch of the app through configurePath(..)
     var path: String = ""
 
-    private val file = "donnees.txt" // datas de l'utilisateur
+    private val file = "donnees.txt"
     private val fiche = "fiche_aide.txt" // fiche de l'Aidé
     private val date = "date.txt" // date de création de la fiche de l'Aidé
 
-    // -> Donne l'URL de la racine du dossier Web de SB.
     val url = "https://projects.info.unamur.be/geras/projects/smallbrother/"
 
-    // -> Donne la part d'URL nécessaire pour accéder à l'aide de SB.
     val help = "help/"
 
     /***
@@ -60,6 +58,8 @@ data class UserData(
      *
      * @param [context] the context of the activity running
      * @see Launch1Activity.onCreate
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     fun configurePath(context: Context?) {
         val tmpPath: String? = context?.filesDir?.path
@@ -70,37 +70,42 @@ data class UserData(
      * saveData stores the user's data in a .txt file on the device
      *
      * @param [context] the context of the activity running
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     fun saveData(context: Context?) {
-        // Prepare data for the .txt file
-        val contenu = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
+        val content = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
                 nomPartner
-
-        // Save :
         try {
-            // Create the SmallBrother directory if it doesn't exist
-            val dossier = File(this.filesDir, "SmallBrother")
-            if (!dossier.exists()) dossier.mkdirs()
-
-            // Create the donnees.txt file
-            val testFile = File(dossier, file)
-
-            // If donnees.txt doesn't exist, create new file, delete it otherwise
-            if(!testFile.exists()) testFile.createNewFile()
-            else byeData()
-
-            // Write data in the new file
-            val writer = BufferedWriter(FileWriter(testFile, true))
-            writer.write(contenu)
-            writer.close()
-            MediaScannerConnection.scanFile(context, arrayOf(testFile.toString()), null, null)
+            val directory = File(this.filesDir, "SmallBrother")
+            if (!directory.exists()) directory.mkdirs()
+            val dataFile = File(directory, file)
+            if(!dataFile.exists()) dataFile.createNewFile() else byeData()
+            writeDataInFile(dataFile, content, context)
         } catch (e: IOException) {
             e.printStackTrace()
         }
     }
 
+    /**
+     * Write content in dataFile
+     * @param [dataFile] the file
+     * @param [content] the content to write
+     * @param [context] the context of the activity
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun writeDataInFile(dataFile: File, content: String, context: Context?) {
+        val writer = BufferedWriter(FileWriter(dataFile, true))
+        writer.write(content)
+        writer.close()
+        MediaScannerConnection.scanFile(context, arrayOf(dataFile.toString()), null, null)
+    }
+
     /***
      * byeData deletes the donnees.txt file of the device
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     fun byeData() {
         val data = File("$path/SmallBrother/$file")
@@ -109,6 +114,8 @@ data class UserData(
 
     /**
      * deletePicture deletes the picture of the Aide on the device
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     fun deletePicture() {
         val file = File("$path/SmallBrother/photo_aide.jpg")
@@ -119,39 +126,42 @@ data class UserData(
      * loadData fetches the donnees.txt file and sets the UserData properties accordingly
      *
      * @return true if data loaded, false otherwise
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     fun loadData(): Boolean {
         val data = File(this.filesDir, "SmallBrother/$file")
         if (data.exists() && data.canRead()) {
-            // Retrieve the data
             try {
-                val br = BufferedReader(FileReader(data))
-                val dataLine = IOUtils.toString(br)
-                val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
-                Log.d("DATATAB0", dataTab[0])
-                Log.d("DATATAB1", dataTab[1])
-                Log.d("DATATAB2", dataTab[2])
-                Log.d("DATATAB3", dataTab[3])
-                Log.d("DATATAB4", dataTab[4])
-                Log.d("DATATAB5", dataTab[5])
-
-                // Rapatriement des données :
-                version = dataTab[0]
-                role = dataTab[1]
-                nom = dataTab[2]
-                telephone = dataTab[3]
-                pubKey = dataTab[4]
-                nomPartner = dataTab[5]
+                retrieveData(data)
                 return true
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
-        } else {
-            Log.d("FILE", "Can't read the file")
-        }
+        } else Log.d("FILE", "Can't read the file")
         return false
+    }
+
+    /**
+     * Retrieve the data written in the data file
+     * @param [file] the file where the data are
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun retrieveData(file: File) {
+        val br = BufferedReader(FileReader(file))
+        val dataLine = IOUtils.toString(br)
+        val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
+        Log.d("DATATAB0", dataTab[0]);Log.d("DATATAB1", dataTab[1]);Log.d("DATATAB2", dataTab[2])
+        Log.d("DATATAB3", dataTab[3]);Log.d("DATATAB4", dataTab[4]);Log.d("DATATAB5", dataTab[5])
+        version = dataTab[0]
+        role = dataTab[1]
+        nom = dataTab[2]
+        telephone = dataTab[3]
+        pubKey = dataTab[4]
+        nomPartner = dataTab[5]
     }
 
     /***
@@ -159,19 +169,19 @@ data class UserData(
      *
      * @param [num] the number of the picture
      * @return the path of the pictures
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     fun getAutophotosPath(num: Int): String = "$path/SmallBrother/autophoto$num.jpg"
 
     /***
-     * refreshLog sets the log accordingly to the code entered as a parameter
-     *
+     * refreshLog sets the log accordingly to the code parameter
      * @param [code] the code associated to the log message
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     fun refreshLog(code: Int) {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.FRENCH)
-        val date = dateFormat.format(calendar.time)
-        var texte = "$date : "
+        var texte = "${getDate()} : "
         texte += when (code) {
             1 -> getString(R.string.log01)
             2 -> getString(R.string.log02)
@@ -183,21 +193,30 @@ data class UserData(
             8 -> getString(R.string.log08)
             9 -> getString(R.string.log09)
             10 -> getString(R.string.log10)
-            11 -> getString(R.string.aide_needs_help)
-                .replace("§%", this.nomPartner)
+            11 -> getString(R.string.aide_needs_help).replace("§%", this.nomPartner)
             12 -> getString(R.string.log12)
             13 -> {
                 val particule = particule(this.nomPartner)
-                getString(R.string.log11)
-                    .replace("§%", "$particule${this.nomPartner}")
+                getString(R.string.log11).replace("§%", "$particule${this.nomPartner}")
             }
             16 -> getString(R.string.log16)
             18 -> getString(R.string.log18)
-            19 -> getString(R.string.log19)
-                .replace("N#", SmsReceiver.tempsrestant)
+            19 -> getString(R.string.log19).replace("N#", SmsReceiver.tempsrestant)
             else -> ""
         }
         log = texte
+    }
+
+    /**
+     * Get the current time and format it
+     * @return the date as a String
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun getDate(): String {
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.FRENCH)
+        return dateFormat.format(calendar.time)
     }
 
     /***
@@ -210,6 +229,7 @@ data class UserData(
         delai = delai.minus(sub)
     }
 
+    //TODO delete this code if we don't use the fiche
     /***
      * createFiche creates the file containing all the "Aidé"'s information
      *
