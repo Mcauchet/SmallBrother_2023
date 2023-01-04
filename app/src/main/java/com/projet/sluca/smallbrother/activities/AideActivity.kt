@@ -83,7 +83,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys03).replace("§%", userData.nom)
-            sendSMS(this, sms, userData.telephone)
+            sendSMS(this, sms, userData.telephone, vibreur)
 
             message(this, getString(R.string.message04), vibreur)
             userData.refreshLog(16)
@@ -103,7 +103,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         btnEmergency.setOnClickListener {
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys08).replace("§%", userData.nom)
-            sendSMS(this, sms, userData.telephone)
+            sendSMS(this, sms, userData.telephone, vibreur)
             val workIntent = Intent(this, WorkActivity::class.java).putExtra("clef", "[#SB04]")
             CoroutineScope(Dispatchers.Main).launch {
                 startActivity(workIntent)
@@ -220,7 +220,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val restencore: Int = ((userData.delai / 60000)+1).toInt()
         val waitage = restencore.toString()
         sms = sms.replace("N#", waitage)
-        sendSMS(this@AideActivity, sms, userData.telephone)
+        sendSMS(this@AideActivity, sms, userData.telephone, vibreur)
     }
 
     /**

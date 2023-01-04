@@ -4,6 +4,7 @@ import android.app.KeyguardManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -20,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
 import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.activities.AideActivity
+import com.projet.sluca.smallbrother.activities.InstallDantPicActivity
+import com.projet.sluca.smallbrother.activities.QRCodeScannerInstallActivity
 import com.projet.sluca.smallbrother.models.UserData
 import java.io.IOException
 
@@ -35,12 +38,9 @@ const val URLServer = "https://2fd7-2a02-a03f-ae4e-1900-e1c1-1a0b-5bd9-140c.eu.n
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 27-12-2022)
  */
-fun sendSMS(context: Context, msg: String, receiver: String) {
+fun sendSMS(context: Context, msg: String, receiver: String, vibreur: Vibration) {
     if (!smsAvailable(context)) {
-        Toast.makeText(context,
-            "Veuillez retirer le mode avion pour envoyer un SMS.",
-            Toast.LENGTH_LONG
-        ).show()
+        message(context, "Veuillez retirer le mode avion pour envoyer un SMS.", vibreur)
         return
     }
     val subscriptionId: Int = SmsManager.getDefaultSmsSubscriptionId()
@@ -49,9 +49,7 @@ fun sendSMS(context: Context, msg: String, receiver: String) {
             .sendTextMessage(receiver, null, msg, sentPI(context), null)
     } else {
         @Suppress("DEPRECATION")
-        SmsManager
-            .getDefault()
-            .sendTextMessage(receiver, null, msg, sentPI(context), null)
+        SmsManager.getDefault().sendTextMessage(receiver, null, msg, sentPI(context), null)
     }
 }
 
@@ -136,39 +134,40 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
  *
  * @return true if connected, false otherwise
  * @author Maxime Caucheteur (inspired by https://medium.com/@veniamin.vynohradov/monitoring-internet-connection-state-in-android-da7ad915b5e5)
- * @version 1.2 (Updated on 02-01-23)
+ * @version 1.2 (Updated on 04-01-2023)
  */
 fun isOnline(context: Context): Boolean {
     try {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
-                as ConnectivityManager
-        val capabilities =
-            connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-        if (capabilities != null) {
-            /*if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                Log.i("Internet", "TRANSPORT_CELLULAR")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                Log.i("Internet", "TRANSPORT_WIFI")
-                return true
-            } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                Log.i("Internet", "TRANSPORT_ETHERNET")
-                return true
-            }*/
-            return when {
-                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
-                        (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
-                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
-                -> true
-                else -> false
-            }
-        }
+        return checkInternetCapabilities(context)
     } catch (e:IOException) {
         e.printStackTrace()
     } catch (e: InterruptedException) {
         e.printStackTrace()
+    }
+    return false
+}
+
+/**
+ * Checks Network Capabilities
+ * @param [context] the context of the activity
+ * @return true if has Network capabilities, false otherwise
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-01-2023)
+ */
+private fun checkInternetCapabilities(context: Context) : Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+            as ConnectivityManager
+    val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+    if (capabilities != null) {
+        return when {
+            capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                    (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+            -> true
+            else -> false
+        }
     }
     return false
 }
@@ -199,30 +198,13 @@ fun loading(tvLoading: TextView) {
  * @param [name] the name of the user
  * @return the particule needed before the name
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (java version))
- * @version 1.2 (Updated on 27-12-22)
+ * @version 1.2 (Updated on 04-01-2023)
  */
 fun particule(name: String) : String {
     val particule = name[0].toString()
-    val voyelles = arrayOf(
-        "A",
-        "E",
-        "Y",
-        "U",
-        "I",
-        "O",
-        "É",
-        "È",
-        "Œ",
-        "a",
-        "e",
-        "y",
-        "u",
-        "i",
-        "o",
-        "é",
-        "è"
+    val voyelles = arrayOf("A", "E", "Y", "U", "I", "O", "É", "È", "Œ", "a", "e", "y", "u", "i",
+        "o", "é", "è"
     )
-
     return if (listOf(*voyelles).contains(particule)) "d'" else "de "
 }
 
@@ -243,4 +225,50 @@ fun redirectRole(context: Context, userData: UserData) {
             startActivity(context, intent, null)
         }
     }
+}
+
+/**
+ * Save the user's data in a file
+ * @param [name] the name of the user
+ * @param [namePartner] the name of the partner
+ * @param [telephone] the phone number of the partner
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-01-2023)
+ */
+fun registerData(name: String, namePartner: String, telephone: String, userData: UserData,
+                 context: Context) {
+    userData.version = getAppVersion(context)
+    userData.nom = name
+    userData.nomPartner = namePartner
+    userData.telephone = telephone
+    userData.saveData(context)
+    if (userData.role == "Aidant") {
+        val intent = Intent(context, InstallDantPicActivity::class.java)
+        startActivity(context, intent, null)
+    } else {
+        val intent = Intent(context, QRCodeScannerInstallActivity::class.java)
+        startActivity(context, intent, null)
+    }
+}
+
+/**
+ * Get the app version
+ * @return the app version as a String
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-01-2023)
+ */
+fun getAppVersion(context: Context): String {
+    var version = ""
+    try {
+        version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.packageManager.getPackageInfo(context.packageName,
+                PackageManager.PackageInfoFlags.of(0)).versionName
+        } else {
+            @Suppress("DEPRECATION")
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+        e.printStackTrace()
+    }
+    return version
 }

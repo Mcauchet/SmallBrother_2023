@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -63,7 +62,7 @@ class InstallDeActivity : AppCompatActivity() {
         }
 
         // Lancement des demandes de permissions.
-        demandesPermissions()
+        requestPermissions()
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
@@ -96,24 +95,21 @@ class InstallDeActivity : AppCompatActivity() {
 
         // > Vérification de la validité des informations entrées :
         when {
-            telephone.length > 10 || !telephone.matches("".toRegex())
-                    && !telephone.startsWith("04")
-                -> message(this, getString(R.string.error01), vibreur)
+            telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")
+            -> message(this, getString(R.string.error01), vibreur)
 
             nom.matches("".toRegex()) || telephone.matches("".toRegex())
-                -> message(this, getString(R.string.error03), vibreur)
+            -> message(this, getString(R.string.error03), vibreur)
 
             nomPartner.matches("".toRegex()) || telephone.matches("".toRegex())
             -> message(this, getString(R.string.error03), vibreur)
 
             else -> {
-                // Sauvegarde en globale des valeurs entrées.
                 userData.nom = nom
                 userData.nomPartner = nomPartner
                 userData.telephone = telephone
                 userData.version = version
 
-                // Transition vers l'activity suivante.
                 val intent = Intent(this, QRCodeScannerInstallActivity::class.java)
                 intent.putExtra("nom", nom)
                 intent.putExtra("telephone", telephone)
@@ -124,35 +120,43 @@ class InstallDeActivity : AppCompatActivity() {
         }
     }
 
-    // --> DEMANDESPERMISSIONS() : Liste des permissions requises pour ce rôle.
-    private fun demandesPermissions() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            @Suppress("DEPRECATION")
-            ActivityCompat.requestPermissions(
-                this, arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,  // -> enregistrer un fichier.
-                    Manifest.permission.READ_EXTERNAL_STORAGE,  // -> lire un fichier.
-                    Manifest.permission.SEND_SMS,  // -> envoyer des SMS
-                    Manifest.permission.CALL_PHONE,  // -> passer des appels
-                    Manifest.permission.READ_SMS,  // -> lire les SMS
-                    Manifest.permission.RECEIVE_SMS,  // -> recevoir des SMS
-                    Manifest.permission.BROADCAST_SMS, // -> utiliser sms receiver
-                    Manifest.permission.RECEIVE_BOOT_COMPLETED,  // -> lancement d'activité
-                    Manifest.permission.READ_PHONE_STATE,  // -> infos du téléphones
-                    Manifest.permission.PROCESS_OUTGOING_CALLS,  // -> passer des appels
-                    Manifest.permission.RECORD_AUDIO,  // -> enregistrer de l'audio.
-                    Manifest.permission.CAMERA,  // -> utiliser l'appareil photo.
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,  // -> enregistrer un fichier.
-                    Manifest.permission.SEND_SMS,  // -> envoyer des SMS
-                    Manifest.permission.ACCESS_FINE_LOCATION, // -> localiser.
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ), 1
-            )
+    /**
+     * Request the permissions if not already granted
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun requestPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            getArrayOfPermissions()
         }
+    }
+
+    /**
+     * Request the array of permissions needed for the aidé
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun getArrayOfPermissions() {
+        @Suppress("DEPRECATION")
+        ActivityCompat.requestPermissions(this, arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.BROADCAST_SMS,
+            Manifest.permission.RECEIVE_BOOT_COMPLETED,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.PROCESS_OUTGOING_CALLS,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION), 1
+        )
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

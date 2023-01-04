@@ -108,7 +108,7 @@ class AidantActivity : AppCompatActivity() {
             //userData.loadData()
             var sms = getString(R.string.smsys02)
             sms = sms.replace("§%", userData.nom)
-            sendSMS(this, sms, userData.telephone)
+            sendSMS(this, sms, userData.telephone, vibreur)
             message(this, getString(R.string.message04), vibreur)
             userData.refreshLog(4)
         }
@@ -254,7 +254,7 @@ class AidantActivity : AppCompatActivity() {
         builder.setPositiveButton(getString(R.string.oui)) { _, _ ->
             vibreur.vibration(this, 200)
             val sms = getString(R.string.smsys04).replace("§%", userData.nom)
-            sendSMS(this, sms, userData.telephone)
+            sendSMS(this, sms, userData.telephone, vibreur)
             message(this, getString(R.string.message07), vibreur)
             userData.refreshLog(10)
         }

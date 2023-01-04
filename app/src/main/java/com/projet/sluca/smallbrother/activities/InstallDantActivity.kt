@@ -1,11 +1,8 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -22,26 +19,22 @@ import kotlinx.coroutines.launch
  * class InstallDantActivity manages the installation for the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 31-12-22)
+ * @version 1.2 (updated on 04-01-2023)
  */
 class InstallDantActivity : AppCompatActivity() {
 
-    var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
+    var vibreur = Vibration()
+    lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Etablissement de la liaison avec la vue res/layout/activity_installdant.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_installdant)
 
         val btnBack: Button = findViewById(R.id.btn_previous)
         val btnContinue: Button = findViewById(R.id.btn_continue)
 
-        // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
-        Log.d("USERDATA", userData.toString())
 
-        // Retrait du bouton retour, au cas où désactivé par ReglagesActivity.
         if (!userData.canGoBack) {
             btnBack.visibility = View.INVISIBLE
         }
@@ -53,111 +46,92 @@ class InstallDantActivity : AppCompatActivity() {
 
         btnContinue.setOnClickListener {
             vibreur.vibration(this, 100)
-            continuer()
+            nextStep()
         }
 
-        // Lancement des demandes de permissions.
-        demandesPermissions()
+        requestPermissions()
 
-        //Generate key pair
         CoroutineScope(Dispatchers.IO).launch {
             SecurityUtils.getKeyPair()
         }
 
-
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
-    private fun continuer() {
-        // > Récupération du contenu des inputs :
-        val etNom = findViewById<EditText>(R.id.input_nom)
-        val nom = etNom.text.toString()
+    /**
+     * Checks the input, save them and start next activity
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun nextStep() {
+        val etName = findViewById<EditText>(R.id.input_nom)
+        val name = etName.text.toString()
 
-        val etNomPartner = findViewById<EditText>(R.id.input_nom_Aide)
-        val nomPartner = etNomPartner.text.toString()
+        val etNamePartner = findViewById<EditText>(R.id.input_nom_Aide)
+        val namePartner = etNamePartner.text.toString()
 
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
-        // > Vérification de la validité des informations entrées :
+        checkInputs(name, namePartner, telephone)
+    }
+
+    /**
+     * Checks if inputs are valid
+     * @param [name] the name of the aidant
+     * @param [namePartner] the name of the aidé
+     * @param [telephone] the phone number of the aidé
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun checkInputs(name: String, namePartner: String, telephone: String) {
         when {
             telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")
-                -> message(this, getString(R.string.error01), vibreur)
+            -> message(this, getString(R.string.error01), vibreur)
 
-            nom.matches("".toRegex()) || telephone.matches("".toRegex())
-                -> message(this, getString(R.string.error03), vibreur)
-
-            nomPartner.matches("".toRegex()) || telephone.matches("".toRegex())
+            name.matches("".toRegex()) || telephone.matches("".toRegex())
             -> message(this, getString(R.string.error03), vibreur)
 
-            else -> {
-                // Récupération de la version de SB en cours.
-                var version = ""
-                try {
-                    version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        this.packageManager
-                            .getPackageInfo(
-                                this.packageName,
-                                PackageManager.PackageInfoFlags.of(0)
-                            ).versionName
-                    } else {
-                        @Suppress("DEPRECATION")
-                        this.packageManager
-                            .getPackageInfo(
-                                this.packageName,
-                                0
-                            ).versionName
-                    }
-                } catch (e: PackageManager.NameNotFoundException) {
-                    e.printStackTrace()
-                }
+            namePartner.matches("".toRegex()) || telephone.matches("".toRegex())
+            -> message(this, getString(R.string.error03), vibreur)
 
-                // Sauvegarde en globale des valeurs entrées.
-                userData.role = "Aidant"
-                userData.version = version
-                userData.nom = nom
-                userData.nomPartner = nomPartner
-                userData.telephone = telephone
-
-                // Enregistrement de la DB.
-                userData.saveData(this)
-
-                // Création de la fiche de l'Aidé.
-                //userData.createFiche(this)
-
-                // Transition vers l'activity suivante.
-                val intent = Intent(this, InstallDantPicActivity::class.java)
-                startActivity(intent)
-            }
+            else -> registerData(name, namePartner, telephone, userData, this)
         }
     }
 
-    // --> DEMANDESPERMISSIONS() : Liste des permissions requises pour ce rôle.
-    private fun demandesPermissions() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,  // -> enregistrer un fichier.
-                    Manifest.permission.READ_EXTERNAL_STORAGE,  // -> lire un fichier.
-                    Manifest.permission.CAMERA,  // -> utiliser l'appareil photo.
-                    Manifest.permission.SEND_SMS,  // -> envoyer des SMS, si on passe à Signal, plus besoin de ça
-                    Manifest.permission.CALL_PHONE,  // -> passer des appels
-                    Manifest.permission.READ_SMS,  // -> lire les SMS, ni ça
-                    Manifest.permission.RECEIVE_SMS,  // -> recevoir des SMS, et ça
-                    Manifest.permission.RECEIVE_BOOT_COMPLETED,  // -> lancement d'activité
-                    Manifest.permission.READ_PHONE_STATE,  // -> infos du téléphones
-                    //todo see if needed
-                    Manifest.permission.PROCESS_OUTGOING_CALLS // -> passer des appels
-                ), 1
-            )
+    /**
+     * Request the permissions if not already granted
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun requestPermissions() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+            getArrayOfPermissions()
         }
     }
 
-    // --> Par sécurité : retrait du retour en arrière dans cette activity.
+    /**
+     * Request the array of permissions needed for the aidant
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun getArrayOfPermissions() {
+        ActivityCompat.requestPermissions(this, arrayOf(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.CAMERA,
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.CALL_PHONE,
+                Manifest.permission.READ_SMS,
+                Manifest.permission.RECEIVE_SMS,
+                Manifest.permission.RECEIVE_BOOT_COMPLETED,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.PROCESS_OUTGOING_CALLS
+            ), 1
+        )
+    }
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             moveTaskToBack(false)

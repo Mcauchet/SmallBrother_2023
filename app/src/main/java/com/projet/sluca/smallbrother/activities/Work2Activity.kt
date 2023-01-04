@@ -189,7 +189,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             val fileLocMsg = getString(R.string.smsys10)
                                 .replace("§%", "$URLServer/download/$zipName")
 
-                            sendSMS(this@Work2Activity, fileLocMsg, userData.telephone)
+                            sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
 
                             // Delete audio, pictures and information.txt
                             file1.delete()

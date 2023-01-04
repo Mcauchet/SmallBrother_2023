@@ -49,7 +49,7 @@ class ReglagesActivity : AppCompatActivity() {
                 // Send reset SMS to Aide
                 var sms = getString(R.string.smsys01)
                 sms = sms.replace("§%", userData.nom)
-                sendSMS(this, sms, userData.telephone)
+                sendSMS(this, sms, userData.telephone, vibreur)
 
                 //Delete Aidant's picture
                 userData.deletePicture()

@@ -146,7 +146,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                             var sms = getString(R.string.smsys05)
                             sms = sms.replace("§%", userData.nom)
-                            sendSMS(this@WorkActivity, sms, userData.telephone)
+                            sendSMS(this@WorkActivity, sms, userData.telephone, vibreur)
 
                             val intent = Intent(this@WorkActivity, AideActivity::class.java)
                             startActivity(intent)
