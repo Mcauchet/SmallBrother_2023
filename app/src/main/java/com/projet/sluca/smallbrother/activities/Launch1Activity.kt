@@ -39,8 +39,21 @@ class Launch1Activity : AppCompatActivity() {
             PackageManager.DONT_KILL_APP
         )
 
-        // Check if this is first launch of app
-        // 1st case : data present in files, redirect to adequate activity
+        checkFirstLaunch()
+
+        btnStart.setOnClickListener {
+            vibreur.vibration(this, 100)
+            val intent = Intent(this, Launch2Activity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    /**
+     * Checks if this is the first launch of the app (looks for existing data)
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun checkFirstLaunch() {
         if (userData.loadData()) {
             redirectRole(this, userData)
         } else if (userData.role != null) {
@@ -51,12 +64,6 @@ class Launch1Activity : AppCompatActivity() {
         } else {
             userData.canGoBack = true
             userData.refreshLog(1)
-        }
-
-        btnStart.setOnClickListener {
-            vibreur.vibration(this, 100)
-            val intent = Intent(this, Launch2Activity::class.java)
-            startActivity(intent)
         }
     }
 }
