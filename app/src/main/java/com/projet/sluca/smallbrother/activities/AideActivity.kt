@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -28,23 +27,22 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 22-12-22)
+ * @version 1.2 (updated on 04-01-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
-    var vibreur = Vibration() // Instanciation d'un vibreur.
-    lateinit var userData: UserData // Liaison avec les données globales de l'utilisateur.
+    var vibreur = Vibration()
+    lateinit var userData: UserData
 
-    private lateinit var tvLog: TextView // Déclaration du TextView pour le Log.
-    private lateinit var tvDelai: TextView // Déclaration du TextView pour le délai.
-    private lateinit var tvIntituleDelai: TextView // Déclaration du TextView pour l'intitulé du délai.
-    private lateinit var btnDeranger: Switch // Déclaration du bouton ON/OFF.
-    private lateinit var ivLogo: ImageView // Déclaration de l'ImageView du logo.
+    private lateinit var tvLog: TextView
+    private lateinit var tvDelay: TextView
+    private lateinit var tvIntituleDelay: TextView
+    private lateinit var btnPrivate: Switch
+    private lateinit var ivLogo: ImageView
 
-    private var logHandler: Handler = Handler(Looper.getMainLooper()) // Handler pour rafraîchissement log.
+    private var logHandler: Handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Etablissement de la liaison avec la vue res/layout/activity_aide.xml.
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aide)
 
@@ -53,32 +51,23 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnCall: Button = findViewById(R.id.btn_appel)
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
-        // Etablissement de la liaison avec la classe UserData.
         userData = application as UserData
         userData.loadData()
 
-        val newText = getString(R.string.btn_appel)
-        val btnText = newText.replace("§%", userData.nomPartner)
-        btnCall.text = btnText
+        btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
-        // Liaison avec les TextViews du délai.
-        tvDelai = findViewById(R.id.decompte)
-        tvIntituleDelai = findViewById(R.id.intituleDecompte)
+        tvDelay = findViewById(R.id.decompte)
+        tvIntituleDelay = findViewById(R.id.intituleDecompte)
 
-        // Liaison avec le switch ON/OFF et écoute de son état.
-        btnDeranger = findViewById(R.id.btn_deranger)
-        btnDeranger.setOnCheckedChangeListener(this)
+        btnPrivate = findViewById(R.id.btn_deranger)
+        btnPrivate.setOnCheckedChangeListener(this)
 
-        // Liaison avec l'ImageView du logo.
         ivLogo = findViewById(R.id.logo)
 
-        // Sortie de veille du téléphone et mise en avant-plan de cette appli.
         wakeup(window, this@AideActivity)
 
-        // Rafraîchissement de l'affichage.
-        refresh()
+        refreshUI()
 
-        // Liaison avec le TextView affichant le Log et ajout de sa valeur en cours.
         tvLog = findViewById(R.id.log_texte)
 
         reloadLog.run()
@@ -87,56 +76,38 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         btnReduct.setOnClickListener {
             vibreur.vibration(this, 100)
-            message(this, getString(R.string.message01), vibreur) // Message d'avertissement.
-            moveTaskToBack(true) // Mise de l'appli en arrière-plan.
+            message(this, getString(R.string.message01), vibreur)
+            moveTaskToBack(true)
         }
 
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 100)
-            userData.loadData() // Raptatriement des données de l'utilisateur.
-
-            // Concoction et envoi du SMS.
-            var sms = getString(R.string.smsys03)
-            sms = sms.replace("§%", userData.nom)
-
+            val sms = getString(R.string.smsys03).replace("§%", userData.nom)
             sendSMS(this, sms, userData.telephone)
 
-            message(this, getString(R.string.message04), vibreur) // toast de confirmation.
-            userData.refreshLog(16) // rafraîchissement du Log.
+            message(this, getString(R.string.message04), vibreur)
+            userData.refreshLog(16)
         }
 
         btnCall.setOnClickListener {
             vibreur.vibration(this, 100)
-            userData.loadData() // Raptatriement des données de l'utilisateur.
 
-            // Balance contre l'interférence de l'Intent ci-dessous dans l'équilibre Work-Aide activity.
-            //userdata.setEsquive(false);
-
-            // Lancement de l'appel.
             val callIntent = Intent(Intent.ACTION_CALL).apply {
                 data = Uri.parse("tel:" + userData.telephone)
             }
             startActivity(callIntent)
-            message(this, getString(R.string.message05), vibreur) // toast de confirmation.
-            userData.refreshLog(7) // rafraîchissement du Log.
+            message(this, getString(R.string.message05), vibreur)
+            userData.refreshLog(7)
         }
 
         btnEmergency.setOnClickListener {
             vibreur.vibration(this, 100)
-
-            var sms = getString(R.string.smsys08)
-            sms = sms.replace("§%", userData.nom)
-
+            val sms = getString(R.string.smsys08).replace("§%", userData.nom)
             sendSMS(this, sms, userData.telephone)
-
-            //captures the context
-            val workIntent = Intent(this, WorkActivity::class.java)
-            workIntent.putExtra("clef", "[#SB04]")
+            val workIntent = Intent(this, WorkActivity::class.java).putExtra("clef", "[#SB04]")
             CoroutineScope(Dispatchers.Main).launch {
                 startActivity(workIntent)
             }
-
-            //calls the police
             val intent = Intent(Intent.ACTION_CALL).apply {
                 data = Uri.parse("tel:${userData.telephone}")
             }
@@ -145,188 +116,214 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
     }
 
-    // --> Traitement des postions ON/OFF du bouton "Mode Privé".
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
-        if (isChecked && !userData.prive) // Si "Mode Privé" demandé.
-        {
-            vibreur.vibration(this, 100)
-
-            // Instanciaition d'une boîte de dialogue.
-            val li = LayoutInflater.from(this)
-            val promptsView = li.inflate(R.layout.popup1, null)
+        if (isChecked && !userData.prive) {
+            val promptsView = LayoutInflater.from(this).inflate(R.layout.popup1, null)
             val alertDialogBuilder = AlertDialog.Builder(this)
-
-            // Appel du layout "popup1" :
             alertDialogBuilder.setView(promptsView)
-
-            // Récupération du contenu de l'input.
             val input = promptsView.findViewById<View>(R.id.input_delai) as EditText
-
-            // Affichage de la boîte de dialogue.
-            alertDialogBuilder
-                .setCancelable(false) // Si "Valider" :
-                .setPositiveButton(
-                    getString(R.string.btn_valider)
-                ) { _, _ -> // Récupération du délai entré + sécurité si vaut null ou 0.
-                    val valinput: Editable
-                    var valeur: Long = 1
-                    if (input.text.toString().trim { it <= ' ' }.isNotEmpty()) {
-                        valinput = input.text
-                        var valnum: String = valinput.toString()
-                        if (java.lang.Long.valueOf(valnum) == 0L) valnum = "1"
-                        valeur = java.lang.Long.valueOf(valnum)
-                    }
-
-                    // Délai max imposé.
-                    if (valeur > 120) valeur = 120
-
-                    // Création du toast de confirmation.
-                    var duree = "$valeur minute"
-                    if (valeur > 1) duree += "s"
-                    val biscotte = getString(R.string.message10).replace(
-                        "§%",
-                        (duree)
-                    )
-                    message(this, biscotte, vibreur)
-
-                    // Détermination du délai.
-                    valeur *= 60000
-                    userData.delai = valeur
-
-                    // Passage en Mode Privé.
-                    userData.prive = true
-                    userData.bit = 1 // Cookie : Mode Privé ON.
-                    refresh()
-                    vibreur.vibration(this, 330)
-                } // Si "Annuler" :
-                .setNegativeButton(
-                    getString(R.string.btn_annuler)
-                ) { dialog, _ ->
-                    vibreur.vibration(this, 100)
-                    changeSwitch() // Changer la position du bouton.
-                    dialog.cancel()
-                }
-            val alertDialog = alertDialogBuilder.create()
-            alertDialog.show()
+            configureAlertDialog(alertDialogBuilder, input)
+            alertDialogBuilder.create().show()
         }
-        if (!isChecked && userData.prive) // Si arrêt du "Mode Privé".
-        {
-            message(this, getString(R.string.message11), vibreur) // Toast de confirmation.
-            userData.prive = false // Arrêt du Mode Privé.
-            userData.bit = 0 // Cookie : Mode Privé OFF.
+        if (!isChecked && userData.prive) {
+            message(this, getString(R.string.message11), vibreur)
             userData.delai = 0
-            refresh()
-            vibreur.vibration(this, 200)
+            updateAideInfo()
         }
+    }
+
+    /**
+     * Configure the Alert Dialog window
+     * @param [alertDialogBuilder] the Builder for the Alert Dialog
+     * @param [input] the input zone for the delay
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun configureAlertDialog(alertDialogBuilder: AlertDialog.Builder, input: EditText) {
+        alertDialogBuilder
+            .setCancelable(false)
+            .setPositiveButton(getString(R.string.btn_valider)) { _, _ ->
+                val valeur = getPrivateModeDuration(input)
+                val txtConfirm = getString(R.string.message10).replace("§%", valeur.toString())
+                message(this, txtConfirm, vibreur)
+                userData.delai = valeur * 60000
+                updateAideInfo()
+            }
+            .setNegativeButton(getString(R.string.btn_annuler)) { dialog, _ ->
+                changeSwitch()
+                dialog.cancel()
+            }
     }
 
     private fun changeSwitch() {
         vibreur.vibration(this, 200)
-        refresh()
+        refreshUI()
     }
 
-    // --> Rafraîchissement de l'affichage en fonction de l'état du Mode Privé.
-    private fun refresh() {
-        if(userData.prive) {
-                btnDeranger.setTextColor(Color.parseColor("#b30000"))
-                ivLogo.setImageResource(R.drawable.logoff)
-                btnDeranger.isChecked = true
-        } else {
-            btnDeranger.setTextColor(Color.parseColor("#597854"))
-            ivLogo.setImageResource(R.drawable.logo2)
-            btnDeranger.isChecked = false
+    /**
+     * Update Aide info when changing the switch
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun updateAideInfo() {
+        userData.prive = !userData.prive
+        userData.bit = if(userData.bit==1) 0 else 1
+        refreshUI()
+        vibreur.vibration(this, 330)
+    }
+    /**
+     * Gets the duration of private mode chosen by the Aide
+     * @param [input] the EditText which contains the value
+     * @return the duration as a Long
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun getPrivateModeDuration(input: EditText): Long {
+        var valeur: Long = 1
+        if (input.text.toString().trim { it <= ' ' }.isNotEmpty()) {
+            var valnum: String = input.text.toString()
+            if (java.lang.Long.valueOf(valnum) == 0L) valnum = "1"
+            valeur = java.lang.Long.valueOf(valnum)
+        }
+        if (valeur > 120) valeur = 120 //Max delay is defined here
+        return valeur
+    }
 
-            // Retrait du décompte.
-            tvDelai.text = " "
-            tvIntituleDelai.text = " "
+    /**
+     * Refresh UI based on Private mode state
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun refreshUI() {
+        if(userData.prive) {
+                btnPrivate.setTextColor(Color.parseColor("#b30000"))
+                ivLogo.setImageResource(R.drawable.logoff)
+                btnPrivate.isChecked = true
+        } else {
+            btnPrivate.setTextColor(Color.parseColor("#597854"))
+            ivLogo.setImageResource(R.drawable.logo2)
+            btnPrivate.isChecked = false
+
+            tvDelay.text = " "
+            tvIntituleDelay.text = " "
         }
     }
 
-    // --> Rafraîchissement automatique du TextView de Log toutes les 250 ms.
+    /**
+     * Send an SMS to the Aidant to inform that Aide is in private mode and the time left
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun warnAidantOfPrivateMode() {
+        var sms = getString(R.string.smsys07)
+        sms = sms.replace("§%", userData.nom)
+        val restencore: Int = ((userData.delai / 60000)+1).toInt()
+        val waitage = restencore.toString()
+        sms = sms.replace("N#", waitage)
+        sendSMS(this@AideActivity, sms, userData.telephone)
+    }
+
+    /**
+     * Update status, TextView, wake the app when the private mode delay is over
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun exitPrivateMode() {
+        wakeup(window, this@AideActivity)
+        userData.prive = false
+        vibreur.vibration(this@AideActivity, 1000)
+        val sound: MediaPlayer = MediaPlayer
+            .create(this@AideActivity, R.raw.notification)
+        sound.start()
+        tvDelay.text = " "
+        tvIntituleDelay.text = " "
+        userData.refreshLog(18)
+        val intent = Intent(this@AideActivity, AideActivity::class.java)
+        startActivity(intent)
+    }
+
+    /**
+     * Updates the private mode timer
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun updatePrivateTimer() {
+        val min = (userData.delai / 60000).toInt()
+        val sec = (userData.delai / 1000).toInt() - min * 60
+        tvIntituleDelay.text = getString(R.string.intitule_delai)
+        var secSTG = sec.toString()
+        if (sec < 10) secSTG = "0$secSTG"
+        val txt = "$min\'$secSTG"
+        tvDelay.text = txt
+    }
+
+    /**
+     * Checks the timer of the private mode and updates accordingly
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun updatePrivateMode() {
+        if (userData.prive)
+        {
+            userData.subDelai(250)
+            if (userData.delai <= 0) {
+                exitPrivateMode()
+            }
+            else {
+                updatePrivateTimer()
+            }
+        }
+    }
+
+    /**
+     * Updates the log text when Private mode is on and an SMS or context capture is received
+     * @param [bit] integer to know if it is an SMS, a context capture or something else
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun updateLogPrivate(bit: Int) {
+        vibreur.vibration(this@AideActivity, 660)
+        when (bit) {
+            2 -> userData.refreshLog(6)
+            3 -> userData.refreshLog(8)
+            4 -> {
+                userData.refreshLog(12)
+                val sound: MediaPlayer = MediaPlayer
+                    .create(this@AideActivity, R.raw.notification)
+                sound.start()
+                warnAidantOfPrivateMode()
+            }
+        }
+        tvLog.text = userData.log
+        userData.bit = 1
+    }
+
+    /**
+     * Set the log appearance
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun setLogAppearance() {
+        val sb = SpannableStringBuilder(userData.log)
+        val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
+        val bss = StyleSpan(Typeface.BOLD)
+        sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        sb.setSpan(bss, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+        tvLog.text = sb
+    }
+
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
-            // -> Vérification des actions parallèles (appels et sms reçus) :
-
             val bit: Int = userData.bit
-            if (bit > 1) {
-                vibreur.vibration(this@AideActivity, 660)
-                when (bit) {
-                    2 -> userData.refreshLog(6)
-                    3 -> userData.refreshLog(8)
-                    4 -> {
-                        userData.refreshLog(12) // message de Log adéquat.
-
-                        // Sonnerie de notification.
-                        val sound: MediaPlayer = MediaPlayer
-                            .create(this@AideActivity, R.raw.notification)
-                        sound.start()
-
-                        // L'Aidant est averti par SMS de l'action du Mode Privé
-                        // (+ reçoit tmp restant).
-                        var sms = getString(R.string.smsys07)
-                        sms = sms.replace("§%", userData.nom)
-                        val restencore: Int = ((userData.delai / 60000)+1).toInt()
-                        val waitage = restencore.toString()
-                        sms = sms.replace("N#", waitage)
-
-                        sendSMS(this@AideActivity, sms, userData.telephone)
-                    }
-                }
-                tvLog.text = userData.log // affichage.
-                userData.bit = 1 // retour à décompte normal.
+            if (bit > 1) { // Means private mode is ON
+                updateLogPrivate(bit)
             }
-
-            // -> Gestion du Log :
-            if (userData.log != null) {
-                // Coloration en vert et mise en gras de la date (19 premiers caras).
-                val sb = SpannableStringBuilder(userData.log)
-                val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
-                val bss = StyleSpan(Typeface.BOLD)
-                sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                sb.setSpan(bss, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                tvLog.text = sb // affichage
-            }
-
-            // -> Gestion du délai du Mode Privé :
-            if (userData.prive) // Si le Mode Privé est actif.
-            {
-                userData.subDelai(250) // délai moins le temps écoulé
-                // Si le délai  est dépassé :
-                if (userData.delai <= 0) {
-                    wakeup(window, this@AideActivity) // sortie de veille.
-                    vibreur.vibration(this@AideActivity, 1000)
-
-                    // Sonnerie de notification.
-                    val sound: MediaPlayer = MediaPlayer
-                        .create(this@AideActivity, R.raw.notification)
-                    sound.start()
-
-                    // Retrait du décompte.
-                    tvDelai.text = " "
-                    tvIntituleDelai.text = " "
-                    userData.refreshLog(18) // rafraîchissement du Log.
-                    userData.prive = false // changement d'état.
-
-                    // Reboot complet de l'activity.
-                    val intent = Intent(this@AideActivity, AideActivity::class.java)
-                    startActivity(intent)
-                }
-                else {
-                    // Mise à jour du décompte.
-                    val min = (userData.delai / 60000).toInt() // calcul des minutes
-                    val sec = (userData.delai / 1000).toInt() - min * 60 // calcul des secondes
-                    tvIntituleDelai.text = getString(R.string.intitule_delai)
-                    var secSTG = sec.toString()
-                    if (sec < 10) secSTG = "0$secSTG"
-                    val txt = "$min\'$secSTG"
-                    tvDelai.text = txt
-                }
-            }
-
-            // Relance du Handler SI vérifications remplies pour éviter qu'il se duplique.
+            if (userData.log != null) setLogAppearance()
+            updatePrivateMode()
+            // Avoid duplication of logHandler
             when (userData.esquive) {
                 true -> userData.esquive = false
-                false -> logHandler.postDelayed(this, 250) //rafraîchissement
+                false -> logHandler.postDelayed(this, 250)
             }
         }
     }
