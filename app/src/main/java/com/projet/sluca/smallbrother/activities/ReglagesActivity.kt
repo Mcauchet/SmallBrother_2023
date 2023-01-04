@@ -13,7 +13,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * ReglagesActivity manages the resets of aide's and aidant's information and aide's picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 02-01-2023)
+ * @version 1.2 (Updated on 04-01-2023)
  */
 class ReglagesActivity : AppCompatActivity() {
 
@@ -30,51 +30,17 @@ class ReglagesActivity : AppCompatActivity() {
         val btnHelp: Button = findViewById(R.id.btn_aide)
 
         userData = application as UserData
+        userData.loadData()
 
         btnResetAidant.setOnClickListener {
             vibreur.vibration(this, 330)
-
-            // Ask for confirmation
             val builder = AlertDialog.Builder(this)
-            builder.setCancelable(true)
-            builder.setTitle(getString(R.string.message02_titre))
-            builder.setMessage(getString(R.string.message02_settings))
-            builder.setPositiveButton(getString(R.string.oui))
-            { _, _ ->
-                // Si choix = "OUI" :
-                vibreur.vibration(this, 100)
-
-                userData.loadData() // Load userData information
-
-                // Send reset SMS to Aide
-                var sms = getString(R.string.smsys01)
-                sms = sms.replace("§%", userData.nom)
-                sendSMS(this, sms, userData.telephone, vibreur)
-
-                //Delete Aidant's picture
-                userData.deletePicture()
-
-                // Delete Aidant's data
-                userData.byeData()
-                message(this, getString(R.string.message03A), vibreur)
-
-                // Redémarrage de l'appli.
-                val mIntent = Intent(this, Launch1Activity::class.java)
-                startActivity(mIntent)
-            }
-            builder.setNegativeButton(android.R.string.cancel)
-            { _, _ ->
-                // Si choix = "ANNULER" :
-                /* rien */
-            }
-            val dialog = builder.create()
-            dialog.show()
+            configureAlertDialog(builder)
+            builder.create().show()
         }
 
         btnResetPicture.setOnClickListener {
             vibreur.vibration(this, 100)
-
-            // Changement d'activité.
             val intent = Intent(this, PicActivity::class.java)
             startActivity(intent)
         }
@@ -86,13 +52,46 @@ class ReglagesActivity : AppCompatActivity() {
 
         btnHelp.setOnClickListener {
             vibreur.vibration(this, 100)
-
-            // Ouverture de l'aide.
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
                 Uri.parse(userData.url + userData.help)
             )
             startActivity(browserIntent)
+        }
+    }
+
+    /**
+     * Configure the Alert Dialog
+     * @param [builder] the AlertDialog Builder
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun configureAlertDialog(builder: AlertDialog.Builder) {
+        builder.setCancelable(true)
+        builder.setTitle(getString(R.string.message02_titre))
+        builder.setMessage(getString(R.string.message02_settings))
+        configureAlertDialogButtons(builder)
+    }
+
+    /**
+     * Configure the Alert Dialog buttons
+     * @param [builder] the AlertDialog Builder
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun configureAlertDialogButtons(builder: AlertDialog.Builder) {
+        builder.setPositiveButton(getString(R.string.oui)) { _, _ ->
+            vibreur.vibration(this, 100)
+            val sms = getString(R.string.smsys01).replace("§%", userData.nom)
+            sendSMS(this, sms, userData.telephone, vibreur)
+            userData.deletePicture()
+            userData.byeData()
+            message(this, getString(R.string.message03A), vibreur)
+            val mIntent = Intent(this, Launch1Activity::class.java)
+            startActivity(mIntent)
+        }
+        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+            /* window closes */
         }
     }
 }
