@@ -54,7 +54,7 @@ class AidantActivity : AppCompatActivity() {
 
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
         val btnFiles: Button = findViewById(R.id.btn_files)
-        val btnTiers: Button = findViewById(R.id.btn_tiers)
+        //val btnTiers: Button = findViewById(R.id.btn_tiers)
 
 
         userData = application as UserData
@@ -99,8 +99,7 @@ class AidantActivity : AppCompatActivity() {
 
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 200)
-            var sms = getString(R.string.smsys02)
-            sms = sms.replace("§%", userData.nom)
+            val sms = getString(R.string.smsys02).replace("§%", userData.nom)
             sendSMS(this, sms, userData.telephone, vibreur)
             message(this, getString(R.string.message04), vibreur)
             userData.refreshLog(4)
@@ -138,9 +137,9 @@ class AidantActivity : AppCompatActivity() {
             }
         }
 
-        btnTiers.setOnClickListener {
+        /*btnTiers.setOnClickListener {
             //tiers()
-        }
+        }*/
     }
 
     /*fun tiers() {
@@ -267,9 +266,8 @@ class AidantActivity : AppCompatActivity() {
                 8 ->  userData.refreshLog(11)
                 10 -> userData.refreshLog(13)
             }
-            if (userData.log != null) {
-                setLogAppearance(userData, tvLog)
-            }
+            if (userData.log != null) setLogAppearance(userData, tvLog)
+
             // Bouton Tiers :
             /* TODO afficher le bouton Tiers si le document zip est présent dans les downloads */
             logHandler.postDelayed(this, 250)
