@@ -3,7 +3,6 @@ package com.projet.sluca.smallbrother.activities
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
-import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -14,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
-import java.io.File
+import com.projet.sluca.smallbrother.showPicture
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.util.*
@@ -41,7 +40,8 @@ class InstallDantPicActivity : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btn_previous)
         val btnEnd: Button = findViewById(R.id.btn_terminer)
 
-        showPicture()
+        apercu = findViewById(R.id.apercu)
+        showPicture(apercu, userData)
 
         btnCapture.setOnClickListener {
             vibreur.vibration(this, 100)
@@ -62,18 +62,6 @@ class InstallDantPicActivity : AppCompatActivity() {
             startActivity(intent)
         }
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-    }
-
-    /**
-     * Shows the Aide's picture if it exists
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    private fun showPicture() {
-        apercu = findViewById(R.id.apercu)
-        val path = userData.path + "/SmallBrother/photo_aide.jpg"
-        val file = File(path)
-        if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
     }
 
     @Deprecated("Deprecated in Java")

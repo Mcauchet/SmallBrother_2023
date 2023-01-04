@@ -9,6 +9,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.Uri
 import android.os.Build
 import android.os.CountDownTimer
 import android.provider.Settings
@@ -17,10 +18,10 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,7 @@ import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.activities.InstallDantPicActivity
 import com.projet.sluca.smallbrother.activities.QRCodeScannerInstallActivity
 import com.projet.sluca.smallbrother.models.UserData
+import java.io.File
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
@@ -315,4 +317,15 @@ fun setLogAppearance(userData: UserData, tvLog: TextView) {
     sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
     sb.setSpan(bss, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
     tvLog.text = sb
+}
+
+/**
+ * Shows the Aide's picture if it exists
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-01-2023)
+ */
+fun showPicture(apercu: ImageView, userData: UserData) {
+    val path = userData.path + "/SmallBrother/photo_aide.jpg"
+    val file = File(path)
+    if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 }
