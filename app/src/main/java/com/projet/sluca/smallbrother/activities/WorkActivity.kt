@@ -10,9 +10,9 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +29,7 @@ import java.io.IOException
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 03-01-2023)
+ * @version 1.2 (Updated on 04-01-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -43,7 +43,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     private var appelant: String? = null // variable for caller's phone number
 
-    private var magneto: MediaRecorder? = null // Declare MediaRecorder
+    private var magneto: MediaRecorder? = null
 
     var ambientLightLux: Float = 0.0f
 
@@ -109,8 +109,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     startActivity(intent)
                 }
                 "[#SB04]" -> {
-                    Log.d("SB04", "EXEC emergency")
-
                     // Put the app on foreground
                     wakeup(window, this@WorkActivity)
                     loading(tvLoading)
@@ -119,7 +117,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     // context capture
                     CoroutineScope(Dispatchers.IO).launch {
                         if (isOnline(this@WorkActivity)) {
-                            Log.d("isOnline", "true")
                             // De-activate SMSReceiver to avoid conflict
                             val pm = this@WorkActivity.packageManager
                             val componentName = ComponentName(
@@ -138,7 +135,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                             tvAction.text = getString(R.string.message12A)
 
-                            audioCapture()
+                            initMagneto()
+                            magneto?.start()
 
                             // =======================================================================
                         } else  // Device not connected to internet
@@ -173,18 +171,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                         override fun onFinish()
                         {
-                            // Release MediaRecorder
-                            magneto?.stop()
-                            Log.d("MAGNETO", "MAGNETO STOPS")
-                            magneto?.release()
-                            magneto = null
+                            resetMagneto()
 
                             // Determine if Aide's phone is moving or not
-                            val suspens = checkMove1.contentEquals(checkMove2)
-                            userData.motion = !suspens
-                            Log.d("MOTION", userData.motion.toString())
+                            userData.motion = !(checkMove1.contentEquals(checkMove2))
 
-                            // Capture light level
                             registerLightSensor()
 
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
@@ -199,29 +190,51 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     }
 
     /**
-     * Manages the capture of an audio
+     * Init the MediaRecorder responsible for the audio capture
      *
-     * @author Maxime Caucheteur (with contribution of Sébastien Luca (java version))
-     * @version 1.2 (Updated on 29-12-2022)
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
-    private fun audioCapture() {
-        // File path
-        val path = userData.path + "/SmallBrother/audio.ogg"
-
-        // Init and configure MediaRecorder
-        Log.d("MAGNETO", "INIT")
-        magneto = MediaRecorder()
-        magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        magneto?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        magneto?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-        magneto?.setOutputFile(path)
-        try {
+    private fun initMagneto() {
+        magneto = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            MediaRecorder(this)
+        } else {
+            @Suppress("DEPRECATION")
+            MediaRecorder()
+        }
+        configureMagneto()
+        try{
             magneto?.prepare()
         } catch (e: IOException) {
             e.printStackTrace()
         }
-        Log.d("MAGNETO", "MAGNETO STARTS")
-        magneto?.start()
+    }
+
+    /**
+     * configure the magneto's audio source, output format, audio encoder and output file
+     *
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun configureMagneto() {
+        val path = userData.path + "/SmallBrother/audio.ogg"
+
+        magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
+        magneto?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        magneto?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+        magneto?.setOutputFile(path)
+    }
+
+    /**
+     * Stop, release and reset the MediaRecorder
+     *
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun resetMagneto() {
+        magneto?.stop()
+        magneto?.release()
+        magneto = null
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

@@ -3,23 +3,25 @@ package com.projet.sluca.smallbrother.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import com.budiyev.android.codescanner.*
 import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.message
 import com.projet.sluca.smallbrother.models.UserData
 
 /***
  * Opens a qr code scanner to get the public key of the partner
  *
  * @author Maxime Caucheteur (with help of https://github.com/yuriy-budiyev/code-scanner)
- * @version 1.2 (Updated on 28-12-2022)
+ * @version 1.2 (Updated on 04-01-2023)
  */
 class QRCodeScannerInstallActivity : AppCompatActivity() {
 
     private lateinit var codeScanner: CodeScanner
 
     lateinit var userData: UserData
+
+    var vibreur = Vibration()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,10 +31,7 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
         userData = application as UserData
 
         if (userData.role == "Aidé") {
-            userData.nom = intent.getStringExtra("nom").toString()
-            userData.nomPartner = intent.getStringExtra("nomPartner").toString()
-            userData.telephone = intent.getStringExtra("telephone").toString()
-            userData.version = intent.getStringExtra("version").toString()
+            fetchAideData()
         }
 
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
@@ -50,11 +49,9 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
         // Callbacks
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                Toast.makeText(this, "Scan result: ${it.text}", Toast.LENGTH_LONG).show()
+                message(this, "Scan result: ${it.text}", vibreur)
                 userData.pubKey = it.text
-                userData.saveData(this) // save pertinent aide data in a file
-                Log.d("userdata infos", userData.nom)
-                Log.d("userdata infos", userData.role.toString())
+                userData.saveData(this)
                 userData.canGoBack = true
                 lateinit var intent: Intent
                 if (userData.role == "Aidé") {
@@ -67,8 +64,7 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
         }
         codeScanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
             runOnUiThread {
-                Toast.makeText(this, "Camera initialization error: ${it.message}",
-                    Toast.LENGTH_LONG).show()
+                message(this, "Camera initialization error: ${it.message}", vibreur)
             }
         }
 
@@ -85,5 +81,18 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
     override fun onPause() {
         codeScanner.releaseResources()
         super.onPause()
+    }
+
+    /**
+     * Gets the aide's data present in the intent extras.
+     *
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun fetchAideData() {
+        userData.nom = intent.getStringExtra("nom").toString()
+        userData.nomPartner = intent.getStringExtra("nomPartner").toString()
+        userData.telephone = intent.getStringExtra("telephone").toString()
+        userData.version = intent.getStringExtra("version").toString()
     }
 }
