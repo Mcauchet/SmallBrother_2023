@@ -129,8 +129,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                                 PackageManager.DONT_KILL_APP
                             )
 
-                            // ================== [ Constitution du dossier joint ] ==================
-
                             // --> [1] Records a 10 seconds audio of the aide's environment
 
                             tvAction.text = getString(R.string.message12A)
@@ -143,11 +141,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         {
                             userData.refreshLog(12)
 
-                            // Vibrate (and emit a sound if phone not in silent mode)
                             MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
                             vibreur.vibration(this@WorkActivity, 5000)
 
-                            // Aidant is notified that Aide is not connected.
                             var sms = getString(R.string.smsys05)
                             sms = sms.replace("§%", userData.nom)
                             sendSMS(this@WorkActivity, sms, userData.telephone)
