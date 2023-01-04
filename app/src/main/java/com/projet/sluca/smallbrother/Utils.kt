@@ -5,12 +5,18 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.CountDownTimer
 import android.provider.Settings
 import android.telephony.SmsManager
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.Window
 import android.view.WindowInsets
@@ -271,4 +277,18 @@ fun getAppVersion(context: Context): String {
         e.printStackTrace()
     }
     return version
+}
+
+/**
+ * Set the log appearance
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-01-2023)
+ */
+fun setLogAppearance(userData: UserData, tvLog: TextView) {
+    val sb = SpannableStringBuilder(userData.log)
+    val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
+    val bss = StyleSpan(Typeface.BOLD)
+    sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+    sb.setSpan(bss, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+    tvLog.text = sb
 }

@@ -1,14 +1,8 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Typeface
 import android.net.Uri
 import android.os.*
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.util.Base64
 import android.widget.Button
 import android.widget.FrameLayout
@@ -105,7 +99,6 @@ class AidantActivity : AppCompatActivity() {
 
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 200)
-            //userData.loadData()
             var sms = getString(R.string.smsys02)
             sms = sms.replace("§%", userData.nom)
             sendSMS(this, sms, userData.telephone, vibreur)
@@ -115,8 +108,6 @@ class AidantActivity : AppCompatActivity() {
 
         btnCall.setOnClickListener {
             vibreur.vibration(this, 200)
-            //userData.loadData()
-
             val callIntent = Intent(Intent.ACTION_CALL)
             callIntent.data = Uri.parse("tel:" + userData.telephone)
             startActivity(callIntent)
@@ -178,6 +169,13 @@ class AidantActivity : AppCompatActivity() {
         file.writeBytes(decryptedData)
     }
 
+    /**
+     * Sends a request to the server to download the zip file
+     * @param [client] the HttpClient to communicate with the Ktor server
+     * @return the HttpResponse from the server
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
     private suspend fun downloadFileRequest(client: HttpClient): HttpResponse {
         return client.get(
             "$URLServer/download/${userData.urlToFile}"
@@ -263,27 +261,17 @@ class AidantActivity : AppCompatActivity() {
         }
     }
 
-    // Auto refresh the log every 250 ms
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
             when (userData.bit) {
                 8 ->  userData.refreshLog(11)
                 10 -> userData.refreshLog(13)
             }
-            // Log :
             if (userData.log != null) {
-                // Color the date and bolds it (take off if date leaves)
-                val sb = SpannableStringBuilder(userData.log)
-                val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
-                val bss = StyleSpan(Typeface.BOLD)
-                sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                sb.setSpan(bss, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-                tvLog.text = sb // affichage
+                setLogAppearance(userData, tvLog)
             }
-
             // Bouton Tiers :
             /* TODO afficher le bouton Tiers si le document zip est présent dans les downloads */
-
             logHandler.postDelayed(this, 250)
         }
     }

@@ -288,8 +288,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             3 -> userData.refreshLog(8)
             4 -> {
                 userData.refreshLog(12)
-                val sound: MediaPlayer = MediaPlayer
-                    .create(this@AideActivity, R.raw.notification)
+                val sound: MediaPlayer = MediaPlayer.create(this@AideActivity, R.raw.notification)
                 sound.start()
                 warnAidantOfPrivateMode()
             }
@@ -298,27 +297,12 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         userData.bit = 1
     }
 
-    /**
-     * Set the log appearance
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    private fun setLogAppearance() {
-        val sb = SpannableStringBuilder(userData.log)
-        val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
-        val bss = StyleSpan(Typeface.BOLD)
-        sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        sb.setSpan(bss, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        tvLog.text = sb
-    }
-
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
-            val bit: Int = userData.bit
-            if (bit > 1) { // Means private mode is ON
-                updateLogPrivate(bit)
+            if (userData.bit > 1) { // Means private mode is ON
+                updateLogPrivate(userData.bit)
             }
-            if (userData.log != null) setLogAppearance()
+            if (userData.log != null) setLogAppearance(userData, tvLog)
             updatePrivateMode()
             // Avoid duplication of logHandler
             when (userData.esquive) {
