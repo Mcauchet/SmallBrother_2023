@@ -29,19 +29,24 @@ class Launch2Activity : AppCompatActivity() {
         userData = application as UserData
 
         btnRoleAidant.setOnClickListener {
-            vibreur.vibration(this, 100)
             userData.role = "Aidant"
-
-            val intent = Intent(this, InstallDantActivity::class.java)
-            startActivity(intent)
+            nextActivity()
         }
 
         btnRoleAide.setOnClickListener {
-            vibreur.vibration(this, 100)
             userData.role = "Aidé"
-
-            val intent = Intent(this, InstallDeActivity::class.java)
-            startActivity(intent)
+            nextActivity()
         }
+    }
+
+    /**
+     * Goes to next activity for the install
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun nextActivity() {
+        vibreur.vibration(this, 100)
+        val intent = Intent(this, InstallActivity::class.java)
+        startActivity(intent)
     }
 }

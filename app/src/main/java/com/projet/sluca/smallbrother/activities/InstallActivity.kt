@@ -16,28 +16,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /***
- * class InstallDantActivity manages the installation for the aidant
+ * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 04-01-2023)
+ * @version 1.2 (Updated on 04-01-2023)
  */
-class InstallDantActivity : AppCompatActivity() {
+class InstallActivity : AppCompatActivity() {
 
     var vibreur = Vibration()
     lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_installdant)
+        userData = application as UserData
+
+        if(userData.role == "Aidé") setContentView(R.layout.activity_installde)
+        else setContentView(R.layout.activity_installdant)
 
         val btnBack: Button = findViewById(R.id.btn_previous)
         val btnContinue: Button = findViewById(R.id.btn_continue)
 
-        userData = application as UserData
-
-        if (!userData.canGoBack) {
-            btnBack.visibility = View.INVISIBLE
-        }
+        if (!userData.canGoBack) btnBack.visibility = View.INVISIBLE
 
         btnBack.setOnClickListener {
             vibreur.vibration(this, 100)
@@ -67,36 +66,13 @@ class InstallDantActivity : AppCompatActivity() {
         val etName = findViewById<EditText>(R.id.input_nom)
         val name = etName.text.toString()
 
-        val etNamePartner = findViewById<EditText>(R.id.input_nom_Aide)
+        val etNamePartner = findViewById<EditText>(R.id.input_partner)
         val namePartner = etNamePartner.text.toString()
 
         val etTelephone = findViewById<EditText>(R.id.input_telephone)
         val telephone = etTelephone.text.toString()
 
-        checkInputs(name, namePartner, telephone)
-    }
-
-    /**
-     * Checks if inputs are valid
-     * @param [name] the name of the aidant
-     * @param [namePartner] the name of the aidé
-     * @param [telephone] the phone number of the aidé
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    private fun checkInputs(name: String, namePartner: String, telephone: String) {
-        when {
-            telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")
-            -> message(this, getString(R.string.error01), vibreur)
-
-            name.matches("".toRegex()) || telephone.matches("".toRegex())
-            -> message(this, getString(R.string.error03), vibreur)
-
-            namePartner.matches("".toRegex()) || telephone.matches("".toRegex())
-            -> message(this, getString(R.string.error03), vibreur)
-
-            else -> registerData(name, namePartner, telephone, userData, this)
-        }
+        checkInputs(name, namePartner, telephone, this, userData, vibreur)
     }
 
     /**
@@ -107,8 +83,34 @@ class InstallDantActivity : AppCompatActivity() {
     private fun requestPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
-            getArrayOfPermissions()
+            if(userData.role == "Aidé") getArrayOfPermissionsAide()
+            else getArrayOfPermissionsAidant()
         }
+    }
+
+    /**
+     * Request the array of permissions needed for the aidé
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun getArrayOfPermissionsAide() {
+        ActivityCompat.requestPermissions(this, arrayOf(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.BROADCAST_SMS,
+            Manifest.permission.RECEIVE_BOOT_COMPLETED,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.PROCESS_OUTGOING_CALLS,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION), 1)
     }
 
     /**
@@ -116,20 +118,19 @@ class InstallDantActivity : AppCompatActivity() {
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 04-01-2023)
      */
-    private fun getArrayOfPermissions() {
+    private fun getArrayOfPermissionsAidant() {
         ActivityCompat.requestPermissions(this, arrayOf(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.CAMERA,
-                Manifest.permission.SEND_SMS,
-                Manifest.permission.CALL_PHONE,
-                Manifest.permission.READ_SMS,
-                Manifest.permission.RECEIVE_SMS,
-                Manifest.permission.RECEIVE_BOOT_COMPLETED,
-                Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.PROCESS_OUTGOING_CALLS
-            ), 1
-        )
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.CALL_PHONE,
+            Manifest.permission.READ_SMS,
+            Manifest.permission.RECEIVE_SMS,
+            Manifest.permission.RECEIVE_BOOT_COMPLETED,
+            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.PROCESS_OUTGOING_CALLS
+        ), 1)
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

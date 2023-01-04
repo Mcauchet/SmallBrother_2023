@@ -77,13 +77,10 @@
             android:name=".activities.AideActivity"
             android:screenOrientation="locked" />
         <activity
-            android:name=".activities.InstallDantActivity"
-            android:screenOrientation="locked" />
-        <activity
             android:name=".activities.InstallDantPicActivity"
             android:screenOrientation="locked" />
         <activity
-            android:name=".activities.InstallDeActivity"
+            android:name=".activities.InstallActivity"
             android:screenOrientation="locked" />
         <activity
             android:name=".activities.PicActivity"

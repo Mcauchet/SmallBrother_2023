@@ -234,6 +234,30 @@ fun redirectRole(context: Context, userData: UserData) {
 }
 
 /**
+ * Checks if inputs are valid
+ * @param [name] the name of the aidant
+ * @param [namePartner] the name of the aidé
+ * @param [telephone] the phone number of the aidé
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-01-2023)
+ */
+fun checkInputs(name: String, namePartner: String, telephone: String, context: Context,
+                        userData: UserData, vibreur: Vibration) {
+    when {
+        telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")
+        -> message(context, context.getString(R.string.error01), vibreur)
+
+        name.matches("".toRegex()) || telephone.matches("".toRegex())
+        -> message(context, context.getString(R.string.error03), vibreur)
+
+        namePartner.matches("".toRegex()) || telephone.matches("".toRegex())
+        -> message(context, context.getString(R.string.error03), vibreur)
+
+        else -> registerData(name, namePartner, telephone, userData, context)
+    }
+}
+
+/**
  * Save the user's data in a file
  * @param [name] the name of the user
  * @param [namePartner] the name of the partner
