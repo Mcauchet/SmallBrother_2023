@@ -10,13 +10,11 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Base64
-import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
@@ -37,7 +35,7 @@ import java.io.File
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 03-01-2023)
+ * @version 1.2 (updated on 04-01-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -88,14 +86,12 @@ class AidantActivity : AppCompatActivity() {
 
         btnSettings.setOnClickListener {
             vibreur.vibration(this, 100)
-
             val intent = Intent(this, ReglagesActivity::class.java)
             startActivity(intent)
         }
 
         btnPicture.setOnClickListener {
             vibreur.vibration(this, 100)
-
             val intent = Intent(this, PhotoAide::class.java)
             startActivity(intent)
         }
@@ -110,13 +106,9 @@ class AidantActivity : AppCompatActivity() {
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 200)
             //userData.loadData()
-
-            // Prepare and send SMS
             var sms = getString(R.string.smsys02)
             sms = sms.replace("§%", userData.nom)
-
             sendSMS(this, sms, userData.telephone)
-
             message(this, getString(R.string.message04), vibreur)
             userData.refreshLog(4)
         }
@@ -125,7 +117,6 @@ class AidantActivity : AppCompatActivity() {
             vibreur.vibration(this, 200)
             //userData.loadData()
 
-            // Calls the Aidant
             val callIntent = Intent(Intent.ACTION_CALL)
             callIntent.data = Uri.parse("tel:" + userData.telephone)
             startActivity(callIntent)
@@ -135,85 +126,18 @@ class AidantActivity : AppCompatActivity() {
 
         btnEmergency.setOnClickListener {
             vibreur.vibration(this, 330)
-
-            // Ask for confirmation
-            val builder = AlertDialog.Builder(this)
-            builder.setCancelable(true)
-            builder.setTitle(getString(R.string.btn_urgence)
-                .replace("§%", particule(userData.nomPartner)+userData.nomPartner))
-            builder.setMessage(getString(R.string.message02_texte))
-            builder.setPositiveButton(
-                getString(R.string.oui)
-            ) { _, _ ->
-                // If choice == "OUI"
-                vibreur.vibration(this, 200)
-                userData.loadData() // Raptatriement des données de l'utilisateur.
-
-                // Concoction et envoi du SMS.
-                var sms = getString(R.string.smsys04)
-                sms = sms.replace("§%", userData.nom)
-
-                sendSMS(this, sms, userData.telephone)
-
-                message(this, getString(R.string.message07), vibreur)
-                userData.refreshLog(10)
-            }
-            builder.setNegativeButton(
-                android.R.string.cancel
-            ) { _, _ ->
-                // If choice == "ANNULER" :
-                /* dialog window closes */
-            }
-            val dialog = builder.create()
-            dialog.show()
+            createAndShowConfirmationAlertDialog()
         }
 
         btnFiles.setOnClickListener {
             if (userData.urlToFile != ""){
-                Toast.makeText(this, "Téléchargement du fichier en cours...", Toast.LENGTH_SHORT).show()
-                val client = HttpClient(Android) {
-                    install(ContentNegotiation) {
-                        json()
-                    }
-                    install(HttpRequestRetry) {
-                        retryOnServerErrors(maxRetries = 3)
-                        exponentialDelay()
-                    }
-                }
-
-                val dir =
-                    Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                        .absolutePath
-                val file = File(dir, "SmallBrother_Aide_${userData.urlToFile}.zip")
-                file.createNewFile()
-                if(intent.hasExtra("url")) {
-                    userData.urlToFile = intent.getStringExtra("url").toString()
-                }
+                message(this, "Téléchargement du fichier en cours...", vibreur)
+                val client = initClient()
+                val file = createDestinationFile()
+                userData.urlToFile = if (intent.hasExtra("url"))
+                    intent.getStringExtra("url").toString() else ""
                 CoroutineScope(Dispatchers.IO).launch {
-                    val httpResponse: HttpResponse = client.get(
-                        "$URLServer/download/${userData.urlToFile}"
-                    ) {
-                        onDownload { bytesSentTotal, contentLength ->
-                            println("Receives $bytesSentTotal bytes from $contentLength")
-                        }
-                    }
-                    Log.d("urlToFile", userData.urlToFile)
-                    val aesHttp: HttpResponse = client.get(
-                        "$URLServer/aes/${userData.urlToFile}"
-                    )
-
-                    // retrieve AES encrypted KEY
-                    val aesBody: String = aesHttp.body()
-
-                    val aesDecKey = Base64.decode(aesBody, Base64.NO_WRAP)
-
-                    // retrieve zip data ByteArray
-                    val responseBody: ByteArray = httpResponse.body()
-
-                    // decrypt AES key then decrypt data with the decrypted AES key
-                    val decryptedData = SecurityUtils.decryptDataAes(responseBody, aesDecKey)
-                    file.writeBytes(decryptedData)
+                    getDataOnServer(client, file)
                 }
                 message(this, "Téléchargement du fichier terminé, il se trouve dans votre dossier" +
                         " de téléchargement.", vibreur)
@@ -232,6 +156,112 @@ class AidantActivity : AppCompatActivity() {
         vibreur.vibration(this, 200)
         userData.loadData()
     }*/
+
+    /**
+     * Sends two get request to the server and retrieve the encrypted data and aesKey.
+     * It then decrypts the data and stores it in the file created in the Downloads directory
+     * @param [client] the HttpClient to access the server
+     * @param [file] the file to store the data in
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private suspend fun getDataOnServer(client: HttpClient, file: File) {
+        val fileHttpResponse: HttpResponse = downloadFileRequest(client)
+        val aesHttpResponse: HttpResponse = client.get("$URLServer/aes/${userData.urlToFile}")
+
+        val aesBody: String = aesHttpResponse.body()
+        val aesEncKey = Base64.decode(aesBody, Base64.NO_WRAP)
+
+        val zipDataByteArray: ByteArray = fileHttpResponse.body()
+
+        val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey)
+        file.writeBytes(decryptedData)
+    }
+
+    private suspend fun downloadFileRequest(client: HttpClient): HttpResponse {
+        return client.get(
+            "$URLServer/download/${userData.urlToFile}"
+        ) {
+            onDownload { bytesSentTotal, contentLength ->
+                println("Receives $bytesSentTotal bytes from $contentLength")
+            }
+        }
+    }
+
+    /**
+     * Get the Download directory and create a file in it which stores the zip data from the server
+     * @return the created file
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun createDestinationFile(): File {
+        val dir = Environment
+            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            .absolutePath
+        val file = File(dir, "SmallBrother_Aide_${userData.urlToFile}.zip")
+        file.createNewFile()
+        return file
+    }
+
+    /**
+     * Create and initialize the HttpClient
+     * @return the HttpClient
+     */
+    private fun initClient() : HttpClient {
+        return HttpClient(Android) {
+            install(ContentNegotiation) {
+                json()
+            }
+            install(HttpRequestRetry) {
+                retryOnServerErrors(maxRetries = 5)
+                exponentialDelay()
+            }
+        }
+    }
+
+    /**
+     * Instantiate the builder, configure it and show it
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun createAndShowConfirmationAlertDialog() {
+        val builder = Builder(this)
+        configureAlertDialog(builder)
+        setAlertDialogButtons(builder)
+        builder.create().show()
+    }
+
+    /**
+     * Configure the Alert Dialog
+     * @param [builder] the AlertDialog builder
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun configureAlertDialog(builder: Builder) {
+        builder.setCancelable(true)
+        builder.setTitle(getString(R.string.btn_urgence)
+            .replace("§%", particule(userData.nomPartner)+userData.nomPartner))
+        builder.setMessage(getString(R.string.message02_texte))
+    }
+
+    /**
+     * Configure positive and negative buttons of the AlertDialog
+     * @param [builder] the AlertDialog builder
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun setAlertDialogButtons(builder: Builder) {
+        builder.setPositiveButton(getString(R.string.oui)) { _, _ ->
+            vibreur.vibration(this, 200)
+            val sms = getString(R.string.smsys04).replace("§%", userData.nom)
+            sendSMS(this, sms, userData.telephone)
+            message(this, getString(R.string.message07), vibreur)
+            userData.refreshLog(10)
+        }
+        builder.setNegativeButton(android.R.string.cancel) { _, _ ->
+            /* dialog window closes */
+        }
+    }
 
     // Auto refresh the log every 250 ms
     private val reloadLog: Runnable = object : Runnable {
