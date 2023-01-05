@@ -53,7 +53,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 05-01-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -166,7 +166,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                     Log.d("infos", information)
 
-                    // add informations in a txt that is added to the zip archive
                     val file4 = File(userData.path + "/SmallBrother/informations.txt")
                     file4.createNewFile()
 
@@ -181,7 +180,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             if (File(ziPath).exists()) {
-                                Log.d("zip file", "exists")
                                 zipName = uploadZip(client, File(ziPath))
                             }
                             client.close()
@@ -191,16 +189,14 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                             sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
 
-                            // Delete audio, pictures and information.txt
                             file1.delete()
                             file2.delete()
                             file3.delete()
                             file4.delete()
-                            // Delete zip file
                             val fileZ = File(ziPath)
                             fileZ.delete()
 
-                            Log.d("EOU", "upload ended")
+                            Log.i("EOU", "upload ended")
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -208,9 +204,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 } catch (_: Exception) {
                 }
 
-                vibreur.vibration(this@Work2Activity, 330) // vibration.
+                vibreur.vibration(this@Work2Activity, 330)
 
-                // Réactivation du SmsReceiver.
                 val pm = this@Work2Activity.packageManager
                 val componentName = ComponentName(this@Work2Activity, SmsReceiver::class.java)
                 pm.setComponentEnabledSetting(
@@ -228,11 +223,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     finish()
                 }
 
-                // Retour à l'écran de rôle de l'Aidé.
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)
                 startActivity(intent)
             }
-        }.start() // Envoi !
+        }.start()
     }
 
     /**
@@ -345,20 +339,20 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param [file] the zip file to upload
      * @return the final name of the file to put in the download URL
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 05-01-2023)
      */
     suspend fun uploadZip(client: HttpClient, file: File): String {
         val newName = UUID.randomUUID().toString().substring(0..24)
         val finalName = "$newName.zip"
-
         val aesKey = SecurityUtils.getAESKey()
         val encryptedData = SecurityUtils.encryptDataAes(file.readBytes(), aesKey)
+        val signature = SecurityUtils.signFile(encryptedData)
+        val signString = android.util.Base64.encodeToString(signature, android.util.Base64.NO_WRAP)
         val aesEncKey = encryptAESKeyWithRSA(aesKey)
         uploadFileRequest(client, encryptedData, finalName)
-
         client.post("$URLServer/upload/aes") {
             contentType(ContentType.Application.Json)
-            setBody(AideData(finalName, aesEncKey))
+            setBody(AideData(finalName, aesEncKey, signString))
         }
         return finalName
     }

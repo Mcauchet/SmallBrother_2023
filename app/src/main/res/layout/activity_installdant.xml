@@ -64,7 +64,7 @@ android:background="@drawable/ombreshape">
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/input_nom_Aide"
+        android:id="@+id/input_partner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="@string/nomAide"

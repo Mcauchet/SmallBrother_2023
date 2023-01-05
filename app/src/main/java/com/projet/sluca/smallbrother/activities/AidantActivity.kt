@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.*
 import android.util.Base64
+import android.util.Log
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -24,12 +25,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
+import java.security.PublicKey
 
 /***
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 04-01-2023)
+ * @version 1.2 (updated on 05-01-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -153,17 +155,20 @@ class AidantActivity : AppCompatActivity() {
      * @param [client] the HttpClient to access the server
      * @param [file] the file to store the data in
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 05-01-2023)
      */
     private suspend fun getDataOnServer(client: HttpClient, file: File) {
-        val fileHttpResponse: HttpResponse = downloadFileRequest(client)
-        val aesHttpResponse: HttpResponse = client.get("$URLServer/aes/${userData.urlToFile}")
-
-        val aesBody: String = aesHttpResponse.body()
-        val aesEncKey = Base64.decode(aesBody, Base64.NO_WRAP)
-
-        val zipDataByteArray: ByteArray = fileHttpResponse.body()
-
+        val zipDataByteArray: ByteArray = downloadFileRequest(client).body()
+        val aesBody: String = client.get("$URLServer/aes/${userData.urlToFile}").body()
+        val signature: String = client.get("$URLServer/sign/${userData.urlToFile}").body()
+        val aesEncKey: ByteArray = Base64.decode(aesBody, Base64.NO_WRAP)
+        if(SecurityUtils.verifyFile(zipDataByteArray,
+                SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
+                Base64.decode(signature, Base64.NO_WRAP))) Log.d("file verified", "ok")
+        else {
+            Log.d("file not verified", "ko")
+            return
+        }
         val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey)
         file.writeBytes(decryptedData)
     }

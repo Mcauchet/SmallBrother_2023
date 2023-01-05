@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 05-01-2023)
  */
 class InstallActivity : AppCompatActivity() {
 
@@ -51,7 +51,8 @@ class InstallActivity : AppCompatActivity() {
         requestPermissions()
 
         CoroutineScope(Dispatchers.IO).launch {
-            SecurityUtils.getKeyPair()
+            if(userData.role == "Aidant") SecurityUtils.getEncryptionKeyPair()
+            else SecurityUtils.getSignKeyPair()
         }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)

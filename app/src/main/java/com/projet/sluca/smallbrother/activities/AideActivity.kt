@@ -2,16 +2,11 @@ package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.Typeface
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Spannable
-import android.text.SpannableStringBuilder
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
@@ -27,7 +22,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 04-01-2023)
+ * @version 1.2 (updated on 05-01-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 

@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 02-01-23)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 05-01-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -28,9 +28,7 @@ class SmsReceiver : BroadcastReceiver() {
         val message = getTextFromSms(bundle)
         clef = ""
 
-        // If SMS is not for the application, return
         if (!message.startsWith("SmallBrother :")) return
-        // if SMS is for the application but comes from an unknown source, return
         if (numero != userData.telephone) return
 
         // If SMS is for the application and comes from the partner :
@@ -100,7 +98,6 @@ class SmsReceiver : BroadcastReceiver() {
             if (clef == "[#SB02]") userData.bit = 2
             else if (clef == "[#SB04]") userData.bit = 4 // Aidant wants to capture the context
         } else {
-            // lancement de la "WorkActivity".
             val intnt2 = Intent(context, WorkActivity::class.java)
             intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intnt2)
@@ -123,9 +120,8 @@ class SmsReceiver : BroadcastReceiver() {
             val smsMsg = getSmsMsg(pdu as ByteArray?, format)
             val subMsg = smsMsg?.displayMessageBody
             subMsg?.let {txt = "$txt$it"}
-            numero = smsMsg?.originatingAddress
-            //TODO test
-            Log.d("numero smsrcv", numero.toString())
+            Log.d("txt msg", txt)
+            numero = smsMsg?.originatingAddress?.replace("+32", "0")
         }
         return txt
     }

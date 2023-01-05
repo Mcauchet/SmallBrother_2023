@@ -35,7 +35,7 @@ import java.io.File
 import java.io.IOException
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://2fd7-2a02-a03f-ae4e-1900-e1c1-1a0b-5bd9-140c.eu.ngrok.io"
+const val URLServer = "https://16ce-2a02-a03f-ae4e-1900-25ec-d7af-e7dd-3f45.eu.ngrok.io"
 
 /***
  * Sends an SMS

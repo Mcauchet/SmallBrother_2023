@@ -5,6 +5,7 @@ import android.security.keystore.KeyProperties
 import android.util.Base64
 import java.security.*
 import java.security.KeyStore.PrivateKeyEntry
+import java.security.KeyStore.getInstance
 import java.security.spec.X509EncodedKeySpec
 import java.util.*
 import javax.crypto.Cipher
@@ -24,54 +25,121 @@ import javax.security.auth.x500.X500Principal
 object SecurityUtils {
 
     private const val KEYSTORE_ALIAS_RSA =
-        "ksa.test10"
+        "ksa.test101"
 
     private const val KEYSTORE_ALIAS_AES =
-        "ksa.aes10"
+        "ksa.aes101"
 
+    private const val KEYSTORE_ALIAS_SIGN_RSA =
+        "ksa.sign.rsa101"
 
-    fun getKeyPair() {
-        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-            load(null)
-        }
+    /**
+     * Load the AndroidKeyStore instance
+     */
+    private fun loadKeyStore() : KeyStore {
+        return getInstance("AndroidKeyStore").apply { load(null) }
+    }
+
+    /**
+     * Generate the Key pair for signing files
+     */
+    fun getSignKeyPair() {
+        val ks: KeyStore = loadKeyStore()
         val aliases: Enumeration<String> = ks.aliases()
-
-        /**
-         * Check whether the keypair with the alias [KEYSTORE_ALIAS_RSA] exists.
-         */
-        if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS_RSA } == null) {
-            // If it doesn't exist, generate new keypair
-            val kpg: KeyPairGenerator = KeyPairGenerator.getInstance(
-                "RSA"
-            )
-
-            kpg.initialize(
-                KeyGenParameterSpec.Builder(
-                    KEYSTORE_ALIAS_RSA,
-                    KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT
-                ).setEncryptionPaddings(
-                    KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1
-                ).setKeySize(
-                    2048
-                ).setCertificateSubject(X500Principal("CN=test"))
-                    .build()
-            )
-
+        if(aliases.toList().firstOrNull {it == KEYSTORE_ALIAS_SIGN_RSA} == null) {
+            val kpg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+            initSignKpg(kpg)
             kpg.generateKeyPair()
         } else {
-            // If it exists, load the existing keypair
+            val entry = ks.getEntry(KEYSTORE_ALIAS_SIGN_RSA, null) as? PrivateKeyEntry
+            KeyPair(entry?.certificate?.publicKey, entry?.privateKey)
+        }
+    }
+
+    /**
+     * Configure the sign and verify key pair generator
+     */
+    private fun initSignKpg(kpg: KeyPairGenerator) {
+        kpg.initialize(
+            KeyGenParameterSpec
+                .Builder(
+                    KEYSTORE_ALIAS_SIGN_RSA,
+                    KeyProperties.PURPOSE_SIGN or KeyProperties.PURPOSE_VERIFY
+                )
+                .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+                .setKeySize(2048)
+                .setCertificateSubject(X500Principal("CN=test"))
+                .setUserAuthenticationRequired(false)
+                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA1)
+                .build()
+        )
+    }
+
+    /**
+     * Returns the private key with alias [KEYSTORE_ALIAS_SIGN_RSA].
+     *
+     * @return the reference to the private key
+     */
+    private fun getSignPrivateKey(): PrivateKey {
+        val ks: KeyStore = loadKeyStore()
+        val entry = ks.getEntry(KEYSTORE_ALIAS_SIGN_RSA, null) as PrivateKeyEntry
+        return entry.privateKey
+    }
+
+    /**
+     * Returns the public key with alias [KEYSTORE_ALIAS_SIGN_RSA].
+     *
+     * @return the public key as a String
+     */
+    fun getSignPublicKey(): String {
+        val ks: KeyStore = loadKeyStore()
+        val entry = ks.getEntry(KEYSTORE_ALIAS_SIGN_RSA, null) as PrivateKeyEntry
+        val pubKey = entry.certificate.publicKey
+        return String(Base64.encode(pubKey.encoded, Base64.DEFAULT))
+    }
+
+    /**
+     * Generate Android KeyStore public and private RSA keys
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 05-01-2023)
+     */
+    fun getEncryptionKeyPair() {
+        val ks: KeyStore = loadKeyStore()
+        val aliases: Enumeration<String> = ks.aliases()
+
+        if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS_RSA } == null) {
+            val kpg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
+            //TODO extract initialisation in a function if everything else works
+            initEncKpg(kpg)
+            kpg.generateKeyPair()
+        } else {
             val entry = ks.getEntry(KEYSTORE_ALIAS_RSA, null) as? PrivateKeyEntry
             KeyPair(entry?.certificate?.publicKey, entry?.privateKey)
         }
     }
 
     /**
+     * Configure the encryption and decryption key pair generator
+     */
+    private fun initEncKpg(kpg: KeyPairGenerator) {
+        kpg.initialize(
+            KeyGenParameterSpec.Builder(
+                KEYSTORE_ALIAS_RSA,
+                KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT
+            ).setEncryptionPaddings(
+                KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1
+            ).setKeySize(
+                2048
+            ).setCertificateSubject(X500Principal("CN=test")
+            ).build()
+        )
+    }
+
+    /**
      * deletes the AES Key entry
      */
     fun deleteAESKeyEntry() {
-        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-            load(null)
-        }
+        val ks: KeyStore = loadKeyStore()
         ks.deleteEntry(KEYSTORE_ALIAS_AES)
     }
 
@@ -80,10 +148,8 @@ object SecurityUtils {
      *
      * @return the public key as a String
      */
-    fun getPublicKey(): String {
-        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-            load(null)
-        }
+    fun getEncPublicKey(): String {
+        val ks: KeyStore = loadKeyStore()
         val entry = ks.getEntry(KEYSTORE_ALIAS_RSA, null) as PrivateKeyEntry
         val pubKey = entry.certificate.publicKey
         return String(Base64.encode(pubKey.encoded, Base64.DEFAULT))
@@ -94,10 +160,8 @@ object SecurityUtils {
      *
      * @return the reference to the private key
      */
-    private fun getPrivateKey(): PrivateKey {
-        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-            load(null)
-        }
+    private fun getEncPrivateKey(): PrivateKey {
+        val ks: KeyStore = loadKeyStore()
         val entry = ks.getEntry(KEYSTORE_ALIAS_RSA, null) as PrivateKeyEntry
         return entry.privateKey
     }
@@ -108,9 +172,7 @@ object SecurityUtils {
      * @return the AES key as a SecretKey
      */
     fun getAESKey(): SecretKey {
-        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-            load(null)
-        }
+        val ks: KeyStore = loadKeyStore()
         val aliases: Enumeration<String> = ks.aliases()
         return if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS_AES } == null) {
             val generator: KeyGenerator = KeyGenerator.getInstance("AES")
@@ -143,7 +205,7 @@ object SecurityUtils {
      */
     private fun decryptAESKey(encKey: ByteArray): ByteArray {
         val aesCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding")
-        aesCipher.init(Cipher.PRIVATE_KEY, getPrivateKey())
+        aesCipher.init(Cipher.PRIVATE_KEY, getEncPrivateKey())
         return aesCipher.doFinal(encKey)
     }
 
@@ -180,9 +242,11 @@ object SecurityUtils {
      * signs the zip file with the private key
      * @param data the zip files ByteArray
      * @return the signed data
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 05-01-2023)
      */
-    fun signFile(data: ByteArray): ByteArray? {
-        val privateKey = getPrivateKey()
+    fun signFile(data: ByteArray): ByteArray {
+        val privateKey = getSignPrivateKey()
         val signature = Signature.getInstance("SHA256withRSA")
         signature.initSign(privateKey)
         signature.update(data)
@@ -194,12 +258,14 @@ object SecurityUtils {
      * @param data the signed ByteArray
      * @param pubKey the public key of the signer
      * @return true if file is verified, false otherwise
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 05-01-2023)
      */
-    fun verifyFile(data: ByteArray, pubKey:PublicKey): Boolean {
-        val signature = Signature.getInstance("SHA256withRSA")
-        signature.initVerify(pubKey)
-        signature.update(data)
-        return signature.verify(data)
+    fun verifyFile(data: ByteArray, pubKey:PublicKey, signature: ByteArray): Boolean {
+        val verifySignature = Signature.getInstance("SHA256withRSA")
+        verifySignature.initVerify(pubKey)
+        verifySignature.update(data)
+        return verifySignature.verify(signature)
     }
 
     /***

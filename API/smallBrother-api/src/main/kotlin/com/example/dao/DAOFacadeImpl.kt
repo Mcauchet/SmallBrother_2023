@@ -10,12 +10,13 @@ import org.jetbrains.exposed.sql.javatime.CurrentDateTime
  * DAOFacadeImpl implements the DAOFacade methods.
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 22-12-2022)
+ * @version 1 (Updated on 05-01-2023)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
         uri = row[AideDatas.uri],
         aesKey = row[AideDatas.aesKey],
+        signature = row[AideDatas.signature],
     )
 
     //TODO this will have to be deleted, this access all users data, only for dev purpose.
@@ -38,6 +39,7 @@ class DAOFacadeImpl : DAOFacade {
             AideDatas.insert {
                 it[uri] = data.uri
                 it[aesKey] = data.aesKey
+                it[signature] = data.signature
                 it[createdAt] = CurrentDateTime
             }
         }
@@ -47,6 +49,7 @@ class DAOFacadeImpl : DAOFacade {
         AideDatas.update({AideDatas.uri eq data.uri}) {
             it[uri] = data.uri
             it[aesKey] = data.aesKey
+            it[signature] = data.signature
         } > 0
     }
 

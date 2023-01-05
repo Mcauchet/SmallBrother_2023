@@ -19,12 +19,15 @@ data class AideData(
     val uri: String,
     @Serializable
     val aesKey: String,
+    @Serializable
+    val signature: String,
 )
 
 object AideDatas : Table() {
     private val id = integer("id").autoIncrement()
     val uri = varchar("uri", 128)
     val aesKey = varchar("aesKEY", 2048)
+    val signature = varchar("signature", 2048)
     val createdAt = datetime("date_created")
 
     override val primaryKey = PrimaryKey(id)

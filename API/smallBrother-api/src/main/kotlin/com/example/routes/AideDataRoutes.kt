@@ -51,11 +51,18 @@ fun Route.aideDataRouting() {
             val key = call.parameters["key"]
                 ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
             val aideData = dao.getAideData(key)
-            if (aideData != null) {
-                call.respond(aideData.aesKey)
-            } else {
-                call.respondText("AES key not found", status = HttpStatusCode.NotFound)
-            }
+            if (aideData != null) call.respond(aideData.aesKey)
+            else call.respondText("AES key not found", status = HttpStatusCode.NotFound)
+        }
+    }
+
+    route("/sign") {
+        get("/{key}") {
+            val key = call.parameters["key"]
+                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
+            val aideData = dao.getAideData(key)
+            if(aideData != null) call.respond(aideData.signature)
+            else call.respondText("Signature not found", status = HttpStatusCode.NotFound)
         }
     }
 

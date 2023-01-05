@@ -8,4 +8,6 @@ data class AideData(
     val uri: String,
     @Serializable
     val aesKey: String,
+    @Serializable
+    val signature: String,
 )
