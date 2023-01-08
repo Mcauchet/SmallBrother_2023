@@ -29,22 +29,15 @@ import java.io.IOException
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 08-01-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
     var vibreur = Vibration()
     lateinit var userData: UserData
-    private lateinit var tvLoading: TextView
-
-    private lateinit var tvAction: TextView
-
     private lateinit var clef: String
-
     private var appelant: String? = null // variable for caller's phone number
-
     private var magneto: MediaRecorder? = null
-
     var ambientLightLux: Float = 0.0f
 
     // Variables for movement determination
@@ -53,6 +46,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private var keepMove: FloatArray? = null
 
     private var emergency: Boolean = false
+
+    private lateinit var tvLoading: TextView
+    private lateinit var tvAction: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,10 +63,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
         userData = application as UserData
 
-        // To avoid, on return to AideActivity, the creation of a new Handler
         userData.esquive = true
 
-        // fetch the code in the SMS, if present
         if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
 
         //Set clef value if aide initiates the capture
@@ -78,15 +72,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             clef = intent.getStringExtra("clef").toString()
             emergency = true
         }
-
-        // fetch caller's phone number
         appelant = PhoneStatReceiver.catchCallNumber()
         if (appelant?.startsWith("+32") == true) appelant?.replace("+32", "0")
         PhoneStatReceiver.resetCallNumber()
 
-        // On phone call
         if (appelant != "" && userData.telephone == appelant) {
-            // If caller is the partner, update log
             userData.refreshLog(8)
             redirectRole(this@WorkActivity, userData)
         } else {
@@ -94,8 +84,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                 "[#SB01]" -> {
                     vibreur.vibration(this, 330)
                     userData.refreshLog(3)
-                    userData.byeData() // Delete user's data file
-
+                    userData.byeData()
                     // Checks if the donnees.txt file is gone before restarting the install process
                     if(!userData.loadData()){
                         val mIntent = Intent(this, Launch1Activity::class.java)
@@ -104,12 +93,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                 }
                 "[#SB02]" -> {
                     userData.refreshLog(6)
-
                     val intent = Intent(this, AideActivity::class.java)
                     startActivity(intent)
                 }
                 "[#SB04]" -> {
-                    // Put the app on foreground
                     wakeup(window, this@WorkActivity)
                     loading(tvLoading)
 
@@ -130,15 +117,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             )
 
                             // --> [1] Records a 10 seconds audio of the aide's environment
-
                             tvAction.text = getString(R.string.message12A)
-
                             initMagneto()
                             magneto?.start()
-
                             // =======================================================================
-                        } else  // Device not connected to internet
-                        {
+                        } else {
                             userData.refreshLog(12)
 
                             MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
@@ -158,18 +141,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         override fun onTick(millisUntilFinished: Long) {
                             // position captured at seconds 2 and 9 of the record
                             when {
-                                millisUntilFinished > 9000
-                                -> checkMove1 = keepMove
-                                millisUntilFinished in 1001..1999
-                                -> checkMove2 = keepMove
+                                millisUntilFinished > 9000 -> checkMove1 = keepMove
+                                millisUntilFinished in 1001..1999 -> checkMove2 = keepMove
                             }
                         }
 
-                        override fun onFinish()
-                        {
+                        override fun onFinish() {
                             resetMagneto()
 
-                            // Determine if Aide's phone is moving or not
                             userData.motion = !(checkMove1.contentEquals(checkMove2))
 
                             registerLightSensor()

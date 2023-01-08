@@ -33,6 +33,10 @@ import com.projet.sluca.smallbrother.activities.QRCodeScannerInstallActivity
 import com.projet.sluca.smallbrother.models.UserData
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 //Edit URL Server until it is redefined in deployment
 const val URLServer = "https://16ce-2a02-a03f-ae4e-1900-25ec-d7af-e7dd-3f45.eu.ngrok.io"
@@ -328,4 +332,22 @@ fun showPicture(apercu: ImageView, userData: UserData) {
     val path = userData.path + "/SmallBrother/photo_aide.jpg"
     val file = File(path)
     if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
+}
+
+/**
+ * Get the current time and format it
+ * @return The date as a String
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 08-01-2023)
+ */
+fun getCurrentTime(format: String) : String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val date = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern(format)
+        date.format(formatter)
+    } else {
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat(format, Locale.getDefault())
+        formatter.format(date)
+    }
 }

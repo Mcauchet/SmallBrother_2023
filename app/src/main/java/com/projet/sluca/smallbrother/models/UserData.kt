@@ -6,6 +6,7 @@ import android.media.MediaScannerConnection
 import android.util.Log
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
+import com.projet.sluca.smallbrother.getCurrentTime
 import com.projet.sluca.smallbrother.particule
 import org.apache.commons.io.IOUtils
 import java.io.*
@@ -181,7 +182,7 @@ data class UserData(
      * @version 1.2 (Updated on 04-01-2023)
      */
     fun refreshLog(code: Int) {
-        var texte = "${getDate()} : "
+        var texte = "${getCurrentTime("HH:mm")} : "
         texte += when (code) {
             1 -> getString(R.string.log01)
             2 -> getString(R.string.log02)
@@ -205,18 +206,6 @@ data class UserData(
             else -> ""
         }
         log = texte
-    }
-
-    /**
-     * Get the current time and format it
-     * @return the date as a String
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    private fun getDate(): String {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("dd/MM/yyyy, HH:mm", Locale.FRENCH)
-        return dateFormat.format(calendar.time)
     }
 
     /***

@@ -11,20 +11,12 @@ import com.projet.sluca.smallbrother.models.UserData
 /***
  * PhoneStatReceiver manages information when a phone call is received on the user's phone
  *
- * @author Sébastien Luca & Maxime Caucheteur (Updated on 04-01-2023)
+ * @author Sébastien Luca & Maxime Caucheteur (Updated on 08-01-2023)
  */
 class PhoneStatReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         userData.loadData()
-        if (intent.action == Intent.ACTION_NEW_OUTGOING_CALL) {
-            /*
-        incomingFlag = false;
-        String phoneNumber = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-        Log.i(TAG, "call OUT:"+phoneNumber);
-        */
-        } else {
-            processCall(context, intent)
-        }
+        if (intent.action != Intent.ACTION_NEW_OUTGOING_CALL) processCall(context, intent)
     }
 
     /**
@@ -41,7 +33,6 @@ class PhoneStatReceiver : BroadcastReceiver() {
                 .getStringExtra("incoming_number").toString()
             if (userData.bit == 1) userData.bit = 3 // Private mode ON
             else {
-                // Avoids creating a second Handler
                 userData.esquive = true
                 val intnt = Intent(context, WorkActivity::class.java)
                 intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -55,7 +46,6 @@ class PhoneStatReceiver : BroadcastReceiver() {
         lateinit var userData: UserData 
 
         fun catchCallNumber(): String = callNumber
-
         fun resetCallNumber() {
             callNumber = ""
         }

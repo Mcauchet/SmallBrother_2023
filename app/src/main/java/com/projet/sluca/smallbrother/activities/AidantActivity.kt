@@ -31,7 +31,7 @@ import java.security.PublicKey
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 05-01-2023)
+ * @version 1.2 (updated on 08-01-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -42,6 +42,8 @@ class AidantActivity : AppCompatActivity() {
     private val logHandler: Handler = Handler(Looper.getMainLooper())
 
     private lateinit var flTiers: FrameLayout
+
+    private var successDl: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,9 +132,11 @@ class AidantActivity : AppCompatActivity() {
                     intent.getStringExtra("url").toString() else ""
                 CoroutineScope(Dispatchers.IO).launch {
                     getDataOnServer(client, file)
+                    if(successDl) message(this@AidantActivity, "Téléchargement du fichier terminé, " +
+                            "il se trouve dans votre dossier de téléchargement.", vibreur)
+                    else message(this@AidantActivity, "Erreur lors du téléchargement. Veuillez " +
+                            "réessayer ou capturer le contexte à nouveau.", vibreur)
                 }
-                message(this, "Téléchargement du fichier terminé, il se trouve dans votre dossier" +
-                        " de téléchargement.", vibreur)
             } else {
                 message(this, "Il n'y a pas de fichier appartenant à ${userData.nomPartner} " +
                         "sur le serveur, veuillez effectuer une capture de contexte.", vibreur)
@@ -155,7 +159,7 @@ class AidantActivity : AppCompatActivity() {
      * @param [client] the HttpClient to access the server
      * @param [file] the file to store the data in
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 05-01-2023)
+     * @version 1.2 (Updated on 08-01-2023)
      */
     private suspend fun getDataOnServer(client: HttpClient, file: File) {
         val zipDataByteArray: ByteArray = downloadFileRequest(client).body()
@@ -164,13 +168,12 @@ class AidantActivity : AppCompatActivity() {
         val aesEncKey: ByteArray = Base64.decode(aesBody, Base64.NO_WRAP)
         if(SecurityUtils.verifyFile(zipDataByteArray,
                 SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
-                Base64.decode(signature, Base64.NO_WRAP))) Log.d("file verified", "ok")
-        else {
-            Log.d("file not verified", "ko")
-            return
-        }
+                Base64.decode(signature, Base64.NO_WRAP))
+        ) Log.d("file verified", "ok")
+        else return
         val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey)
         file.writeBytes(decryptedData)
+        successDl = true
     }
 
     /**

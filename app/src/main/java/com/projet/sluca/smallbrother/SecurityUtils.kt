@@ -101,15 +101,13 @@ object SecurityUtils {
     /**
      * Generate Android KeyStore public and private RSA keys
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 05-01-2023)
+     * @version 1.2 (Updated on 08-01-2023)
      */
     fun getEncryptionKeyPair() {
         val ks: KeyStore = loadKeyStore()
         val aliases: Enumeration<String> = ks.aliases()
-
         if (aliases.toList().firstOrNull { it == KEYSTORE_ALIAS_RSA } == null) {
             val kpg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
-            //TODO extract initialisation in a function if everything else works
             initEncKpg(kpg)
             kpg.generateKeyPair()
         } else {

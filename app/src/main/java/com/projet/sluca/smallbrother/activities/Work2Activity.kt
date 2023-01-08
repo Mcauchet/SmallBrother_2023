@@ -155,7 +155,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         "Erreur lors de la récupération de la position"
                     }
 
-                    val currentTime = getCurrentTime()
+                    val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
 
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Niveau de batterie : $battery\n" +
@@ -227,25 +227,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 startActivity(intent)
             }
         }.start()
-    }
-
-    /**
-     * Get the current time and format it
-     * @return The date as a String
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    private fun getCurrentTime() : String {
-        val currentTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val date = LocalDateTime.now()
-            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
-            date.format(formatter)
-        } else {
-            val date = Calendar.getInstance().time
-            val formatter = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-            formatter.format(date)
-        }
-        return currentTime
     }
 
     /***
