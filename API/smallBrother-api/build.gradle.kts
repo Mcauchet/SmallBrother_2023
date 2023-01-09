@@ -7,7 +7,7 @@ val h2Version: String by project
 plugins {
     application
     kotlin("jvm") version "1.7.20"
-    id("io.ktor.plugin") version "2.1.3"
+    id("io.ktor.plugin") version "2.2.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.20"
     id("distribution")
 }
@@ -51,6 +51,14 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:0.40.1")
 }
 
+//this is for heroku setup
 tasks.create("stage") {
     dependsOn("installDist")
+}
+
+//for fatJar
+ktor {
+    fatJar {
+        archiveFileName.set("fat.jar")
+    }
 }
