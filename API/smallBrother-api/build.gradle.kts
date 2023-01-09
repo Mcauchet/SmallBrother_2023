@@ -49,3 +49,7 @@ dependencies {
     implementation("com.h2database:h2:$h2Version")
     implementation("org.jetbrains.exposed:exposed-java-time:0.40.1")
 }
+
+tasks.create("stage") {
+    dependsOn("installDist")
+}

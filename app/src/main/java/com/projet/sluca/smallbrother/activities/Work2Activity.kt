@@ -53,7 +53,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 05-01-2023)
+ * @version 1.2 (Updated on 08-01-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -240,12 +240,17 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-        if(hasGps || hasNetwork) {
+        /*if(!hasGps && !hasNetwork) {
             getLocation()
         } else {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
+        }*/
+        if(!hasGps && !hasNetwork) {
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
         }
+        getLocation() //TODO Test this
     }
 
     /**
@@ -294,8 +299,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         requestPermission()
-        val locationRequest = LocationRequest()
-        locationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        val locationRequest = LocationRequest() //Check for this deprecated, doesn't look too hard
+        locationRequest.priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
         locationRequest.interval = 0
         locationRequest.fastestInterval = 0
         locationRequest.numUpdates = 1
@@ -497,7 +502,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         } else {
             Toast.makeText(this, "Location permission was denied", Toast.LENGTH_SHORT).show()
         }
-        return
+        return //see diff if we take that off
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}

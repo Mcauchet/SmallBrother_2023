@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 05-01-2023)
+ * @version 1.2 (updated on 08-01-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -138,10 +138,10 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         alertDialogBuilder
             .setCancelable(false)
             .setPositiveButton(getString(R.string.btn_valider)) { _, _ ->
-                val valeur = getPrivateModeDuration(input)
-                val txtConfirm = getString(R.string.message10).replace("§%", valeur.toString())
+                val privateTime = getPrivateModeDuration(input)
+                val txtConfirm = getString(R.string.message10).replace("§%", privateTime.toString())
                 message(this, txtConfirm, vibreur)
-                userData.delai = valeur * 60000
+                userData.delai = privateTime * 60000
                 updateAideInfo()
             }
             .setNegativeButton(getString(R.string.btn_annuler)) { dialog, _ ->
@@ -171,17 +171,17 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
      * @param [input] the EditText which contains the value
      * @return the duration as a Long
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 08-01-2023)
      */
     private fun getPrivateModeDuration(input: EditText): Long {
-        var valeur: Long = 1
+        var privateTime: Long = 1
         if (input.text.toString().trim { it <= ' ' }.isNotEmpty()) {
             var valnum: String = input.text.toString()
             if (java.lang.Long.valueOf(valnum) == 0L) valnum = "1"
-            valeur = java.lang.Long.valueOf(valnum)
+            privateTime = java.lang.Long.valueOf(valnum)
         }
-        if (valeur > 120) valeur = 120 //Max delay is defined here
-        return valeur
+        if (privateTime > 120) privateTime = 120 //Max delay is defined here
+        return privateTime
     }
 
     /**
@@ -221,14 +221,13 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     /**
      * Update status, TextView, wake the app when the private mode delay is over
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 08-01-2023)
      */
     private fun exitPrivateMode() {
         wakeup(window, this@AideActivity)
         userData.prive = false
         vibreur.vibration(this@AideActivity, 1000)
-        val sound: MediaPlayer = MediaPlayer
-            .create(this@AideActivity, R.raw.notification)
+        val sound: MediaPlayer = MediaPlayer.create(this@AideActivity, R.raw.notification)
         sound.start()
         tvDelay.text = " "
         tvIntituleDelay.text = " "
@@ -255,19 +254,13 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     /**
      * Checks the timer of the private mode and updates accordingly
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 08-01-2023)
      */
     private fun updatePrivateMode() {
-        if (userData.prive)
-        {
-            userData.subDelai(250)
-            if (userData.delai <= 0) {
-                exitPrivateMode()
-            }
-            else {
-                updatePrivateTimer()
-            }
-        }
+        if (!userData.prive) return
+        userData.subDelai(250)
+        if (userData.delai <= 0) exitPrivateMode()
+        else updatePrivateTimer()
     }
 
     /**
@@ -294,9 +287,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
-            if (userData.bit > 1) { // Means private mode is ON
-                updateLogPrivate(userData.bit)
-            }
+            if (userData.bit > 1)  updateLogPrivate(userData.bit) // Means private mode is ON
             if (userData.log != null) setLogAppearance(userData, tvLog)
             updatePrivateMode()
             // Avoid duplication of logHandler

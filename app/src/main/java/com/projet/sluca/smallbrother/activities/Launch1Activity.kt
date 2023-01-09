@@ -13,7 +13,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * class Launch1Activity is the starting point of the application.
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 08-01-2023)
  */
 class Launch1Activity : AppCompatActivity() {
 
@@ -51,12 +51,11 @@ class Launch1Activity : AppCompatActivity() {
     /**
      * Checks if this is the first launch of the app (looks for existing data)
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 08-01-2023)
      */
     private fun checkFirstLaunch() {
-        if (userData.loadData()) {
-            redirectRole(this, userData)
-        } else if (userData.role != null) {
+        if (userData.loadData()) redirectRole(this, userData)
+        else if (userData.role != null) {
             userData.canGoBack = false
             userData.refreshLog(2)
             val intent = Intent(this, InstallActivity::class.java)

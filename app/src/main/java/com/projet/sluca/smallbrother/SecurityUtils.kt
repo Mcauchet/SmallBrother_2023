@@ -36,9 +36,7 @@ object SecurityUtils {
     /**
      * Load the AndroidKeyStore instance
      */
-    private fun loadKeyStore() : KeyStore {
-        return getInstance("AndroidKeyStore").apply { load(null) }
-    }
+    private fun loadKeyStore() : KeyStore = getInstance("AndroidKeyStore").apply { load(null) }
 
     /**
      * Generate the Key pair for signing files
@@ -235,7 +233,6 @@ object SecurityUtils {
         return aesCipher.doFinal(data)
     }
 
-    //TODO test this chunk
     /**
      * signs the zip file with the private key
      * @param data the zip files ByteArray
