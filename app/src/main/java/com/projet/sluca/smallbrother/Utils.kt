@@ -39,10 +39,10 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://16ce-2a02-a03f-ae4e-1900-25ec-d7af-e7dd-3f45.eu.ngrok.io"
+const val URLServer = "https://24ee-138-48-114-153.eu.ngrok.io"
 
 /***
- * Sends an SMS
+ * Sends an SMS through the SMSManager class
  *
  * @param [context] context of the activity
  * @param [msg] body of the SMS
@@ -95,7 +95,7 @@ fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
     0)
 
 /***
- * creates a toast with a msg to print and vibrate
+ * creates a toast with a message to print and vibrate
  *
  * @param [context] the context of the activity
  * @param [msg] the message to print

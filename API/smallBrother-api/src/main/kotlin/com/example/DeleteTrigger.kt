@@ -9,7 +9,7 @@ class DeleteTrigger : Trigger {
             DELETE FROM aidedatas
             WHERE TIMESTAMPDIFF(HOUR, date_created, CURRENT_TIMESTAMP()) >= 24 
         """
-        conn?.prepareStatement(sql)
+        conn?.prepareStatement(sql)?.executeUpdate()
     }
 
 }
