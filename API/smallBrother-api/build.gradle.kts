@@ -3,6 +3,7 @@ val kotlinVersion: String by project
 val logbackVersion: String by project
 val exposedVersion: String by project
 val h2Version: String by project
+val postgresqlVersion: String by project
 
 plugins {
     application
@@ -47,7 +48,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    //H2 database
     implementation("com.h2database:h2:$h2Version")
+    //PostgreSQL Database
+    implementation("org.postgresql:postgresql:$postgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:0.40.1")
 }
 
