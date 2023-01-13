@@ -13,7 +13,7 @@ import java.io.File
  * manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 26-12-22)
+ * @version 1 (Updated on 13-01-2023)
  */
 fun Route.adminRouting() {
     route("/admin") {
@@ -46,9 +46,7 @@ fun Route.adminRouting() {
                 }
                 val dir = object {}.javaClass.getResource("upload")?.file?.let { it1 -> File(it1) }
                 dir?.walk()?.forEach { file ->
-                    if(file.name !in existingUris) {
-                        file.delete()
-                    }
+                    if(file.name !in existingUris) file.delete()
                 }
             }
             call.respondRedirect("/admin")

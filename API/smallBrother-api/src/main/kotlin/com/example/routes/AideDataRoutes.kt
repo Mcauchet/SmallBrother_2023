@@ -10,11 +10,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
 
+const val MAX_SIZE = 2000000 //2MB
+
 /***
  * manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 22-12-2022)
+ * @version 1.2 (Updated on 13-01-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -22,16 +24,23 @@ fun Route.aideDataRouting() {
         var fileName = ""
         post {
             val multipartData = call.receiveMultipart()
+            val contentType = call.request.headers["Content-Type"]
+                ?: return@post call.respondText("Content-Type not found", status = HttpStatusCode.NotFound)
+            if(!contentType.contains("application/zip"))
+                return@post call.respondText("Format not valid", status = HttpStatusCode.Unauthorized)
 
             multipartData.forEachPart { part ->
                 when (part) {
-                    is PartData.FormItem -> {
-                        fileDescription = part.value
-                    }
+                    is PartData.FormItem -> fileDescription = part.value
                     is PartData.FileItem -> {
+                        val extension = part.originalFileName?.substringAfterLast(".")
                         fileName = part.originalFileName as String
                         val fileBytes = part.streamProvider().readBytes()
-                        File("upload/$fileName").writeBytes(fileBytes)
+                        if (extension == "zip" && fileBytes.size < MAX_SIZE) {
+                            File("upload/$fileName").writeBytes(fileBytes)
+                        } else {
+                            call.respondText("Only small zip file accepted", status = HttpStatusCode.NotAcceptable)
+                        }
                     }
                     else -> {}
                 }

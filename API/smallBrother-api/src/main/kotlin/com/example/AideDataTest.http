@@ -1,59 +1,5 @@
-POST http://127.0.0.1:8080/aideData
-Content-Type: application/json
-
-{
-  "img1": "img1",
-  "img2": "img2",
-  "motion": "true",
-  "battery": "23",
-  "key": "a243RDSFsdfsdko352"
-}
-
-###
-POST http://127.0.0.1:8080/aideData
-Content-Type: application/json
-
-{
-  "img1": "img1",
-  "img2": "img2",
-  "audio": "fsdgdfgdfg",
-  "motion": "false",
-  "battery": "88",
-  "key": "fsdko352"
-}
-
-###
-GET http://127.0.0.1:8080/aideData
-Accept: application/json
-
-###
-GET http://127.0.0.1:8080/aideData/a243RDSFsdfsdko352
-Accept: application/json
-
-###
-GET http://127.0.0.1:8080/aideData/difjgifdjgidfjgij
-Accept: application/json
-
-###
-POST http://127.0.0.1:8080/aideData/delete/a243RDSFsdfsdko352
-Accept: application/json
-
-###
-POST http://127.0.0.1:8080/aideData/delete/
-Accept: application/json
-
-###
 GET http://127.0.0.1:8080/download/f039acad-ff93-434f-98aa-8.zip
 Accept: application/zip
-
-###
-POST http://127.0.0.1:8080/upload/aes
-Content-Type: application/json
-
-{
-  "uri": "35ee9548-c2dc-4f8c-a2fd-2.zip",
-  "aesKey": "E5sYugbh6JdNyDC7UiQ/2wKZvr+Kqy+CYcqmGbiqfjBqp1Wuf/G50sfNMhNvQrCj8ucE7gOanhtDMXYqxYmsF/tIeDmn3UoP144tu7eAvDEbxfAFvp3/sdEiz0hxcY8NvXpFX9MxALfoOv5O6cgYysYUk7z7/SuqhL9RxUwLvYeIP4cREWCZ62BbS4UQt927LPrwTjI6kvAgBH6WPDKM+xA7r9bOY+kSR8SecZvWH+P+FFduEfyaQUHt7XW4dj3UPy8dzmPJkw7qq4ABV2Lxo0rlkXuiZ92abGZUqSvZ9Cu++GyJeXUXUDXipgaD1WkfJKtQgtxaE4JDFtH+DOLZnQ=="
-}
 
 ###
 GET http://127.0.0.1:8080/aes/81a8a041-3a50-4c8b-8654-2.zip
