@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
  * @property aesKey the encrypted AESKey given to the Aidant to decrypt the data
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 22-12-2022)
+ * @version 1 (Updated on 13-01-2023)
  */
 @Serializable
 data class AideData(
@@ -24,13 +24,12 @@ data class AideData(
 )
 
 object AideDatas : Table() {
-    private val id = integer("id").autoIncrement()
     val uri = varchar("uri", 128)
     val aesKey = varchar("aesKEY", 2048)
     val signature = varchar("signature", 2048)
     val createdAt = datetime("date_created")
 
-    override val primaryKey = PrimaryKey(id)
+    override val primaryKey = PrimaryKey(uri)
 }
 
 

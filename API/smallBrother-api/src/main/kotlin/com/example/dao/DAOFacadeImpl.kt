@@ -2,6 +2,8 @@ package com.example.dao
 
 import com.example.dao.DatabaseFactory.dbQuery
 import com.example.models.*
+import com.example.security.encrypt
+import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.CurrentDateTime
@@ -10,13 +12,19 @@ import org.jetbrains.exposed.sql.javatime.CurrentDateTime
  * DAOFacadeImpl implements the DAOFacade methods.
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 05-01-2023)
+ * @version 1 (Updated on 13-01-2023)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
         uri = row[AideDatas.uri],
         aesKey = row[AideDatas.aesKey],
         signature = row[AideDatas.signature],
+    )
+
+    private fun resultRowToAdmin(row: ResultRow) = Admin(
+        email = row[Admins.email],
+        encPwd = row[Admins.encPwd],
+        phoneNumber = row[Admins.phoneNumber],
     )
 
     //TODO this will have to be deleted, this access all users data, only for dev purpose.
@@ -60,6 +68,50 @@ class DAOFacadeImpl : DAOFacade {
     override suspend fun deleteAideDatas(): Boolean = dbQuery {
         AideDatas.deleteAll() > 0
     }
+
+    override suspend fun allAdmin(): List<Admin> = dbQuery {
+        Admins.selectAll().map(::resultRowToAdmin)
+    }
+
+    override suspend fun addAdmin(admin: Admin): Unit = dbQuery {
+        val notExists = Admins.select {Admins.email eq admin.email}.empty()
+        if (notExists) {
+            Admins.insert {
+                it[email] = admin.email
+                it[encPwd] = admin.encPwd
+                it[phoneNumber] = admin.phoneNumber
+            }
+        } else {
+            editAdmin(admin)
+        }
+    }
+
+    override suspend fun getAdmin(email: String): Admin? = dbQuery {
+        Admins
+            .select {Admins.email eq email}
+            .map(::resultRowToAdmin)
+            .singleOrNull()
+    }
+
+    override suspend fun editAdmin(admin: Admin): Boolean = dbQuery {
+        Admins.update({Admins.email eq admin.email}) {
+            it[email] = admin.email
+            it[encPwd] = admin.encPwd
+            it[phoneNumber] = admin.phoneNumber
+        } > 0
+    }
 }
 
-val dao: DAOFacade = DAOFacadeImpl()
+val dao: DAOFacade = DAOFacadeImpl().apply {
+    runBlocking {
+        if(allAdmin().isEmpty()) {
+            addAdmin(
+                Admin(
+                    "adminSB@hotmail.com",
+                    encrypt("123456", 12),
+                    ""
+                )
+            )
+        }
+    }
+}

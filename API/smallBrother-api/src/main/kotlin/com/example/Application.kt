@@ -1,14 +1,52 @@
 package com.example
 
 import com.example.dao.*
+import com.example.models.ServerSession
 import io.ktor.server.application.*
 import com.example.plugins.*
+import com.example.security.checkCredentials
+import io.ktor.http.*
+import io.ktor.server.auth.*
+import io.ktor.server.response.*
+import io.ktor.server.sessions.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused") // application.conf references the main function.
 // This annotation prevents the IDE from marking it as unused.
 fun Application.module() {
+    install(Authentication) {
+        form("auth-form") {
+            userParamName = "email"
+            passwordParamName = "password"
+            validate { credentials ->
+                val dbPwd = dao.getAdmin(credentials.name)?.encPwd
+                if (dbPwd != null && checkCredentials(credentials.password, dbPwd)) {
+                    UserIdPrincipal(credentials.name)
+                } else {
+                    null
+                }
+            }
+            challenge {
+                call.respond(HttpStatusCode.Unauthorized, "Credentials are not valid")
+            }
+        }
+        session<ServerSession>("auth-session") {
+            validate { session ->
+                if(session.email == "adminSB@hotmail.com") session
+                else null
+            }
+            challenge {
+                call.respondRedirect("/login")
+            }
+        }
+    }
+    install(Sessions) {
+        cookie<ServerSession>("server_session") {
+            cookie.path = "/"
+            cookie.maxAgeInSeconds = 60
+        }
+    }
     DatabaseFactory.init(environment.config)
     configureTemplating()
     configureSerialization()

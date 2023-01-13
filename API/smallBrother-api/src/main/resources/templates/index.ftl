@@ -19,4 +19,10 @@
             </p>
         </form>
     </div>
+    <div>
+        <a href="/admin/editAdmin">Edit Admin profile</a>
+    </div>
+    <div>
+        <a href="/logout">Log out</a>
+    </div>
 </@layout.header>

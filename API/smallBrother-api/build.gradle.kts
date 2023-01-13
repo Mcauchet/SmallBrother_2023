@@ -53,6 +53,14 @@ dependencies {
     //PostgreSQL Database
     implementation("org.postgresql:postgresql:$postgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:0.40.1")
+
+    //Authentication
+    implementation("io.ktor:ktor-server-auth:$ktorVersion")
+    //Sessions
+    implementation("io.ktor:ktor-server-sessions:$ktorVersion")
+
+    //Encryption
+    implementation("org.mindrot:jbcrypt:0.4")
 }
 
 //this is for heroku setup

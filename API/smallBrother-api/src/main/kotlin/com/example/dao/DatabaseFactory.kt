@@ -23,6 +23,7 @@ object DatabaseFactory {
         val database = Database.connect(jdbcURL, driverClassName)
         transaction(database) {
             SchemaUtils.create(AideDatas)
+            SchemaUtils.create(Admins)
         }
 
         //Adds a trigger to delete rows from database that are more than 24 hours old

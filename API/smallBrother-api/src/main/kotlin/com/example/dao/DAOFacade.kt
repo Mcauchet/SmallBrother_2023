@@ -1,5 +1,6 @@
 package com.example.dao
 
+import com.example.models.Admin
 import com.example.models.AideData
 
 /***
@@ -16,4 +17,9 @@ interface DAOFacade {
     suspend fun editAideData(data: AideData): Boolean
     suspend fun deleteAideData(uri: String): Boolean
     suspend fun deleteAideDatas(): Boolean
+    suspend fun allAdmin(): List<Admin>
+    suspend fun addAdmin(admin: Admin)
+    suspend fun getAdmin(email: String): Admin?
+    //Add edit admin
+    suspend fun editAdmin(admin: Admin): Boolean
 }
