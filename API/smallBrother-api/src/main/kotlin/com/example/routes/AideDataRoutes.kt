@@ -11,6 +11,7 @@ import io.ktor.server.routing.*
 import java.io.File
 
 const val MAX_SIZE = 2000000 //2MB
+const val NAME_SIZE = 25
 
 /***
  * manages the upload and download of aide's files
@@ -36,7 +37,7 @@ fun Route.aideDataRouting() {
                         val extension = part.originalFileName?.substringAfterLast(".")
                         fileName = part.originalFileName as String
                         val fileBytes = part.streamProvider().readBytes()
-                        if (extension == "zip" && fileBytes.size < MAX_SIZE) {
+                        if (extension == "zip" && fileBytes.size < MAX_SIZE && fileName.length == NAME_SIZE) {
                             File("upload/$fileName").writeBytes(fileBytes)
                         } else {
                             call.respondText("Only small zip file accepted", status = HttpStatusCode.NotAcceptable)
