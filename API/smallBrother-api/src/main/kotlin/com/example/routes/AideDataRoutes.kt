@@ -17,7 +17,7 @@ const val NAME_SIZE = 25
  * manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 13-01-2023)
+ * @version 1.2 (Updated on 14-01-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -25,7 +25,7 @@ fun Route.aideDataRouting() {
         var fileName = ""
         post {
             val multipartData = call.receiveMultipart()
-            val contentType = call.request.headers["Content-Type"]
+            val contentType = call.request.headers["Content-Type"] // todo check this
                 ?: return@post call.respondText("Content-Type not found", status = HttpStatusCode.NotFound)
             if(!contentType.contains("application/zip"))
                 return@post call.respondText("Format not valid", status = HttpStatusCode.Unauthorized)
@@ -37,7 +37,7 @@ fun Route.aideDataRouting() {
                         val extension = part.originalFileName?.substringAfterLast(".")
                         fileName = part.originalFileName as String
                         val fileBytes = part.streamProvider().readBytes()
-                        if (extension == "zip" && fileBytes.size < MAX_SIZE && fileName.length == NAME_SIZE) {
+                        if (extension == "zip" && fileBytes.size < MAX_SIZE && fileName.length == NAME_SIZE) { // todo check this
                             File("upload/$fileName").writeBytes(fileBytes)
                         } else {
                             call.respondText("Only small zip file accepted", status = HttpStatusCode.NotAcceptable)
@@ -50,6 +50,9 @@ fun Route.aideDataRouting() {
             call.respondText("$fileDescription is uploaded to 'upload/$fileName'")
         }
         post("/aes") {
+            if (call.request.headers["Content-Type"] != "application/json") {
+                call.respondText("Format not valid", status = HttpStatusCode.Unauthorized) // todo check this
+            }
             val aideData = call.receive<AideData>()
             dao.addAideData(aideData)
             call.respondText("AideData stored correctly", status = HttpStatusCode.Created)
