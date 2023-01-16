@@ -78,7 +78,7 @@ data class UserData(
         val content = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
                 nomPartner
         try {
-            val directory = File(this.filesDir, "SmallBrother")
+            val directory = File(this.filesDir, "SmallBrother") // change this.filesDir into path ?
             if (!directory.exists()) directory.mkdirs()
             val dataFile = File(directory, file)
             if(!dataFile.exists()) dataFile.createNewFile() else byeData()
@@ -111,6 +111,7 @@ data class UserData(
     fun byeData() {
         val data = File("$path/SmallBrother/$file")
         data.delete()
+        assert(!data.exists())
     }
 
     /**
@@ -120,7 +121,10 @@ data class UserData(
      */
     fun deletePicture() {
         val file = File("$path/SmallBrother/photo_aide.jpg")
-        if(file.exists()) file.delete()
+        if(file.exists()) {
+            file.delete()
+            assert(!file.exists())
+        }
     }
 
     /***

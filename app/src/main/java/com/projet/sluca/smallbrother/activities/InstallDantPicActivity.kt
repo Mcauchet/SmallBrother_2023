@@ -22,7 +22,7 @@ import java.util.*
  * class InstallDantPicActivity manages the capture of the aidé picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 04-01-2023)
+ * @version 1.2 (updated on 16-01-2023)
  */
 class InstallDantPicActivity : AppCompatActivity() {
 

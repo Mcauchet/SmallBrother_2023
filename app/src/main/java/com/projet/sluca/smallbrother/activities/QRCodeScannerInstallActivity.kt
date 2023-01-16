@@ -3,6 +3,7 @@ package com.projet.sluca.smallbrother.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.budiyev.android.codescanner.*
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
@@ -13,7 +14,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * Opens a qr code scanner to get the public key of the partner
  *
  * @author Maxime Caucheteur (with help of https://github.com/yuriy-budiyev/code-scanner)
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 16-01-2023)
  */
 class QRCodeScannerInstallActivity : AppCompatActivity() {
 
@@ -23,12 +24,12 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
 
     var vibreur = Vibration()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_code_scanner_install)
 
         userData = application as UserData
+        check(userData.role == "Aidant" || userData.role == "Aidé")
 
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 
@@ -39,7 +40,8 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
         // Callbacks
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
-                message(this, "Scan result: ${it.text}", vibreur)
+                message(this, "Clé récupérée, vous pouvez continuer.", vibreur)
+                Log.d("scan result", it.text)
                 userData.pubKey = it.text
                 processScanResult()
             }

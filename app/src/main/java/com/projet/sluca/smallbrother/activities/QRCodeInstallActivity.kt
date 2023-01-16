@@ -17,7 +17,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * Manages the public key exchange between Aidé and Aidant through QR Code
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 05-01-2023)
+ * @version 1.2 (Updated on 16-01-2023)
  */
 class QRCodeInstallActivity : AppCompatActivity() {
 
@@ -33,6 +33,7 @@ class QRCodeInstallActivity : AppCompatActivity() {
         val btnEnd: Button = findViewById(R.id.btn_terminer)
 
         userData = application as UserData
+        check(userData.role == "Aidant" || userData.role == "Aidé")
 
         if(userData.role == "Aidant") qrEncoder(SecurityUtils.getEncPublicKey(), ivQrCode)
         else if(userData.role == "Aidé") qrEncoder(SecurityUtils.getSignPublicKey(), ivQrCode)
