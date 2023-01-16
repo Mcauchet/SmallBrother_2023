@@ -2,6 +2,7 @@ package com.projet.sluca.smallbrother
 
 import android.app.KeyguardManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -371,4 +372,25 @@ fun getCurrentTime(format: String) : String {
         val formatter = SimpleDateFormat(format, Locale.getDefault())
         formatter.format(date)
     }
+}
+
+//TODO Test both functions
+fun activateSMSReceiver(context: Context) {
+    val pm = context.packageManager
+    val componentName = ComponentName(context, SmsReceiver::class.java)
+    pm.setComponentEnabledSetting(
+        componentName,
+        PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+        PackageManager.DONT_KILL_APP
+    )
+}
+
+fun deactivateSmsReceiver(context: Context) {
+    val pm = context.packageManager
+    val componentName = ComponentName(context, SmsReceiver::class.java)
+    pm.setComponentEnabledSetting(
+        componentName,
+        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+        PackageManager.DONT_KILL_APP
+    )
 }

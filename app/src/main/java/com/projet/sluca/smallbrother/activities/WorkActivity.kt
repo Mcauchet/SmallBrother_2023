@@ -13,6 +13,7 @@ import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -29,18 +30,17 @@ import java.io.IOException
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 08-01-2023)
+ * @version 1.2 (Updated on 16-01-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
     var vibreur = Vibration()
     lateinit var userData: UserData
     private lateinit var clef: String
-    private var appelant: String? = null // variable for caller's phone number
+    private var caller: String? = null // variable for caller's phone number
     private var magneto: MediaRecorder? = null
     var ambientLightLux: Float = 0.0f
 
-    // Variables for movement determination
     private var checkMove1: FloatArray? = null
     private var checkMove2: FloatArray? = null
     private var keepMove: FloatArray? = null
@@ -72,11 +72,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             clef = intent.getStringExtra("clef").toString()
             emergency = true
         }
-        appelant = PhoneStatReceiver.catchCallNumber()
-        if (appelant?.startsWith("+32") == true) appelant?.replace("+32", "0")
+        caller = PhoneStatReceiver.catchCallNumber()
+        if (caller?.startsWith("+32") == true) caller?.replace("+32", "0")
         PhoneStatReceiver.resetCallNumber()
 
-        if (appelant != "" && userData.telephone == appelant) {
+        if (caller != "" && userData.telephone == caller) {
             userData.refreshLog(8)
             redirectRole(this@WorkActivity, userData)
         } else {
@@ -104,17 +104,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     // context capture
                     CoroutineScope(Dispatchers.IO).launch {
                         if (isOnline(this@WorkActivity)) {
-                            // De-activate SMSReceiver to avoid conflict
-                            val pm = this@WorkActivity.packageManager
-                            val componentName = ComponentName(
-                                this@WorkActivity,
-                                SmsReceiver::class.java
-                            )
-                            pm.setComponentEnabledSetting(
-                                componentName,
-                                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                                PackageManager.DONT_KILL_APP
-                            )
+                            deactivateSmsReceiver(this@WorkActivity)
 
                             // --> [1] Records a 10 seconds audio of the aide's environment
                             tvAction.text = getString(R.string.message12A)
@@ -148,11 +138,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                         override fun onFinish() {
                             resetMagneto()
-
                             userData.motion = !(checkMove1.contentEquals(checkMove2))
-
                             registerLightSensor()
-
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
                             intent.putExtra("light", ambientLightLux)
                             if(emergency) intent.putExtra("emergency", true)
@@ -246,15 +233,13 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
                 SensorManager
         val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-
+        Log.d("light sensor", lightSensor.toString())
         val sensorEventListener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent) {
                 ambientLightLux = event.values[0]
             }
-
             override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
         }
-
         sensorManager.registerListener(sensorEventListener, lightSensor,
             SensorManager.SENSOR_DELAY_NORMAL)
     }

@@ -2,7 +2,6 @@ package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -10,7 +9,6 @@ import android.content.pm.PackageManager
 import android.location.*
 import android.net.Uri
 import android.os.BatteryManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
@@ -40,9 +38,6 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import java.io.*
 import java.security.PublicKey
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 import java.util.*
 import java.util.zip.ZipEntry
@@ -53,7 +48,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 08-01-2023)
+ * @version 1.2 (Updated on 16-01-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -91,12 +86,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         userData = application as UserData
         loading(tvLoading)
 
-        // --> [2] localisation de l'Aidé.
+        // --> [2] Get Aide Location
+        tvAction.text = getString(R.string.message12C)
         checkForLocation()
 
         // --> [3] Capture of front and back pictures
         tvAction.text = getString(R.string.message12B)
-
         pictureService = PictureCapturingServiceImpl.getInstance(this)
         pictureService.startCapturing(this, this)
 
@@ -104,20 +99,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
-        tvAction.text = getString(R.string.message12C)
-
         // --> [4] Get all needed files reference.
-
         tvAction.text = getString(R.string.message12D)
 
         val pathAudio = userData.path + "/SmallBrother/audio.ogg"
-        val file1 = File(pathAudio)
-
+        val audioFile = File(pathAudio)
         val pathPhoto1 = userData.getAutophotosPath(1)
-        val file2 = File(pathPhoto1)
-
+        val firstPicture = File(pathPhoto1)
         val pathPhoto2 = userData.getAutophotosPath(2)
-        val file3 = File(pathPhoto2)
+        val secondPicture = File(pathPhoto2)
 
         // --> [5] Battery level.
         tvAction.text = getString(R.string.message12E)
@@ -166,10 +156,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                     Log.d("infos", information)
 
-                    val file4 = File(userData.path + "/SmallBrother/informations.txt")
-                    file4.createNewFile()
+                    val informationFile = File(userData.path + "/SmallBrother/informations.txt")
+                    informationFile.createNewFile()
 
-                    val bufferedWriter = BufferedWriter(FileWriter(file4))
+                    val bufferedWriter = BufferedWriter(FileWriter(informationFile))
                     bufferedWriter.write(information)
                     bufferedWriter.close()
 
@@ -181,6 +171,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         try {
                             if (File(ziPath).exists()) {
                                 zipName = uploadZip(client, File(ziPath))
+                                assert(zipName != "")
                             }
                             client.close()
 
@@ -189,13 +180,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                             sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
 
-                            file1.delete()
-                            file2.delete()
-                            file3.delete()
-                            file4.delete()
-                            val fileZ = File(ziPath)
-                            fileZ.delete()
-
+                            audioFile.delete()
+                            firstPicture.delete()
+                            secondPicture.delete()
+                            informationFile.delete()
+                            val zipFile = File(ziPath)
+                            zipFile.delete()
                             Log.i("EOU", "upload ended")
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -206,13 +196,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                 vibreur.vibration(this@Work2Activity, 330)
 
-                val pm = this@Work2Activity.packageManager
-                val componentName = ComponentName(this@Work2Activity, SmsReceiver::class.java)
-                pm.setComponentEnabledSetting(
-                    componentName,
-                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                    PackageManager.DONT_KILL_APP
-                )
+                activateSMSReceiver(this@Work2Activity)
 
                 Log.d("emergencyIntent", intent.hasExtra("emergency").toString())
                 if(intent.hasExtra("emergency")) {
@@ -222,7 +206,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     startActivity(intent)
                     finish()
                 }
-
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)
                 startActivity(intent)
             }
@@ -232,7 +215,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     /***
      * function to get Location of Aide's phone
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     @SuppressLint("MissingPermission")
     private fun checkForLocation() {
@@ -250,6 +233,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         }
+        assert(hasGps || hasNetwork)
         getLocation() //TODO Test this
     }
 
@@ -325,11 +309,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param [file] the zip file to upload
      * @return the final name of the file to put in the download URL
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 05-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     suspend fun uploadZip(client: HttpClient, file: File): String {
-        val newName = UUID.randomUUID().toString().substring(0..24)
-        val finalName = "$newName.zip"
+        require(file.exists())
+        val finalName = generateRandomName()
         val aesKey = SecurityUtils.getAESKey()
         val encryptedData = SecurityUtils.encryptDataAes(file.readBytes(), aesKey)
         val signature = SecurityUtils.signFile(encryptedData)
@@ -344,13 +328,26 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
+     * Generates a random name with randomUUID generator of a size of nameSize
+     * @return the new name of the file
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
+     */
+    private fun generateRandomName(): String {
+        val nameSize = 25
+        val newName = UUID.randomUUID().toString().substring(0 until nameSize)
+        return "$newName.zip"
+    }
+
+    /**
      * Encrypt the AES key (that encrypts the data) with the RSA public key
      * @param [aesKey] The AES key retrieved in the Android Keystore
      * @return the encrypted AES key as a String
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private fun encryptAESKeyWithRSA(aesKey: SecretKey) : String {
+        check(userData.pubKey != "")
         return android.util.Base64.encodeToString(
                 SecurityUtils.encryptAESKey(
                     SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
@@ -366,25 +363,38 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param [encryptedData] the encrypted data of the zip file
      * @param [finalName] the final name of the file
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private suspend fun uploadFileRequest(client: HttpClient, encryptedData: ByteArray,
                                           finalName: String) {
         client.post("$URLServer/upload") {
-            setBody(MultiPartFormDataContent(
-                formData {
-                    append("description", "zipped files")
-                    append("zip", encryptedData, Headers.build {
-                        append(HttpHeaders.ContentType, "application/zip")
-                        append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
-                    })
-                },
-                boundary = "WebAppBoundary"
-            ))
+            configureUploadRequestBody(this, encryptedData, finalName) // test this
             onUpload { bytesSentTotal, contentLength ->
                 println("Sent $bytesSentTotal bytes from $contentLength")
             }
         }
+    }
+
+    /**
+     * Configure the Body of the HttpRequest
+     * @param [httpRB] the RequestBuilder
+     * @param [encryptedData] the encrypted data of the zip file
+     * @param [finalName] the final name of the file
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
+     */
+    private fun configureUploadRequestBody(httpRB: HttpRequestBuilder, encryptedData: ByteArray,
+                                       finalName: String) {
+        httpRB.setBody(MultiPartFormDataContent(
+            formData {
+                append("description", "zipped files")
+                append("zip", encryptedData, Headers.build {
+                    append(HttpHeaders.ContentType, "application/zip")
+                    append(HttpHeaders.ContentDisposition, "filename=\"$finalName\"")
+                })
+            },
+            boundary = "WebAppBoundary"
+        ))
     }
 
     /***
@@ -429,6 +439,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * Manages when zipFiles meet a directory
      * @param [file] the file in the sourceFile list
      * @param [zipOut] the zip output stream
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private fun ifZipDirectory(file: File, zipOut: ZipOutputStream) {
         val path = file.name+File.separator
@@ -442,6 +454,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param [file] the next entry
      * @param [zipOut] the zipOutputStream
      * @param [path] the path of the file
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private fun setEntry(file: File, zipOut: ZipOutputStream, path: String) {
         val entry = ZipEntry(path)
@@ -457,6 +471,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param [parent] the parent path of the file
      * @param [zipOut] the zipOutputStream
      * @param [data] the ByteArray buffer
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private fun writeEntryArchive(file: File, parent: String, zipOut: ZipOutputStream,
                                   data: ByteArray) {
@@ -489,16 +505,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+        grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(requestCode == 1) {
-            if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))
                 checkForLocation()
-            }
         } else {
             Toast.makeText(this, "Location permission was denied", Toast.LENGTH_SHORT).show()
         }
