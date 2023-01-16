@@ -31,7 +31,7 @@ import java.security.PublicKey
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 08-01-2023)
+ * @version 1.2 (updated on 16-01-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -58,8 +58,6 @@ class AidantActivity : AppCompatActivity() {
 
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
         val btnFiles: Button = findViewById(R.id.btn_files)
-        //val btnTiers: Button = findViewById(R.id.btn_tiers)
-
 
         userData = application as UserData
         userData.loadData()
@@ -142,16 +140,7 @@ class AidantActivity : AppCompatActivity() {
                         "sur le serveur, veuillez effectuer une capture de contexte.", vibreur)
             }
         }
-
-        /*btnTiers.setOnClickListener {
-            //tiers()
-        }*/
     }
-
-    /*fun tiers() {
-        vibreur.vibration(this, 200)
-        userData.loadData()
-    }*/
 
     /**
      * Sends two get request to the server and retrieve the encrypted data and aesKey.
@@ -279,8 +268,6 @@ class AidantActivity : AppCompatActivity() {
             }
             if (userData.log != null) setLogAppearance(userData, tvLog)
 
-            // Bouton Tiers :
-            /* TODO afficher le bouton Tiers si le document zip est présent dans les downloads */
             logHandler.postDelayed(this, 250)
         }
     }
