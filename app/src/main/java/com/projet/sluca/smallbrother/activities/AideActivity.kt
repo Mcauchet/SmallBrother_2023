@@ -238,7 +238,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     /**
      * Updates the private mode timer
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private fun updatePrivateTimer() {
         val min = (userData.delai / 60000).toInt()
