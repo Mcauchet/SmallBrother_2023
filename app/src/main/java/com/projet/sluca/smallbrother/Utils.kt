@@ -345,10 +345,11 @@ fun setLogAppearance(userData: UserData, tvLog: TextView) {
  * @param [apercu] the picture preview
  * @param [userData] the user's data
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 16-01-2023)
  */
 fun showPicture(apercu: ImageView, userData: UserData) {
     val path = userData.path + "/SmallBrother/photo_aide.jpg"
+    assert(path != "/SmallBrother/photo_aide.jpg")
     val file = File(path)
     if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
 }

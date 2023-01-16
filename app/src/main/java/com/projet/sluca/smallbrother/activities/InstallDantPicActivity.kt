@@ -47,6 +47,7 @@ class InstallDantPicActivity : AppCompatActivity() {
             vibreur.vibration(this, 100)
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             intent.putExtra("requestCode", 7)
+            assert(intent.hasExtra("requestCode"))
             startActivityForResult(intent, 7)
         }
 
