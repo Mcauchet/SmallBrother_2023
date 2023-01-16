@@ -166,11 +166,11 @@ class AidantActivity : AppCompatActivity() {
         val aesBody: String = client.get("$URLServer/aes/${userData.urlToFile}").body()
         val signature: String = client.get("$URLServer/sign/${userData.urlToFile}").body()
         val aesEncKey: ByteArray = Base64.decode(aesBody, Base64.NO_WRAP)
-        if(SecurityUtils.verifyFile(zipDataByteArray,
+        if(!SecurityUtils.verifyFile(zipDataByteArray,
                 SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
                 Base64.decode(signature, Base64.NO_WRAP))
-        ) Log.d("file verified", "ok")
-        else return
+        ) return
+        Log.d("file verified", "ok")
         val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey)
         file.writeBytes(decryptedData)
         successDl = true
@@ -197,7 +197,7 @@ class AidantActivity : AppCompatActivity() {
      * Get the Download directory and create a file in it which stores the zip data from the server
      * @return the created file
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private fun createDestinationFile(): File {
         val dir = Environment
@@ -205,6 +205,9 @@ class AidantActivity : AppCompatActivity() {
             .absolutePath
         val file = File(dir, "SmallBrother_Aide_${userData.urlToFile}.zip")
         file.createNewFile()
+        require(file.exists()) {
+            "The zip archive file could not be created"
+        }
         return file
     }
 

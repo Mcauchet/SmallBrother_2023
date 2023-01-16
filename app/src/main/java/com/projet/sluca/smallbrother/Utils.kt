@@ -244,19 +244,20 @@ fun redirectRole(context: Context, userData: UserData) {
  * @param [name] the name of the aidant
  * @param [namePartner] the name of the aidé
  * @param [telephone] the phone number of the aidé
+ * @param [context] the Context of the application
+ * @param [userData] the user's data
+ * @param [vibreur] the phone Vibration system
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 04-01-2023)
  */
 fun checkInputs(name: String, namePartner: String, telephone: String, context: Context,
                         userData: UserData, vibreur: Vibration) {
     when {
-        telephone.length > 10 || !telephone.matches("".toRegex()) && !telephone.startsWith("04")
+        telephone.length > 10 || telephone.matches("".toRegex()) || !telephone.startsWith("04")
         -> message(context, context.getString(R.string.error01), vibreur)
 
         name.matches("".toRegex()) || telephone.matches("".toRegex())
-        -> message(context, context.getString(R.string.error03), vibreur)
-
-        namePartner.matches("".toRegex()) || telephone.matches("".toRegex())
+                || namePartner.matches("".toRegex())
         -> message(context, context.getString(R.string.error03), vibreur)
 
         else -> registerData(name, namePartner, telephone, userData, context)
@@ -268,16 +269,29 @@ fun checkInputs(name: String, namePartner: String, telephone: String, context: C
  * @param [name] the name of the user
  * @param [namePartner] the name of the partner
  * @param [telephone] the phone number of the partner
+ * @param [userData] the user's data
+ * @param [context] the Context of the application
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 16-01-2023)
  */
 fun registerData(name: String, namePartner: String, telephone: String, userData: UserData,
                  context: Context) {
+    require(name.isNotBlank() && telephone.isNotBlank() && namePartner.isNotBlank())
     userData.version = getAppVersion(context)
     userData.nom = name
     userData.nomPartner = namePartner
     userData.telephone = telephone
     userData.saveData(context)
+    redirectAfterRegister(userData, context)
+}
+
+/**
+ * Redirects the user after registering his datas
+ * @param [userData] the user's data
+ * @param [context] the Context of the application
+ */
+private fun redirectAfterRegister(userData: UserData, context: Context) {
+    require(userData.role == "Aidant" || userData.role == "Aidé")
     if (userData.role == "Aidant") {
         val intent = Intent(context, InstallDantPicActivity::class.java)
         startActivity(context, intent, null)
@@ -289,6 +303,7 @@ fun registerData(name: String, namePartner: String, telephone: String, userData:
 
 /**
  * Get the app version
+ * @param [context] the Context of the application
  * @return the app version as a String
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 04-01-2023)
@@ -311,6 +326,8 @@ fun getAppVersion(context: Context): String {
 
 /**
  * Set the log appearance
+ * @param [userData] the user's data
+ * @param [tvLog] the Log TextView
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 04-01-2023)
  */
@@ -325,6 +342,8 @@ fun setLogAppearance(userData: UserData, tvLog: TextView) {
 
 /**
  * Shows the Aide's picture if it exists
+ * @param [apercu] the picture preview
+ * @param [userData] the user's data
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 04-01-2023)
  */
@@ -336,6 +355,7 @@ fun showPicture(apercu: ImageView, userData: UserData) {
 
 /**
  * Get the current time and format it
+ * @param [format] the format of the date
  * @return The date as a String
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 08-01-2023)

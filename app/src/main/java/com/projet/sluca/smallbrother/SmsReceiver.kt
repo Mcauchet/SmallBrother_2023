@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 05-01-2023)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 16-01-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -92,7 +92,6 @@ class SmsReceiver : BroadcastReceiver() {
             return
         }
 
-        //TODO see if aidant ever uses this, otherwise add role check for aide
         if (userData.bit == 1) // Private mode ON
         {
             if (clef == "[#SB02]") userData.bit = 2
@@ -141,11 +140,9 @@ class SmsReceiver : BroadcastReceiver() {
     }
 
     companion object {
-        var numero: String? = null // Retiendra le numéro de l'envoyeur.
-        var clef: String? = null // Retiendra le mot-clef du sms.
-
-        lateinit var tempsrestant: String // Retiendra le temps restant de Mode Privé pour l'Aidant.
-
-        lateinit var userData: UserData// Liaison avec les données globales de l'utilisateur.
+        var numero: String? = null
+        var clef: String? = null
+        lateinit var tempsrestant: String
+        lateinit var userData: UserData
     }
 }
