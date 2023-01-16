@@ -121,7 +121,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
         if (!isChecked && userData.prive) {
             message(this, getString(R.string.message11), vibreur)
-            userData.delai = 0
+            userData.delay = 0
             updateAideInfo()
         }
     }
@@ -140,7 +140,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                 val privateTime = getPrivateModeDuration(input)
                 val txtConfirm = getString(R.string.message10).replace("§%", privateTime.toString())
                 message(this, txtConfirm, vibreur)
-                userData.delai = privateTime * 60000
+                userData.delay = privateTime * 60000
                 updateAideInfo()
             }
             .setNegativeButton(getString(R.string.btn_annuler)) { dialog, _ ->
@@ -211,7 +211,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private fun warnAidantOfPrivateMode() {
         var sms = getString(R.string.smsys07)
         sms = sms.replace("§%", userData.nom)
-        val restencore: Int = ((userData.delai / 60000)+1).toInt()
+        val restencore: Int = ((userData.delay / 60000)+1).toInt()
         val waitage = restencore.toString()
         sms = sms.replace("N#", waitage)
         sendSMS(this@AideActivity, sms, userData.telephone, vibreur)
@@ -241,8 +241,8 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
      * @version 1.2 (Updated on 16-01-2023)
      */
     private fun updatePrivateTimer() {
-        val min = (userData.delai / 60000).toInt()
-        val sec = (userData.delai / 1000).toInt() - min * 60
+        val min = (userData.delay / 60000).toInt()
+        val sec = (userData.delay / 1000).toInt() - min * 60
         var secSTG = sec.toString()
         if (sec < 10) secSTG = "0$secSTG"
         val txt = "$min\'$secSTG"
@@ -256,8 +256,8 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
      */
     private fun updatePrivateMode() {
         if (!userData.prive) return
-        userData.subDelai(250)
-        if (userData.delai <= 0) exitPrivateMode()
+        userData.subDelay(250)
+        if (userData.delay <= 0) exitPrivateMode()
         else updatePrivateTimer()
     }
 

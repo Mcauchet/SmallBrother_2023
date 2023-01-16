@@ -22,8 +22,8 @@ import java.util.*
  * @property nomPartner: other one's name
  * @property telephone: other one's phone (if on aide's phone, telephone = aidant's phone number)
  * @property motion: Is the user moving
- * @property prive: DND mode
- * @property delai: time spent in DND mode
+ * @property prive: Private mode
+ * @property delay: time spent in Private mode
  * @property esquive: avoid redundant handlers for AideActivity
  * @property log: log content
  * @property canGoBack: indicates if going back is possible
@@ -31,12 +31,12 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 04-01-2023)
+ * @version 1.2 (updated on 16-01-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
     var nomPartner: String = "", var telephone: String = "", var motion: Boolean = false,
-    var prive: Boolean = false, var delai: Long = 0, var esquive: Boolean = false,
+    var prive: Boolean = false, var delay: Long = 0, var esquive: Boolean = false,
     var log: String? = null, var canGoBack: Boolean = true, var bit: Int = 0,
     var pubKey: String = ""
 ) : Application() {
@@ -47,8 +47,6 @@ data class UserData(
     var path: String = ""
 
     private val file = "donnees.txt"
-    private val fiche = "fiche_aide.txt" // fiche de l'Aidé
-    private val date = "date.txt" // date de création de la fiche de l'Aidé
 
     val url = "https://projects.info.unamur.be/geras/projects/smallbrother/"
 
@@ -132,14 +130,13 @@ data class UserData(
      *
      * @return true if data loaded, false otherwise
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     fun loadData(): Boolean {
         val data = File(this.filesDir, "SmallBrother/$file")
         if (data.exists() && data.canRead()) {
             try {
-                retrieveData(data)
-                return true
+                retrieveData(data) //test this (retrieveData returns true or false)
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             } catch (e: IOException) {
@@ -152,21 +149,34 @@ data class UserData(
     /**
      * Retrieve the data written in the data file
      * @param [file] the file where the data are
+     * @return true if the data were retrieved, false otherwise
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
-    private fun retrieveData(file: File) {
-        val br = BufferedReader(FileReader(file))
-        val dataLine = IOUtils.toString(br)
-        val dataTab: Array<String> = dataLine.split("\r").toTypedArray()
-        Log.d("DATATAB0", dataTab[0]);Log.d("DATATAB1", dataTab[1]);Log.d("DATATAB2", dataTab[2])
-        Log.d("DATATAB3", dataTab[3]);Log.d("DATATAB4", dataTab[4]);Log.d("DATATAB5", dataTab[5])
+    private fun retrieveData(file: File): Boolean {
+        require(file.exists())
+        val dataTab: Array<String> = readDataFile(file)
+        if(dataTab.size != 6) return false
         version = dataTab[0]
         role = dataTab[1]
         nom = dataTab[2]
         telephone = dataTab[3]
         pubKey = dataTab[4]
         nomPartner = dataTab[5]
+        return true
+    }
+
+    /**
+     * Read the data file and returns it as an Array of String
+     * @param [file] the read file
+     * @return the data as an array of String
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
+     */
+    private fun readDataFile(file:File): Array<String> {
+        val br = BufferedReader(FileReader(file))
+        val dataLine = IOUtils.toString(br)
+        return dataLine.split("\r").toTypedArray()
     }
 
     /***
@@ -213,109 +223,13 @@ data class UserData(
     }
 
     /***
-     * subDelai subtracts a number from the remaining delay in private mode
+     * subDelay subtracts a number from the remaining delay in private mode
      *
      * @param [sub] the time to subtract
      * @see [AideActivity.reloadLog] for usage
      */
-    fun subDelai(sub: Long) {
-        delai = delai.minus(sub)
+    fun subDelay(sub: Long) {
+        delay = delay.minus(sub)
     }
-
-    //TODO delete this code if we don't use the fiche
-    /***
-     * createFiche creates the file containing all the "Aidé"'s information
-     *
-     * @param [context] context of the activity running
-     */
-    /*fun createFiche(context: Context?) {
-        var texte = "" // Futur contenu du fichier texte.
-        val champs = arrayOf(
-            "Concerne : Mr/Mme ... ",
-            "Ses centres d'intérêt : ",
-            "Ses médicaments : ",
-            "Son médecin traitant : ",
-            "Sa famille se compose de : ",
-            "Ses handicaps : ",
-            "Ses allergies : ",
-            "Capable de solliciter de l’aide à des passants ? : ",
-            "La personne de confiance à joindre : "
-        )
-
-        // Assemblage du contenu en un String.
-        for (champ in champs) {
-            texte += champ + "\r\r"
-        }
-        Log.d("FOREACHLOOP", texte)
-
-        // Enregistrement de la fiche :
-        val fichette = File("$path/SmallBrother/$fiche")
-        writeFile(fichette, texte, context)
-        try {
-            Runtime.getRuntime().exec("chmod 777 $path/SmallBrother/$fiche")
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        // Mémorisation de la date de création de la fiche :
-        val datation = File("$path/SmallBrother/$date")
-        writeFile(datation, toDayte, context)
-    }*/
-
-    // -> Centralisation de l'écriture de fichier
-    /***
-     * writeFile creates the file and writes the text in the file (text and file in parameters)
-     *
-     * @param [file] the file to create, nothing happens if file already exists
-     * @param [texte] the text to write in [file]
-     * @param [context] the context of the activity running
-     */
-    /*private fun writeFile(file: File, texte: String?, context: Context?) {
-        try {
-            if (file.exists()) return // Créer uniquement si non déjà existant.
-            file.createNewFile()
-            // Ecriture.
-            val writer = BufferedWriter(FileWriter(file, true))
-            writer.write(texte)
-            writer.close()
-            MediaScannerConnection.scanFile(context, arrayOf(file.toString()), null, null)
-            Log.d("WriteFile", texte.toString())
-        } catch (e: IOException) {
-            Log.e("WRITEFILE", e.toString())
-        }
-    }*/
-
-    //private val toDayte: String = DateFormat.getDateTimeInstance().format(Date())
-
-    /***
-     * dateFichier retrieves the modification date of a file given his path and transforms it
-     * into a string
-     *
-     * @param [path] the path of the file
-     * @return the date of the last modification as a String
-     * @see [pleineFiche] for usage
-     */
-    /*private fun dateFichier(path: String): String {
-        val file = File(path)
-        val lastModDate = Date(file.lastModified())
-        return lastModDate.toString()
-    }*/
-
-    /***
-     * pleineFiche checks if the "Aidé's fiche" exists (and is completed)
-     *
-     * @return true if the fiche exists and is completed, false otherwise
-     * @see [AidantActivity.reloadLog] for usage
-     */
-    /*fun pleineFiche(): Boolean {
-        // Chargement du fichier TXT retenant la date de création de la fiche de l'Aidé.
-        val dataD = File("$path/SmallBrother/$date")
-        val dataF = File("$path/SmallBrother/$fiche")
-
-        return dataD.exists()
-                && dataF.exists()
-                && (dateFichier("$path/SmallBrother/$date")
-                != dateFichier("$path/SmallBrother/$fiche"))
-    }*/
 
 }
