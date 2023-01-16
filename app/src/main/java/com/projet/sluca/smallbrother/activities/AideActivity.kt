@@ -48,6 +48,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         userData = application as UserData
         userData.loadData()
+        require(userData.role == "Aidé")
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
@@ -79,14 +80,12 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys03).replace("§%", userData.nom)
             sendSMS(this, sms, userData.telephone, vibreur)
-
             message(this, getString(R.string.message04), vibreur)
             userData.refreshLog(16)
         }
 
         btnCall.setOnClickListener {
             vibreur.vibration(this, 100)
-
             val callIntent = Intent(Intent.ACTION_CALL).apply {
                 data = Uri.parse("tel:" + userData.telephone)
             }
@@ -187,18 +186,18 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     /**
      * Refresh UI based on Private mode state
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 16-01-2023)
      */
     private fun refreshUI() {
         if(userData.prive) {
-                btnPrivate.setTextColor(Color.parseColor("#b30000"))
-                ivLogo.setImageResource(R.drawable.logoff)
-                btnPrivate.isChecked = true
+            tvIntituleDelay.text = getString(R.string.intitule_delai)
+            btnPrivate.setTextColor(Color.parseColor("#b30000"))
+            ivLogo.setImageResource(R.drawable.logoff)
+            btnPrivate.isChecked = true
         } else {
             btnPrivate.setTextColor(Color.parseColor("#597854"))
             ivLogo.setImageResource(R.drawable.logo2)
             btnPrivate.isChecked = false
-
             tvDelay.text = " "
             tvIntituleDelay.text = " "
         }
@@ -244,7 +243,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private fun updatePrivateTimer() {
         val min = (userData.delai / 60000).toInt()
         val sec = (userData.delai / 1000).toInt() - min * 60
-        tvIntituleDelay.text = getString(R.string.intitule_delai)
         var secSTG = sec.toString()
         if (sec < 10) secSTG = "0$secSTG"
         val txt = "$min\'$secSTG"
