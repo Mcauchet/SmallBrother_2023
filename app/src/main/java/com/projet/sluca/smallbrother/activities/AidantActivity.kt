@@ -61,7 +61,7 @@ class AidantActivity : AppCompatActivity() {
 
         userData = application as UserData
         userData.loadData()
-        require(userData.role == "Aidant")
+        check(userData.role == "Aidant")
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
@@ -195,9 +195,7 @@ class AidantActivity : AppCompatActivity() {
             .absolutePath
         val file = File(dir, "SmallBrother_Aide_${userData.urlToFile}.zip")
         file.createNewFile()
-        require(file.exists()) {
-            "The zip archive file could not be created"
-        }
+        assert(file.exists())
         return file
     }
 

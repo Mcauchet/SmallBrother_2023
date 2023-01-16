@@ -291,7 +291,7 @@ fun registerData(name: String, namePartner: String, telephone: String, userData:
  * @param [context] the Context of the application
  */
 private fun redirectAfterRegister(userData: UserData, context: Context) {
-    require(userData.role == "Aidant" || userData.role == "Aidé")
+    check(userData.role == "Aidant" || userData.role == "Aidé")
     if (userData.role == "Aidant") {
         val intent = Intent(context, InstallDantPicActivity::class.java)
         startActivity(context, intent, null)

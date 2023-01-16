@@ -48,7 +48,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         userData = application as UserData
         userData.loadData()
-        require(userData.role == "Aidé")
+        check(userData.role == "Aidé")
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 

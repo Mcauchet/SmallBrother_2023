@@ -29,6 +29,7 @@ class InstallActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userData = application as UserData
+        check(userData.role == "Aidant" || userData.role == "Aidé")
 
         if(userData.role == "Aidé") setContentView(R.layout.activity_installde)
         else setContentView(R.layout.activity_installdant)
