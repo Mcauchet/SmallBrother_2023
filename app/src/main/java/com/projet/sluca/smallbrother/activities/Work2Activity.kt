@@ -425,7 +425,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             if(file.isDirectory) {
                 ifZipDirectory(file, zipOut)
             } else {
-                if (!file.name.contains(".zip")) {
+                if (!file.name.contains(".zip") && !file.name.contains("path.txt")) {
                     writeEntryArchive(file, parentDirPath, zipOut, data)
                 } else {
                     zipOut.closeEntry()
