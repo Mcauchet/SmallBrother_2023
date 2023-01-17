@@ -17,7 +17,7 @@ const val NAME_SIZE = 25
  * manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 14-01-2023)
+ * @version 1.2 (Updated on 16-01-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -88,7 +88,8 @@ fun Route.aideDataRouting() {
                 call.response.header(
                     HttpHeaders.ContentDisposition,
                     ContentDisposition.Attachment.withParameter(
-                        ContentDisposition.Parameters.FileName, aideData.uri
+                        ContentDisposition.Parameters.FileName,
+                        aideData.uri
                     ).toString()
                 )
             }

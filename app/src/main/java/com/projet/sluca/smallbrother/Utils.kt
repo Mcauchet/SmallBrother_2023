@@ -40,7 +40,7 @@ import java.time.format.DateTimeFormatter
 import java.util.*
 
 //Edit URL Server until it is redefined in deployment
-const val URLServer = "https://24ee-138-48-114-153.eu.ngrok.io"
+const val URLServer = "https://b17e-2a02-a03f-ae4e-1900-e9b4-50f4-699f-8135.eu.ngrok.io"
 
 /***
  * Sends an SMS through the SMSManager class
@@ -48,13 +48,14 @@ const val URLServer = "https://24ee-138-48-114-153.eu.ngrok.io"
  * @param [context] context of the activity
  * @param [msg] body of the SMS
  * @param [receiver] receiver of the SMS
+ * @return true if SMS was sent, false otherwise
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 27-12-2022)
+ * @version 1.2 (Updated on 17-01-2023)
  */
-fun sendSMS(context: Context, msg: String, receiver: String, vibreur: Vibration) {
+fun sendSMS(context: Context, msg: String, receiver: String, vibreur: Vibration): Boolean {
     if (!smsAvailable(context)) {
         message(context, "Veuillez retirer le mode avion pour envoyer un SMS.", vibreur)
-        return
+        return false
     }
     val subscriptionId: Int = SmsManager.getDefaultSmsSubscriptionId()
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -64,6 +65,7 @@ fun sendSMS(context: Context, msg: String, receiver: String, vibreur: Vibration)
         @Suppress("DEPRECATION")
         SmsManager.getDefault().sendTextMessage(receiver, null, msg, sentPI(context), null)
     }
+    return true
 }
 
 /**

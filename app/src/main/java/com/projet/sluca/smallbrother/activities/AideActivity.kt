@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 08-01-2023)
+ * @version 1.2 (updated on 17-01-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -79,9 +79,10 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys03).replace("§%", userData.nom)
-            sendSMS(this, sms, userData.telephone, vibreur)
-            message(this, getString(R.string.message04), vibreur)
-            userData.refreshLog(16)
+            if(sendSMS(this, sms, userData.telephone, vibreur)) {
+                message(this, getString(R.string.message04), vibreur)
+                userData.refreshLog(16)
+            }
         }
 
         btnCall.setOnClickListener {
@@ -97,16 +98,16 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         btnEmergency.setOnClickListener {
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys08).replace("§%", userData.nom)
-            sendSMS(this, sms, userData.telephone, vibreur)
-            val workIntent = Intent(this, WorkActivity::class.java).putExtra("clef", "[#SB04]")
-            CoroutineScope(Dispatchers.Main).launch {
-                startActivity(workIntent)
+            if(sendSMS(this, sms, userData.telephone, vibreur)) {
+                val workIntent = Intent(this, WorkActivity::class.java).putExtra("clef", "[#SB04]")
+                CoroutineScope(Dispatchers.Main).launch {
+                    startActivity(workIntent)
+                }
+                val intent = Intent(Intent.ACTION_CALL).apply {
+                    data = Uri.parse("tel:${userData.telephone}")
+                }
+                startActivity(intent)
             }
-            val intent = Intent(Intent.ACTION_CALL).apply {
-                data = Uri.parse("tel:${userData.telephone}")
-            }
-            startActivity(intent)
-            message(this, getString(R.string.message05), vibreur)
         }
     }
 
@@ -162,6 +163,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private fun updateAideInfo() {
         userData.prive = !userData.prive
         userData.bit = if(userData.bit==1) 0 else 1
+        if (userData.bit == 1) userData.refreshLog(20)
         refreshUI()
         vibreur.vibration(this, 330)
     }

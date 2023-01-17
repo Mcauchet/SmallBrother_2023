@@ -3,8 +3,6 @@ package com.example.routes
 import com.example.dao.dao
 import com.example.models.Admin
 import com.example.models.ServerSession
-import com.example.security.checkCredentials
-import com.example.security.encrypt
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.freemarker.*
@@ -13,13 +11,14 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.sessions.*
 import io.ktor.server.util.*
+import org.mindrot.jbcrypt.BCrypt
 import java.io.File
 
 /**
  * manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 13-01-2023)
+ * @version 1 (Updated on 16-01-2023)
  */
 fun Route.adminRouting() {
     authenticate("auth-session") {
@@ -72,8 +71,8 @@ fun Route.adminRouting() {
                 }
                 val phone = formParameters.getOrFail("phone")
                 val dbPwd = dao.getAdmin(email)?.encPwd
-                val newAdmin = Admin(email, encrypt(newPassword, 12), phone)
-                if(dbPwd != null && checkCredentials(previousPwd, dbPwd)) {
+                val newAdmin = Admin(email, BCrypt.hashpw(newPassword, BCrypt.gensalt(12)), phone)
+                if(dbPwd != null && BCrypt.checkpw(previousPwd, dbPwd)) {
                     dao.addAdmin(newAdmin)
                 } else {
                     call.respondRedirect("/admin/editAdmin")
@@ -98,7 +97,7 @@ fun Route.adminRouting() {
             val email = formParameters.getOrFail("email")
             val pwd = formParameters.getOrFail("password")
             val dbPwd = dao.getAdmin(email)?.encPwd
-            if(dbPwd != null && checkCredentials(pwd, dbPwd)) {
+            if(dbPwd != null && BCrypt.checkpw(pwd, dbPwd)) {
                 call.sessions.set(ServerSession(email))
                 call.respondRedirect("/admin")
             } else {

@@ -31,7 +31,7 @@ import java.security.PublicKey
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 16-01-2023)
+ * @version 1.2 (updated on 17-01-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -103,9 +103,10 @@ class AidantActivity : AppCompatActivity() {
         btnSmsAidant.setOnClickListener {
             vibreur.vibration(this, 200)
             val sms = getString(R.string.smsys02).replace("§%", userData.nom)
-            sendSMS(this, sms, userData.telephone, vibreur)
-            message(this, getString(R.string.message04), vibreur)
-            userData.refreshLog(4)
+            if(sendSMS(this, sms, userData.telephone, vibreur)) {
+                message(this, getString(R.string.message04), vibreur)
+                userData.refreshLog(4)
+            }
         }
 
         btnCall.setOnClickListener {

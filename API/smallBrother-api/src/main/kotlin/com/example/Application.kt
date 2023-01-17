@@ -4,11 +4,11 @@ import com.example.dao.*
 import com.example.models.ServerSession
 import io.ktor.server.application.*
 import com.example.plugins.*
-import com.example.security.checkCredentials
 import io.ktor.http.*
 import io.ktor.server.auth.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
+import org.mindrot.jbcrypt.BCrypt
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -21,7 +21,7 @@ fun Application.module() {
             passwordParamName = "password"
             validate { credentials ->
                 val dbPwd = dao.getAdmin(credentials.name)?.encPwd
-                if (dbPwd != null && checkCredentials(credentials.password, dbPwd)) {
+                if (dbPwd != null && BCrypt.checkpw(credentials.password, dbPwd)) {
                     UserIdPrincipal(credentials.name)
                 } else {
                     null

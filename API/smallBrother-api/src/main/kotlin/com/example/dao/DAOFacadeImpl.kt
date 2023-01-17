@@ -2,11 +2,11 @@ package com.example.dao
 
 import com.example.dao.DatabaseFactory.dbQuery
 import com.example.models.*
-import com.example.security.encrypt
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.CurrentDateTime
+import org.mindrot.jbcrypt.BCrypt
 
 /***
  * DAOFacadeImpl implements the DAOFacade methods.
@@ -108,7 +108,7 @@ val dao: DAOFacade = DAOFacadeImpl().apply {
             addAdmin(
                 Admin(
                     "adminSB@hotmail.com",
-                    encrypt("123456", 12),
+                    BCrypt.hashpw("123456", BCrypt.gensalt(12)),
                     ""
                 )
             )

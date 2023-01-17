@@ -217,6 +217,7 @@ data class UserData(
             16 -> getString(R.string.log16)
             18 -> getString(R.string.log18)
             19 -> getString(R.string.log19).replace("N#", SmsReceiver.tempsrestant)
+            20 -> getString(R.string.log20)
             else -> ""
         }
         log = texte
