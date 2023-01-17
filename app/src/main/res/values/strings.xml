@@ -182,6 +182,10 @@
     <string name="nomAide">Nom de l\'Aidé</string>
     <string name="blank" />
     <string name="duree_prive_base">15</string>
-    <string name="aide_needs_help">§% a besoin d\'aide immédiatement. Il est actuellement en ligne avec la police.</string>
+    <string name="aide_needs_help">§% a besoin d\'aide immédiatement. Vous pouvez récupérer ses données.</string>
+    <string name="contentDesc_photo">Boutton photo</string>
+    <string name="contentDesc_reduire">Bouton Réduire</string>
+    <string name="contentDesc_log">Cadre du log</string>
+    <string name="contentDesc_reglages">Bouton Réglages</string>
 
 </resources>

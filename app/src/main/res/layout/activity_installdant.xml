@@ -26,19 +26,20 @@ android:background="@drawable/ombreshape">
     android:background="@drawable/metalliqueshape" >
 
     <!-- Installation -->
+
+    <!-- Note explicative 2 -->
     <TextView
         android:id="@+id/intitule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="4dp"
+        android:layout_marginRight="8dp"
         android:orientation="vertical"
         android:text="@string/installDant"
         android:textColor="#404040"
         android:textSize="21sp" />
 
-    <!-- Note explicative 2 -->
     <com.uncopt.android.widget.text.justify.JustifiedTextView
         android:id="@+id/install_note2"
         android:layout_width="match_parent"

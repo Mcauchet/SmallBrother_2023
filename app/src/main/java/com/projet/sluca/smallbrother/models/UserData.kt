@@ -31,7 +31,7 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 16-01-2023)
+ * @version 1.2 (updated on 17-01-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -195,7 +195,7 @@ data class UserData(
      * refreshLog sets the log accordingly to the code parameter
      * @param [code] the code associated to the log message
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 17-01-2023)
      */
     fun refreshLog(code: Int) {
         var texte = "${getCurrentTime("HH:mm")} : "

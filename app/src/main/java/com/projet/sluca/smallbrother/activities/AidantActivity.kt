@@ -263,7 +263,6 @@ class AidantActivity : AppCompatActivity() {
                 10 -> userData.refreshLog(13)
             }
             if (userData.log != null) setLogAppearance(userData, tvLog)
-
             logHandler.postDelayed(this, 250)
         }
     }

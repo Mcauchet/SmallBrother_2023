@@ -39,7 +39,7 @@
             <!-- Boutons haut-gauche -->
             <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_weight=".3"
+                android:layout_weight=".32"
                 android:layout_width="0dip"
                 android:orientation="horizontal"
                 android:gravity="start" >
@@ -47,13 +47,13 @@
                 <!-- Bouton Réglages -->
                 <Button
                     android:id="@+id/btn_reglages"
-                    android:layout_height="35dp"
-                    android:layout_width="35dp"
+                    android:layout_height="48dp"
+                    android:layout_width="48dp"
                     android:background="@drawable/rouage"
+                    android:contentDescription="@string/contentDesc_reglages"
                     android:alpha="0.5"
                     android:orientation="vertical"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
+                    android:layout_marginEnd="8dp"
                     android:shadowColor="#000000"
                     android:shadowDx="0"
                     android:shadowDy="0"
@@ -63,13 +63,12 @@
                 <!-- Bouton Photo -->
                 <Button
                     android:id="@+id/btn_photo"
-                    android:layout_height="35dp"
-                    android:layout_width="35dp"
+                    android:layout_height="48dp"
+                    android:layout_width="48dp"
+                    android:contentDescription="@string/contentDesc_photo"
                     android:background="@drawable/photo"
                     android:alpha="0.6"
                     android:orientation="vertical"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
                     android:shadowColor="#000000"
                     android:shadowDx="0"
                     android:shadowDy="0"
@@ -81,7 +80,7 @@
             <!-- Logo -->
             <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_weight=".4"
+                android:layout_weight=".3"
                 android:layout_width="0dip"
                 android:orientation="horizontal"
                 android:gravity="center" >
@@ -107,8 +106,9 @@
 
                 <Button
                     android:id="@+id/btn_reduire"
-                    android:layout_height="35dp"
-                    android:layout_width="35dp"
+                    android:layout_height="48dp"
+                    android:layout_width="48dp"
+                    android:contentDescription="@string/contentDesc_reduire"
                     android:background="@drawable/reduire"
                     android:alpha="0.33"
                     android:orientation="vertical"
@@ -152,28 +152,21 @@
             android:gravity="center"
             android:background="@drawable/metalliqueshape" >
 
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
-                android:orientation="vertical"
-                tools:ignore="Suspicious0dp">
-
                 <com.uncopt.android.widget.text.justify.JustifiedTextView
                     android:id="@+id/log_texte"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
-                    android:text=" "
-                    android:textStyle="italic"
+                    android:contentDescription="@string/contentDesc_log"
+                    android:orientation="vertical"
+                    android:text="@string/blank"
                     android:textColor="#404040"
-                    android:textSize="20sp" />
-
-            </LinearLayout>
+                    android:textSize="20sp"
+                    android:textStyle="italic"
+                    tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>
 

@@ -332,14 +332,14 @@ fun getAppVersion(context: Context): String {
  * @param [userData] the user's data
  * @param [tvLog] the Log TextView
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 17-01-2023)
  */
 fun setLogAppearance(userData: UserData, tvLog: TextView) {
     val sb = SpannableStringBuilder(userData.log)
     val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
     val bss = StyleSpan(Typeface.BOLD)
-    sb.setSpan(fcs, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-    sb.setSpan(bss, 0, 19, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+    sb.setSpan(fcs, 0, 7, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+    sb.setSpan(bss, 0, 7, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
     tvLog.text = sb
 }
 
