@@ -6,7 +6,6 @@ import android.os.*
 import android.util.Base64
 import android.util.Log
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog.Builder
@@ -128,8 +127,9 @@ class AidantActivity : AppCompatActivity() {
                     intent.getStringExtra("url").toString() else ""
                 CoroutineScope(Dispatchers.IO).launch {
                     getDataOnServer(client, file)
-                    if(successDl) message(this@AidantActivity, "Téléchargement du fichier terminé, " +
-                            "il se trouve dans votre dossier de téléchargement.", vibreur)
+                    Looper.prepare()
+                    if(successDl) message(this@AidantActivity, "Téléchargement du fichier terminé, "
+                            + "il se trouve dans votre dossier de téléchargement.", vibreur)
                     else message(this@AidantActivity, "Erreur lors du téléchargement. Veuillez " +
                             "réessayer ou capturer le contexte à nouveau.", vibreur)
                 }

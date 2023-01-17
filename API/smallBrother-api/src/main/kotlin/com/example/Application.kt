@@ -2,13 +2,16 @@ package com.example
 
 import com.example.dao.*
 import com.example.models.ServerSession
-import io.ktor.server.application.*
 import com.example.plugins.*
 import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.callloging.*
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.sessions.*
 import org.mindrot.jbcrypt.BCrypt
+import org.slf4j.event.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -33,7 +36,7 @@ fun Application.module() {
         }
         session<ServerSession>("auth-session") {
             validate { session ->
-                if(session.email == "adminSB@hotmail.com") session
+                if (session.email == "adminSB@hotmail.com") session
                 else null
             }
             challenge {
@@ -45,6 +48,16 @@ fun Application.module() {
         cookie<ServerSession>("server_session") {
             cookie.path = "/"
             cookie.maxAgeInSeconds = 60
+        }
+    }
+    install(CallLogging) {
+        level = Level.INFO
+        filter { call -> call.request.path().startsWith("/") }
+        format { call ->
+            val status = call.response.status()
+            val httpMethod = call.request.httpMethod.value
+            val contentType = call.request.headers["Content-Type"]
+            "Status: $status, HttpMethod: $httpMethod, Content-Type: $contentType"
         }
     }
     DatabaseFactory.init(environment.config)

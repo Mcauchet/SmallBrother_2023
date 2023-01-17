@@ -10,14 +10,15 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
 
-const val MAX_SIZE = 2000000 //2MB
+const val MAX_SIZE = 3000000 //3MB
 const val NAME_SIZE = 25
+const val EXT_SIZE = 4
 
 /***
- * manages the upload and download of aide's files
+ * Manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 16-01-2023)
+ * @version 1.2 (Updated on 17-01-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -25,20 +26,17 @@ fun Route.aideDataRouting() {
         var fileName = ""
         post {
             val multipartData = call.receiveMultipart()
-            val contentType = call.request.headers["Content-Type"] // todo check this
-                ?: return@post call.respondText("Content-Type not found", status = HttpStatusCode.NotFound)
-            println(contentType)
-            if(!contentType.contains("application/zip"))
-                return@post call.respondText("Format not valid", status = HttpStatusCode.Unauthorized)
 
             multipartData.forEachPart { part ->
                 when (part) {
                     is PartData.FormItem -> fileDescription = part.value
                     is PartData.FileItem -> {
+                        if(part.headers["Content-Type"] != "application/zip")
+                            call.respondText("Format not valid", status = HttpStatusCode.Unauthorized)
                         val extension = part.originalFileName?.substringAfterLast(".")
                         fileName = part.originalFileName as String
                         val fileBytes = part.streamProvider().readBytes()
-                        if (extension == "zip" && fileBytes.size < MAX_SIZE && fileName.length == NAME_SIZE) { // todo check this
+                        if (extension == "zip" && fileBytes.size < MAX_SIZE && fileName.length == NAME_SIZE+EXT_SIZE) {
                             File("upload/$fileName").writeBytes(fileBytes)
                         } else {
                             call.respondText("Only small zip file accepted", status = HttpStatusCode.NotAcceptable)
@@ -52,7 +50,7 @@ fun Route.aideDataRouting() {
         }
         post("/aes") {
             if (call.request.headers["Content-Type"] != "application/json") {
-                call.respondText("Format not valid", status = HttpStatusCode.Unauthorized) // todo check this
+                call.respondText("Format not valid", status = HttpStatusCode.Unauthorized)
             }
             val aideData = call.receive<AideData>()
             dao.addAideData(aideData)
@@ -97,44 +95,4 @@ fun Route.aideDataRouting() {
             call.respondFile(file)
         }
     }
-
-    //TODO delete this if no use found
-    /*route("/aideData") {
-
-        get {
-            val aideDatas: List<AideData> = dao.allAideData()
-            if(aideDatas.isEmpty()) call.respondText("Database Empty", status = HttpStatusCode.NoContent)
-            else call.respond(aideDatas)
-        }
-
-        get("/{key?}") {
-            val key = call.parameters["key"]
-                ?: return@get call.respondText("Aide Data key not valid", status = HttpStatusCode.NotFound)
-            val aideData: AideData? = dao.getAideData(key)
-            if (aideData != null) {
-                call.respond(aideData)
-            } else {
-                call.respondText("Aide Data not in database", status = HttpStatusCode.NotFound)
-            }
-        }
-
-        post {
-            val aideData = call.receive<AideData>()
-            dao.addAideData(aideData)
-            call.respondText("AideData stored correctly", status = HttpStatusCode.Created)
-        }
-
-        post("/delete/{key?}") {
-            val key = call.parameters["key"]
-                ?: return@post call.respondText("Aide Data key not valid", status = HttpStatusCode.NotFound)
-            dao.deleteAideData(key)
-            call.respondText("AideData deleted successfully", status = HttpStatusCode.Accepted)
-        }
-
-        post("delete/") {
-            dao.deleteAideDatas()
-            call.respondText("Database reset", status = HttpStatusCode.Accepted)
-        }
-
-    }*/
 }

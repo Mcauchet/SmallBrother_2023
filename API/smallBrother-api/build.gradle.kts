@@ -39,6 +39,9 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     //Templating
     implementation("io.ktor:ktor-server-freemarker:$ktorVersion")
+    implementation("io.ktor:ktor-server-call-logging-jvm:2.2.2")
+    //Log HTTPRequest
+    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
     //Allows to test parts of the Ktor application
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")

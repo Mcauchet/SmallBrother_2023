@@ -9,10 +9,8 @@ import android.hardware.camera2.*
 import android.hardware.camera2.CameraCaptureSession.CaptureCallback
 import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
-import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.service.autofill.UserData
 import android.util.Log
 import android.util.Size
 import android.view.Surface
@@ -148,7 +146,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                         e
                     )
                 }
-            }, 500)
+            }, 300)
         }
 
         override fun onDisconnected(camera: CameraDevice) {

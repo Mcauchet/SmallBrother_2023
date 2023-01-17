@@ -186,6 +186,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             informationFile.delete()
                             val zipFile = File(ziPath)
                             zipFile.delete()
+                            deleteLocation()
                             Log.i("EOU", "upload ended")
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -253,6 +254,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 requestNewLocationData()
             }
         }
+    }
+
+    private fun deleteLocation() {
+        locationGps = null
+        locationNetwork = null
     }
 
     /***

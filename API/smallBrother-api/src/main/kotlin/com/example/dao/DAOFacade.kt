@@ -7,10 +7,9 @@ import com.example.models.AideData
  * The interface of the DAO to access the database queries
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 30-11-22)
+ * @version 1 (Updated on 17-01-2023)
  */
 interface DAOFacade {
-    //TODO dev purpose, delete before prod
     suspend fun allAideData() : List<AideData>
     suspend fun getAideData(uri: String): AideData?
     suspend fun addAideData(data: AideData)

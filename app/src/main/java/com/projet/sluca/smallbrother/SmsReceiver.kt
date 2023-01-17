@@ -86,11 +86,7 @@ class SmsReceiver : BroadcastReceiver() {
             context.startActivity(intnt)
         }
 
-        //TODO for test purpose
-        if(userData.role != "Aidé") {
-            Log.d("role", userData.role.toString())
-            return
-        }
+        if(userData.role != "Aidé") return
 
         if (userData.bit == 1) // Private mode ON
         {

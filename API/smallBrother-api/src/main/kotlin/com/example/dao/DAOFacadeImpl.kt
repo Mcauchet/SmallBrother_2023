@@ -12,7 +12,7 @@ import org.mindrot.jbcrypt.BCrypt
  * DAOFacadeImpl implements the DAOFacade methods.
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 13-01-2023)
+ * @version 1 (Updated on 17-01-2023)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
@@ -27,7 +27,6 @@ class DAOFacadeImpl : DAOFacade {
         phoneNumber = row[Admins.phoneNumber],
     )
 
-    //TODO this will have to be deleted, this access all users data, only for dev purpose.
     override suspend fun allAideData(): List<AideData> = dbQuery {
         AideDatas.selectAll().map(::resultRowToAideData)
     }
