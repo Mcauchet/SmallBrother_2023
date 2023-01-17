@@ -47,8 +47,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
         userData = application as UserData
-        userData.loadData()
-        userData.loadPath()
+        userData.loadData(this)
         check(userData.role == "Aidé")
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)

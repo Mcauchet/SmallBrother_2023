@@ -65,52 +65,18 @@ data class UserData(
         if(tmpPath != null) path = tmpPath
     }
 
-    /**
-     * Save the path variable into a file
-     * @param [context] the context of the application
-     * @param [path] the path of the app's files
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 17-01-2023)
-     */
-    fun savePath(context: Context?, path: String) {
-        require(path.isNotBlank())
-        val directory = File(this.filesDir, "SmallBrother")
-        val file = File(directory, "path.txt")
-        if(!file.exists()) file.createNewFile() else return
-        writeDataInFile(file, path, context)
-    }
-
-    /**
-     * Retrieve the app's files path into the path variable
-     * @return the path as a String
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 17-01-2023)
-     */
-    fun loadPath() : String {
-        val file = File(this.filesDir, "SmallBrother/path.txt")
-        if(file.canRead() && file.exists()) {
-            try{
-                val data = readDataFile(file)
-                path = data[0]
-                return path
-            } catch (e:FileNotFoundException) {e.printStackTrace()}
-            catch (e:IOException) {e.printStackTrace()}
-        }
-        return path
-    }
-
     /***
      * saveData stores the user's data in a .txt file on the device
      *
-     * @param [context] the context of the activity running
+     * @param [context] the context of the application
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 17-01-2023)
      */
     fun saveData(context: Context?) {
         val content = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
-                nomPartner
+                nomPartner + "\r" + path
         try {
-            val directory = File(this.filesDir, "SmallBrother") // change this.filesDir into path ?
+            val directory = File(context?.filesDir, "SmallBrother") // change this.filesDir into path ?
             if (!directory.exists()) directory.mkdirs()
             val dataFile = File(directory, file)
             if(!dataFile.exists()) dataFile.createNewFile() else byeData()
@@ -162,15 +128,16 @@ data class UserData(
     /***
      * loadData fetches the donnees.txt file and sets the UserData properties accordingly
      *
+     * @param [context] the context of the application
      * @return true if data loaded, false otherwise
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 16-01-2023)
+     * @version 1.2 (Updated on 17-01-2023)
      */
-    fun loadData(): Boolean {
-        val data = File(this.filesDir, "SmallBrother/$file")
+    fun loadData(context: Context?): Boolean {
+        val data = File(context?.filesDir, "SmallBrother/$file")
         if (data.exists() && data.canRead()) {
             try {
-                retrieveData(data) //test this (retrieveData returns true or false)
+                return retrieveData(data) //test this (retrieveData returns true or false)
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             } catch (e: IOException) {
@@ -185,18 +152,19 @@ data class UserData(
      * @param [file] the file where the data are
      * @return true if the data were retrieved, false otherwise
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 16-01-2023)
+     * @version 1.2 (Updated on 17-01-2023)
      */
     private fun retrieveData(file: File): Boolean {
         require(file.exists())
         val dataTab: Array<String> = readDataFile(file)
-        if(dataTab.size != 6) return false
+        if(dataTab.size != 7) return false
         version = dataTab[0]
         role = dataTab[1]
         nom = dataTab[2]
         telephone = dataTab[3]
         pubKey = dataTab[4]
         nomPartner = dataTab[5]
+        path = dataTab[6]
         return true
     }
 

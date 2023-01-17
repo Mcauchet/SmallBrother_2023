@@ -86,7 +86,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     userData.refreshLog(3)
                     userData.byeData()
                     // Checks if the donnees.txt file is gone before restarting the install process
-                    if(!userData.loadData()){
+                    if(!userData.loadData(this)){
                         val mIntent = Intent(this, Launch1Activity::class.java)
                         startActivity(mIntent)
                     }

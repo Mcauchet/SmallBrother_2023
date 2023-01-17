@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  */
 class PhoneStatReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        userData.loadData()
+        userData.loadData(context)
         if (intent.action != Intent.ACTION_NEW_OUTGOING_CALL) processCall(context, intent)
     }
 

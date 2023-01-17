@@ -41,8 +41,6 @@ class AidantActivity : AppCompatActivity() {
 
     private val logHandler: Handler = Handler(Looper.getMainLooper())
 
-    private lateinit var flTiers: FrameLayout
-
     private var successDl: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,8 +58,7 @@ class AidantActivity : AppCompatActivity() {
         val btnFiles: Button = findViewById(R.id.btn_files)
 
         userData = application as UserData
-        userData.loadData()
-        userData.loadPath()
+        userData.loadData(this)
         check(userData.role == "Aidant")
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
@@ -73,8 +70,6 @@ class AidantActivity : AppCompatActivity() {
             .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
 
         tvLog = findViewById(R.id.log_texte)
-
-        flTiers = findViewById(R.id.contour5)
 
         reloadLog.run()
 

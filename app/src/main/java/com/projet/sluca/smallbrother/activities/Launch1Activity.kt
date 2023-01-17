@@ -54,7 +54,7 @@ class Launch1Activity : AppCompatActivity() {
      * @version 1.2 (Updated on 08-01-2023)
      */
     private fun checkFirstLaunch() {
-        if (userData.loadData()) redirectRole(this, userData)
+        if (userData.loadData(this)) redirectRole(this, userData)
         else if (userData.role != null) {
             userData.canGoBack = false
             userData.refreshLog(2)

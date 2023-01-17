@@ -24,7 +24,7 @@ class SmsReceiver : BroadcastReceiver() {
         userData = context.applicationContext as UserData
 
         val bundle = intent.extras
-        userData.loadData()
+        userData.loadData(context)
         val message = getTextFromSms(bundle)
         clef = ""
 

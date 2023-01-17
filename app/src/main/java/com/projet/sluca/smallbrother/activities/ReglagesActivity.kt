@@ -30,7 +30,7 @@ class ReglagesActivity : AppCompatActivity() {
         val btnHelp: Button = findViewById(R.id.btn_aide)
 
         userData = application as UserData
-        userData.loadData()
+        userData.loadData(this)
         check(userData.role == "Aidant")
 
 
