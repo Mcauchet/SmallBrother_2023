@@ -88,6 +88,7 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
      */
     private fun processScanResult() {
         userData.saveData(this)
+        userData.savePath(this, userData.path)
         userData.canGoBack = true
         lateinit var intent: Intent
         if (userData.role == "Aidé") {

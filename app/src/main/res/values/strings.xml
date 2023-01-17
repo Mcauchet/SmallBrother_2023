@@ -146,7 +146,7 @@
         Le traitement est en cours, veuillez patienter …
     </string>
     <string name="log11">
-        Les données de l\'aidé sont disponibles sur le serveur, vous pouvez appuyer sur le bouton "Récupérer les données §%".
+        Les données §% sont disponibles sur le serveur, vous pouvez appuyer sur le bouton "Récupérer les données §%".
     </string>
     <string name="log12">
         Votre partenaire tente de vérifier votre situation.

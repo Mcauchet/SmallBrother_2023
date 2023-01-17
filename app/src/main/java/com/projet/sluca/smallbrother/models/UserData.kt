@@ -58,11 +58,45 @@ data class UserData(
      * @param [context] the context of the activity running
      * @see Launch1Activity.onCreate
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 17-01-2023)
      */
     fun configurePath(context: Context?) {
         val tmpPath: String? = context?.filesDir?.path
         if(tmpPath != null) path = tmpPath
+    }
+
+    /**
+     * Save the path variable into a file
+     * @param [context] the context of the application
+     * @param [path] the path of the app's files
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 17-01-2023)
+     */
+    fun savePath(context: Context?, path: String) {
+        require(path.isNotBlank())
+        val directory = File(this.filesDir, "SmallBrother")
+        val file = File(directory, "path.txt")
+        if(!file.exists()) file.createNewFile() else return
+        writeDataInFile(file, path, context)
+    }
+
+    /**
+     * Retrieve the app's files path into the path variable
+     * @return the path as a String
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 17-01-2023)
+     */
+    fun loadPath() : String {
+        val file = File(this.filesDir, "SmallBrother/path.txt")
+        if(file.canRead() && file.exists()) {
+            try{
+                val data = readDataFile(file)
+                path = data[0]
+                return path
+            } catch (e:FileNotFoundException) {e.printStackTrace()}
+            catch (e:IOException) {e.printStackTrace()}
+        }
+        return path
     }
 
     /***

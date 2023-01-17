@@ -27,6 +27,7 @@ fun Route.aideDataRouting() {
             val multipartData = call.receiveMultipart()
             val contentType = call.request.headers["Content-Type"] // todo check this
                 ?: return@post call.respondText("Content-Type not found", status = HttpStatusCode.NotFound)
+            println(contentType)
             if(!contentType.contains("application/zip"))
                 return@post call.respondText("Format not valid", status = HttpStatusCode.Unauthorized)
 

@@ -61,6 +61,7 @@ class AidantActivity : AppCompatActivity() {
 
         userData = application as UserData
         userData.loadData()
+        userData.loadPath()
         check(userData.role == "Aidant")
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
