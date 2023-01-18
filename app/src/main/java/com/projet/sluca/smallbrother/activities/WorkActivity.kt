@@ -127,12 +127,12 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     }
 
                     // 10 seconds countdown
-                    object : CountDownTimer(10010, 1) {
+                    object : CountDownTimer(11000, 1) {
                         override fun onTick(millisUntilFinished: Long) {
                             // position captured at seconds 2 and 9 of the record
-                            when {
-                                millisUntilFinished > 9000 -> checkMove1 = keepMove
-                                millisUntilFinished in 1001..1999 -> checkMove2 = keepMove
+                            when (millisUntilFinished) {
+                                in 8900..9000 -> checkMove1 = keepMove
+                                in 1900..2000 -> checkMove2 = keepMove
                             }
                         }
 
@@ -222,6 +222,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             (z.toInt() * 10).toFloat()
         )
         keepMove = tmp
+        Log.d("X Y Z data", keepMove.toString())
     }
 
     override fun onSensorChanged(event: SensorEvent) {}

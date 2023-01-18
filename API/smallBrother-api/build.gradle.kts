@@ -15,6 +15,7 @@ plugins {
 
 group = "com.example"
 version = "0.0.1"
+
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
 
@@ -71,9 +72,22 @@ tasks.create("stage") {
     dependsOn("installDist")
 }
 
+tasks.withType<Jar> {
+    manifest {
+        attributes(
+            mapOf(
+                "Main-Class" to application.mainClass
+            )
+        )
+    }
+}
+
 //for fatJar
 ktor {
     fatJar {
         archiveFileName.set("fat.jar")
+    }
+    docker {
+        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
     }
 }

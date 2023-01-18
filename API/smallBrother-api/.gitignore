@@ -36,3 +36,5 @@ out/
 .vscode/
 
 upload/
+
+src/main/resources/application.conf
