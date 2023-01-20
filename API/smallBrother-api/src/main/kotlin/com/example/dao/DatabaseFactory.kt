@@ -19,7 +19,9 @@ object DatabaseFactory {
         val driverClassName = config.property("storage.driverClassName").getString()
         val jdbcURL = config.property("storage.jdbcURL").getString()
         val username = config.property("storage.user").getString()
-        val password = config.property("storage.password").getString()
+        //val password = config.property("storage.password").getString()
+        val password = System.getenv()["PASSWORD"]
+        if(password.isNullOrEmpty()) return
         val database = Database.connect(jdbcURL, driverClassName, username, password)
         transaction(database) {
             SchemaUtils.create(AideDatas)
