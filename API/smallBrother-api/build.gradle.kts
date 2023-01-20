@@ -66,6 +66,10 @@ tasks.create("stage") {
     dependsOn("installDist")
 }
 
+tasks.withType<JavaCompile> {
+    options.release.set(11)
+}
+
 tasks.withType<Jar> {
     manifest {
         attributes(
