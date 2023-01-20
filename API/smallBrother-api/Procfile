@@ -1,1 +1,1 @@
-web: ./build/install/smallBrother-api/bin/smallBrother-api
+web: java -jar build/libs/fat.jar
