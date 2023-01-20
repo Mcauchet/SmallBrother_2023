@@ -46,7 +46,6 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-
     //Exposed dependencies
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
@@ -54,12 +53,10 @@ dependencies {
     //PostgreSQL Database
     implementation("org.postgresql:postgresql:$postgresqlVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:0.40.1")
-
     //Authentication
     implementation("io.ktor:ktor-server-auth:$ktorVersion")
     //Sessions
     implementation("io.ktor:ktor-server-sessions:$ktorVersion")
-
     //Encryption
     implementation("org.mindrot:jbcrypt:0.4")
 }
