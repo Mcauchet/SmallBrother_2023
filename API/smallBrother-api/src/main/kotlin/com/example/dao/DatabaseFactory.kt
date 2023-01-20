@@ -14,12 +14,9 @@ import org.jetbrains.exposed.sql.transactions.experimental.*
  */
 object DatabaseFactory {
     fun init(config: ApplicationConfig) {
-        //val driverClassName = "org.h2.Driver"
-        //val jdbcURL = "jdbc:h2:file:./build/db"
         val driverClassName = config.property("storage.driverClassName").getString()
         val jdbcURL = config.property("storage.jdbcURL").getString()
         val username = config.property("storage.user").getString()
-        //val password = config.property("storage.password").getString()
         val password = System.getenv()["PASSWORD"]
         if(password.isNullOrEmpty()) return
         val database = Database.connect(jdbcURL, driverClassName, username, password)
@@ -28,7 +25,6 @@ object DatabaseFactory {
             SchemaUtils.create(Admins)
         }
 
-        //Adds a trigger to delete rows from database that are more than 24 hours old
         //TODO switch to POSTGRESQL TRIGGER DEF
         /*transaction {
             val sql = """
