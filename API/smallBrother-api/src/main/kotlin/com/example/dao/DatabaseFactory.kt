@@ -27,13 +27,6 @@ object DatabaseFactory {
 
         //TODO switch to POSTGRESQL TRIGGER DEF
         /*transaction {
-            val sql = """
-            CREATE TRIGGER IF NOT EXISTS delete_old_rows 
-            AFTER 
-            INSERT 
-            ON aidedatas FOR EACH ROW
-            CALL "com.example.DeleteTrigger"
-        """
             val con = TransactionManager.current().connection
             val statement = con.prepareStatement(sql, false)
             statement.executeUpdate()
