@@ -18,7 +18,7 @@ object DatabaseFactory {
         val jdbcURL = config.property("storage.jdbcURL").getString()
         val username = config.property("storage.user").getString()
         val password = System.getenv()["PASSWORD"]
-        val database = password?.let { Database.connect(jdbcURL, driverClassName, username, it) }
+        val database = Database.connect(jdbcURL, driverClassName, username, password.toString())
         transaction(database) {
             SchemaUtils.create(AideDatas)
             SchemaUtils.create(Admins)
