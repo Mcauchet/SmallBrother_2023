@@ -15,13 +15,15 @@ import org.jetbrains.exposed.sql.transactions.experimental.*
 object DatabaseFactory {
     fun init(config: ApplicationConfig) {
         val driverClassName = config.property("storage.driverClassName").getString()
-        val jdbcURL = config.property("storage.jdbcURL").getString()
-        val username = config.property("storage.user").getString()
-        val password = System.getenv()["PASSWORD"]?: "password"
-        val database = Database.connect(jdbcURL, driverClassName, username, password)
+        //val jdbcURL = config.property("storage.jdbcURL").getString()
+        //val username = config.property("storage.user").getString()
+        //val username = System.getenv()["DATABASE_USERNAME"]
+        val jdbcURL = "jdbc:postgresql://${System.getenv()["DATABASE_HOST"]}:${System.getenv()["DATABASE_PORT"]}/${System.getenv()["DATABASE_NAME"]}"
+        //val password = System.getenv()["PASSWORD"]
+        //val database = Database.connect(jdbcURL, driverClassName, username.toString(), password.toString())
+        val database = Database.connect(jdbcURL, driverClassName, System.getenv()["DATABASE_USERNAME"].toString(), System.getenv()["DATABASE_PASSWORD"].toString())
         transaction(database) {
-            SchemaUtils.create(AideDatas)
-            SchemaUtils.create(Admins)
+            SchemaUtils.create(AideDatas, Admins)
         }
 
         //TODO switch to POSTGRESQL TRIGGER DEF

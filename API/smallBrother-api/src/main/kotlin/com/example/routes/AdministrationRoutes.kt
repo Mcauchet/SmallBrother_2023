@@ -74,6 +74,7 @@ fun Route.adminRouting() {
                 val newAdmin = Admin(email, BCrypt.hashpw(newPassword, BCrypt.gensalt(12)), phone)
                 if(dbPwd != null && BCrypt.checkpw(previousPwd, dbPwd)) {
                     dao.addAdmin(newAdmin)
+                    call.respondRedirect("/admin")
                 } else {
                     call.respondRedirect("/admin/editAdmin")
                 }

@@ -10,6 +10,7 @@ plugins {
     id("io.ktor.plugin") version "2.2.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.20"
     id("distribution")
+    //id("com.heroku.sdk.heroku-gradle") version "2.0.0"
 }
 
 group = "com.example"
@@ -25,6 +26,8 @@ application {
 repositories {
     mavenCentral()
 }
+
+val sshAntTask = configurations.create("sshAntTask")
 
 dependencies {
     //Ktor's core components
@@ -59,17 +62,96 @@ dependencies {
     implementation("io.ktor:ktor-server-sessions:$ktorVersion")
     //Encryption
     implementation("org.mindrot:jbcrypt:0.4")
+
+    //For ssh
+    sshAntTask("org.apache.ant:ant-jsch:1.10.12")
+}
+
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar> {
+    manifest {
+        attributes(
+            mapOf(
+                "Main-Class" to application.mainClass
+            )
+        )
+    }
+}
+
+ant.withGroovyBuilder {
+    "taskdef"(
+            "name" to "scp",
+            "classname" to "org.apache.tools.ant.taskdefs.optional.ssh.Scp",
+            "classpath" to configurations["sshAntTask"].asPath
+            )
+    "taskdef"(
+            "name" to "ssh",
+            "classname" to "org.apache.tools.ant.taskdefs.optional.ssh.SSHExec",
+            "classpath" to configurations["sshAntTask"].asPath
+            )
+}
+
+task("deploy") {
+    dependsOn("clean", "shadowJar")
+    ant.withGroovyBuilder {
+        doLast {
+            val knownHosts = File.createTempFile("knownhosts", "txt")
+            val user = "ubuntu"
+            val host = "51.91.58.109"
+            val key = file("keys/smallbrotherkey")
+            val jarFileName = "smallBrother-api-$version.jar"
+            try {
+                "scp"(
+                    "file" to file("build/libs/$jarFileName"),
+                    "todir" to "$user@$host:~/smallbrother",
+                    "keyfile" to key,
+                    "trust" to true,
+                    "knownhosts" to knownHosts
+                )
+                "ssh"(
+                    "host" to host,
+                    "username" to user,
+                    "keyfile" to key,
+                    "trust" to true,
+                    "knownhosts" to knownHosts,
+                    "command" to "mv ~/smallbrother/$jarFileName ~/smallbrother/smallbrother.jar"
+                )
+                "ssh"(
+                    "host" to host,
+                    "username" to user,
+                    "keyfile" to key,
+                    "trust" to true,
+                    "knownhosts" to knownHosts,
+                    "command" to "systemctl stop smallbrother"
+                )
+                "ssh"(
+                    "host" to host,
+                    "username" to user,
+                    "keyfile" to key,
+                    "trust" to true,
+                    "knownhosts" to knownHosts,
+                    "command" to "systemctl start smallbrother"
+                )
+            } finally {
+                knownHosts.delete()
+            }
+        }
+    }
 }
 
 //this is for heroku setup
-tasks.create("stage") {
+/*tasks.create("stage") {
     dependsOn("installDist")
+}
+
+heroku {
+    appName= "smallbrother-api"
 }
 
 tasks.withType<JavaCompile> {
     options.release.set(11)
-}
+}*/
 
+//for fatJar
 tasks.withType<Jar> {
     manifest {
         attributes(
@@ -80,11 +162,7 @@ tasks.withType<Jar> {
     }
 }
 
-//for fatJar
 ktor {
-    fatJar {
-        archiveFileName.set("fat.jar")
-    }
     docker {
         jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
     }
