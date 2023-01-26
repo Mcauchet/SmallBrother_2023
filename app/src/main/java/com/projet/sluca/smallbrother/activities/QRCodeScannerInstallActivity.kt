@@ -9,12 +9,13 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.message
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.setAppBarTitle
 
 /***
  * Opens a qr code scanner to get the public key of the partner
  *
  * @author Maxime Caucheteur (with help of https://github.com/yuriy-budiyev/code-scanner)
- * @version 1.2 (Updated on 16-01-2023)
+ * @version 1.2 (Updated on 26-01-2023)
  */
 class QRCodeScannerInstallActivity : AppCompatActivity() {
 
@@ -30,6 +31,8 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
 
         userData = application as UserData
         check(userData.role == "Aidant" || userData.role == "Aidé")
+
+        setAppBarTitle(userData, this)
 
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 

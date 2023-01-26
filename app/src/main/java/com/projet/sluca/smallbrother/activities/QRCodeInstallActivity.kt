@@ -12,12 +12,13 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SecurityUtils
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.setAppBarTitle
 
 /***
  * Manages the public key exchange between Aidé and Aidant through QR Code
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 16-01-2023)
+ * @version 1.2 (Updated on 26-01-2023)
  */
 class QRCodeInstallActivity : AppCompatActivity() {
 
@@ -34,6 +35,8 @@ class QRCodeInstallActivity : AppCompatActivity() {
 
         userData = application as UserData
         check(userData.role == "Aidant" || userData.role == "Aidé")
+
+        setAppBarTitle(userData, this)
 
         if(userData.role == "Aidant") qrEncoder(SecurityUtils.getEncPublicKey(), ivQrCode)
         else if(userData.role == "Aidé") qrEncoder(SecurityUtils.getSignPublicKey(), ivQrCode)

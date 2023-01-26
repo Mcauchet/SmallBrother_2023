@@ -39,8 +39,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
-//Edit URL Server until it is redefined in deployment
-const val URLServer = "https://b17e-2a02-a03f-ae4e-1900-e9b4-50f4-699f-8135.eu.ngrok.io"
+const val URLServer = "https://smallbrother.be"
 
 /***
  * Sends an SMS through the SMSManager class
@@ -395,4 +394,9 @@ fun deactivateSmsReceiver(context: Context) {
         PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
         PackageManager.DONT_KILL_APP
     )
+}
+
+fun setAppBarTitle(userData: UserData, activity: AppCompatActivity) {
+    activity.supportActionBar?.title = if (userData.role == "Aidé") "SmallBrother - Aidé"
+    else "SmallBrother - Aidant"
 }

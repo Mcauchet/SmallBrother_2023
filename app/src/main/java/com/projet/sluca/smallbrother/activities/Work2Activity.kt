@@ -12,6 +12,7 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
@@ -48,7 +49,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 16-01-2023)
+ * @version 1.2 (Updated on 26-01-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -58,6 +59,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private lateinit var tvLoading: TextView
     private lateinit var tvAction: TextView
     private var battery: String? = null
+
+    private var selfPhone: String = ""
 
     // Must not be nullable in Kotlin in order for it to work
     private lateinit var pictureService: APictureCapturingService
@@ -85,6 +88,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         userData = application as UserData
         loading(tvLoading)
+        setAppBarTitle(userData, this)
 
         // --> [2] Get Aide Location
         tvAction.text = getString(R.string.message12C)
@@ -150,9 +154,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Niveau de batterie : $battery\n" +
                             "En mouvement : $motion.\n" +
-                            "Niveau de lumière (en lux) : $light.\n" + // TODO Explicit interpretation needed
-                            "Date de la capture : $currentTime\n" +
-                            "Numero de GSM $particule$nomAide : ${userData.telephone}"
+                            "Niveau de lumiere (en lux) : $light.\n" + // TODO Explicit interpretation needed
+                            "Date de la capture : $currentTime\n" //+
+                            //"Numero de GSM $particule$nomAide : $selfPhone"
 
                     Log.d("infos", information)
 
@@ -496,6 +500,22 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }
     }
 
+    /**
+     * Get self phone number
+     * @return the phone number as a String
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 26-01-2023)
+     */
+    private fun getPhoneNumber(): String {
+        if (ActivityCompat.checkSelfPermission(this@Work2Activity,
+                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
+        {
+            requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE), 3)
+        }
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        return telephonyManager.line1Number
+    }
+
     private fun requestPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
@@ -517,6 +537,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         if(requestCode == 1) {
             if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))
                 checkForLocation()
+        } else if (requestCode == 3) {
+            getPhoneNumber()
         } else {
             Toast.makeText(this, "Location permission was denied", Toast.LENGTH_SHORT).show()
         }

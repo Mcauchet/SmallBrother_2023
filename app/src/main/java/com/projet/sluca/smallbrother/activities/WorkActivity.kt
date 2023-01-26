@@ -1,9 +1,7 @@
 package com.projet.sluca.smallbrother.activities
 
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -30,7 +28,7 @@ import java.io.IOException
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 16-01-2023)
+ * @version 1.2 (Updated on 26-01-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -64,6 +62,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         userData = application as UserData
 
         userData.esquive = true
+
+        setAppBarTitle(userData, this)
 
         if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
 
@@ -222,7 +222,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             (z.toInt() * 10).toFloat()
         )
         keepMove = tmp
-        Log.d("X Y Z data", keepMove.toString())
     }
 
     override fun onSensorChanged(event: SensorEvent) {}

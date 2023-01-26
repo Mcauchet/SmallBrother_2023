@@ -2,6 +2,7 @@ package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -19,7 +20,7 @@ import kotlinx.coroutines.launch
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 05-01-2023)
+ * @version 1.2 (Updated on 26-01-2023)
  */
 class InstallActivity : AppCompatActivity() {
 
@@ -30,6 +31,8 @@ class InstallActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         userData = application as UserData
         check(userData.role == "Aidant" || userData.role == "Aidé")
+
+        setAppBarTitle(userData, this)
 
         if(userData.role == "Aidé") setContentView(R.layout.activity_installde)
         else setContentView(R.layout.activity_installdant)
@@ -80,12 +83,15 @@ class InstallActivity : AppCompatActivity() {
     /**
      * Request the permissions if not already granted
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 26-01-2023)
      */
     private fun requestPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
-            if(userData.role == "Aidé") getArrayOfPermissionsAide()
+            if(userData.role == "Aidé") {
+                getArrayOfPermissionsAide()
+                getSpecialPermission()
+            }
             else getArrayOfPermissionsAidant()
         }
     }
@@ -113,6 +119,19 @@ class InstallActivity : AppCompatActivity() {
             Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION), 1)
+    }
+
+    /**
+     * Target a specific permission for API >= 26
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 26-01-2023)
+     */
+    private fun getSpecialPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            ActivityCompat.requestPermissions(this, arrayOf(
+                Manifest.permission.READ_PHONE_NUMBERS
+            ), 1)
+        }
     }
 
     /**

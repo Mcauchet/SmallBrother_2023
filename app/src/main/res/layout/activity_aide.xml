@@ -69,8 +69,8 @@
 
                 <ImageView
                     android:id="@+id/logo"
-                    android:layout_width="70dp"
-                    android:layout_height="35dp"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:src="@drawable/logo2"
@@ -108,8 +108,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
             android:orientation="vertical"
@@ -186,8 +186,9 @@
 
             <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
+                android:layout_weight=".4"
                 android:layout_width="0dip"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
                 android:paddingStart="16dp"
@@ -224,7 +225,7 @@
 
             <LinearLayout
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
+                android:layout_weight=".6"
                 android:layout_width="0dip"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
@@ -236,8 +237,8 @@
                     android:id="@+id/contour0"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:layout_gravity="center" >
@@ -248,7 +249,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/btn_switch"
                         android:textColor="#656262"
-                        android:textSize="18sp"
+                        android:textSize="20sp"
                         android:gravity="right|center_vertical"
                         android:switchPadding="6dp"
                         android:theme="@style/switchekke" />

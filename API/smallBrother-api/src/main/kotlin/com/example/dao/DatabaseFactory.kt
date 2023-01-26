@@ -25,13 +25,7 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(AideDatas, Admins)
         }
-
-        //TODO switch to POSTGRESQL TRIGGER DEF
-        /*transaction {
-            val con = TransactionManager.current().connection
-            val statement = con.prepareStatement(sql, false)
-            statement.executeUpdate()
-        }*/
+        //TODO add trigger or cron job to delete files older than 5-10 min
     }
 
     suspend fun <T> dbQuery(block: suspend()->T): T =

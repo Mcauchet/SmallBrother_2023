@@ -22,6 +22,7 @@ const val EXT_SIZE = 4
  */
 fun Route.aideDataRouting() {
     route("/upload") {
+        if(!File("/upload").exists()) File("/upload").mkdir()
         var fileDescription = ""
         var fileName = ""
         post {

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.setAppBarTitle
 import com.projet.sluca.smallbrother.showPicture
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -35,6 +36,8 @@ class InstallDantPicActivity : AppCompatActivity() {
         setContentView(R.layout.activity_installdantpic)
 
         userData = application as UserData
+
+       setAppBarTitle(userData, this)
 
         val btnCapture: Button = findViewById(R.id.btn_capture)
         val btnBack: Button = findViewById(R.id.btn_previous)

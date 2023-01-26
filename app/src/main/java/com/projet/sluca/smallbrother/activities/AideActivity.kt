@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 17-01-2023)
+ * @version 1.2 (updated on 26-01-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -46,9 +46,12 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnCall: Button = findViewById(R.id.btn_appel)
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
+
         userData = application as UserData
         userData.loadData(this)
         check(userData.role == "Aidé")
+
+        setAppBarTitle(userData, this)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
