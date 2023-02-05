@@ -18,7 +18,7 @@ const val EXT_SIZE = 4
  * Manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 17-01-2023)
+ * @version 1.2 (Updated on 26-01-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
