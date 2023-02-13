@@ -47,7 +47,7 @@ fun Application.module() {
     install(Sessions) {
         cookie<ServerSession>("server_session") {
             cookie.path = "/"
-            cookie.maxAgeInSeconds = 60
+            cookie.maxAgeInSeconds = 300
         }
     }
     install(CallLogging) {

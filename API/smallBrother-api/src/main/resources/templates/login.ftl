@@ -12,12 +12,15 @@
         background-color: #f1f1f1;
         padding: 10px;
         text-align: center;
+        width: 100%;
     }
     input {
         padding: 4px;
     }
     label {
-        alignment: left;
+        text-align: right;
+        display: inline-block;
+        margin-bottom: 10px;
     }
     @media (max-width: 600px) {
         .column {
@@ -36,11 +39,11 @@
         <form action="/login" method="post">
             <label for="email">Email:</label>
             <input type="text" id="email" name="email">
-            <br>
+            <br><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password">
-            <br>
-            <input type="submit" value="Login">
+            <br><br>
+            <input style="alignment: right" type="submit" value="Login">
         </form>
     </div>
     <div class="footer">FOOTER</div>
