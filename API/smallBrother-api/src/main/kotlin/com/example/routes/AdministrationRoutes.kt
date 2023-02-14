@@ -67,7 +67,7 @@ fun Route.adminRouting() {
                 val newPassword = formParameters.getOrFail("newPassword")
                 val confirmPassword = formParameters.getOrFail("confirmPassword")
                 if(newPassword != confirmPassword) {
-                    call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("passwordsMatch" to false)))
+                    call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("passwordsMatchError" to true)))
                 }
                 val phone = formParameters.getOrFail("phone")
                 val dbPwd = dao.getAdmin(email)?.encPwd
@@ -76,7 +76,7 @@ fun Route.adminRouting() {
                     dao.addAdmin(newAdmin)
                     call.respondRedirect("/admin")
                 } else {
-                    call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("confirm" to false)))
+                    call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("problemPwd" to true)))
                 }
             }
         }
@@ -91,7 +91,7 @@ fun Route.adminRouting() {
 
     route("/login") {
         get {
-            call.respond(FreeMarkerContent("login.ftl", mapOf("admins" to dao.allAdmin())))
+            call.respond(FreeMarkerContent("login.ftl", mapOf("checkLog" to true)))
         }
         post {
             val formParameters = call.receiveParameters()

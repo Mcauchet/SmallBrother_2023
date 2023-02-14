@@ -44,7 +44,8 @@
             <label for="password">Password:</label>
             <input type="password" id="password" name="password">
             <br>
-            <#if checkLog == false>
+            <#if checkLog??>
+            <#else>
                 <p style="color: red;">L'adresse e-mail ou le mot de passe est incorrect</p>
             </#if>
             <br>

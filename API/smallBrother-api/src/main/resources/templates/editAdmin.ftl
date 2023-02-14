@@ -8,8 +8,9 @@
         <br>
         <label for="previousPassword">Previous Password:</label>
         <input type="password" id="previousPassword" name="previousPassword">
-        <#if confirm == false>
+        <#if problemPwd??>
             <p style="color: red;">Le mot de passe n'est pas bon.</p>
+        <#else>
         </#if>
         <br>
         <label for="newPassword">New Password:</label>
@@ -17,8 +18,9 @@
         <br>
         <label for="confirmPassword">Confirm New Password:</label>
         <input type="password" id="confirmPassword" name="confirmPassword">
-        <#if passwordsMatch == false>
+        <#if passwordsMatchError??>
             <p style="color: red;">Les mots de passe ne correspondent pas.</p>
+        <#else>
         </#if>
         <br>
         <label for="phone">Phone:</label>
