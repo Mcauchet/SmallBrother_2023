@@ -140,8 +140,7 @@ object SecurityUtils {
     }
 
     /**
-     * Returns the public key with alias [KEYSTORE_ALIAS_RSA].
-     *
+     * Returns the public key with alias [KEYSTORE_ALIAS_RSA]
      * @return the public key as a String
      */
     fun getEncPublicKey(): String {
@@ -152,8 +151,7 @@ object SecurityUtils {
     }
 
     /**
-     * Returns the private key with alias [KEYSTORE_ALIAS_RSA].
-     *
+     * Returns the private key with alias [KEYSTORE_ALIAS_RSA]
      * @return the reference to the private key
      */
     private fun getEncPrivateKey(): PrivateKey {
@@ -163,8 +161,7 @@ object SecurityUtils {
     }
 
     /**
-     * fun to get the AES key
-     *
+     * Get the AES key
      * @return the AES key as a SecretKey
      */
     fun getAESKey(): SecretKey {
@@ -181,8 +178,7 @@ object SecurityUtils {
     }
 
     /**
-     * fun to encrypt the AES key with the public RSA key
-     *
+     * Encrypt the AES key with the public RSA key
      * @param publicKey the public key of the aidant
      * @param aesKey the key to encrypt
      * @return the encrypted aesKey as a ByteArray
@@ -194,8 +190,7 @@ object SecurityUtils {
     }
 
     /**
-     * fun to decrypt the key with the private key
-     *
+     * Decrypt the key with the private key
      * @param encKey the AES key used to encrypt the data by the aide
      * @return the decrypted AESKey as a ByteArray
      */
@@ -206,8 +201,7 @@ object SecurityUtils {
     }
 
     /**
-     * fun to encrypt the zip file
-     *
+     * Encrypt the zip file
      * @param data the file's ByteArray
      * @param aesKey the key to encrypt the data
      * @return the encrypted file as a ByteArray
@@ -219,8 +213,7 @@ object SecurityUtils {
     }
 
     /**
-     * fun to decrypt the data (previously encrypted with AES key)
-     *
+     * Decrypt the data (previously encrypted with AES key)
      * @param data the encrypted data
      * @param encKey the encrypted AES key
      * @return the decrypted file data as a ByteArray
@@ -234,7 +227,7 @@ object SecurityUtils {
     }
 
     /**
-     * signs the zip file with the private key
+     * Signs the zip file with the private key
      * @param data the zip files ByteArray
      * @return the signed data
      * @author Maxime Caucheteur
@@ -249,7 +242,7 @@ object SecurityUtils {
     }
 
     /**
-     * verify the signature to authenticate the origin
+     * Verify the signature to authenticate the origin
      * @param data the signed ByteArray
      * @param pubKey the public key of the signer
      * @return true if file is verified, false otherwise
@@ -263,7 +256,7 @@ object SecurityUtils {
         return verifySignature.verify(signature)
     }
 
-    /***
+    /**
      * Transform a String into a Key object used as a public key
      *
      * @param publicKey the String to transform into a Key

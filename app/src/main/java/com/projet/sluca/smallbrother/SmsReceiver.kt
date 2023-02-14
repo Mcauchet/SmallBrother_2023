@@ -15,11 +15,12 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 16-01-2023)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 07-02-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        if(intent.action != "android.provider.Telephony.SMS_RECEIVED") return
 
         userData = context.applicationContext as UserData
 
@@ -47,21 +48,14 @@ class SmsReceiver : BroadcastReceiver() {
             "[#SB10]", // -> aidant receives url to files
         )
 
-        // If the #SBxx code is not in the list above, return
         if (!listOf(*motsclef).contains(clef)) return
 
         if(userData.role == "Aidant") {
             val intnt = Intent(context, AidantActivity::class.java)
             when (clef) {
-                "[#SB03]" -> {
-                    userData.refreshLog(5)
-                }
-                "[#SB05]" -> {
-                    userData.refreshLog(13)
-                }
-                "[#SB06]" -> {
-                    userData.refreshLog(14)
-                }
+                "[#SB03]" -> userData.refreshLog(5)
+                "[#SB05]" -> userData.refreshLog(13)
+                "[#SB06]" -> userData.refreshLog(14)
                 "[#SB07]" -> {
                     //TODO see if temprestant works
                     tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
@@ -91,7 +85,7 @@ class SmsReceiver : BroadcastReceiver() {
         if (userData.bit == 1) // Private mode ON
         {
             if (clef == "[#SB02]") userData.bit = 2
-            else if (clef == "[#SB04]") userData.bit = 4 // Aidant wants to capture the context
+            else if (clef == "[#SB04]") userData.bit = 4
         } else {
             val intnt2 = Intent(context, WorkActivity::class.java)
             intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK

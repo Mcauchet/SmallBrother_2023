@@ -19,6 +19,5 @@ interface DAOFacade {
     suspend fun allAdmin(): List<Admin>
     suspend fun addAdmin(admin: Admin)
     suspend fun getAdmin(email: String): Admin?
-    //Add edit admin
     suspend fun editAdmin(admin: Admin): Boolean
 }

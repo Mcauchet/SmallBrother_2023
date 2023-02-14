@@ -10,7 +10,6 @@ plugins {
     id("io.ktor.plugin") version "2.2.2"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.20"
     id("distribution")
-    //id("com.heroku.sdk.heroku-gradle") version "2.0.0"
 }
 
 group = "com.example"
@@ -95,7 +94,7 @@ task("deploy") {
     ant.withGroovyBuilder {
         doLast {
             val knownHosts = File.createTempFile("knownhosts", "txt")
-            val user = "ubuntu"
+            val user = "root"
             val host = "51.91.58.109"
             val key = file("keys/smallbrotherkey")
             val jarFileName = "smallBrother-api-$version.jar"
@@ -138,19 +137,6 @@ task("deploy") {
     }
 }
 
-//this is for heroku setup
-/*tasks.create("stage") {
-    dependsOn("installDist")
-}
-
-heroku {
-    appName= "smallbrother-api"
-}
-
-tasks.withType<JavaCompile> {
-    options.release.set(11)
-}*/
-
 //for fatJar
 tasks.withType<Jar> {
     manifest {
@@ -162,8 +148,8 @@ tasks.withType<Jar> {
     }
 }
 
-ktor {
-    docker {
-        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
-    }
-}
+//ktor {
+//    docker {
+//        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
+//    }
+//}

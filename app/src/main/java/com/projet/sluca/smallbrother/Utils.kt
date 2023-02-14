@@ -110,13 +110,13 @@ fun message(context: Context, msg: String, vibreur: Vibration) {
     vibreur.vibration(context, 300)
 }
 
-/***
+/**
  * Launches the application and put it on screen even if device locked
  *
  * @param [window] the window of the application
  * @param [activity] the activity to put on screen
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on ??-10-22)
+ * @version 1.2 (Updated on 07-02-2023)
  */
 fun wakeup(window: Window, activity: AppCompatActivity) {
     @Suppress("DEPRECATION")
@@ -143,9 +143,8 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
     }
 }
 
-/***
- * isOnline returns true if device has validated network capabilities (Cellular, Wifi or Ethernet)
- *
+/**
+ * Returns true if device has validated network capabilities (Cellular, Wifi or Ethernet)
  * @return true if connected, false otherwise
  * @author Maxime Caucheteur (inspired by https://medium.com/@veniamin.vynohradov/monitoring-internet-connection-state-in-android-da7ad915b5e5)
  * @version 1.2 (Updated on 04-01-2023)
@@ -223,7 +222,7 @@ fun particule(name: String) : String {
 }
 
 /**
- * Redirects to the adequate activity
+ * Redirects to the adequate activity according to the role
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (java version))
  * @version 1.2 (Updated on 03-01-2023)
@@ -257,11 +256,9 @@ fun checkInputs(name: String, namePartner: String, telephone: String, context: C
     when {
         telephone.length > 10 || telephone.matches("".toRegex()) || !telephone.startsWith("04")
         -> message(context, context.getString(R.string.error01), vibreur)
-
         name.matches("".toRegex()) || telephone.matches("".toRegex())
                 || namePartner.matches("".toRegex())
         -> message(context, context.getString(R.string.error03), vibreur)
-
         else -> registerData(name, namePartner, telephone, userData, context)
     }
 }
@@ -334,6 +331,7 @@ fun getAppVersion(context: Context): String {
  * @version 1.2 (Updated on 17-01-2023)
  */
 fun setLogAppearance(userData: UserData, tvLog: TextView) {
+    require(true)
     val sb = SpannableStringBuilder(userData.log)
     val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
     val bss = StyleSpan(Typeface.BOLD)
