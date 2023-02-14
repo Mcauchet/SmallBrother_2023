@@ -15,7 +15,7 @@ import org.mindrot.jbcrypt.BCrypt
 import java.io.File
 
 /**
- * manages the routing for the admin panel
+ * Manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
  * @version 1 (Updated on 16-01-2023)
@@ -67,7 +67,7 @@ fun Route.adminRouting() {
                 val newPassword = formParameters.getOrFail("newPassword")
                 val confirmPassword = formParameters.getOrFail("confirmPassword")
                 if(newPassword != confirmPassword) {
-                    call.respondRedirect("/admin/editAdmin")
+                    call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("passwordsMatch" to false)))
                 }
                 val phone = formParameters.getOrFail("phone")
                 val dbPwd = dao.getAdmin(email)?.encPwd
@@ -76,7 +76,7 @@ fun Route.adminRouting() {
                     dao.addAdmin(newAdmin)
                     call.respondRedirect("/admin")
                 } else {
-                    call.respondRedirect("/admin/editAdmin")
+                    call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("confirm" to false)))
                 }
             }
         }
@@ -102,7 +102,7 @@ fun Route.adminRouting() {
                 call.sessions.set(ServerSession(email))
                 call.respondRedirect("/admin")
             } else {
-                call.respondRedirect("/login")
+                call.respond(FreeMarkerContent("login.ftl", mapOf("check" to false)))
             }
         }
     }

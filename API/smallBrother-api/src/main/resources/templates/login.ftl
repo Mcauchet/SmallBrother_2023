@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="checkLog" type="Boolean" -->
 <#import "_layout.ftl" as layout />
 <style>
     * {
@@ -42,7 +43,11 @@
             <br><br>
             <label for="password">Password:</label>
             <input type="password" id="password" name="password">
-            <br><br>
+            <br>
+            <#if checkLog == false>
+                <p style="color: red;">L'adresse e-mail ou le mot de passe est incorrect</p>
+            </#if>
+            <br>
             <input style="alignment: right" type="submit" value="Login">
         </form>
     </div>
