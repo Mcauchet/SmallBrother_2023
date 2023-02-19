@@ -7,14 +7,15 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 
-/***
+/**
  * class Vibration creates a Vibrator and manages the vibrations made by all activities
  *
  * @author Sébastien Luca & Maxime Caucheteur
  * @version 1.2 (Updated on 08-01-2023)
  */
 class Vibration {
-    /***
+
+    /**
      * signal an event by vibrating
      * @param [context] the context of the activity
      * @param [duree] duration in milliseconds
@@ -31,6 +32,7 @@ class Vibration {
             shake.vibrate(duree.toLong())
         }
     }
+
     /**
      * Get a Vibrator object
      * @param [context] the context of the activity

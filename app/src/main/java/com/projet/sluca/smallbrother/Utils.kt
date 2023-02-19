@@ -41,12 +41,12 @@ import java.util.*
 
 const val URLServer = "https://smallbrother.be"
 
-/***
+/**
  * Sends an SMS through the SMSManager class
  *
  * @param [context] context of the activity
- * @param [msg] body of the SMS
  * @param [receiver] receiver of the SMS
+ * @param [vibreur] the Vibration object
  * @return true if SMS was sent, false otherwise
  * @author Maxime Caucheteur
  * @version 1.2 (Updated on 17-01-2023)
@@ -82,7 +82,7 @@ fun smsAvailable(context: Context): Boolean {
     ) == 0
 }
 
-/***
+/**
  * returns the PendingIntent for the SMS
  *
  * @param [context] the context of the activity
@@ -96,7 +96,7 @@ fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
     Intent("SMS_SENT"),
     0)
 
-/***
+/**
  * creates a toast with a message to print and vibrate
  *
  * @param [context] the context of the activity
@@ -145,6 +145,7 @@ fun wakeup(window: Window, activity: AppCompatActivity) {
 
 /**
  * Returns true if device has validated network capabilities (Cellular, Wifi or Ethernet)
+ * @param context the context of the application
  * @return true if connected, false otherwise
  * @author Maxime Caucheteur (inspired by https://medium.com/@veniamin.vynohradov/monitoring-internet-connection-state-in-android-da7ad915b5e5)
  * @version 1.2 (Updated on 04-01-2023)
@@ -185,7 +186,7 @@ private fun checkInternetCapabilities(context: Context) : Boolean {
     return false
 }
 
-/***
+/**
  * Animation of loading
  *
  * @param [tvLoading] the TextView in which the animation takes place
@@ -211,19 +212,19 @@ fun loading(tvLoading: TextView) {
  * @param [name] the name of the user
  * @return the particule needed before the name
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (java version))
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 19-02-2023)
  */
 fun particule(name: String) : String {
     val particule = name[0].toString()
     val voyelles = arrayOf("A", "E", "Y", "U", "I", "O", "É", "È", "Œ", "a", "e", "y", "u", "i",
-        "o", "é", "è"
-    )
+        "o", "é", "è")
     return if (listOf(*voyelles).contains(particule)) "d'" else "de "
 }
 
 /**
  * Redirects to the adequate activity according to the role
- *
+ * @param context the context of the application
+ * @param userData the data of the user as a UserData object
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (java version))
  * @version 1.2 (Updated on 03-01-2023)
  */
@@ -288,6 +289,8 @@ fun registerData(name: String, namePartner: String, telephone: String, userData:
  * Redirects the user after registering his datas
  * @param [userData] the user's data
  * @param [context] the Context of the application
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 16-01-2023)
  */
 private fun redirectAfterRegister(userData: UserData, context: Context) {
     check(userData.role == "Aidant" || userData.role == "Aidé")
@@ -328,10 +331,10 @@ fun getAppVersion(context: Context): String {
  * @param [userData] the user's data
  * @param [tvLog] the Log TextView
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 17-01-2023)
+ * @version 1.2 (Updated on 19-02-2023)
  */
 fun setLogAppearance(userData: UserData, tvLog: TextView) {
-    require(true)
+    check(userData.log != null)
     val sb = SpannableStringBuilder(userData.log)
     val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
     val bss = StyleSpan(Typeface.BOLD)
@@ -345,9 +348,10 @@ fun setLogAppearance(userData: UserData, tvLog: TextView) {
  * @param [apercu] the picture preview
  * @param [userData] the user's data
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 16-01-2023)
+ * @version 1.2 (Updated on 19-02-2023)
  */
 fun showPicture(apercu: ImageView, userData: UserData) {
+    check(userData.path != "")
     val path = userData.path + "/SmallBrother/photo_aide.jpg"
     assert(path != "/SmallBrother/photo_aide.jpg")
     val file = File(path)
@@ -373,7 +377,12 @@ fun getCurrentTime(format: String) : String {
     }
 }
 
-//TODO Test both functions
+/**
+ * Activate the SMSReceiver to listen to incoming sms
+ * @param context the context of the application
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 19-02-2023)
+ */
 fun activateSMSReceiver(context: Context) {
     val pm = context.packageManager
     val componentName = ComponentName(context, SmsReceiver::class.java)
@@ -384,6 +393,12 @@ fun activateSMSReceiver(context: Context) {
     )
 }
 
+/**
+ * Deactivate the SMSReceiver to listen to incoming sms
+ * @param context the context of the application
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 19-02-2023)
+ */
 fun deactivateSmsReceiver(context: Context) {
     val pm = context.packageManager
     val componentName = ComponentName(context, SmsReceiver::class.java)
@@ -394,6 +409,13 @@ fun deactivateSmsReceiver(context: Context) {
     )
 }
 
+/**
+ * Change the AppBarTitle according to the user's role
+ * @param userData the data of the user
+ * @param activity the activity running
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 19-02-2023)
+ */
 fun setAppBarTitle(userData: UserData, activity: AppCompatActivity) {
     activity.supportActionBar?.title = if (userData.role == "Aidé") "SmallBrother - Aidé"
     else "SmallBrother - Aidant"
