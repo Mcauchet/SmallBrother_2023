@@ -21,11 +21,10 @@
     <string name="input1B">Nom de l\'Aidé</string>
     <string name="input2A">N° de portable de l\'Aidé</string>
     <string name="input2B">N° de portable de l\'Aidant</string>
-    <string name="log_intitule">Dernière nouvelle :</string>
     <string name="reglages_intitule">Réglages</string>
     <string name="reglages_note">
-        Ce menu vous permet de réinitialiser vos information et celles de l\'aidé. Vous pouvez également refaire la photo de l\'aidé. \n
-        Attention, si vous réinitialiser les informations, vous devrez réinstaller l\'application sur les deux smartphones.
+        Ce menu vous permet de réinitialiser vos informations et celles de l\'aidé. Vous pouvez également refaire la photo de l\'aidé. \n
+        Attention, si vous réinitialisez les informations, vous devrez réinstaller l\'application sur les deux smartphones.
     </string>
     <string name="chargement">Chargement en cours </string>
     <string name="cheminphoto">Stockage Interne/Download/SmallBrother/photo_aide.jpg</string>
@@ -39,7 +38,6 @@
 
 
     <!-- Boutons -->
-
     <string name="btn_commencer">Commencer</string>
     <string name="btn_role1">Ce téléphone est celui de l\'Aidant</string>
     <string name="btn_role2">Ce téléphone est celui de l\'Aidé</string>
@@ -131,46 +129,45 @@
 
 
     <!-- Log -->
-
-    <string name="log01">Installation terminée.</string>
-    <string name="log02">Réinitialisation des données SmallBrother sur votre téléphone.</string>
-    <string name="log03">Réinitialisation des données SmallBrother sur le téléphone de votre partenaire.</string>
-    <string name="log04">Envoi d\'un SMS \'Tout va bien ?\' à votre partenaire.</string>
-    <string name="log05">SMS reçu : votre partenaire va bien.</string>
-    <string name="log06">SMS reçu : votre partenaire demande si tout va bien ?</string>
-    <string name="log07">Vous appelez votre partenaire.</string>
-    <string name="log08">Votre partenaire vous a appelé.</string>
-    <string name="log09">Vous avez manqué un appel de votre partenaire.</string>
-    <string name="log10">
-        Vous avez demandé à vérifier la situation de l\'Aidé.
+    <string name="log_install">Installation terminée.</string>
+    <string name="log_reset_aidant">Réinitialisation des données SmallBrother sur votre téléphone.</string>
+    <string name="log_reset_aide">Réinitialisation des données SmallBrother sur le téléphone §%.</string>
+    <string name="log_aidant_send_SMS">Envoi d\'un SMS \'Tout va bien ?\' à §%.</string>
+    <string name="log_aidant_receive_SMS">SMS reçu: §% va bien.</string>
+    <string name="log_aide_receive_SMS">SMS reçu: §% demande si tout va bien ?</string>
+    <string name="log_call">Vous appelez §%.</string>
+    <string name="log_called">§% vous a appelé.</string>
+    <string name="log_call_missed">Vous avez manqué un appel §%.</string>
+    <string name="log_aidant_requests_context">
+        Vous avez demandé à vérifier la situation §%.
         Le traitement est en cours, veuillez patienter …
     </string>
-    <string name="log11">
+    <string name="log_data_on_server">
         Les données §% sont disponibles sur le serveur, vous pouvez appuyer sur le bouton "Récupérer les données §%".
     </string>
-    <string name="log12">
-        Votre partenaire tente de vérifier votre situation.
+    <string name="log_no_internet_aide">
+        §% tente de vérifier votre situation.
         Pourquoi ne pas l\'appeler ?
     </string>
-    <string name="log16">Vous signalez à votre partenaire que tout va bien.</string>
-    <string name="log18">Le délai du Mode Privé est écoulé.</string>
+    <string name="log_no_internet_aidant">
+        §% n\'a pas Internet, les fichiers ne peuvent être envoyés au serveur.
+    </string>
+    <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Vous pouvez récupérer ses données sur le serveur.</string>
+    <string name="log_aide_send_SMS">Vous signalez à §% que tout va bien.</string>
+    <string name="log_private_expired">Le délai du Mode Privé est écoulé.</string>
     <string name="log19">
-        Votre partenaire souhaite ne pas être dérangé durant les N# prochaines minutes.
+        §% souhaite ne pas être dérangé.e durant les N# prochaines minutes.
     </string>
     <string name="log20">Vous avez activé le mode privé.</string>
+
+
     <string name="logo_unamur">Logo UNamur</string>
-    <string name="aidant_nom_installation">Veuillez saisir le nom de l\'aidant:</string>
-    <string name="portable_aide_installation">Veuillez saisir le numéro de portable de l\'Aidé:</string>
     <string name="logo_sb">Logo SB</string>
     <string name="empty_string">" "</string>
-    <string name="transfert_data">Transférer les données par QR Code</string>
     <string name="help_aide">J\'ai besoin d\'assistance</string>
     <string name="recuperer_les_donnees_de_l_aide">Récupérer les données §%</string>
 
-    <string name="qr_code_aide">Générer un QR Code pour l\'aidé</string>
-    <string name="generate_qrCode">Générer un QR Code</string>
     <string name="qr_code">QR Code</string>
-    <string name="qr_code_police">Générer un QR Code pour la police</string>
     <string name="explication_qr_aide">QR Code à scanner par l\'aidé</string>
     <string name="explication_qr_police">QR Code à scanner par la police pour télécharger les fichiers</string>
     <string name="aide_install2">[Aidé] Installation (suite)</string>
@@ -182,7 +179,6 @@
     <string name="nomAide">Nom de l\'Aidé</string>
     <string name="blank" />
     <string name="duree_prive_base">15</string>
-    <string name="aide_needs_help">§% a besoin d\'aide immédiatement. Vous pouvez récupérer ses données.</string>
     <string name="contentDesc_photo">Boutton photo</string>
     <string name="contentDesc_reduire">Bouton Réduire</string>
     <string name="contentDesc_log">Cadre du log</string>

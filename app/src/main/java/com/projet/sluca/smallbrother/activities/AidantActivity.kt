@@ -261,7 +261,7 @@ class AidantActivity : AppCompatActivity() {
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
             when (userData.bit) {
-                8 ->  userData.refreshLog(11)
+                8 ->  userData.refreshLog(14)
                 10 -> userData.refreshLog(13)
             }
             if (userData.log != null) setLogAppearance(userData, tvLog)

@@ -23,12 +23,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlin.math.sqrt
 
 /***
  * class WorkActivity manages the capture of the audio record and motion information
  *
- * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 26-01-2023)
+ * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
+ * @version 1.2 (Updated on 19-02-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -47,6 +48,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     private lateinit var tvLoading: TextView
     private lateinit var tvAction: TextView
+
+    private var sensorEventListener: SensorEventListener? = null
+    private var movementDetectorListener: SensorEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +109,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     CoroutineScope(Dispatchers.IO).launch {
                         if (isOnline(this@WorkActivity)) {
                             deactivateSmsReceiver(this@WorkActivity)
+                            Log.d("motion userdata before reg", userData.motion.toString())
+                            registerLightSensor()
+                            registerMovementDetector()
+                            Log.d("motion userdata after reg", userData.motion.toString())
 
                             // --> [1] Records a 10 seconds audio of the aide's environment
                             tvAction.text = getString(R.string.message12A)
@@ -138,11 +146,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                         override fun onFinish() {
                             resetMagneto()
-                            userData.motion = !(checkMove1.contentEquals(checkMove2))
-                            registerLightSensor()
+                            //userData.motion = !(checkMove1.contentEquals(checkMove2))
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
                             intent.putExtra("light", ambientLightLux)
                             if(emergency) intent.putExtra("emergency", true)
+                            Log.d("motion userdata before unreg", userData.motion.toString())
+                            unregisterLightSensor()
+                            unregisterMovementDetector()
+                            Log.d("motion userdata after unreg", userData.motion.toString())
                             startActivity(intent)
                         }
                     }.start()
@@ -199,6 +210,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         magneto = null
     }
 
+    private fun userIsMoving(checkMove1: FloatArray, checkMove2: FloatArray): Boolean {
+
+        return true
+    }
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             moveTaskToBack(false)
@@ -229,18 +245,66 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onShake(force: Float) {}
 
     /*-------------Functions related to the light sensor----------*/
+    /**
+     * Register a sensor event listener to get the ambient light level of the phone
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 19-02-2023)
+     */
     private fun registerLightSensor() {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
                 SensorManager
         val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-        Log.d("light sensor", lightSensor.toString())
-        val sensorEventListener = object : SensorEventListener {
+        sensorEventListener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent) {
                 ambientLightLux = event.values[0]
+                Log.d("light sensor", lightSensor.toString())
             }
             override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
         }
         sensorManager.registerListener(sensorEventListener, lightSensor,
             SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    /**
+     * Unregister the sensor event listener
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 19-02-2023)
+     */
+    private fun unregisterLightSensor() {
+        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorEventListener?.let { sensorManager.unregisterListener(it) }
+    }
+
+    /*-------------Functions related to the movement detection----------*/
+    private fun registerMovementDetector() {
+        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
+
+        movementDetectorListener = object : SensorEventListener {
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+                //Do nothing
+            }
+
+            override fun onSensorChanged(event: SensorEvent?) {
+                val accX = event?.values?.get(0) ?: 0f
+                val accY = event?.values?.get(1) ?: 0f
+                val accZ = event?.values?.get(2) ?: 0f
+
+                val acceleration = sqrt(accX * accX + accY * accY + accZ * accZ)
+
+                if (acceleration > 1.5) {
+                    Log.d("motion userdata", userData.motion.toString())
+                    userData.motion = true
+                }
+            }
+        }
+
+        sensorManager.registerListener(movementDetectorListener, accelerometerSensor,
+            SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    private fun unregisterMovementDetector() {
+        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sensorManager.unregisterListener(movementDetectorListener)
     }
 }

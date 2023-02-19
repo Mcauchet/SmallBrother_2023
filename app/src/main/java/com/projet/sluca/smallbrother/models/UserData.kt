@@ -10,7 +10,6 @@ import com.projet.sluca.smallbrother.getCurrentTime
 import com.projet.sluca.smallbrother.particule
 import org.apache.commons.io.IOUtils
 import java.io.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 /***
@@ -31,7 +30,7 @@ import java.util.*
  * @constructor creates a user with default properties
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 17-01-2023)
+ * @version 1.2 (updated on 19-02-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -195,29 +194,31 @@ data class UserData(
      * refreshLog sets the log accordingly to the code parameter
      * @param [code] the code associated to the log message
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 17-01-2023)
+     * @version 1.2 (Updated on 19-02-2023)
      */
     fun refreshLog(code: Int) {
         var texte = "${getCurrentTime("HH:mm")} : "
         texte += when (code) {
-            1 -> getString(R.string.log01)
-            2 -> getString(R.string.log02)
-            3 -> getString(R.string.log03)
-            4 -> getString(R.string.log04)
-            5 -> getString(R.string.log05)
-            6 -> getString(R.string.log06)
-            7 -> getString(R.string.log07)
-            8 -> getString(R.string.log08)
-            9 -> getString(R.string.log09)
-            10 -> getString(R.string.log10)
-            11 -> getString(R.string.aide_needs_help).replace("§%", this.nomPartner)
-            12 -> getString(R.string.log12)
-            13 -> {
-                val particule = particule(this.nomPartner)
-                getString(R.string.log11).replace("§%", "$particule${this.nomPartner}")
-            }
-            16 -> getString(R.string.log16)
-            18 -> getString(R.string.log18)
+            1 -> getString(R.string.log_install)
+            2 -> getString(R.string.log_reset_aidant)
+            3 -> getString(R.string.log_reset_aide)
+                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+            4 -> getString(R.string.log_aidant_send_SMS).replace("§%", this.nomPartner)
+            5 -> getString(R.string.log_aidant_receive_SMS).replace("§%", this.nomPartner)
+            6 -> getString(R.string.log_aide_receive_SMS).replace("§%", this.nomPartner)
+            7 -> getString(R.string.log_call).replace("§%", this.nomPartner)
+            8 -> getString(R.string.log_called).replace("§%", this.nomPartner)
+            9 -> getString(R.string.log_call_missed)
+                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+            10 -> getString(R.string.log_aidant_requests_context)
+                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+            11 -> getString(R.string.log_data_on_server)
+                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+            12 -> getString(R.string.log_no_internet_aide).replace("§%", this.nomPartner)
+            13 -> getString(R.string.log_no_internet_aidant).replace("§%", this.nomPartner)
+            14 -> getString(R.string.log_aide_needs_help).replace("§%", this.nomPartner)
+            15 -> getString(R.string.log_aide_send_SMS).replace("§%", this.nomPartner)
+            18 -> getString(R.string.log_private_expired)
             19 -> getString(R.string.log19).replace("N#", SmsReceiver.tempsrestant)
             20 -> getString(R.string.log20)
             else -> ""

@@ -84,7 +84,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             val sms = getString(R.string.smsys03).replace("§%", userData.nom)
             if(sendSMS(this, sms, userData.telephone, vibreur)) {
                 message(this, getString(R.string.message04), vibreur)
-                userData.refreshLog(16)
+                userData.refreshLog(15)
             }
         }
 

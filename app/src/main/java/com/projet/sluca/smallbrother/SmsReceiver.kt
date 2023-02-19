@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 07-02-2023)
+ * @author Maxime Caucheteur & Sébastien Luca (Updated on 19-02-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -55,7 +55,7 @@ class SmsReceiver : BroadcastReceiver() {
             when (clef) {
                 "[#SB03]" -> userData.refreshLog(5)
                 "[#SB05]" -> userData.refreshLog(13)
-                "[#SB06]" -> userData.refreshLog(14)
+                "[#SB06]" -> userData.refreshLog(11)
                 "[#SB07]" -> {
                     //TODO see if temprestant works
                     tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
