@@ -16,8 +16,6 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
-import com.projet.sluca.smallbrother.libs.AccelerometerListener
-import com.projet.sluca.smallbrother.libs.AccelerometerManager
 import com.projet.sluca.smallbrother.models.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,25 +29,24 @@ import kotlin.math.sqrt
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
  * @version 1.2 (Updated on 19-02-2023)
  */
-class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
+class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerListener*/ {
 
     var vibreur = Vibration()
     lateinit var userData: UserData
     private lateinit var clef: String
-    private var caller: String? = null // variable for caller's phone number
+    private var caller: String? = null
     private var magneto: MediaRecorder? = null
     var ambientLightLux: Float = 0.0f
 
-    private var checkMove1: FloatArray? = null
-    private var checkMove2: FloatArray? = null
-    private var keepMove: FloatArray? = null
+    private var checkMove1: Boolean = false
+    private var checkMove2: Boolean = false
 
     private var emergency: Boolean = false
 
     private lateinit var tvLoading: TextView
     private lateinit var tvAction: TextView
 
-    private var sensorEventListener: SensorEventListener? = null
+    private var lightDetectorListener: SensorEventListener? = null
     private var movementDetectorListener: SensorEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,7 +120,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             userData.refreshLog(12)
 
                             MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
-                            vibreur.vibration(this@WorkActivity, 5000)
+                            vibreur.vibration(this@WorkActivity, 3000)
 
                             var sms = getString(R.string.smsys05)
                             sms = sms.replace("§%", userData.nom)
@@ -139,26 +136,42 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                         override fun onTick(millisUntilFinished: Long) {
                             // position captured at seconds 2 and 9 of the record
                             when (millisUntilFinished) {
-                                in 8900..9000 -> checkMove1 = keepMove
-                                in 1900..2000 -> checkMove2 = keepMove
+                                in 8900..9000 -> checkMove1 = userData.motion
+                                in 1900..2000 -> checkMove2 = userData.motion
                             }
                         }
 
                         override fun onFinish() {
                             resetMagneto()
-                            //userData.motion = !(checkMove1.contentEquals(checkMove2))
+                            val interpretation = interpretMovement(checkMove1, checkMove2)
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
                             intent.putExtra("light", ambientLightLux)
+                            intent.putExtra("interpretation", interpretation)
                             if(emergency) intent.putExtra("emergency", true)
-                            Log.d("motion userdata before unreg", userData.motion.toString())
-                            unregisterLightSensor()
-                            unregisterMovementDetector()
-                            Log.d("motion userdata after unreg", userData.motion.toString())
+                            unregisterListener(lightDetectorListener)
+                            unregisterListener(movementDetectorListener)
                             startActivity(intent)
                         }
                     }.start()
                 }
             }
+        }
+    }
+
+    /**
+     * Interpret the results of the motion capture based on the start and end of the audio record
+     * @param checkMove1 true if moving at second 2 of the record, false otherwise
+     * @param checkMove2 true if moving at second 9 of the record, false otherwise
+     * @return the interpretation as a String
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 19-02-2023)
+     */
+    private fun interpretMovement(checkMove1: Boolean, checkMove2: Boolean): String {
+        return when {
+            checkMove1 && checkMove2 -> "En mouvement"
+            checkMove1 && !checkMove2 -> "S'est arrêté"
+            !checkMove1 && checkMove2 -> "Commence à bouger"
+            else -> "À l'arrêt"
         }
     }
 
@@ -210,39 +223,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         magneto = null
     }
 
-    private fun userIsMoving(checkMove1: FloatArray, checkMove2: FloatArray): Boolean {
-
-        return true
-    }
-
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             moveTaskToBack(false)
         }
     }
-
-    /* -------------- Functions related to the Accelerometer -------------- */
-    override fun onResume() {
-        super.onResume()
-        if (AccelerometerManager.isSupported(this) && (userData.role == "Aidé")) {
-            AccelerometerManager.startListening(this, this)
-        }
-    }
-
-    override fun onAccelerationChanged(x: Float, y: Float, z: Float) {
-        // Fetch phone's coordinates
-        // Error margin (*10) to compensate the accelerometer high sensibility
-        val tmp = floatArrayOf(
-            (x.toInt() * 10).toFloat(),
-            (y.toInt() * 10).toFloat(),
-            (z.toInt() * 10).toFloat()
-        )
-        keepMove = tmp
-    }
-
-    override fun onSensorChanged(event: SensorEvent) {}
-    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
-    override fun onShake(force: Float) {}
 
     /*-------------Functions related to the light sensor----------*/
     /**
@@ -254,28 +239,32 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
                 SensorManager
         val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
-        sensorEventListener = object : SensorEventListener {
+        lightDetectorListener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent) {
                 ambientLightLux = event.values[0]
-                Log.d("light sensor", lightSensor.toString())
             }
             override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
         }
-        sensorManager.registerListener(sensorEventListener, lightSensor,
+        sensorManager.registerListener(lightDetectorListener, lightSensor,
             SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     /**
-     * Unregister the sensor event listener
+     * Unregister the light detector listener
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 19-02-2023)
      */
     private fun unregisterLightSensor() {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sensorEventListener?.let { sensorManager.unregisterListener(it) }
+        lightDetectorListener?.let { sensorManager.unregisterListener(it) }
     }
 
     /*-------------Functions related to the movement detection----------*/
+    /**
+     * Register a sensor event listener to detect the movement of the phone
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 19-02-2023)
+     */
     private fun registerMovementDetector() {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
@@ -292,10 +281,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                 val acceleration = sqrt(accX * accX + accY * accY + accZ * accZ)
 
-                if (acceleration > 1.5) {
-                    Log.d("motion userdata", userData.motion.toString())
-                    userData.motion = true
-                }
+                userData.motion = acceleration > 1.5
             }
         }
 
@@ -303,8 +289,27 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             SensorManager.SENSOR_DELAY_NORMAL)
     }
 
+    /**
+     * Unregister the movement detector listener
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 19-02-2023)
+     */
     private fun unregisterMovementDetector() {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sensorManager.unregisterListener(movementDetectorListener)
+        movementDetectorListener?.let { sensorManager.unregisterListener(movementDetectorListener) }
     }
+
+    /**
+     * Unregister the sensor event listener
+     * @param listener the sensor event listener
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 19-02-2023)
+     */
+    private fun unregisterListener(listener: SensorEventListener?) {
+        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        listener?.let { sensorManager.unregisterListener(listener) }
+    }
+
+    override fun onSensorChanged(event: SensorEvent) {}
+    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
 }

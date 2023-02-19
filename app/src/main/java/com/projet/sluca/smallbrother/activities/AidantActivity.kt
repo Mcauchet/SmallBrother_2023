@@ -23,6 +23,7 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.security.PublicKey
 
@@ -130,10 +131,17 @@ class AidantActivity : AppCompatActivity() {
                 CoroutineScope(Dispatchers.IO).launch {
                     getDataOnServer(client, file)
                     Looper.prepare()
-                    if(successDl) message(this@AidantActivity, "Téléchargement du fichier terminé, "
-                            + "il se trouve dans votre dossier de téléchargement.", vibreur)
-                    else message(this@AidantActivity, "Erreur lors du téléchargement. Veuillez " +
-                            "réessayer ou capturer le contexte à nouveau.", vibreur)
+                    if(successDl) withContext(Dispatchers.Main) {
+                        message(this@AidantActivity,
+                            "Téléchargement du fichier terminé, il se trouve dans votre " +
+                                    "dossier de téléchargement.",
+                            vibreur)
+                    } else  withContext(Dispatchers.Main) {
+                        message(this@AidantActivity,
+                            "Erreur lors du téléchargement. Veuillez réessayer ou capturer " +
+                                    "le contexte à nouveau.",
+                            vibreur)
+                    }
                 }
             } else {
                 message(this, "Il n'y a pas de fichier appartenant à ${userData.nomPartner} " +
@@ -262,7 +270,7 @@ class AidantActivity : AppCompatActivity() {
         override fun run() {
             when (userData.bit) {
                 8 ->  userData.refreshLog(14)
-                10 -> userData.refreshLog(13)
+                10 -> userData.refreshLog(11)
             }
             if (userData.log != null) setLogAppearance(userData, tvLog)
             logHandler.postDelayed(this, 250)

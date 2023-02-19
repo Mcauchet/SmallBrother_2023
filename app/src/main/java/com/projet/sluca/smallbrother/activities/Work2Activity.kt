@@ -49,7 +49,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 26-01-2023)
+ * @version 1.2 (Updated on 19-02-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -59,8 +59,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private lateinit var tvLoading: TextView
     private lateinit var tvAction: TextView
     private var battery: String? = null
-
-    private var selfPhone: String = ""
 
     // Must not be nullable in Kotlin in order for it to work
     private lateinit var pictureService: APictureCapturingService
@@ -120,14 +118,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         battery = "$level%"
 
         // --> [6] Fetch motion data.
-        val motion = if (userData.motion) "Oui" else "Non"
+        val motion = if(intent.hasExtra("interpretation"))
+            intent.getStringExtra("interpretation").toString() else "Indéterminé"
 
         // --> [7] Get light level
         val light = if(intent.hasExtra("light")) intent.getFloatExtra("light", -1f) else -1f
 
         tvAction.text = getString(R.string.message12F)
 
-        // Checks what particule should be used before the partner name
+        // Checks what particule should be used with the partner name
         val nomAide = userData.nom
         val particule = particule(nomAide)
 
@@ -155,8 +154,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             "Niveau de batterie : $battery\n" +
                             "En mouvement : $motion.\n" +
                             "Niveau de lumiere (en lux) : $light.\n" + // TODO Explicit interpretation needed
-                            "Date de la capture : $currentTime\n" //+
-                            //"Numero de GSM $particule$nomAide : $selfPhone"
+                            "Date de la capture : $currentTime\n"
 
                     Log.d("infos", information)
 

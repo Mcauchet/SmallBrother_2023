@@ -21,11 +21,11 @@ import java.io.IOException
 import java.util.*
 
 /**
- * The aim of this service is to secretly take pictures (without preview or opening device's camera app)
- * from all available cameras using Android Camera 2 API
+ * The aim of this service is to secretly take pictures (without preview or opening device's
+ * camera app) from all available cameras using Android Camera 2 API
  *
  * @author hzitoun (zitoun.hamed@gmail.com)
- * (written in Java by @author, converted in Kotlin by Maxime Caucheteur on 07/09/22)
+ * (converted in Kotlin by Maxime Caucheteur on 07-09-2022, updated on 19-02-2023)
  *
  * https://github.com/hzitoun/android-camera2-secret-picture-taker for further info about
  * this library
@@ -50,8 +50,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
      */
     private var picturesTaken: TreeMap<String, ByteArray>? = null
     private var capturingListener: PictureCapturingListener? = null
-    private var numeroImage // [SL:]  pour numéroter le nom de l'image.
-            = 0
+    private var numeroImage = 0
 
     private var pathFile: String? = null
 
@@ -59,6 +58,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
      * Starts pictures capturing treatment.
      *
      * @param listener picture capturing listener
+     * @param context the context of the application
      */
     override fun startCapturing(listener: PictureCapturingListener?, context: Context?) {
         pathFile = context?.filesDir?.path
@@ -146,7 +146,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                         e
                     )
                 }
-            }, 300)
+            }, 100)
         }
 
         override fun onDisconnected(camera: CameraDevice) {
@@ -161,11 +161,8 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             cameraClosed = true
             Log.d(TAG, "camera " + camera.id + " closed")
             //once the current camera has been closed, start taking another picture
-            if (!cameraIds.isEmpty()) {
-                takeAnotherPicture()
-            } else {
-                capturingListener!!.onDoneCapturingAllPhotos(picturesTaken)
-            }
+            if (!cameraIds.isEmpty()) takeAnotherPicture()
+            else capturingListener!!.onDoneCapturingAllPhotos(picturesTaken)
         }
 
         override fun onError(camera: CameraDevice, error: Int) {
@@ -173,9 +170,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                 TAG,
                 "camera in error, int code $error"
             )
-            if (cameraDevice != null && !cameraClosed) {
-                cameraDevice!!.close()
-            }
+            if (cameraDevice != null && !cameraClosed) cameraDevice!!.close()
         }
     }
 
@@ -185,15 +180,12 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             Log.e(TAG, "cameraDevice is null")
             return
         }
-        val characteristics = manager.getCameraCharacteristics(
-            cameraDevice!!.id
-        )
+        val characteristics = manager.getCameraCharacteristics(cameraDevice!!.id)
         var jpegSizes: Array<Size>? = null
         val streamConfigurationMap =
             characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
-        if (streamConfigurationMap != null) {
+        if (streamConfigurationMap != null)
             jpegSizes = streamConfigurationMap.getOutputSizes(ImageFormat.JPEG)
-        }
         val jpegSizesNotEmpty = jpegSizes != null && jpegSizes.isNotEmpty()
         val width = if (jpegSizesNotEmpty) jpegSizes!![0].width else 640
         val height = if (jpegSizesNotEmpty) jpegSizes!![0].height else 480
@@ -205,8 +197,6 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
         captureBuilder.addTarget(reader.surface)
         captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
 
-        // [SL :] inutile, orientation toujours en fonction de la position de l'appareil.
-        //captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, getOrientation());
         reader.setOnImageAvailableListener(onImageAvailableListener, null)
         cameraDevice!!.createCaptureSession(
             outputSurfaces,
@@ -221,17 +211,14 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                         )
                     }
                 }
-
                 override fun onConfigureFailed(session: CameraCaptureSession) {}
             },
             null)
     }
 
     private fun saveImageToDisk(bytes: ByteArray) {
-        val cameraId = if (cameraDevice == null) UUID.randomUUID().toString() else cameraDevice!!.id
-        // [SL:] Chemin d'enregistrement
         val file = File("$pathFile/SmallBrother/autophoto$numeroImage.jpg")
-        numeroImage++ // [SL:] incrémenter numeroImage.
+        numeroImage++
         try {
             FileOutputStream(file).use { output ->
                 output.write(bytes)
