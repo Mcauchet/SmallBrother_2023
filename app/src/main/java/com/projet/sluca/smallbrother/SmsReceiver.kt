@@ -10,12 +10,13 @@ import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.activities.WorkActivity
 import com.projet.sluca.smallbrother.models.UserData
 
-/***
+/**
  * SmsReceiver updates aide's log depending on received messages coming from the aidant
  * It listens to upcoming SMS and checks if it is relevant to SmallBrother app
  * (with the [#SBxx] code)
  *
- * @author Maxime Caucheteur & Sébastien Luca (Updated on 19-02-2023)
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
+ * @version 1.2 (Updated on 19-02-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -33,8 +34,7 @@ class SmsReceiver : BroadcastReceiver() {
         if (numero != userData.telephone) return
 
         // If SMS is for the application and comes from the partner :
-        // Fetch the #SBxx code of the SMS
-        // Can't exceed 100 #SB code
+        // Fetch the #SBxx code of the SMS (Can't exceed 100 #SB code)
         clef = message.substring(message.length - 7)
         val motsclef = arrayOf(
             "[#SB01]",  // -> reinitialisation of data
@@ -93,9 +93,10 @@ class SmsReceiver : BroadcastReceiver() {
         }
     }
 
-    /***
+    /**
      * extract message body from SMS
-     *
+     * @param extras the Bundle object containing the pdus
+     * @return the SMS message as a String
      * @author joekickass (https://github.com/joekickass)
      * (code on https://github.com/joekickass/android-monday-madness/blob/master/app/src/main/
      * kotlin/com/joekickass/mondaymadness/SmsReceiver.kt)
@@ -115,12 +116,12 @@ class SmsReceiver : BroadcastReceiver() {
         return txt
     }
 
-    /***
+    /**
      * create an SmsMessage from a raw PDU with the specified message format.
      *
      * @param [pdu] the message PDU from the SMS_RECEIVED_ACTION intent
      * @param [format] the format extra from the SMS_RECEIVED_ACTION intent
-     * @return
+     * @return the SmsMessage object from the Pdu
      * @author joekickass (https://github.com/joekickass)
      * (code on https://github.com/joekickass/android-monday-madness/blob/master/app/src/main/
      * kotlin/com/joekickass/mondaymadness/SmsReceiver.kt)
