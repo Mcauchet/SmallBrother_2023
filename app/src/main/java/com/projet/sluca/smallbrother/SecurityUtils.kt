@@ -11,6 +11,7 @@ import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
+import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import javax.security.auth.x500.X500Principal
 
@@ -25,13 +26,13 @@ import javax.security.auth.x500.X500Principal
 object SecurityUtils {
 
     private const val KEYSTORE_ALIAS_RSA =
-        "ksa.test101"
+        "ksa.rsa.smallbrother"
 
     private const val KEYSTORE_ALIAS_AES =
-        "ksa.aes101"
+        "ksa.aes.smallbrother"
 
     private const val KEYSTORE_ALIAS_SIGN_RSA =
-        "ksa.sign.rsa101"
+        "ksa.sign.rsa.smallbrother"
 
     /**
      * Load the AndroidKeyStore instance
@@ -208,6 +209,7 @@ object SecurityUtils {
      */
     fun encryptDataAes(data:ByteArray, aesKey: SecretKey): ByteArray {
         val aesCipher = Cipher.getInstance("AES")
+        //val ivParameterSpec = IvParameterSpec(generateIVForAES())
         aesCipher.init(Cipher.ENCRYPT_MODE, aesKey)
         return aesCipher.doFinal(data)
     }
@@ -222,6 +224,7 @@ object SecurityUtils {
         val decryptedKey = decryptAESKey(encKey)
         val originalKey = SecretKeySpec(decryptedKey, 0, decryptedKey.count(), "AES")
         val aesCipher = Cipher.getInstance("AES")
+        //val ivParameterSpec = IvParameterSpec(generateIVForAES())
         aesCipher.init(Cipher.DECRYPT_MODE, originalKey)
         return aesCipher.doFinal(data)
     }
@@ -269,5 +272,12 @@ object SecurityUtils {
         val spec = X509EncodedKeySpec(data)
         val fact = KeyFactory.getInstance("RSA")
         return fact.generatePublic(spec)
+    }
+
+    private fun generateIVForAES() : ByteArray {
+        val iv = ByteArray(16)
+        val secureRandom = SecureRandom()
+        secureRandom.nextBytes(iv)
+        return iv
     }
 }
