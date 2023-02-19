@@ -146,7 +146,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                         e
                     )
                 }
-            }, 100)
+            }, 1000)
         }
 
         override fun onDisconnected(camera: CameraDevice) {
@@ -196,6 +196,8 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
         captureBuilder.addTarget(reader.surface)
         captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
+        /*captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+        captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 1)*/
 
         reader.setOnImageAvailableListener(onImageAvailableListener, null)
         cameraDevice!!.createCaptureSession(

@@ -152,7 +152,7 @@
     <string name="log_no_internet_aidant">
         §% n\'a pas Internet, les fichiers ne peuvent être envoyés au serveur.
     </string>
-    <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Vous pouvez récupérer ses données sur le serveur.</string>
+    <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Vous pourrez récupérer ses données sur le serveur dans quelques instants.</string>
     <string name="log_aide_send_SMS">Vous signalez à §% que tout va bien.</string>
     <string name="log_private_expired">Le délai du Mode Privé est écoulé.</string>
     <string name="log19">

@@ -203,10 +203,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                 Log.d("emergencyIntent", intent.hasExtra("emergency").toString())
                 if(intent.hasExtra("emergency")) {
-                    val intent = Intent(Intent.ACTION_CALL).apply {
+                    /*val intent = Intent(Intent.ACTION_CALL).apply {
                         data = Uri.parse("tel:${userData.telephone}")
                     }
-                    startActivity(intent)
+                    startActivity(intent)*/
                     finish()
                 }
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)

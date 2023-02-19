@@ -106,10 +106,10 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                 CoroutineScope(Dispatchers.Main).launch {
                     startActivity(workIntent)
                 }
-                val intent = Intent(Intent.ACTION_CALL).apply {
+                /*val intent = Intent(Intent.ACTION_CALL).apply {
                     data = Uri.parse("tel:${userData.telephone}")
-                }
-                startActivity(intent)
+                }*/
+                //startActivity(intent)
             }
         }
     }
