@@ -27,7 +27,7 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 19-02-2023)
+ * @version 1.2 (Updated on 20-02-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerListener*/ {
 
@@ -249,16 +249,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
             SensorManager.SENSOR_DELAY_NORMAL)
     }
 
-    /**
-     * Unregister the light detector listener
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 19-02-2023)
-     */
-    private fun unregisterLightSensor() {
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        lightDetectorListener?.let { sensorManager.unregisterListener(it) }
-    }
-
     /*-------------Functions related to the movement detection----------*/
     /**
      * Register a sensor event listener to detect the movement of the phone
@@ -287,16 +277,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
 
         sensorManager.registerListener(movementDetectorListener, accelerometerSensor,
             SensorManager.SENSOR_DELAY_NORMAL)
-    }
-
-    /**
-     * Unregister the movement detector listener
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 19-02-2023)
-     */
-    private fun unregisterMovementDetector() {
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        movementDetectorListener?.let { sensorManager.unregisterListener(movementDetectorListener) }
     }
 
     /**

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.*
-import android.net.Uri
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Looper
@@ -49,7 +48,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 19-02-2023)
+ * @version 1.2 (Updated on 20-02-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -161,7 +160,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     val informationFile = File(userData.path + "/SmallBrother/informations.txt")
                     informationFile.createNewFile()
 
-                    val bufferedWriter = BufferedWriter(FileWriter(informationFile))
+                    val outputStream = FileOutputStream(informationFile)
+
+                    val bufferedWriter = BufferedWriter(OutputStreamWriter(
+                        outputStream,
+                        Charsets.UTF_8
+                    ))
                     bufferedWriter.write(information)
                     bufferedWriter.close()
 
@@ -175,7 +179,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                 zipName = uploadZip(client, File(ziPath))
                                 assert(zipName != "")
                             }
-                            client.close()
 
                             val fileLocMsg = getString(R.string.smsys10)
                                 .replace("§%", "$URLServer/download/$zipName")
@@ -317,7 +320,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param [file] the zip file to upload
      * @return the final name of the file to put in the download URL
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 16-01-2023)
+     * @version 1.2 (Updated on 20-02-2023)
      */
     suspend fun uploadZip(client: HttpClient, file: File): String {
         require(file.exists())
@@ -332,6 +335,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             contentType(ContentType.Application.Json)
             setBody(AideData(finalName, aesEncKey, signString))
         }
+        client.close()
         return finalName
     }
 

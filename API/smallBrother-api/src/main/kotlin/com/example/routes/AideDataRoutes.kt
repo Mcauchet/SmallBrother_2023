@@ -18,7 +18,7 @@ const val EXT_SIZE = 4
  * Manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 26-01-2023)
+ * @version 1.2 (Updated on 20-02-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -38,7 +38,7 @@ fun Route.aideDataRouting() {
                         fileName = part.originalFileName as String
                         val fileBytes = part.streamProvider().readBytes()
                         if (extension == "zip" && fileBytes.size < MAX_SIZE && fileName.length == NAME_SIZE+EXT_SIZE) {
-                            File("upload/$fileName").writeBytes(fileBytes)
+                            File("/upload/$fileName").writeBytes(fileBytes)
                         } else {
                             call.respondText("Only small zip file accepted", status = HttpStatusCode.NotAcceptable)
                         }
@@ -82,7 +82,7 @@ fun Route.aideDataRouting() {
     route("/download") {
         get("/{key}"){
             val key = call.parameters["key"]
-            val file = File("upload/$key")
+            val file = File("/upload/$key")
             val aideData = dao.getAideData("$key")
             if (aideData != null) {
                 call.response.header(

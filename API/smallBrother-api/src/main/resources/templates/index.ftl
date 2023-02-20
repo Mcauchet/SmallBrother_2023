@@ -14,8 +14,11 @@
     <hr>
     <div>
         <form action="/admin/clean" method="post">
-            <p>
-                <input type="submit" name="_action" value="Clean">
+            <p style="display: flex; justify-content: center">
+                <input type="submit" name="_action" value="Clean"
+                       style="flex: 0 0 auto; margin-right: 10px; width: 5%;">
+                <input type="submit" name="_action" value="CleanAll"
+                       style="flex: 0 0 auto; margin-right: 10px; width: 5%;">
             </p>
         </form>
     </div>

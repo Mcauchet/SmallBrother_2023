@@ -18,7 +18,7 @@ import java.io.File
  * Manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 16-01-2023)
+ * @version 1 (Updated on 20-02-2023)
  */
 fun Route.adminRouting() {
     authenticate("auth-session") {
@@ -47,15 +47,20 @@ fun Route.adminRouting() {
                 if(formParameters.getOrFail("_action") == "Clean") {
                     val existingEntries = dao.allAideData()
                     val existingUris: MutableList<String> = mutableListOf()
-                    for (entry in existingEntries) {
-                        existingUris += entry.uri
-                    }
-                    val dir = object {}.javaClass.getResource("upload")?.file?.let { it1 -> File(it1) }
-                    dir?.walk()?.forEach { file ->
+                    for (entry in existingEntries) existingUris += entry.uri
+                    val dir = File("/upload/")
+                    dir.walk().forEach { file ->
                         if(file.name !in existingUris) file.delete()
                     }
                 }
                 call.respondRedirect("/admin")
+            }
+            post("/deleteAll") {
+                val formParameters = call.receiveParameters()
+                if(formParameters.getOrFail("_action") == "CleanAll") {
+                    dao.deleteAideDatas()
+                    call.respondRedirect("/admin")
+                }
             }
             get("/editAdmin") {
                 call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("admins" to dao.allAdmin())))

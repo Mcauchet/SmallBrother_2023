@@ -23,7 +23,7 @@
         }
     </style>
     <body style="text-align: center; font-family: sans-serif">
-    <img src="../images/logo.png" alt="Logo">
+    <img src="/root/smallbrother/images/logo.png" alt="Logo">
     <div class="header" style="background-color: #f1f1f1;padding: 30px;text-align: center;font-size: 35px;">
         SmallBrother Admin Panel
     </div>

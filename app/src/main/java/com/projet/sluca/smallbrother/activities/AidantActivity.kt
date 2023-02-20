@@ -31,7 +31,7 @@ import java.security.PublicKey
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 26-01-2023)
+ * @version 1.2 (updated on 20-02-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -130,6 +130,7 @@ class AidantActivity : AppCompatActivity() {
                     intent.getStringExtra("url").toString() else ""
                 CoroutineScope(Dispatchers.IO).launch {
                     getDataOnServer(client, file)
+                    client.close()
                     Looper.prepare()
                     if(successDl) withContext(Dispatchers.Main) {
                         message(this@AidantActivity,
@@ -209,6 +210,8 @@ class AidantActivity : AppCompatActivity() {
     /**
      * Create and initialize the HttpClient
      * @return the HttpClient
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
      */
     private fun initClient() : HttpClient {
         return HttpClient(Android) {
