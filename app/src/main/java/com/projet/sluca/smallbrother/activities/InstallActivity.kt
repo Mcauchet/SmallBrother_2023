@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
  * class InstallDeActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 26-01-2023)
+ * @version 1.2 (Updated on 26-02-2023)
  */
 class InstallActivity : AppCompatActivity() {
 
@@ -105,6 +105,7 @@ class InstallActivity : AppCompatActivity() {
         ActivityCompat.requestPermissions(this, arrayOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.READ_CONTACTS,
             Manifest.permission.SEND_SMS,
             Manifest.permission.CALL_PHONE,
             Manifest.permission.READ_SMS,
@@ -115,22 +116,24 @@ class InstallActivity : AppCompatActivity() {
             Manifest.permission.PROCESS_OUTGOING_CALLS,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.SEND_SMS,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION), 1)
     }
 
     /**
-     * Target a specific permission for API >= 26
+     * Target specific permissions according to the API version
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 26-01-2023)
+     * @version 1.2 (Updated on 26-02-2023)
      */
     private fun getSpecialPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ActivityCompat.requestPermissions(this, arrayOf(
                 Manifest.permission.READ_PHONE_NUMBERS
             ), 1)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ActivityCompat.requestPermissions(this, arrayOf(
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION), 1)
         }
     }
 
