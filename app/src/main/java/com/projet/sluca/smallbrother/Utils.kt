@@ -112,7 +112,6 @@ fun message(context: Context, msg: String, vibreur: Vibration) {
 
 /**
  * Launches the application and put it on screen even if device locked
- *
  * @param [window] the window of the application
  * @param [activity] the activity to put on screen
  * @author Maxime Caucheteur
@@ -243,9 +242,9 @@ fun redirectRole(context: Context, userData: UserData) {
 
 /**
  * Checks if inputs are valid
- * @param [name] the name of the aidant
- * @param [namePartner] the name of the aidé
- * @param [telephone] the phone number of the aidé
+ * @param [name] self name
+ * @param [namePartner] the name of the partner
+ * @param [telephone] the phone number of the partner
  * @param [context] the Context of the application
  * @param [userData] the user's data
  * @param [vibreur] the phone Vibration system

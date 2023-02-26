@@ -5,7 +5,7 @@
         box-sizing: border-box;
     }
     .column {
-        float: left;
+        text-align: center;
         width: 50%;
         padding: 10px;
     }
@@ -30,12 +30,6 @@
     }
 </style>
 <@layout.header>
-    <div class="column">
-            <!--ajouter texte sur l'app, les liens, etc.-->
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquam aliquid aperiam aspernatur assumenda, esse
-            eum inventore molestias natus neque placeat quaerat, quas totam voluptate? Consequatur nihil quis quisquam
-            ratione tenetur.</p>
-    </div>
     <div class="column">
         <form action="/login" method="post">
             <label for="email">Email:</label>

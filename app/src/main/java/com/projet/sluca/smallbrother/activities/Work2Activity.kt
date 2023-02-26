@@ -44,11 +44,11 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.crypto.SecretKey
 
-/***
+/**
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 20-02-2023)
+ * @version 1.2 (Updated on 26-02-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -221,7 +221,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     /***
      * function to get Location of Aide's phone
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 16-01-2023)
+     * @version 1.2 (Updated on 26-02-2023)
      */
     @SuppressLint("MissingPermission")
     private fun checkForLocation() {
@@ -229,18 +229,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
-        /*if(!hasGps && !hasNetwork) {
-            getLocation()
-        } else {
-            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            startActivity(intent)
-        }*/
         if(!hasGps && !hasNetwork) {
             val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
             startActivity(intent)
         }
         assert(hasGps || hasNetwork)
-        getLocation() //TODO Test this
+        getLocation()
     }
 
     /**
@@ -261,6 +255,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }
     }
 
+    /**
+     * Reset the location in phone's memory to avoid getting an old one
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 26-02-2023)
+     */
     private fun deleteLocation() {
         locationGps = null
         locationNetwork = null
@@ -287,14 +286,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
     /**
      * request new location data if no previous one existing
-     *
      * @author Maxime Caucheteur (from https://www.androidhire.com/current-location-in-android-using-kotlin/)
      * @version 1.2 (Updated on 28-12-22)
      */
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         requestPermission()
-        val locationRequest = LocationRequest() //Check for this deprecated, doesn't look too hard
+        val locationRequest = LocationRequest()
         locationRequest.priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
         locationRequest.interval = 0
         locationRequest.fastestInterval = 0
@@ -518,6 +516,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         return telephonyManager.line1Number
     }
 
+    /**
+     * Request permissions to retrieve locations
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 26-02-2023)
+     */
     private fun requestPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED
@@ -526,10 +529,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             ActivityCompat.requestPermissions(this,
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                ),
-                1
-            )
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ), 1)
         }
     }
 
@@ -544,7 +545,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         } else {
             Toast.makeText(this, "Location permission was denied", Toast.LENGTH_SHORT).show()
         }
-        return //see diff if we take that off
+        return
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}

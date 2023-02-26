@@ -12,7 +12,7 @@ import org.apache.commons.io.IOUtils
 import java.io.*
 import java.util.*
 
-/***
+/**
  * creates an object UserData which contains all pieces of information about the user
  *
  * @property version: last version of SB
@@ -51,9 +51,8 @@ data class UserData(
 
     val help = "help/"
 
-    /***
+    /**
      * configurePath sets the path at runtime in Launch1Activity
-     *
      * @param [context] the context of the activity running
      * @see Launch1Activity.onCreate
      * @author Maxime Caucheteur
@@ -64,9 +63,8 @@ data class UserData(
         if(tmpPath != null) path = tmpPath
     }
 
-    /***
+    /**
      * saveData stores the user's data in a .txt file on the device
-     *
      * @param [context] the context of the application
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 17-01-2023)
@@ -75,7 +73,7 @@ data class UserData(
         val content = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
                 nomPartner + "\r" + path
         try {
-            val directory = File(context?.filesDir, "SmallBrother") // change this.filesDir into path ?
+            val directory = File(context?.filesDir, "SmallBrother")
             if (!directory.exists()) directory.mkdirs()
             val dataFile = File(directory, file)
             if(!dataFile.exists()) dataFile.createNewFile() else byeData()
@@ -100,7 +98,7 @@ data class UserData(
         MediaScannerConnection.scanFile(context, arrayOf(dataFile.toString()), null, null)
     }
 
-    /***
+    /**
      * byeData deletes the donnees.txt file of the device
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 04-01-2023)
@@ -124,7 +122,7 @@ data class UserData(
         }
     }
 
-    /***
+    /**
      * loadData fetches the donnees.txt file and sets the UserData properties accordingly
      *
      * @param [context] the context of the application

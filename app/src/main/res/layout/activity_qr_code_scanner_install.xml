@@ -8,9 +8,10 @@
     android:background="@drawable/ombreshape">
 
     <TextView
+        android:id="@+id/textScan"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:text="@string/installAide2"
+        android:text="@string/installScan"
         android:textSize="20sp"
         android:background="@drawable/metalliqueshape"
         android:paddingLeft="16dp"
