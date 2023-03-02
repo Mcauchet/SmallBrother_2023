@@ -19,10 +19,8 @@ class UtilsTest {
     @Test fun getTwoDifferentCurrentTime_OK() {
         val format = "dd-MM-yyyy hh:mm:ss"
         val time = getCurrentTime(format)
-        println(time)
         Thread.sleep(1000)
         val time2 = getCurrentTime(format)
-        println(time2)
         assertThat("First capture should be smaller than second one", time < time2)
     }
 }
