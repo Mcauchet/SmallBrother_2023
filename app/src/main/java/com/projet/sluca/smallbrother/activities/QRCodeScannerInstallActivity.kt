@@ -3,7 +3,6 @@ package com.projet.sluca.smallbrother.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import com.budiyev.android.codescanner.*
 import com.projet.sluca.smallbrother.*

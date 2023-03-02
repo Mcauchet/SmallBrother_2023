@@ -264,6 +264,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
                 //Do nothing
             }
 
+            //TODO add more criteria to determine if moving or not
             override fun onSensorChanged(event: SensorEvent?) {
                 val accX = event?.values?.get(0) ?: 0f
                 val accY = event?.values?.get(1) ?: 0f

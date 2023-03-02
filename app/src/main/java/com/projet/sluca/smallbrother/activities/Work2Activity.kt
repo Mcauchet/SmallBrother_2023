@@ -122,6 +122,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         // --> [7] Get light level
         val light = if(intent.hasExtra("light")) intent.getFloatExtra("light", -1f) else -1f
+        val lightScale = getLightScale(light)
 
         tvAction.text = getString(R.string.message12F)
 
@@ -152,7 +153,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Niveau de batterie : $battery\n" +
                             "En mouvement : $motion.\n" +
-                            "Niveau de lumiere (en lux) : $light.\n" + // TODO Explicit interpretation needed
+                            "Niveau de lumiere (en lux) : $lightScale.\n" +
                             "Date de la capture : $currentTime\n"
 
                     Log.d("infos", information)
@@ -218,7 +219,23 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }.start()
     }
 
-    /***
+    /**
+     * Gets the light sensor interpretation for the information file
+     * @param level the results of the sensor
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 02-03-2023)
+     */
+    fun getLightScale(level: Float): String {
+        return when (level) {
+            in 0f..50f -> "Sombre - $level"
+            in 50f..500f -> "Faible - $level"
+            in 500f..1000f -> "Normal - $level"
+            in 1000f..2000f -> "Clair - $level"
+            else -> "Fort lumineux - $level"
+        }
+    }
+
+    /**
      * function to get Location of Aide's phone
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 26-02-2023)
