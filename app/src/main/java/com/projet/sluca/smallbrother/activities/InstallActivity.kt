@@ -16,8 +16,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-/***
- * class InstallDeActivity manages the data of the Aidant in the Aide's app
+/**
+ * class InstallActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 26-02-2023)

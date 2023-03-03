@@ -147,6 +147,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
                             intent.putExtra("light", ambientLightLux)
                             intent.putExtra("interpretation", interpretation)
+                            Log.d("interpretation", interpretation)
                             if(emergency) intent.putExtra("emergency", true)
                             unregisterListener(lightDetectorListener)
                             unregisterListener(movementDetectorListener)

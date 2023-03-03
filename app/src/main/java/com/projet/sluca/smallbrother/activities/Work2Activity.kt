@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.location.*
 import android.os.BatteryManager
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Looper
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -48,7 +49,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 26-02-2023)
+ * @version 1.2 (Updated on 03-03-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -67,6 +68,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private var hasNetwork = false
     private var locationGps: Location? = null
     private var locationNetwork: Location? = null
+
+    //Used to check if user is moving using the address
+    private var location1: Location? = null
+    private var location2: Location? = null
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -91,12 +96,28 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvAction.text = getString(R.string.message12C)
         checkForLocation()
 
-        // --> [3] Capture of front and back pictures
-        tvAction.text = getString(R.string.message12B)
-        pictureService = PictureCapturingServiceImpl.getInstance(this)
-        pictureService.startCapturing(this, this)
+        object : CountDownTimer(11000, 1) {
+            override fun onTick(millisUntilFinished: Long) {
+                // position captured at seconds 2 and 9 of the record
+                when (millisUntilFinished) {
+                    in 9900..10000 -> location1 = getLocationForMovement()
+                    in 1900..2000 -> location2 = getLocationForMovement()
+                }
+            }
 
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+            override fun onFinish() {
+                if(location1 != null && location2 != null) userData.motion = location1 == location2
+
+                // --> [3] Capture of front and back pictures
+                tvAction.text = getString(R.string.message12B)
+                pictureService = PictureCapturingServiceImpl.getInstance(this@Work2Activity)
+                pictureService.startCapturing(this@Work2Activity, this@Work2Activity)
+
+                onBackPressedDispatcher.addCallback(this@Work2Activity, onBackPressedCallback)
+            }
+        }.start()
+
+
     }
 
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
@@ -119,6 +140,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // --> [6] Fetch motion data.
         val motion = if(intent.hasExtra("interpretation"))
             intent.getStringExtra("interpretation").toString() else "Indéterminé"
+
+        val motion2 = if (userData.motion) "Oui" else "Non"
 
         // --> [7] Get light level
         val light = if(intent.hasExtra("light")) intent.getFloatExtra("light", -1f) else -1f
@@ -153,6 +176,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Niveau de batterie : $battery\n" +
                             "En mouvement : $motion.\n" +
+                            "Deuxième vérification mouvement (Oui/Non): $motion2.\n" +
                             "Niveau de lumiere (en lux) : $lightScale.\n" +
                             "Date de la capture : $currentTime\n"
 
@@ -220,12 +244,30 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
+     * Get the Location object to compare them later to see if user is moving
+     * @return the Location
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 03-03-2023)
+     */
+    private fun getLocationForMovement(): Location? {
+        checkForLocation()
+        deleteLocation()
+        return if (locationGps != null) {
+            locationGps as Location
+        } else if (locationNetwork != null) {
+            locationNetwork as Location
+        } else {
+            null
+        }
+    }
+
+    /**
      * Gets the light sensor interpretation for the information file
      * @param level the results of the sensor
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 02-03-2023)
      */
-    fun getLightScale(level: Float): String {
+    private fun getLightScale(level: Float): String {
         return when (level) {
             in 0f..50f -> "Sombre - $level"
             in 50f..500f -> "Faible - $level"
