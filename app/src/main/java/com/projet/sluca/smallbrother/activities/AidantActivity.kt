@@ -128,7 +128,7 @@ class AidantActivity : AppCompatActivity() {
                 val file = createDestinationFile()
                 userData.urlToFile = if (intent.hasExtra("url"))
                     intent.getStringExtra("url").toString() else ""
-                CoroutineScope(Dispatchers.IO).launch {
+                CoroutineScope(Dispatchers.Default).launch {
                     getDataOnServer(client, file)
                     client.close()
                     Looper.prepare()

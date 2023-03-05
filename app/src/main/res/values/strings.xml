@@ -26,7 +26,7 @@
         Ce menu vous permet de réinitialiser vos informations et celles de l\'aidé. Vous pouvez également refaire la photo de l\'aidé. \n
         Attention, si vous réinitialisez les informations, vous devrez réinstaller l\'application sur les deux smartphones.
     </string>
-    <string name="chargement">Chargement en cours </string>
+    <string name="chargement">Envoi en cours </string>
     <string name="cheminphoto">Stockage Interne/Download/SmallBrother/photo_aide.jpg</string>
     <string name="nophoto">Aucun fichier trouvé.</string>
     <string name="reacpitulatif_cln1">→ Nom : \n→ Numéro de l\'Aidé : </string>
