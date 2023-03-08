@@ -174,6 +174,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
 
                     val information = "Localisation $particule$nomAide : $location\n" +
+                            "Coordonnées géographiques: ${locationGps!!.latitude}, " +
+                            "${locationGps!!.longitude}\n" +
                             "Niveau de batterie : $battery\n" +
                             "En mouvement : $motion.\n" +
                             "Deuxième vérification mouvement (Oui/Non): $motion2.\n" +
@@ -494,7 +496,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             if(file.isDirectory) {
                 ifZipDirectory(file, zipOut)
             } else {
-                if (!file.name.contains(".zip") && !file.name.contains("path.txt")) {
+                if (!file.name.contains(".zip") && !file.name.contains("donnees.txt")) {
                     writeEntryArchive(file, parentDirPath, zipOut, data)
                 } else {
                     zipOut.closeEntry()
