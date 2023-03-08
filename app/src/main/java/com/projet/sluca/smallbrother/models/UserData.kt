@@ -76,7 +76,7 @@ data class UserData(
             val directory = File(context?.filesDir, "SmallBrother")
             if (!directory.exists()) directory.mkdirs()
             val dataFile = File(directory, file)
-            if(!dataFile.exists()) dataFile.createNewFile() else byeData()
+            if(!dataFile.exists()) dataFile.createNewFile() else byeData("donnees.txt")
             writeDataInFile(dataFile, content, context)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -103,8 +103,8 @@ data class UserData(
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 04-01-2023)
      */
-    fun byeData() {
-        val data = File("$path/SmallBrother/$file")
+    fun byeData(fileName: String) {
+        val data = File("$path/SmallBrother/$fileName")
         data.delete()
         assert(!data.exists())
     }
@@ -163,6 +163,47 @@ data class UserData(
         nomPartner = dataTab[5]
         path = dataTab[6]
         return true
+    }
+
+    /**
+     * Save the URL to access the context data file on the server
+     * @param context the context of the activity
+     * @param url the url to save in the file
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 08-03-2023)
+     */
+    fun saveURL(context: Context?, url: String) {
+        try {
+            val urlFile = File(context?.filesDir, "url.txt")
+            if(!urlFile.exists()) urlFile.createNewFile() else byeData("url.txt")
+            writeDataInFile(urlFile, url, context)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    /**
+     * Loads the URL saved in the url.txt file to access the context data on the server
+     * @param context the context of the activity
+     * @return the url as a String, empty string if no url file
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 08-03-2023)
+     */
+    fun loadURL(context: Context?): String {
+        val urlFile = File(context?.filesDir, "SmallBrother/url.txt")
+        if(urlFile.exists() && urlFile.canRead()) {
+            try {
+                val dataTab: Array<String> = readDataFile(urlFile)
+                Log.d("DATATAB URL", dataTab.toString())
+                this.urlToFile = dataTab[0]
+                return dataTab[0]
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+        return ""
     }
 
     /**

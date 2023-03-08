@@ -306,7 +306,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:text="@string/recuperer_les_donnees_de_l_aide"
+                android:text="@string/retelecharger_les_donnees_de_l_aide"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"

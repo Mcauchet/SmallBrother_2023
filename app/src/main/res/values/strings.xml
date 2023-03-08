@@ -165,7 +165,7 @@
     <string name="logo_sb">Logo SB</string>
     <string name="empty_string">" "</string>
     <string name="help_aide">J\'ai besoin d\'assistance</string>
-    <string name="recuperer_les_donnees_de_l_aide">Récupérer les données §%</string>
+    <string name="retelecharger_les_donnees_de_l_aide">Retélécharger les données §%</string>
 
     <string name="qr_code">QR Code</string>
     <string name="explication_aide_scan">Veuillez scanner le QR Code sur le smartphone de l\'aidant. Il se trouve dans les paramètres de son application (symbole d\'engrenage)</string>

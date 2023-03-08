@@ -27,11 +27,11 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.security.PublicKey
 
-/***
+/**
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 20-02-2023)
+ * @version 1.2 (updated on 08-03-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -62,11 +62,16 @@ class AidantActivity : AppCompatActivity() {
         userData.loadData(this)
         check(userData.role == "Aidant")
 
+        if(intent.hasExtra("url")){
+            intent.getStringExtra("url")?.let { userData.saveURL(this, it) }
+            getContextCapture()
+        }
+
         setAppBarTitle(userData, this)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
-        btnFiles.text = getString(R.string.recuperer_les_donnees_de_l_aide)
+        btnFiles.text = getString(R.string.retelecharger_les_donnees_de_l_aide)
             .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
 
         btnEmergency.text = getString(R.string.btn_urgence)
@@ -122,37 +127,44 @@ class AidantActivity : AppCompatActivity() {
         }
 
         btnFiles.setOnClickListener {
-            if (userData.urlToFile != ""){
-                message(this, "Téléchargement du fichier en cours...", vibreur)
-                val client = initClient()
-                val file = createDestinationFile()
-                userData.urlToFile = if (intent.hasExtra("url"))
-                    intent.getStringExtra("url").toString() else ""
-                CoroutineScope(Dispatchers.Default).launch {
-                    getDataOnServer(client, file)
-                    client.close()
-                    Looper.prepare()
-                    if(successDl) withContext(Dispatchers.Main) {
-                        message(this@AidantActivity,
-                            "Téléchargement du fichier terminé, il se trouve dans votre " +
-                                    "dossier de téléchargement.",
-                            vibreur)
-                    } else  withContext(Dispatchers.Main) {
-                        message(this@AidantActivity,
-                            "Erreur lors du téléchargement. Veuillez réessayer ou capturer " +
-                                    "le contexte à nouveau.",
-                            vibreur)
-                    }
-                }
-            } else {
-                message(this, "Il n'y a pas de fichier appartenant à ${userData.nomPartner} " +
-                        "sur le serveur, veuillez effectuer une capture de contexte.", vibreur)
-            }
+            userData.urlToFile = userData.loadURL(this)
+            getContextCapture()
         }
     }
 
     /**
-     * Sends two get request to the server and retrieve the encrypted data and aesKey.
+     * Fetch the context file on the server by initiating a client, creating a destination file
+     * and launching a request to the server.
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 08-03-2023)
+     */
+    private fun getContextCapture() {
+        if (userData.urlToFile != ""){
+            message(this, "Téléchargement du fichier en cours...", vibreur)
+            val client = initClient()
+            val file = createDestinationFile()
+            CoroutineScope(Dispatchers.Default).launch {
+                getDataOnServer(client, file)
+                client.close()
+                Looper.prepare()
+                if(successDl) withContext(Dispatchers.Main) {
+                    message(this@AidantActivity,
+                        "Téléchargement du fichier terminé, il se trouve dans votre " +
+                                "dossier de téléchargement.", vibreur)
+                } else  withContext(Dispatchers.Main) {
+                    message(this@AidantActivity,
+                        "Erreur lors du téléchargement. Veuillez réessayer ou capturer " +
+                                "le contexte à nouveau.", vibreur)
+                }
+            }
+        } else {
+            message(this, "Il n'y a pas de fichier appartenant à ${userData.nomPartner} " +
+                    "sur le serveur, veuillez effectuer une capture de contexte.", vibreur)
+        }
+    }
+
+    /**
+     * Sends two GET requests to the server and retrieve the encrypted data and aesKey.
      * It then decrypts the data and stores it in the file created in the Downloads directory
      * @param [client] the HttpClient to access the server
      * @param [file] the file to store the data in

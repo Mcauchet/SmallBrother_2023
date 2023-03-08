@@ -85,7 +85,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
                 "[#SB01]" -> {
                     vibreur.vibration(this, 330)
                     userData.refreshLog(3)
-                    userData.byeData()
+                    userData.byeData("donnees.txt")
                     // Checks if the donnees.txt file is gone before restarting the install process
                     if(!userData.loadData(this)){
                         val mIntent = Intent(this, Launch1Activity::class.java)
