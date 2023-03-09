@@ -25,7 +25,7 @@ import java.util.*
  * camera app) from all available cameras using Android Camera 2 API
  *
  * @author hzitoun (zitoun.hamed@gmail.com)
- * (converted in Kotlin by Maxime Caucheteur on 07-09-2022, updated on 19-02-2023)
+ * (converted in Kotlin by Maxime Caucheteur on 07-09-2022, updated on 09-03-2023)
  *
  * https://github.com/hzitoun/android-camera2-secret-picture-taker for further info about
  * this library
@@ -146,7 +146,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                         e
                     )
                 }
-            }, 1000)
+            }, 2000)
         }
 
         override fun onDisconnected(camera: CameraDevice) {
@@ -178,7 +178,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
     private fun takePicture() {
         if (null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null")
-            return
+            throw IllegalStateException("cameraDevice is null")
         }
         val characteristics = manager.getCameraCharacteristics(cameraDevice!!.id)
         var jpegSizes: Array<Size>? = null
@@ -196,8 +196,11 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
         captureBuilder.addTarget(reader.surface)
         captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-        /*captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
-        captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 1)*/
+        captureBuilder.set(
+            CaptureRequest.SENSOR_EXPOSURE_TIME,
+            (200_000_000L)
+        ) //Exposure Time
+        captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, 800) //ISO
 
         reader.setOnImageAvailableListener(onImageAvailableListener, null)
         cameraDevice!!.createCaptureSession(

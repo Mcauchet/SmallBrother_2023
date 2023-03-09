@@ -170,11 +170,11 @@ data class UserData(
      * @param context the context of the activity
      * @param url the url to save in the file
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 08-03-2023)
+     * @version 1.2 (Updated on 09-03-2023)
      */
     fun saveURL(context: Context?, url: String) {
         try {
-            val urlFile = File(context?.filesDir, "url.txt")
+            val urlFile = File(context?.filesDir, "SmallBrother/url.txt")
             if(!urlFile.exists()) urlFile.createNewFile() else byeData("url.txt")
             writeDataInFile(urlFile, url, context)
         } catch (e: IOException) {

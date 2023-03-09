@@ -49,7 +49,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 03-03-2023)
+ * @version 1.2 (Updated on 09-03-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -116,8 +116,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 onBackPressedDispatcher.addCallback(this@Work2Activity, onBackPressedCallback)
             }
         }.start()
-
-
     }
 
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
@@ -140,11 +138,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // --> [6] Fetch motion data.
         val motion = if(intent.hasExtra("interpretation"))
             intent.getStringExtra("interpretation").toString() else "Indéterminé"
-
         val motion2 = if (userData.motion) "Oui" else "Non"
 
         // --> [7] Get light level
-        val light = if(intent.hasExtra("light")) intent.getFloatExtra("light", -1f) else -1f
+        val light = if(intent.hasExtra("light"))
+            intent.getFloatExtra("light", -1f) else -1f
         val lightScale = getLightScale(light)
 
         tvAction.text = getString(R.string.message12F)
@@ -224,7 +222,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             e.printStackTrace()
                         }
                     }
-                } catch (_: Exception) {
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
 
                 vibreur.vibration(this@Work2Activity, 330)
@@ -232,13 +231,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 activateSMSReceiver(this@Work2Activity)
 
                 Log.d("emergencyIntent", intent.hasExtra("emergency").toString())
-                if(intent.hasExtra("emergency")) {
-                    /*val intent = Intent(Intent.ACTION_CALL).apply {
-                        data = Uri.parse("tel:${userData.telephone}")
-                    }
-                    startActivity(intent)*/
-                    finish()
-                }
+                if(intent.hasExtra("emergency")) finish()
+
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)
                 startActivity(intent)
             }
@@ -496,14 +490,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             if(file.isDirectory) {
                 ifZipDirectory(file, zipOut)
             } else {
-                if (!file.name.contains(".zip") && !file.name.contains("donnees.txt")) {
+                if (!file.name.endsWith(".zip") && file.name != "donnees.txt") {
                     writeEntryArchive(file, parentDirPath, zipOut, data)
-                } else {
-                    zipOut.closeEntry()
-                    zipOut.close()
                 }
             }
         }
+        zipOut.closeEntry()
+        zipOut.close()
     }
 
     /**
