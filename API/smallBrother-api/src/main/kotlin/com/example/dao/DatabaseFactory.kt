@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.*
 import org.jetbrains.exposed.sql.transactions.experimental.*
 
-/***
+/**
  * creates an instance of the database if not existent
  *
  * @see "https://ktor.io/docs/interactive-website-add-persistence.html"
@@ -22,7 +22,6 @@ object DatabaseFactory {
         transaction(database) {
             SchemaUtils.create(AideDatas, Admins)
         }
-        //TODO add trigger or cron job to delete files older than 5-10 min
     }
 
     suspend fun <T> dbQuery(block: suspend()->T): T =
