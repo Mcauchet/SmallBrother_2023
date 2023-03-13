@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.Singleton
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
 
@@ -17,7 +18,6 @@ import com.projet.sluca.smallbrother.models.UserData
 class Launch2Activity : AppCompatActivity() {
 
     var vibreur = Vibration()
-    lateinit var userData : UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,9 @@ class Launch2Activity : AppCompatActivity() {
         val btnRoleAidant: Button = findViewById(R.id.btn_role1)
         val btnRoleAide: Button = findViewById(R.id.btn_role2)
 
-        userData = application as UserData
+        //TODO test this
+        val appContext = applicationContext as Singleton
+        val userData = appContext.userData
 
         btnRoleAidant.setOnClickListener {
             userData.role = "Aidant"
