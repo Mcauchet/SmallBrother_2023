@@ -205,12 +205,13 @@ object SecurityUtils {
      * Encrypt the zip file
      * @param data the file's ByteArray
      * @param aesKey the key to encrypt the data
+     * @param iv the initialization vector for the AES encryption
      * @return the encrypted file as a ByteArray
      */
-    fun encryptDataAes(data:ByteArray, aesKey: SecretKey): ByteArray {
-        val aesCipher = Cipher.getInstance("AES")
-        //val ivParameterSpec = IvParameterSpec(generateIVForAES())
-        aesCipher.init(Cipher.ENCRYPT_MODE, aesKey)
+    fun encryptDataAes(data:ByteArray, aesKey: SecretKey, iv:ByteArray): ByteArray {
+        val aesCipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+        val ivParameterSpec = IvParameterSpec(iv)
+        aesCipher.init(Cipher.ENCRYPT_MODE, aesKey, ivParameterSpec)
         return aesCipher.doFinal(data)
     }
 
@@ -218,14 +219,16 @@ object SecurityUtils {
      * Decrypt the data (previously encrypted with AES key)
      * @param data the encrypted data
      * @param encKey the encrypted AES key
+     * @param iv the initialization vector for the AES decryption
      * @return the decrypted file data as a ByteArray
      */
-    fun decryptDataAes(data:ByteArray, encKey: ByteArray):ByteArray {
+    fun decryptDataAes(data:ByteArray, encKey: ByteArray, iv:String):ByteArray {
         val decryptedKey = decryptAESKey(encKey)
         val originalKey = SecretKeySpec(decryptedKey, 0, decryptedKey.count(), "AES")
-        val aesCipher = Cipher.getInstance("AES")
-        //val ivParameterSpec = IvParameterSpec(generateIVForAES())
-        aesCipher.init(Cipher.DECRYPT_MODE, originalKey)
+        val decodedIv = Base64.decode(iv, Base64.DEFAULT)
+        val aesCipher = Cipher.getInstance("AES/CBC/PKCS7Padding")
+        val ivParameterSpec = IvParameterSpec(decodedIv)
+        aesCipher.init(Cipher.DECRYPT_MODE, originalKey, ivParameterSpec)
         return aesCipher.doFinal(data)
     }
 
@@ -274,7 +277,13 @@ object SecurityUtils {
         return fact.generatePublic(spec)
     }
 
-    private fun generateIVForAES() : ByteArray {
+    /**
+     * Generate the initialisation vector for the AES encryption
+     * @return the IV as a ByteArray
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 13-03-2023)
+     */
+    fun generateIVForAES() : ByteArray {
         val iv = ByteArray(16)
         val secureRandom = SecureRandom()
         secureRandom.nextBytes(iv)

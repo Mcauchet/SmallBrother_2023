@@ -31,7 +31,7 @@ import java.security.PublicKey
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 08-03-2023)
+ * @version 1.2 (updated on 13-03-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -169,19 +169,20 @@ class AidantActivity : AppCompatActivity() {
      * @param [client] the HttpClient to access the server
      * @param [file] the file to store the data in
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 08-01-2023)
+     * @version 1.2 (Updated on 13-03-2023)
      */
     private suspend fun getDataOnServer(client: HttpClient, file: File) {
         val zipDataByteArray: ByteArray = downloadFileRequest(client).body()
         val aesBody: String = client.get("$URLServer/aes/${userData.urlToFile}").body()
         val signature: String = client.get("$URLServer/sign/${userData.urlToFile}").body()
+        val iv: String = client.get("$URLServer/iv/${userData.urlToFile}").body()
         val aesEncKey: ByteArray = Base64.decode(aesBody, Base64.NO_WRAP)
         if(!SecurityUtils.verifyFile(zipDataByteArray,
                 SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
                 Base64.decode(signature, Base64.NO_WRAP))
         ) return
         Log.d("file verified", "ok")
-        val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey)
+        val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey, iv)
         file.writeBytes(decryptedData)
         successDl = true
     }

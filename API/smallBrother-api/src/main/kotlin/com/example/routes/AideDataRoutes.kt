@@ -18,7 +18,7 @@ const val EXT_SIZE = 4
  * Manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 20-02-2023)
+ * @version 1.2 (Updated on 13-03-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -59,6 +59,7 @@ fun Route.aideDataRouting() {
         }
     }
 
+    //TODO check if possible to have call.respond(aideData) and get each property client side
     route("/aes") {
         get("/{key}") {
             val key = call.parameters["key"]
@@ -76,6 +77,16 @@ fun Route.aideDataRouting() {
             val aideData = dao.getAideData(key)
             if(aideData != null) call.respond(aideData.signature)
             else call.respondText("Signature not found", status = HttpStatusCode.NotFound)
+        }
+    }
+
+    route("/iv") {
+        get("/{key}") {
+            val key = call.parameters["key"]
+                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
+            val aideData = dao.getAideData(key)
+            if(aideData != null) call.respond(aideData.iv)
+            else call.respondText("IV not found", status = HttpStatusCode.NotFound)
         }
     }
 

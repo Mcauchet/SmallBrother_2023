@@ -12,13 +12,14 @@ import org.mindrot.jbcrypt.BCrypt
  * DAOFacadeImpl implements the DAOFacade methods.
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 17-01-2023)
+ * @version 1 (Updated on 13-03-2023)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
         uri = row[AideDatas.uri],
         aesKey = row[AideDatas.aesKey],
         signature = row[AideDatas.signature],
+        iv = row[AideDatas.iv]
     )
 
     private fun resultRowToAdmin(row: ResultRow) = Admin(
@@ -48,6 +49,7 @@ class DAOFacadeImpl : DAOFacade {
                 it[aesKey] = data.aesKey
                 it[signature] = data.signature
                 it[createdAt] = CurrentDateTime
+                it[iv] = data.iv
             }
         }
     }
@@ -57,6 +59,7 @@ class DAOFacadeImpl : DAOFacade {
             it[uri] = data.uri
             it[aesKey] = data.aesKey
             it[signature] = data.signature
+            it[iv] = data.iv
         } > 0
     }
 

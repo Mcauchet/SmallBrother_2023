@@ -49,7 +49,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 09-03-2023)
+ * @version 1.2 (Updated on 13-03-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -366,28 +366,27 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }
     }
 
-    /***
-     * renames the zip file and uploads it to the server
-     *
+    /**
+     * renames the zip file and uploads it and the AideData object to the server
      * @param [client] the HttpClient used to access the server
      * @param [file] the zip file to upload
      * @return the final name of the file to put in the download URL
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 20-02-2023)
+     * @version 1.2 (Updated on 13-03-2023)
      */
     suspend fun uploadZip(client: HttpClient, file: File): String {
         require(file.exists())
         val finalName = generateRandomName()
         val aesKey = SecurityUtils.getAESKey()
-        val encryptedData = SecurityUtils.encryptDataAes(file.readBytes(), aesKey)
+        val iv = SecurityUtils.generateIVForAES()
+        val encryptedData = SecurityUtils.encryptDataAes(file.readBytes(), aesKey, iv)
         val signature = SecurityUtils.signFile(encryptedData)
         val signString = android.util.Base64.encodeToString(signature, android.util.Base64.NO_WRAP)
         val aesEncKey = encryptAESKeyWithRSA(aesKey)
         uploadFileRequest(client, encryptedData, finalName)
-        client.post("$URLServer/upload/aes") {
-            contentType(ContentType.Application.Json)
-            setBody(AideData(finalName, aesEncKey, signString))
-        }
+        val aideData = AideData(finalName,aesEncKey, signString,
+            android.util.Base64.encodeToString(iv, android.util.Base64.DEFAULT))
+        uploadAideDataRequest(client, aideData)
         client.close()
         return finalName
     }
@@ -437,6 +436,20 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             onUpload { bytesSentTotal, contentLength ->
                 println("Sent $bytesSentTotal bytes from $contentLength")
             }
+        }
+    }
+
+    /**
+     * Uploads the AideData object with all the information needed
+     * @param client the HttpClient
+     * @param aideData the AideData object
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 13-03-2023)
+     */
+    private suspend fun uploadAideDataRequest(client: HttpClient, aideData: AideData) {
+        client.post("$URLServer/upload/aes") {
+            contentType(ContentType.Application.Json)
+            setBody(aideData)
         }
     }
 
