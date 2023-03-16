@@ -67,7 +67,7 @@
             android:name=".activities.Launch2Activity"
             android:screenOrientation="locked" />
         <activity
-            android:name=".PhotoAide"
+            android:name=".activities.PhotoAideActivity"
             android:screenOrientation="locked" />
         <activity
             android:name=".activities.AidantActivity"

@@ -143,7 +143,7 @@
         Le traitement est en cours, veuillez patienter …
     </string>
     <string name="log_data_on_server">
-        Les données §% sont disponibles sur le serveur, vous pouvez appuyer sur le bouton "Récupérer les données §%".
+        Les données §% sont disponibles dans votre dossier de téléchargement, vous pouvez les retélécharger en appuyant sur le bouton \"Retélécharger…\".
     </string>
     <string name="log_no_internet_aide">
         §% tente de vérifier votre situation.
@@ -152,7 +152,7 @@
     <string name="log_no_internet_aidant">
         §% n\'a pas Internet, les fichiers ne peuvent être envoyés au serveur.
     </string>
-    <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Vous pourrez récupérer ses données sur le serveur dans quelques instants.</string>
+    <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Ses données seront disponibles dans votre dossier de téléchargement dans quelques instants.</string>
     <string name="log_aide_send_SMS">Vous signalez à §% que tout va bien.</string>
     <string name="log_private_expired">Le délai du Mode Privé est écoulé.</string>
     <string name="log19">

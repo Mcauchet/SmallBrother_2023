@@ -61,10 +61,7 @@ class SmsReceiver : BroadcastReceiver() {
                     tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
                     userData.refreshLog(19)
                 }
-                "[#SB08]" -> {
-                    userData.bit = 8
-                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                }
+                "[#SB08]" -> userData.bit = 8
                 "[#SB10]" -> {
                     userData.bit = 10
                     // The subsequence depends on the URL to the file, if its length changes,

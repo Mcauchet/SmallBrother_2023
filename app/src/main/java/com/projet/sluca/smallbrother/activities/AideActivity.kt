@@ -47,8 +47,8 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
 
-        userData = application as UserData
-        userData.loadData(this)
+        userData = UserDataManager.getUserData(application)
+
         check(userData.role == "Aidé")
 
         setAppBarTitle(userData, this)

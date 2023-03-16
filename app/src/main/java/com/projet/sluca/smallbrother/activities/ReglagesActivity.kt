@@ -29,8 +29,8 @@ class ReglagesActivity : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btn_retour)
         val btnHelp: Button = findViewById(R.id.btn_aide)
 
-        userData = application as UserData
-        userData.loadData(this)
+        userData = UserDataManager.getUserData(application)
+
         check(userData.role == "Aidant")
 
         setAppBarTitle(userData, this)

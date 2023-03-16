@@ -5,9 +5,8 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.R
-import com.projet.sluca.smallbrother.Singleton
+import com.projet.sluca.smallbrother.UserDataManager
 import com.projet.sluca.smallbrother.Vibration
-import com.projet.sluca.smallbrother.models.UserData
 
 /***
  * Launch2Activity class manages the role chosen for the device
@@ -26,9 +25,7 @@ class Launch2Activity : AppCompatActivity() {
         val btnRoleAidant: Button = findViewById(R.id.btn_role1)
         val btnRoleAide: Button = findViewById(R.id.btn_role2)
 
-        //TODO test this
-        val appContext = applicationContext as Singleton
-        val userData = appContext.userData
+        val userData = UserDataManager.getUserData(application)
 
         btnRoleAidant.setOnClickListener {
             userData.role = "Aidant"

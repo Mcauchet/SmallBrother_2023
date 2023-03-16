@@ -27,7 +27,7 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_code_scanner_install)
 
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
         check(userData.role == "Aidant" || userData.role == "Aidé")
 
         setAppBarTitle(userData, this)

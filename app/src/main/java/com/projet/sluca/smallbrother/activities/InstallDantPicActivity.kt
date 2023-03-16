@@ -10,11 +10,8 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import com.projet.sluca.smallbrother.R
-import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
-import com.projet.sluca.smallbrother.setAppBarTitle
-import com.projet.sluca.smallbrother.showPicture
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.util.*
@@ -35,13 +32,13 @@ class InstallDantPicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_installdantpic)
 
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
 
        setAppBarTitle(userData, this)
 
         val btnCapture: Button = findViewById(R.id.btn_capture)
         val btnBack: Button = findViewById(R.id.btn_previous)
-        val btnEnd: Button = findViewById(R.id.btn_terminer)
+        val btnEnd: Button = findViewById(R.id.btn_continue)
 
         apercu = findViewById(R.id.apercu)
         showPicture(apercu, userData)

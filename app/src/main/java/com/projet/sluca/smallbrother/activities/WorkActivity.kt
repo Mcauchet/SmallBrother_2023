@@ -60,7 +60,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
         tvLoading.text = ""
         tvAction.text = ""
 
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
 
         userData.esquive = true
 
@@ -265,7 +265,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
                 //Do nothing
             }
 
-            //TODO add more criteria to determine if moving or not
             override fun onSensorChanged(event: SensorEvent?) {
                 val accX = event?.values?.get(0) ?: 0f
                 val accY = event?.values?.get(1) ?: 0f

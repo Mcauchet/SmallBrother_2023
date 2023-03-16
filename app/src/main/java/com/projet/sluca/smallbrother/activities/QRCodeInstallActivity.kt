@@ -32,7 +32,7 @@ class QRCodeInstallActivity : AppCompatActivity() {
         val btnEnd: Button = findViewById(R.id.btn_terminer)
         val textQR: TextView = findViewById(R.id.textQR)
 
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
         check(userData.role == "Aidant" || userData.role == "Aidé")
 
         textQR.text = getString(R.string.installQR)

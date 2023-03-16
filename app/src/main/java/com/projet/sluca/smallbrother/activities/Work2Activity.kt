@@ -358,13 +358,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     /**
      * request new location data if no previous one existing
      * @author Maxime Caucheteur (from https://www.androidhire.com/current-location-in-android-using-kotlin/)
-     * @version 1.2 (Updated on 15-03-23)
+     * @version 1.2 (Updated on 16-03-23)
      */
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         requestPermission()
         val locationRequest = LocationRequest()
-        locationRequest.priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
+        locationRequest.priority = Priority.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 10000
         locationRequest.fastestInterval = 5000
         locationRequest.numUpdates = 1

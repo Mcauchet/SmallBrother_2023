@@ -35,7 +35,7 @@ class PicActivity : AppCompatActivity() {
         val btnCapture: Button = findViewById(R.id.btn_capture)
         val btnSave: Button = findViewById(R.id.btn_save)
 
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
 
         apercu = findViewById(R.id.apercu)
         showPicture(apercu, userData)
@@ -58,7 +58,7 @@ class PicActivity : AppCompatActivity() {
         btnSave.setOnClickListener {
             vibreur.vibration(this, 100)
             message(this, getString(R.string.message09), vibreur)
-            val intent = Intent(this, PhotoAide::class.java)
+            val intent = Intent(this, PhotoAideActivity::class.java)
             startActivity(intent)
         }
     }

@@ -58,8 +58,8 @@ class AidantActivity : AppCompatActivity() {
         val btnFiles: Button = findViewById(R.id.btn_files)
 
 
-        userData = application as UserData
-        userData.loadData(this)
+        userData = UserDataManager.getUserData(application)
+
         check(userData.role == "Aidant")
 
         if(intent.hasExtra("url")){
@@ -93,7 +93,7 @@ class AidantActivity : AppCompatActivity() {
 
         btnPicture.setOnClickListener {
             vibreur.vibration(this, 100)
-            val intent = Intent(this, PhotoAide::class.java)
+            val intent = Intent(this, PhotoAideActivity::class.java)
             startActivity(intent)
         }
 

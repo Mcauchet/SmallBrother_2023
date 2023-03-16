@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,16 +6,19 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ImageView
 import android.widget.TextView
-import com.projet.sluca.smallbrother.activities.AidantActivity
+import com.projet.sluca.smallbrother.R
+import com.projet.sluca.smallbrother.UserDataManager
+import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.showPicture
 
-/***
+/**
  * class PhotoAide allows the Aidant to show the picture of the Aide
  *
  * @author Sébastien Luca & Maxime Caucheteur
  * @version 1.2 (Updated on 04-01-2023)
  */
-class PhotoAide : AppCompatActivity() {
+class PhotoAideActivity : AppCompatActivity() {
 
     var vibreur = Vibration()
     lateinit var userData: UserData
@@ -27,7 +30,7 @@ class PhotoAide : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_photo)
 
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
 
         ivApercu = findViewById(R.id.apercu)
         tvLegende = findViewById(R.id.legende)

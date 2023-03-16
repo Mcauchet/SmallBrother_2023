@@ -29,7 +29,7 @@ class InstallActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
         check(userData.role == "Aidant" || userData.role == "Aidé")
 
         setAppBarTitle(userData, this)
