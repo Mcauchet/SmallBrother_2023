@@ -32,7 +32,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private lateinit var tvLog: TextView
     private lateinit var tvDelay: TextView
     private lateinit var tvIntituleDelay: TextView
-    private lateinit var btnPrivate: Switch
+    lateinit var btnPrivate: Switch
     private lateinit var ivLogo: ImageView
 
     private var logHandler: Handler = Handler(Looper.getMainLooper())
@@ -163,13 +163,14 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 04-01-2023)
      */
-    private fun updateAideInfo() {
+    fun updateAideInfo() {
         userData.prive = !userData.prive
         userData.bit = if(userData.bit==1) 0 else 1
         if (userData.bit == 1) userData.refreshLog(20)
         refreshUI()
         vibreur.vibration(this, 330)
     }
+
     /**
      * Gets the duration of private mode chosen by the Aide
      * @param [input] the EditText which contains the value

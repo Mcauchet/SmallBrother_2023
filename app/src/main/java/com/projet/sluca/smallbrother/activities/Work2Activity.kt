@@ -49,7 +49,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 13-03-2023)
+ * @version 1.2 (Updated on 15-03-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -165,9 +165,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     }
                     val location: String = if(locationGps != null || locationNetwork != null){
                         getAddress()
-                    } else {
-                        "Erreur lors de la récupération de la position"
-                    }
+                    } else "Erreur lors de la récupération de la position"
 
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
 
@@ -216,7 +214,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             informationFile.delete()
                             val zipFile = File(ziPath)
                             zipFile.delete()
-                            deleteLocation()
+                            //TODO Test without delete
+                            //deleteLocation()
                             Log.i("EOU", "upload ended")
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -247,7 +246,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      */
     private fun getLocationForMovement(): Location? {
         checkForLocation()
-        deleteLocation()
+        //TODO test without delete
+        //deleteLocation()
         return if (locationGps != null) {
             locationGps as Location
         } else if (locationNetwork != null) {
@@ -299,7 +299,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      */
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        fusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+        /*fusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
             val location = task.result
             if(location != null) {
                 locationGps = location
@@ -307,6 +307,22 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             } else {
                 requestNewLocationData()
             }
+        }*/
+        //TODO Test this
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null && hasGps) {
+                locationGps = location
+            } else if(location != null && hasNetwork) {
+                fusedLocationClient.lastLocation.addOnSuccessListener { networkLocation ->
+                    locationNetwork = networkLocation
+                }.addOnFailureListener { e ->
+                    Log.e("Work2Activity","Error getting network location", e)
+                }
+            } else {
+                requestNewLocationData()
+            }
+        }.addOnFailureListener { e ->
+            Log.e("Work2Activity", "Error getting GPS location", e)
         }
     }
 
@@ -342,19 +358,20 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     /**
      * request new location data if no previous one existing
      * @author Maxime Caucheteur (from https://www.androidhire.com/current-location-in-android-using-kotlin/)
-     * @version 1.2 (Updated on 28-12-22)
+     * @version 1.2 (Updated on 15-03-23)
      */
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         requestPermission()
         val locationRequest = LocationRequest()
         locationRequest.priority = Priority.PRIORITY_BALANCED_POWER_ACCURACY
-        locationRequest.interval = 0
-        locationRequest.fastestInterval = 0
+        locationRequest.interval = 10000
+        locationRequest.fastestInterval = 5000
         locationRequest.numUpdates = 1
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient.requestLocationUpdates(
-            locationRequest, locationCallback,
+        if(!::fusedLocationClient.isInitialized) {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        }
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback,
             Looper.myLooper()
         )
     }
@@ -568,22 +585,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
-     * Get self phone number
-     * @return the phone number as a String
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 26-01-2023)
-     */
-    private fun getPhoneNumber(): String {
-        if (ActivityCompat.checkSelfPermission(this@Work2Activity,
-                Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED)
-        {
-            requestPermissions(arrayOf(Manifest.permission.READ_PHONE_STATE), 3)
-        }
-        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
-        return telephonyManager.line1Number
-    }
-
-    /**
      * Request permissions to retrieve locations
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 26-02-2023)
@@ -607,8 +608,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         if(requestCode == 1) {
             if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))
                 checkForLocation()
-        } else if (requestCode == 3) {
-            getPhoneNumber()
         } else {
             Toast.makeText(this, "Location permission was denied", Toast.LENGTH_SHORT).show()
         }

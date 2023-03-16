@@ -1,6 +1,7 @@
 package com.projet.sluca.smallbrother
 
 import android.content.Context
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -13,7 +14,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.projet.sluca.smallbrother.activities.InstallActivity
 import com.projet.sluca.smallbrother.models.UserData
 import org.hamcrest.CoreMatchers.not
+import org.junit.After
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,9 +24,16 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class InstallActivityTest {
 
+    private lateinit var scenario: ActivityScenario<InstallActivity>
+
     @Rule
     @JvmField
     val activityRule = ActivityScenarioRule(InstallActivity::class.java)
+
+    @Before
+    fun setUp() {
+        scenario = activityRule.scenario
+    }
 
     @Test
     fun checkAideView() {
@@ -81,5 +91,10 @@ class InstallActivityTest {
 
         //Check that we are still on the same activity
         onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
+    }
+
+    @After
+    fun tearDown() {
+        scenario.close()
     }
 }
