@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Looper
 import android.provider.Settings
-import android.telephony.TelephonyManager
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
@@ -49,7 +48,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 15-03-2023)
+ * @version 1.2 (Updated on 18-03-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -136,9 +135,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         battery = "$level%"
 
         // --> [6] Fetch motion data.
-        val motion = if(intent.hasExtra("interpretation"))
-            intent.getStringExtra("interpretation").toString() else "Indéterminé"
-        val motion2 = if (userData.motion) "Oui" else "Non"
+        val acceleration = if(intent.hasExtra("accInterpretation"))
+            intent.getStringExtra("accInterpretation").toString() else "Indéterminé"
+        val xyz: Boolean = if(intent.hasExtra("movementInterpretation"))
+            intent.getBooleanExtra("movementInterpretation", true) else true
+        val locationDiff = if (userData.motion) "Oui" else "Non"
+
+        val movementDataInterpretation = interpretMotionData(acceleration, xyz, userData.motion)
 
         // --> [7] Get light level
         val light = if(intent.hasExtra("light"))
@@ -173,8 +176,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             "Coordonnées géographiques: ${locationGps!!.latitude}, " +
                             "${locationGps!!.longitude}\n" +
                             "Niveau de batterie : $battery\n" +
-                            "En mouvement : $motion.\n" +
-                            "Deuxième vérification mouvement (Oui/Non): $motion2.\n" +
+                            "En mouvement ? : $acceleration.\n" +
+                            "Deuxième vérification mouvement (Oui/Non) : $locationDiff.\n" +
+                            "Interprétation mouvement : $movementDataInterpretation" +
                             "Niveau de lumiere (en lux) : $lightScale.\n" +
                             "Date de la capture : $currentTime\n"
 
@@ -214,8 +218,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             informationFile.delete()
                             val zipFile = File(ziPath)
                             zipFile.delete()
-                            //TODO Test without delete
-                            //deleteLocation()
                             Log.i("EOU", "upload ended")
                         } catch (e: Exception) {
                             e.printStackTrace()
@@ -240,21 +242,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
     /**
      * Get the Location object to compare them later to see if user is moving
-     * @return the Location
+     * @return the Location or null
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 03-03-2023)
+     * @version 1.2 (Updated on 18-03-2023)
      */
     private fun getLocationForMovement(): Location? {
         checkForLocation()
-        //TODO test without delete
-        //deleteLocation()
-        return if (locationGps != null) {
-            locationGps as Location
-        } else if (locationNetwork != null) {
-            locationNetwork as Location
-        } else {
-            null
-        }
+        return if (locationGps != null) locationGps as Location
+        else if (locationNetwork != null) locationNetwork as Location
+        else null
     }
 
     /**
@@ -293,22 +289,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
-     * Retrieve location as a Location object inside locationGps and locationNetwork
+     * Retrieve location as a Location object inside locationGps or locationNetwork
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 18-03-2023)
      */
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        /*fusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
-            val location = task.result
-            if(location != null) {
-                locationGps = location
-                locationNetwork = location
-            } else {
-                requestNewLocationData()
-            }
-        }*/
-        //TODO Test this
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null && hasGps) {
                 locationGps = location
@@ -327,16 +313,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
-     * Reset the location in phone's memory to avoid getting an old one
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 26-02-2023)
-     */
-    private fun deleteLocation() {
-        locationGps = null
-        locationNetwork = null
-    }
-
-    /***
      * function to get an address from a Location object
      * @return the address as a String
      * @author Maxime Caucheteur
@@ -380,6 +356,34 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         override fun onLocationResult(locationResult: LocationResult) {
             locationGps = locationResult.lastLocation
             locationNetwork = locationResult.lastLocation
+        }
+    }
+
+    /**
+     * Interpret the motion data to determine the movement state of the phone
+     * @param acc the acceleration interpretation of the phone
+     * @param xyz true if x, y and z are the same at the start and end of the audio recording,
+     * false otherwise
+     * @param location true if Locations are the same with an interval of 10 seconds,
+     * false otherwise
+     * @return the interpretation as a String
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 18-03-2023)
+     */
+    private fun interpretMotionData(acc: String, xyz: Boolean, location: Boolean): String {
+        return when {
+            (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && !location ->
+                "En mouvement, à pied."
+            (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && location ->
+                "Se déplace mais est au même endroit (magasin, maison, etc.)"
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && location -> "À l'arrêt."
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && !location ->
+                "Se déplace, probablement dans un véhicule."
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && !location ->
+                "Semble à l'arrêt, le GPS peut être imprécis"
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && location ->
+                "Se déplace très lentement"
+            else -> "Déplacement indéterminé"
         }
     }
 

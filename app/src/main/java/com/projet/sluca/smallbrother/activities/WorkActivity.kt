@@ -16,6 +16,8 @@ import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
+import com.projet.sluca.smallbrother.libs.AccelerometerListener
+import com.projet.sluca.smallbrother.libs.AccelerometerManager
 import com.projet.sluca.smallbrother.models.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -23,13 +25,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.math.sqrt
 
-/***
+/**
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 20-02-2023)
+ * @version 1.2 (Updated on 18-03-2023)
  */
-class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerListener*/ {
+class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
     var vibreur = Vibration()
     lateinit var userData: UserData
@@ -38,8 +40,12 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
     private var magneto: MediaRecorder? = null
     var ambientLightLux: Float = 0.0f
 
-    private var checkMove1: Boolean = false
-    private var checkMove2: Boolean = false
+    private var checkAcc1: Boolean = false
+    private var checkAcc2: Boolean = false
+
+    private var checkXYZ1: FloatArray? = null
+    private var checkXYZ2: FloatArray? = null
+    private var keepMove: FloatArray? = null
 
     private var emergency: Boolean = false
 
@@ -106,10 +112,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
                     CoroutineScope(Dispatchers.IO).launch {
                         if (isOnline(this@WorkActivity)) {
                             deactivateSmsReceiver(this@WorkActivity)
-                            Log.d("motion userdata before reg", userData.motion.toString())
                             registerLightSensor()
                             registerMovementDetector()
-                            Log.d("motion userdata after reg", userData.motion.toString())
 
                             // --> [1] Records a 10 seconds audio of the aide's environment
                             tvAction.text = getString(R.string.message12A)
@@ -136,21 +140,29 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
                         override fun onTick(millisUntilFinished: Long) {
                             // position captured at seconds 2 and 9 of the record
                             when (millisUntilFinished) {
-                                in 8900..9000 -> checkMove1 = userData.motion
-                                in 1900..2000 -> checkMove2 = userData.motion
+                                in 8900..9000 -> {
+                                    checkAcc1 = userData.motion
+                                    checkXYZ1 = keepMove
+                                }
+                                in 1900..2000 -> {
+                                    checkAcc2 = userData.motion
+                                    checkXYZ2 = keepMove
+                                }
                             }
                         }
 
                         override fun onFinish() {
                             resetMagneto()
-                            val interpretation = interpretMovement(checkMove1, checkMove2)
+                            val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
+                            val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
                             val intent = Intent(this@WorkActivity, Work2Activity::class.java)
                             intent.putExtra("light", ambientLightLux)
-                            intent.putExtra("interpretation", interpretation)
-                            Log.d("interpretation", interpretation)
+                            intent.putExtra("accInterpretation", accInterpretation)
+                            intent.putExtra("movementInterpretation", movementInterpretation)
                             if(emergency) intent.putExtra("emergency", true)
                             unregisterListener(lightDetectorListener)
                             unregisterListener(movementDetectorListener)
+                            AccelerometerManager.stopListening()
                             startActivity(intent)
                         }
                     }.start()
@@ -161,17 +173,17 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
 
     /**
      * Interpret the results of the motion capture based on the start and end of the audio record
-     * @param checkMove1 true if moving at second 2 of the record, false otherwise
-     * @param checkMove2 true if moving at second 9 of the record, false otherwise
+     * @param checkAcc1 true if moving at second 2 of the record, false otherwise
+     * @param checkAcc2 true if moving at second 9 of the record, false otherwise
      * @return the interpretation as a String
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 19-02-2023)
      */
-    private fun interpretMovement(checkMove1: Boolean, checkMove2: Boolean): String {
+    private fun interpretAcceleration(checkAcc1: Boolean, checkAcc2: Boolean): String {
         return when {
-            checkMove1 && checkMove2 -> "En mouvement"
-            checkMove1 && !checkMove2 -> "S'est arrêté"
-            !checkMove1 && checkMove2 -> "Commence à bouger"
+            checkAcc1 && checkAcc2 -> "En mouvement"
+            checkAcc1 && !checkAcc2 -> "S'est arrêté"
+            !checkAcc1 && checkAcc2 -> "Commence à bouger"
             else -> "À l'arrêt"
         }
     }
@@ -250,32 +262,25 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
             SensorManager.SENSOR_DELAY_NORMAL)
     }
 
-    /*-------------Functions related to the movement detection----------*/
+    /*-------------Functions related to the acceleration detection----------*/
     /**
-     * Register a sensor event listener to detect the movement of the phone
+     * Register a sensor event listener to detect the acceleration of the phone
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 19-02-2023)
      */
     private fun registerMovementDetector() {
         val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
-
         movementDetectorListener = object : SensorEventListener {
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-                //Do nothing
-            }
-
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
             override fun onSensorChanged(event: SensorEvent?) {
                 val accX = event?.values?.get(0) ?: 0f
                 val accY = event?.values?.get(1) ?: 0f
                 val accZ = event?.values?.get(2) ?: 0f
-
                 val acceleration = sqrt(accX * accX + accY * accY + accZ * accZ)
-
                 userData.motion = acceleration > 1.5
             }
         }
-
         sensorManager.registerListener(movementDetectorListener, accelerometerSensor,
             SensorManager.SENSOR_DELAY_NORMAL)
     }
@@ -291,6 +296,33 @@ class WorkActivity : AppCompatActivity(), SensorEventListener /*AccelerometerLis
         listener?.let { sensorManager.unregisterListener(listener) }
     }
 
+    //TODO test this, see if no conflicts between sensor and stuff
+
+    /* -------------- Functions related to the Accelerometer -------------- */
+    override fun onResume() {
+        super.onResume()
+        if (AccelerometerManager.isSupported(this) && (userData.role == "Aidé")) {
+            AccelerometerManager.startListening(this, this)
+        }
+    }
+
+    override fun onAccelerationChanged(x: Float, y: Float, z: Float) {
+        // Fetch phone's coordinates
+        // Error margin (*10) to compensate the accelerometer high sensibility
+        //TODO Check this margin, try to find a way to be relevant in the movement
+        val tmp = floatArrayOf(
+            (x.toInt() * 10).toFloat(),
+            (y.toInt() * 10).toFloat(),
+            (z.toInt() * 10).toFloat()
+        )
+        keepMove = tmp
+        Log.d("XYZ", tmp.toString())
+    }
+
+    private fun interpretMovement(checkXYZ1: FloatArray?, checkXYZ2: FloatArray?): Boolean =
+        checkXYZ1.contentEquals(checkXYZ2)
+
     override fun onSensorChanged(event: SensorEvent) {}
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
+    override fun onShake(force: Float) {}
 }
