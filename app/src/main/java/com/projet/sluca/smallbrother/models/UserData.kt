@@ -27,10 +27,11 @@ import java.util.*
  * @property log: log content
  * @property canGoBack: indicates if going back is possible
  * @property bit: on Sms received, change the log message
+ * @property pubKey: the public key of the partner for encryption purpose
  * @constructor creates a user with default properties
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 20-02-2023)
+ * @version 1.2 (updated on 28-03-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -41,14 +42,10 @@ data class UserData(
 ) : Application() {
 
     var urlToFile: String = ""
-
     // this path is configured at first launch of the app through configurePath(..)
     var path: String = ""
-
     private val file = "donnees.txt"
-
     val url = "https://projects.info.unamur.be/geras/projects/smallbrother/"
-
     val help = "help/"
 
     /**
@@ -187,14 +184,13 @@ data class UserData(
      * @param context the context of the activity
      * @return the url as a String, empty string if no url file
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 08-03-2023)
+     * @version 1.2 (Updated on 28-03-2023)
      */
     fun loadURL(context: Context?): String {
         val urlFile = File(context?.filesDir, "SmallBrother/url.txt")
         if(urlFile.exists() && urlFile.canRead()) {
             try {
                 val dataTab: Array<String> = readDataFile(urlFile)
-                Log.d("DATATAB URL", dataTab.toString())
                 this.urlToFile = dataTab[0]
                 return dataTab[0]
             } catch (e: FileNotFoundException) {

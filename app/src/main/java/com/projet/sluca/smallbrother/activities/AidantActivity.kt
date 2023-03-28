@@ -147,19 +147,28 @@ class AidantActivity : AppCompatActivity() {
                 getDataOnServer(client, file)
                 client.close()
                 Looper.prepare()
-                if(successDl) withContext(Dispatchers.Main) {
-                    message(this@AidantActivity,
-                        "Téléchargement du fichier terminé, il se trouve dans votre " +
-                                "dossier de téléchargement.", vibreur)
-                } else  withContext(Dispatchers.Main) {
-                    message(this@AidantActivity,
-                        "Erreur lors du téléchargement. Veuillez réessayer ou capturer " +
-                                "le contexte à nouveau.", vibreur)
-                }
+                showResultDownload()
             }
         } else {
             message(this, "Il n'y a pas de fichier appartenant à ${userData.nomPartner} " +
                     "sur le serveur, veuillez effectuer une capture de contexte.", vibreur)
+        }
+    }
+
+    /**
+     * Show result of the context download in a Toast
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 28-03-2023)
+     */
+    private suspend fun showResultDownload() {
+        if(successDl) withContext(Dispatchers.Main) {
+            message(this@AidantActivity,
+                "Téléchargement du fichier terminé, il se trouve dans votre " +
+                        "dossier de téléchargement.", vibreur)
+        } else  withContext(Dispatchers.Main) {
+            message(this@AidantActivity,
+                "Erreur lors du téléchargement. Veuillez réessayer ou capturer " +
+                        "le contexte à nouveau.", vibreur)
         }
     }
 
@@ -169,7 +178,7 @@ class AidantActivity : AppCompatActivity() {
      * @param [client] the HttpClient to access the server
      * @param [file] the file to store the data in
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 13-03-2023)
+     * @version 1.2 (Updated on 28-03-2023)
      */
     private suspend fun getDataOnServer(client: HttpClient, file: File) {
         val zipDataByteArray: ByteArray = downloadFileRequest(client).body()
@@ -181,7 +190,6 @@ class AidantActivity : AppCompatActivity() {
                 SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
                 Base64.decode(signature, Base64.NO_WRAP))
         ) return
-        Log.d("file verified", "ok")
         val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey, iv)
         file.writeBytes(decryptedData)
         successDl = true

@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 26-01-2023)
+ * @version 1.2 (updated on 28-03-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -45,7 +45,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
-
 
         userData = UserDataManager.getUserData(application)
 
@@ -106,10 +105,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
                 CoroutineScope(Dispatchers.Main).launch {
                     startActivity(workIntent)
                 }
-                /*val intent = Intent(Intent.ACTION_CALL).apply {
-                    data = Uri.parse("tel:${userData.telephone}")
-                }*/
-                //startActivity(intent)
             }
         }
     }
@@ -153,6 +148,11 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             }
     }
 
+    /**
+     * Manage the UI when the switch is changed
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 28-03-2023)
+     */
     private fun changeSwitch() {
         vibreur.vibration(this, 200)
         refreshUI()
@@ -163,7 +163,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 04-01-2023)
      */
-    fun updateAideInfo() {
+    private fun updateAideInfo() {
         userData.prive = !userData.prive
         userData.bit = if(userData.bit==1) 0 else 1
         if (userData.bit == 1) userData.refreshLog(20)

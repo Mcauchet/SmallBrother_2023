@@ -29,12 +29,12 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 18-03-2023)
+ * @version 1.2 (Updated on 28-03-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
     var vibreur = Vibration()
-    lateinit var userData: UserData
+    private lateinit var userData: UserData
     private lateinit var clef: String
     private var caller: String? = null
     private var magneto: MediaRecorder? = null

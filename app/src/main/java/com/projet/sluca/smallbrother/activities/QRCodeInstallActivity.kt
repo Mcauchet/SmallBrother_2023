@@ -21,7 +21,6 @@ import com.projet.sluca.smallbrother.models.UserData
 class QRCodeInstallActivity : AppCompatActivity() {
 
     var vibreur = Vibration()
-
     lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {

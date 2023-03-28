@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
 
-/***
+/**
  * ReglagesActivity manages the resets of aide's and aidant's information and aide's picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))

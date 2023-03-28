@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
 
-/***
+/**
  * class Launch1Activity is the starting point of the application.
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
@@ -53,7 +53,7 @@ class Launch1Activity : AppCompatActivity() {
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 08-01-2023)
      */
-    fun checkFirstLaunch() {
+    private fun checkFirstLaunch() {
         if (userData.loadData(this)) redirectRole(this, userData)
         else if (userData.role != null) {
             userData.canGoBack = false

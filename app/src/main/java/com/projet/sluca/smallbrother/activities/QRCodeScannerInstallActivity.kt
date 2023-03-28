@@ -9,7 +9,7 @@ import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.models.UserData
 
-/***
+/**
  * Opens a qr code scanner to get the public key of the partner
  *
  * @author Maxime Caucheteur (with help of https://github.com/yuriy-budiyev/code-scanner)
@@ -20,7 +20,6 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
     private lateinit var codeScanner: CodeScanner
 
     lateinit var userData: UserData
-
     var vibreur = Vibration()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +41,6 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
 
         configureCodeScanner()
 
-        // Callbacks
         codeScanner.decodeCallback = DecodeCallback {
             runOnUiThread {
                 message(this, "Clé récupérée, vous pouvez continuer.", vibreur)

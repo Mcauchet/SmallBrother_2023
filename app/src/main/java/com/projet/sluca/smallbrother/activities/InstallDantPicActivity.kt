@@ -16,7 +16,7 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.util.*
 
-/***
+/**
  * class InstallDantPicActivity manages the capture of the aidé picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))

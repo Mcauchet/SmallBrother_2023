@@ -241,19 +241,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
-     * Get the Location object to compare them later to see if user is moving
-     * @return the Location or null
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 18-03-2023)
-     */
-    private fun getLocationForMovement(): Location? {
-        checkForLocation()
-        return if (locationGps != null) locationGps as Location
-        else if (locationNetwork != null) locationNetwork as Location
-        else null
-    }
-
-    /**
      * Gets the light sensor interpretation for the information file
      * @param level the results of the sensor
      * @author Maxime Caucheteur
@@ -267,6 +254,19 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             in 1000f..2000f -> "Clair - $level"
             else -> "Fort lumineux - $level"
         }
+    }
+
+    /**
+     * Get the Location object to compare them later to see if user is moving
+     * @return the Location or null
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 18-03-2023)
+     */
+    private fun getLocationForMovement(): Location? {
+        checkForLocation()
+        return if (locationGps != null) locationGps as Location
+        else if (locationNetwork != null) locationNetwork as Location
+        else null
     }
 
     /**
@@ -496,7 +496,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         ))
     }
 
-    /***
+    /**
      * zips all file in a given dir
      * @param [dir] the directory where the files are
      * @param [zipFile] the name of the final zip file
@@ -511,7 +511,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         }
     }
 
-    /***
+    /**
      * Zips files contained in the source file
      * @param [zipOut] the zip output stream
      * @param [sourceFile] the File to zip
