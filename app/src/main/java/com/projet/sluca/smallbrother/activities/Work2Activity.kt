@@ -178,7 +178,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             "Niveau de batterie : $battery\n" +
                             "En mouvement ? : $acceleration.\n" +
                             "Deuxième vérification mouvement (Oui/Non) : $locationDiff.\n" +
-                            "Interprétation mouvement : $movementDataInterpretation" +
+                            "Interprétation mouvement : $movementDataInterpretation\n" +
                             "Niveau de lumiere (en lux) : $lightScale.\n" +
                             "Date de la capture : $currentTime\n"
 
@@ -375,15 +375,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && !location ->
                 "En mouvement, à pied."
             (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && location ->
-                "Se déplace mais est au même endroit (magasin, maison, etc.)"
+                "Se déplace mais est au même endroit (magasin, maison, etc.)."
             (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && location -> "À l'arrêt."
             (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && !location ->
                 "Se déplace, probablement dans un véhicule."
             (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && !location ->
-                "Semble à l'arrêt, le GPS peut être imprécis"
+                "Semble à l'arrêt, le GPS peut être imprécis."
             (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && location ->
-                "Se déplace très lentement"
-            else -> "Déplacement indéterminé"
+                "Se déplace très lentement."
+            else -> "Déplacement indéterminé."
         }
     }
 

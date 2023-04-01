@@ -231,7 +231,7 @@ data class UserData(
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 20-02-2023)
      */
-    fun refreshLog(code: Int) {
+    fun refreshLog(code: Int) { //TODO add "context sent to §%" and use it after context is sent to server
         var texte = "${getCurrentTime("HH:mm")} : "
         texte += when (code) {
             1 -> getString(R.string.log_install)

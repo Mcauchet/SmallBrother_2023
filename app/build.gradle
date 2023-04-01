@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace "com.projet.sluca.smallbrother"
     compileSdkVersion 33
     buildToolsVersion "30.0.3"
     defaultConfig {
@@ -61,7 +62,7 @@ dependencies {
     // Justification de texte
     implementation files('libs/commons-io-2.6.jar')
 
-    implementation "androidx.savedstate:savedstate-ktx:1.2.0"
+    implementation "androidx.savedstate:savedstate-ktx:1.2.1"
     implementation "androidx.core:core-ktx:1.9.0"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
