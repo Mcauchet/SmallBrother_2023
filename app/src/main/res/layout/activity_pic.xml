@@ -119,7 +119,7 @@
                 android:layout_marginLeft="8dp"
                 android:layout_marginRight="8dp"
                 android:orientation="vertical"
-                android:text="@string/btn_reinit_3"
+                android:text="@string/btn_reinit_2"
                 android:textColor="#404040"
                 android:textSize="21sp" />
 

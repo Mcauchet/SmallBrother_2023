@@ -230,11 +230,11 @@
                 android:layout_gravity="center" >
 
                 <Button
-                    android:id="@+id/btn_reinit_3"
+                    android:id="@+id/btn_reinit_2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:text="@string/btn_reinit_3"
+                    android:text="@string/btn_reinit_2"
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"

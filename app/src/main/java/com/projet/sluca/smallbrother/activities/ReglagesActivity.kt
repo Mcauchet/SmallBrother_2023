@@ -25,7 +25,7 @@ class ReglagesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_reglages)
 
         val btnResetAidant: Button = findViewById(R.id.btn_reinit_1)
-        val btnResetPicture: Button = findViewById(R.id.btn_reinit_3)
+        val btnResetPicture: Button = findViewById(R.id.btn_reinit_2)
         val btnBack: Button = findViewById(R.id.btn_retour)
         val btnHelp: Button = findViewById(R.id.btn_aide)
 
@@ -35,7 +35,7 @@ class ReglagesActivity : AppCompatActivity() {
 
         setAppBarTitle(userData, this)
 
-        btnResetPicture.text = getString(R.string.btn_reinit_3)
+        btnResetPicture.text = getString(R.string.btn_reinit_2)
             .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
 
         btnResetAidant.setOnClickListener {

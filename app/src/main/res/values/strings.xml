@@ -55,7 +55,7 @@
     <string name="btn_urgence">Capturer le contexte §%</string>
     <string name="btn_tiers">Envoyer les info par mail à …</string>
     <string name="btn_reinit_1">Réinitialiser les informations</string>
-    <string name="btn_reinit_3">Refaire la photo §%</string>
+    <string name="btn_reinit_2">Refaire la photo §%</string>
     <string name="btn_switch">Mode Privé </string>
 
 
