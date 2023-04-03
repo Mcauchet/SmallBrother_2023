@@ -146,7 +146,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                         e
                     )
                 }
-            }, 2000)
+            }, 1000)
         }
 
         override fun onDisconnected(camera: CameraDevice) {
@@ -166,10 +166,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
         }
 
         override fun onError(camera: CameraDevice, error: Int) {
-            Log.e(
-                TAG,
-                "camera in error, int code $error"
-            )
+            Log.e(TAG, "camera in error, int code $error")
             if (cameraDevice != null && !cameraClosed) cameraDevice!!.close()
         }
     }
@@ -196,10 +193,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
         captureBuilder.addTarget(reader.surface)
         captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-        captureBuilder.set(
-            CaptureRequest.SENSOR_EXPOSURE_TIME,
-            (200_000_000L)
-        ) //Exposure Time
+        captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, (200_000_000L)) //Exposure Time
         captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, 800) //ISO
 
         reader.setOnImageAvailableListener(onImageAvailableListener, null)
