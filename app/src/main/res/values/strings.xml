@@ -50,12 +50,12 @@
     <string name="btn_capture">Prendre une Photo</string>
     <string name="btn_capture2">Prendre la Photo</string>
     <string name="btn_sms_va_dant">Envoi SMS: Tout va bien ?</string>
-    <string name="btn_sms_va_de">Envoi SMS: Oui, tout va bien</string>
+    <string name="btn_sms_va_de">Envoi SMS: Oui, tout va bien.</string>
     <string name="btn_appel">Appeler §%</string>
     <string name="btn_urgence">Capturer le contexte §%</string>
     <string name="btn_tiers">Envoyer les info par mail à …</string>
     <string name="btn_reinit_1">Réinitialiser les informations</string>
-    <string name="btn_reinit_3">Refaire la photo de l\'Aidé</string>
+    <string name="btn_reinit_3">Refaire la photo §%</string>
     <string name="btn_switch">Mode Privé </string>
 
 

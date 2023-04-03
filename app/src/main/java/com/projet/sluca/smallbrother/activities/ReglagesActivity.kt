@@ -13,7 +13,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * ReglagesActivity manages the resets of aide's and aidant's information and aide's picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 26-01-2023)
+ * @version 1.2 (Updated on 03-04-2023)
  */
 class ReglagesActivity : AppCompatActivity() {
 
@@ -34,6 +34,9 @@ class ReglagesActivity : AppCompatActivity() {
         check(userData.role == "Aidant")
 
         setAppBarTitle(userData, this)
+
+        btnResetPicture.text = getString(R.string.btn_reinit_3)
+            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
 
         btnResetAidant.setOnClickListener {
             vibreur.vibration(this, 330)
