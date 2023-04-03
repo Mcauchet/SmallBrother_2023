@@ -231,7 +231,7 @@ data class UserData(
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 20-02-2023)
      */
-    fun refreshLog(code: Int) { //TODO add "context sent to §%" and use it after context is sent to server
+    fun refreshLog(code: Int) {
         var texte = "${getCurrentTime("HH:mm")} : "
         texte += when (code) {
             1 -> getString(R.string.log_install)
@@ -254,9 +254,10 @@ data class UserData(
             14 -> getString(R.string.log_aide_needs_help).replace("§%", this.nomPartner)
             15 -> getString(R.string.log_aide_send_SMS).replace("§%", this.nomPartner)
             18 -> getString(R.string.log_private_expired)
-            19 -> getString(R.string.log19).replace("N#", SmsReceiver.tempsrestant)
+            19 -> getString(R.string.log_private_warn).replace("N#", SmsReceiver.tempsrestant)
                 .replace("§%", this.nomPartner)
-            20 -> getString(R.string.log20)
+            20 -> getString(R.string.log_private_on)
+            21 -> getString(R.string.log_context_sent).replace("§%", this.nomPartner)
             else -> ""
         }
         log = texte

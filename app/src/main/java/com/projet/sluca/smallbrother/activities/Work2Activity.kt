@@ -48,7 +48,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 18-03-2023)
+ * @version 1.2 (Updated on 03-04-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -228,6 +228,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 }
 
                 vibreur.vibration(this@Work2Activity, 330)
+                userData.refreshLog(21)
 
                 activateSMSReceiver(this@Work2Activity)
 
@@ -368,14 +369,14 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * false otherwise
      * @return the interpretation as a String
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 18-03-2023)
+     * @version 1.2 (Updated on 03-04-2023)
      */
     private fun interpretMotionData(acc: String, xyz: Boolean, location: Boolean): String {
         return when {
             (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && !location ->
-                "En mouvement, à pied."
+                "En mouvement, probablement à pied."
             (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && location ->
-                "Se déplace mais est au même endroit (magasin, maison, etc.)."
+                "Se déplace mais reste au même endroit (magasin, maison, etc.)."
             (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && location -> "À l'arrêt."
             (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && !location ->
                 "Se déplace, probablement dans un véhicule."

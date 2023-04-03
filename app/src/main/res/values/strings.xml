@@ -155,10 +155,11 @@
     <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Ses données seront disponibles dans votre dossier de téléchargement dans quelques instants.</string>
     <string name="log_aide_send_SMS">Vous signalez à §% que tout va bien.</string>
     <string name="log_private_expired">Le délai du Mode Privé est écoulé.</string>
-    <string name="log19">
+    <string name="log_private_warn">
         §% souhaite ne pas être dérangé.e durant les N# prochaines minutes.
     </string>
-    <string name="log20">Vous avez activé le mode privé.</string>
+    <string name="log_private_on">Vous avez activé le mode privé.</string>
+    <string name="log_context_sent">Votre contexte a été envoyé à §%.</string>
 
 
     <string name="logo_unamur">Logo UNamur</string>
