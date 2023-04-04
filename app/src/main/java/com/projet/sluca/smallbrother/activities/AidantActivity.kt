@@ -62,11 +62,6 @@ class AidantActivity : AppCompatActivity() {
 
         check(userData.role == "Aidant")
 
-        if(intent.hasExtra("url")){
-            intent.getStringExtra("url")?.let { userData.saveURL(this, it) }
-            getContextCapture()
-        }
-
         setAppBarTitle(userData, this)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
@@ -84,6 +79,11 @@ class AidantActivity : AppCompatActivity() {
         wakeup(window, this@AidantActivity)
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        if(intent.hasExtra("url")){
+            intent.getStringExtra("url")?.let { userData.saveURL(this, it) }
+            getContextCapture()
+        }
 
         btnSettings.setOnClickListener {
             vibreur.vibration(this, 100)

@@ -161,7 +161,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                             intent.putExtra("movementInterpretation", movementInterpretation)
                             if(emergency) intent.putExtra("emergency", true)
                             unregisterListener(lightDetectorListener)
-                            unregisterListener(movementDetectorListener)
                             AccelerometerManager.stopListening()
                             startActivity(intent)
                         }
@@ -316,7 +315,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             (z.toInt() * 10).toFloat()
         )
         keepMove = tmp
-        Log.d("XYZ", tmp.toString())
+        Log.d("x", tmp[0].toString())
+        Log.d("y", tmp[1].toString())
+        Log.d("z", tmp[2].toString())
     }
 
     private fun interpretMovement(checkXYZ1: FloatArray?, checkXYZ2: FloatArray?): Boolean =

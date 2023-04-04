@@ -48,7 +48,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 03-04-2023)
+ * @version 1.2 (Updated on 04-04-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -69,10 +69,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private var locationNetwork: Location? = null
 
     //Used to check if user is moving using the address
-    private var location1: Location? = null
-    private var location2: Location? = null
     private var address1: String = ""
     private var address2: String = ""
+    private var addressDiff: Boolean = false
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -102,21 +101,20 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 // position captured at seconds 2 and 9 of the record
                 when (millisUntilFinished) {
                     in 9900..10000 -> {
-                        location1 = getLocationForMovement()
+                        getLocation()
                         address1 = getAddress()
-                        Log.d("location1", address1)
                     }
                     in 1900..2000 -> {
-                        location2 = getLocationForMovement()
+                        getLocation()
                         address2 = getAddress()
-                        Log.d("location2", address2)
                     }
                 }
             }
 
             override fun onFinish() {
-                if(address1 != "" && address2 != "") userData.motion = address1 == address2
-
+                if(address1 != "" && address2 != "") {
+                    addressDiff = !(address1.contentEquals(address2))
+                }
                 // --> [3] Capture of front and back pictures
                 tvAction.text = getString(R.string.message12B)
                 pictureService = PictureCapturingServiceImpl.getInstance(this@Work2Activity)
@@ -149,9 +147,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             intent.getStringExtra("accInterpretation").toString() else "Indéterminé"
         val xyz: Boolean = if(intent.hasExtra("movementInterpretation"))
             intent.getBooleanExtra("movementInterpretation", true) else true
-        val locationDiff = if (userData.motion) "Oui" else "Non"
+        val locationDiff = if (addressDiff) "Oui" else "Non"
 
-        val movementDataInterpretation = interpretMotionData(acceleration, xyz, userData.motion)
+        val movementDataInterpretation = interpretMotionData(acceleration, xyz, addressDiff)
 
         // --> [7] Get light level
         val light = if(intent.hasExtra("light"))
@@ -268,19 +266,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
-     * Get the Location object to compare them later to see if user is moving
-     * @return the Location or null
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 18-03-2023)
-     */
-    private fun getLocationForMovement(): Location? {
-        checkForLocation()
-        return if (locationGps != null) locationGps as Location
-        else if (locationNetwork != null) locationNetwork as Location
-        else null
-    }
-
-    /**
      * function to get Location of Aide's phone
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 26-02-2023)
@@ -375,24 +360,24 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param acc the acceleration interpretation of the phone
      * @param xyz true if x, y and z are the same at the start and end of the audio recording,
      * false otherwise
-     * @param location true if Locations are the same with an interval of 10 seconds,
+     * @param addressDiff true if Locations are different with an interval of 10 seconds,
      * false otherwise
      * @return the interpretation as a String
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 03-04-2023)
+     * @version 1.2 (Updated on 04-04-2023)
      */
-    private fun interpretMotionData(acc: String, xyz: Boolean, location: Boolean): String {
+    private fun interpretMotionData(acc: String, xyz: Boolean, addressDiff: Boolean): String {
         return when {
-            (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && !location ->
+            (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && addressDiff ->
                 "En mouvement, probablement à pied."
-            (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && location ->
+            (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && !addressDiff ->
                 "Se déplace mais reste au même endroit (magasin, maison, etc.)."
-            (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && location -> "À l'arrêt."
-            (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && !location ->
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && !addressDiff -> "À l'arrêt."
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && addressDiff ->
                 "Se déplace, probablement dans un véhicule."
-            (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && !location ->
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && addressDiff ->
                 "Semble à l'arrêt, le GPS peut être imprécis."
-            (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && location ->
+            (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && !addressDiff ->
                 "Se déplace très lentement."
             else -> "Déplacement indéterminé."
         }
