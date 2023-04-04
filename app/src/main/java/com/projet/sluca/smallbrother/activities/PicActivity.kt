@@ -8,6 +8,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
@@ -19,7 +20,7 @@ import java.io.FileOutputStream
  * PicActivity manages the re-take of a picture after installation process
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 04-04-2023)
  */
 class PicActivity : AppCompatActivity() {
 
@@ -34,8 +35,12 @@ class PicActivity : AppCompatActivity() {
         val btnBack: Button = findViewById(R.id.btn_retour)
         val btnCapture: Button = findViewById(R.id.btn_capture)
         val btnSave: Button = findViewById(R.id.btn_save)
+        val title: TextView = findViewById(R.id.reglages_intitule)
 
         userData = UserDataManager.getUserData(application)
+
+        title.text = getString(R.string.btn_reinit_2)
+            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
 
         apercu = findViewById(R.id.apercu)
         showPicture(apercu, userData)
@@ -44,8 +49,7 @@ class PicActivity : AppCompatActivity() {
 
         btnBack.setOnClickListener {
             vibreur.vibration(this, 100)
-            val intent = Intent(this, ReglagesActivity::class.java)
-            startActivity(intent)
+            finish()
         }
 
         btnCapture.setOnClickListener {

@@ -42,7 +42,6 @@ class SmsReceiver : BroadcastReceiver() {
             "[#SB03]",  // -> aide is alright
             "[#SB04]",  // -> context capture
             "[#SB05]",  // -> aide not connected
-            "[#SB06]",  // -> file uploaded to server
             "[#SB07]", // -> private mode ON
             "[#SB08]", // -> aide needs help
             "[#SB10]", // -> aidant receives url to files
@@ -53,11 +52,16 @@ class SmsReceiver : BroadcastReceiver() {
         if(userData.role == "Aidant") {
             val intnt = Intent(context, AidantActivity::class.java)
             when (clef) {
-                "[#SB03]" -> userData.refreshLog(5)
-                "[#SB05]" -> userData.refreshLog(13)
-                "[#SB06]" -> userData.refreshLog(11)
+                "[#SB03]" -> {
+                    userData.bit = 0
+                    userData.refreshLog(5)
+                }
+                "[#SB05]" -> {
+                    userData.bit = 0
+                    userData.refreshLog(13)
+                }
                 "[#SB07]" -> {
-                    //TODO see if temprestant works
+                    userData.bit = 0
                     tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
                     userData.refreshLog(19)
                 }

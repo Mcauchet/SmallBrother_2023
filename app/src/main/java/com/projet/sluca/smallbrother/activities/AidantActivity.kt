@@ -107,12 +107,14 @@ class AidantActivity : AppCompatActivity() {
             vibreur.vibration(this, 200)
             val sms = getString(R.string.smsys02).replace("§%", userData.nom)
             if(sendSMS(this, sms, userData.telephone, vibreur)) {
+                userData.bit = 0
                 message(this, getString(R.string.message04), vibreur)
                 userData.refreshLog(4)
             }
         }
 
         btnCall.setOnClickListener {
+            userData.bit = 0
             vibreur.vibration(this, 200)
             val callIntent = Intent(Intent.ACTION_CALL)
             callIntent.data = Uri.parse("tel:" + userData.telephone)

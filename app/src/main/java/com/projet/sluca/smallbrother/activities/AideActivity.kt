@@ -18,11 +18,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-/***
+/**
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 28-03-2023)
+ * @version 1.2 (updated on 04-04-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -79,6 +79,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
 
         btnSmsAidant.setOnClickListener {
+            updateBitOnAction()
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys03).replace("§%", userData.nom)
             if(sendSMS(this, sms, userData.telephone, vibreur)) {
@@ -88,6 +89,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
 
         btnCall.setOnClickListener {
+            updateBitOnAction()
             vibreur.vibration(this, 100)
             val callIntent = Intent(Intent.ACTION_CALL).apply {
                 data = Uri.parse("tel:" + userData.telephone)
@@ -98,6 +100,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
 
         btnEmergency.setOnClickListener {
+            updateBitOnAction()
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys08).replace("§%", userData.nom)
             if(sendSMS(this, sms, userData.telephone, vibreur)) {
@@ -287,6 +290,15 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         }
         tvLog.text = userData.log
         userData.bit = 1
+    }
+
+    /**
+     * Update bit value based on actions taken by aidé
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-04-2023)
+     */
+    private fun updateBitOnAction() {
+        if (userData.bit == 1) userData.bit = 1 else userData.bit = 0
     }
 
     private val reloadLog: Runnable = object : Runnable {

@@ -56,6 +56,8 @@ class ReglagesActivity : AppCompatActivity() {
             finish()
         }
 
+        //TODO Do we keep this page available ? Then we need to update it but I have to contact
+        // Sebastien for that
         btnHelp.setOnClickListener {
             vibreur.vibration(this, 100)
             val browserIntent = Intent(

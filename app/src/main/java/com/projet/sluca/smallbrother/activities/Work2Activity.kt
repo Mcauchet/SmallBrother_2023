@@ -71,6 +71,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     //Used to check if user is moving using the address
     private var location1: Location? = null
     private var location2: Location? = null
+    private var address1: String = ""
+    private var address2: String = ""
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
@@ -99,13 +101,21 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             override fun onTick(millisUntilFinished: Long) {
                 // position captured at seconds 2 and 9 of the record
                 when (millisUntilFinished) {
-                    in 9900..10000 -> location1 = getLocationForMovement()
-                    in 1900..2000 -> location2 = getLocationForMovement()
+                    in 9900..10000 -> {
+                        location1 = getLocationForMovement()
+                        address1 = getAddress()
+                        Log.d("location1", address1)
+                    }
+                    in 1900..2000 -> {
+                        location2 = getLocationForMovement()
+                        address2 = getAddress()
+                        Log.d("location2", address2)
+                    }
                 }
             }
 
             override fun onFinish() {
-                if(location1 != null && location2 != null) userData.motion = location1 == location2
+                if(address1 != "" && address2 != "") userData.motion = address1 == address2
 
                 // --> [3] Capture of front and back pictures
                 tvAction.text = getString(R.string.message12B)
