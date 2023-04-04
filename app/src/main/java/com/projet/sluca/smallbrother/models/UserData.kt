@@ -45,6 +45,9 @@ data class UserData(
     // this path is configured at first launch of the app through configurePath(..)
     var path: String = ""
     private val file = "donnees.txt"
+
+    //Online doc of the previous application
+    //TODO see if we keep it
     val url = "https://projects.info.unamur.be/geras/projects/smallbrother/"
     val help = "help/"
 
@@ -263,7 +266,7 @@ data class UserData(
         log = texte
     }
 
-    /***
+    /**
      * subDelay subtracts a number from the remaining delay in private mode
      *
      * @param [sub] the time to subtract
