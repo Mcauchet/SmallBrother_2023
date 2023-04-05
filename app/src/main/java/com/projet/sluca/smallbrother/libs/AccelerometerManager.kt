@@ -8,6 +8,11 @@ import android.hardware.SensorManager
 import android.util.Log
 import kotlin.math.abs
 
+/**
+ * Defines the logic for the movement detection using the accelerometer listener
+ * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
+ * @version 1.2 (Updated on 05-04-2023)
+ */
 class AccelerometerManager {
 
     companion object {
@@ -16,14 +21,14 @@ class AccelerometerManager {
         private var sensor: Sensor? = null
         private var sensorManager: SensorManager? = null
         private var listener: AccelerometerListener? = null
-
-        // indicates whether or not Accelerometer Sensor is supported
         private var supported: Boolean? = null
-
-        // Returns true if the manager is listening to orientation changes
-        // indicates whether or not Accelerometer Sensor is running
         private var isListening = false
 
+        /**
+         * Unregister the accelerometer listener
+         * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
+         * @version 1.2 (Updated on 05-04-2023)
+         */
         fun stopListening() {
             isListening = false
             try {
@@ -35,7 +40,13 @@ class AccelerometerManager {
             }
         }
 
-        // Returns true if at least one Accelerometer sensor is available
+        /**
+         * Checks if accelerometer sensor is available
+         * @param context the context of the application
+         * @return true if at least one sensor is available, false otherwise
+         * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
+         * @version 1.2 (Updated on 05-04-2023)
+         */
         fun isSupported(context: Context): Boolean {
             if (supported == null) {
                 sensorManager =
@@ -46,12 +57,13 @@ class AccelerometerManager {
             return supported!!
         }
 
-        // Configure the listener for shaking
-        private fun configure(threshold: Int, interval: Int) {
-            Companion.threshold = threshold.toFloat()
-            Companion.interval = interval
-        }
-
+        /**
+         * Register the accelerometer listener
+         * @param accelerometerListener the accelerometer listener to register
+         * @param context the context of the application
+         * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
+         * @version 1.2 (Updated on 05-04-2023)
+         */
         fun startListening(accelerometerListener: AccelerometerListener?, context: Context) {
             sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
             val sensors = sensorManager!!.getSensorList(
@@ -66,16 +78,6 @@ class AccelerometerManager {
                 )
                 listener = accelerometerListener
             }
-        }
-
-        fun startListening(
-            accelerometerListener: AccelerometerListener?,
-            threshold: Int,
-            interval: Int,
-            context: Context
-        ) {
-            configure(threshold, interval)
-            startListening(accelerometerListener, context)
         }
 
         private val sensorEventListener: SensorEventListener = object : SensorEventListener {
