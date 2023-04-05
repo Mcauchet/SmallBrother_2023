@@ -14,7 +14,6 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -26,6 +25,7 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.libs.*
 import com.projet.sluca.smallbrother.models.AideData
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.*
 
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
@@ -68,7 +68,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private var locationGps: Location? = null
     private var locationNetwork: Location? = null
 
-    //Used to check if user is moving using the address
     private var address1: String = ""
     private var address2: String = ""
     private var addressDiff: Boolean = false
@@ -88,25 +87,29 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         tvLoading.text = ""
         tvAction.text = ""
 
-        userData = application as UserData
+        userData = UserDataManager.getUserData(application)
         loading(tvLoading)
         setAppBarTitle(userData, this)
 
         // --> [2] Get Aide Location
-        tvAction.text = getString(R.string.message12C)
-        checkForLocation()
+        if (locationAvailability()) {
+            tvAction.text = getString(R.string.message12C)
+            checkForLocation()
+        }
 
         object : CountDownTimer(11000, 1) {
             override fun onTick(millisUntilFinished: Long) {
                 // position captured at seconds 2 and 9 of the record
-                when (millisUntilFinished) {
-                    in 9900..10000 -> {
-                        getLocation()
-                        address1 = getAddress()
-                    }
-                    in 1900..2000 -> {
-                        getLocation()
-                        address2 = getAddress()
+                if(locationAvailability()) {
+                    when (millisUntilFinished) {
+                        in 9900..10000 -> {
+                            getLocation()
+                            address1 = getAddress()
+                        }
+                        in 1900..2000 -> {
+                            getLocation()
+                            address2 = getAddress()
+                        }
                     }
                 }
             }
@@ -174,7 +177,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             exponentialDelay()
                         }
                     }
-                    val location: String = if(locationGps != null || locationNetwork != null){
+                    val location: String = if((locationGps != null || locationNetwork != null)
+                        && locationAvailability()){
                         getAddress()
                     } else "Erreur lors de la récupération de la position"
 
@@ -608,10 +612,39 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         if(requestCode == 1) {
             if((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED))
                 checkForLocation()
-        } else {
-            Toast.makeText(this, "Location permission was denied", Toast.LENGTH_SHORT).show()
         }
+        else if (requestCode == 2) recreate()
+        else message(this, "La localisation n'est pas activée", vibreur)
         return
+    }
+
+
+    /* ------------- Functions for location permissions ---------------- */
+
+    /**
+     * Checks if the location service is enabled
+     * @return true if at least one service is available
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 05-04-2023)
+     */
+    private fun locationAvailability(): Boolean {
+        requestLocationPermission()
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        return (hasGps || hasNetwork)
+    }
+    private fun requestLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                ), 2)
+        }
     }
 
     override fun onCaptureDone(pictureUrl: String?, pictureData: ByteArray?) {}

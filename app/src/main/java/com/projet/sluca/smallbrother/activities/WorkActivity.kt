@@ -8,6 +8,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -19,6 +21,7 @@ import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.libs.AccelerometerListener
 import com.projet.sluca.smallbrother.libs.AccelerometerManager
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -29,7 +32,7 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 28-03-2023)
+ * @version 1.2 (Updated on 05-04-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -74,7 +77,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
         if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
 
-        //Set clef value if aide initiates the capture
         if (intent.hasExtra("clef")) {
             clef = intent.getStringExtra("clef").toString()
             emergency = true
@@ -87,86 +89,65 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             userData.refreshLog(8)
             redirectRole(this@WorkActivity, userData)
         } else {
-            when (clef) {
-                "[#SB01]" -> {
-                    vibreur.vibration(this, 330)
-                    userData.refreshLog(3)
-                    userData.byeData("donnees.txt")
-                    // Checks if the donnees.txt file is gone before restarting the install process
-                    if(!userData.loadData(this)){
-                        val mIntent = Intent(this, Launch1Activity::class.java)
-                        startActivity(mIntent)
-                    }
-                }
-                "[#SB02]" -> {
-                    userData.refreshLog(6)
-                    val intent = Intent(this, AideActivity::class.java)
+            wakeup(window, this@WorkActivity)
+            loading(tvLoading)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                if (isOnline(this@WorkActivity)) {
+                    deactivateSmsReceiver(this@WorkActivity)
+                    registerLightSensor()
+                    registerMovementDetector()
+
+                    // --> [1] Records a 10 seconds audio of the aide's environment
+                    tvAction.text = getString(R.string.message12A)
+                    initMagneto()
+                    magneto?.start()
+                    // =======================================================================
+                } else {
+                    userData.refreshLog(12)
+
+                    MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
+                    vibreur.vibration(this@WorkActivity, 3000)
+
+                    var sms = getString(R.string.smsys05)
+                    sms = sms.replace("§%", userData.nom)
+                    sendSMS(this@WorkActivity, sms, userData.telephone, vibreur)
+
+                    val intent = Intent(this@WorkActivity, AideActivity::class.java)
                     startActivity(intent)
                 }
-                "[#SB04]" -> {
-                    wakeup(window, this@WorkActivity)
-                    loading(tvLoading)
+            }
 
-                    // Checks if mobile phone is connected to internet before making the
-                    // context capture
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (isOnline(this@WorkActivity)) {
-                            deactivateSmsReceiver(this@WorkActivity)
-                            registerLightSensor()
-                            registerMovementDetector()
-
-                            // --> [1] Records a 10 seconds audio of the aide's environment
-                            tvAction.text = getString(R.string.message12A)
-                            initMagneto()
-                            magneto?.start()
-                            // =======================================================================
-                        } else {
-                            userData.refreshLog(12)
-
-                            MediaPlayer.create(this@WorkActivity, R.raw.alarme).start()
-                            vibreur.vibration(this@WorkActivity, 3000)
-
-                            var sms = getString(R.string.smsys05)
-                            sms = sms.replace("§%", userData.nom)
-                            sendSMS(this@WorkActivity, sms, userData.telephone, vibreur)
-
-                            val intent = Intent(this@WorkActivity, AideActivity::class.java)
-                            startActivity(intent)
+            // 10 seconds countdown
+            object : CountDownTimer(11000, 1) {
+                override fun onTick(millisUntilFinished: Long) {
+                    // position captured at seconds 2 and 9 of the record
+                    when (millisUntilFinished) {
+                        in 8900..9000 -> {
+                            checkAcc1 = userData.motion
+                            checkXYZ1 = keepMove
+                        }
+                        in 1900..2000 -> {
+                            checkAcc2 = userData.motion
+                            checkXYZ2 = keepMove
                         }
                     }
-
-                    // 10 seconds countdown
-                    object : CountDownTimer(11000, 1) {
-                        override fun onTick(millisUntilFinished: Long) {
-                            // position captured at seconds 2 and 9 of the record
-                            when (millisUntilFinished) {
-                                in 8900..9000 -> {
-                                    checkAcc1 = userData.motion
-                                    checkXYZ1 = keepMove
-                                }
-                                in 1900..2000 -> {
-                                    checkAcc2 = userData.motion
-                                    checkXYZ2 = keepMove
-                                }
-                            }
-                        }
-
-                        override fun onFinish() {
-                            resetMagneto()
-                            val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
-                            val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
-                            val intent = Intent(this@WorkActivity, Work2Activity::class.java)
-                            intent.putExtra("light", ambientLightLux)
-                            intent.putExtra("accInterpretation", accInterpretation)
-                            intent.putExtra("movementInterpretation", movementInterpretation)
-                            if(emergency) intent.putExtra("emergency", true)
-                            unregisterListener(lightDetectorListener)
-                            AccelerometerManager.stopListening()
-                            startActivity(intent)
-                        }
-                    }.start()
                 }
-            }
+
+                override fun onFinish() {
+                    resetMagneto()
+                    val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
+                    val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
+                    val intent = Intent(this@WorkActivity, Work2Activity::class.java)
+                    intent.putExtra("light", ambientLightLux)
+                    intent.putExtra("accInterpretation", accInterpretation)
+                    intent.putExtra("movementInterpretation", movementInterpretation)
+                    if(emergency) intent.putExtra("emergency", true)
+                    unregisterListener(lightDetectorListener)
+                    AccelerometerManager.stopListening()
+                    startActivity(intent)
+                }
+            }.start()
         }
     }
 
@@ -295,8 +276,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         listener?.let { sensorManager.unregisterListener(listener) }
     }
 
-    //TODO test this, see if no conflicts between sensor and stuff
-
     /* -------------- Functions related to the Accelerometer -------------- */
     override fun onResume() {
         super.onResume()
@@ -326,4 +305,48 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onSensorChanged(event: SensorEvent) {}
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
     override fun onShake(force: Float) {}
+
+    /* ---------------- Functions related to internet -------------- */
+    /**
+     * Returns true if device has validated network capabilities (Cellular, Wifi or Ethernet)
+     * @param context the context of the application
+     * @return true if connected, false otherwise
+     * @author Maxime Caucheteur (inspired by https://medium.com/@veniamin.vynohradov/monitoring-internet-connection-state-in-android-da7ad915b5e5)
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun isOnline(context: Context): Boolean {
+        try {
+            return checkInternetCapabilities(context)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+        return false
+    }
+
+    /**
+     * Checks Network Capabilities
+     * @param [context] the context of the activity
+     * @return true if has Network capabilities, false otherwise
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun checkInternetCapabilities(context: Context) : Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE)
+                as ConnectivityManager
+        val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+        if (capabilities != null) {
+            return when {
+                capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                        (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
+                -> true
+                else -> false
+            }
+        }
+        return false
+    }
 }

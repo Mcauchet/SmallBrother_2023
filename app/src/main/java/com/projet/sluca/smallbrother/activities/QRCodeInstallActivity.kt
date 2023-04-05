@@ -11,6 +11,9 @@ import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.SecurityUtils
+import com.projet.sluca.smallbrother.utils.particule
+import com.projet.sluca.smallbrother.utils.setAppBarTitle
 
 /**
  * Manages the public key exchange between Aidé and Aidant through QR Code
@@ -35,7 +38,7 @@ class QRCodeInstallActivity : AppCompatActivity() {
         check(userData.role == "Aidant" || userData.role == "Aidé")
 
         textQR.text = getString(R.string.installQR)
-            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
+            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
         setAppBarTitle(userData, this)
 

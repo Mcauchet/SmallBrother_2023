@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.telephony.SmsMessage
 import android.util.Log
 import com.projet.sluca.smallbrother.activities.AidantActivity
+import com.projet.sluca.smallbrother.activities.AideActivity
+import com.projet.sluca.smallbrother.activities.Launch1Activity
 import com.projet.sluca.smallbrother.activities.WorkActivity
 import com.projet.sluca.smallbrother.models.UserData
 
@@ -88,9 +90,28 @@ class SmsReceiver : BroadcastReceiver() {
             if (clef == "[#SB02]") userData.bit = 2
             else if (clef == "[#SB04]") userData.bit = 4
         } else {
-            val intnt2 = Intent(context, WorkActivity::class.java)
-            intnt2.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(intnt2)
+            when(clef) {
+                "[#SB01]" -> {
+                    Vibration().vibration(context, 330)
+                    userData.refreshLog(3)
+                    userData.byeData("donnees.txt")
+                    if(!userData.loadData(context)){
+                        val mIntent = Intent(context, Launch1Activity::class.java)
+                        context.startActivity(mIntent)
+                    }
+                }
+                "[#SB02]" -> {
+                    userData.refreshLog(6)
+                    val intnt = Intent(context, AideActivity::class.java)
+                    context.startActivity(intnt)
+                }
+                "[#SB04]" -> {
+                    val intnt = Intent(context, WorkActivity::class.java)
+                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    context.startActivity(intnt)
+                }
+            }
+
         }
     }
 

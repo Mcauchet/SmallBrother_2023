@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.*
 import android.util.Base64
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -12,6 +11,7 @@ import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.android.*
@@ -67,10 +67,10 @@ class AidantActivity : AppCompatActivity() {
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
         btnFiles.text = getString(R.string.retelecharger_les_donnees_de_l_aide)
-            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
+            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
         btnEmergency.text = getString(R.string.btn_urgence)
-            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
+            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
         tvLog = findViewById(R.id.log_texte)
 
@@ -87,7 +87,7 @@ class AidantActivity : AppCompatActivity() {
 
         btnSettings.setOnClickListener {
             vibreur.vibration(this, 100)
-            val intent = Intent(this, ReglagesActivity::class.java)
+            val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 
@@ -269,7 +269,7 @@ class AidantActivity : AppCompatActivity() {
     private fun configureAlertDialog(builder: Builder) {
         builder.setCancelable(true)
         builder.setTitle(getString(R.string.btn_urgence)
-            .replace("§%", particule(userData.nomPartner)+userData.nomPartner))
+            .replace("§%", particule(userData.nomPartner) +userData.nomPartner))
         builder.setMessage(getString(R.string.message02_texte))
     }
 

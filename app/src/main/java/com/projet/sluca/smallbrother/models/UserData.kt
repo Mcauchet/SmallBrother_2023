@@ -6,8 +6,8 @@ import android.media.MediaScannerConnection
 import android.util.Log
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
-import com.projet.sluca.smallbrother.getCurrentTime
-import com.projet.sluca.smallbrother.particule
+import com.projet.sluca.smallbrother.utils.getCurrentTime
+import com.projet.sluca.smallbrother.utils.particule
 import org.apache.commons.io.IOUtils
 import java.io.*
 import java.util.*
@@ -240,18 +240,18 @@ data class UserData(
             1 -> getString(R.string.log_install)
             2 -> getString(R.string.log_reset_aidant)
             3 -> getString(R.string.log_reset_aide)
-                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+                .replace("§%", particule(this.nomPartner) +this.nomPartner)
             4 -> getString(R.string.log_aidant_send_SMS).replace("§%", this.nomPartner)
             5 -> getString(R.string.log_aidant_receive_SMS).replace("§%", this.nomPartner)
             6 -> getString(R.string.log_aide_receive_SMS).replace("§%", this.nomPartner)
             7 -> getString(R.string.log_call).replace("§%", this.nomPartner)
             8 -> getString(R.string.log_called).replace("§%", this.nomPartner)
             9 -> getString(R.string.log_call_missed)
-                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+                .replace("§%", particule(this.nomPartner) +this.nomPartner)
             10 -> getString(R.string.log_aidant_requests_context)
-                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+                .replace("§%", particule(this.nomPartner) +this.nomPartner)
             11 -> getString(R.string.log_data_on_server)
-                .replace("§%", particule(this.nomPartner)+this.nomPartner)
+                .replace("§%", particule(this.nomPartner) +this.nomPartner)
             12 -> getString(R.string.log_no_internet_aide).replace("§%", this.nomPartner)
             13 -> getString(R.string.log_no_internet_aidant).replace("§%", this.nomPartner)
             14 -> getString(R.string.log_aide_needs_help).replace("§%", this.nomPartner)

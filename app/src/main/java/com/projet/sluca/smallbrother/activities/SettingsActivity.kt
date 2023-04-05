@@ -8,14 +8,18 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.message
+import com.projet.sluca.smallbrother.utils.particule
+import com.projet.sluca.smallbrother.utils.sendSMS
+import com.projet.sluca.smallbrother.utils.setAppBarTitle
 
 /**
- * ReglagesActivity manages the resets of aide's and aidant's information and aide's picture
+ * SettingsActivity manages the resets of aide's and aidant's information and aide's picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 03-04-2023)
  */
-class ReglagesActivity : AppCompatActivity() {
+class SettingsActivity : AppCompatActivity() {
 
     var vibreur = Vibration()
     lateinit var userData: UserData
@@ -36,7 +40,7 @@ class ReglagesActivity : AppCompatActivity() {
         setAppBarTitle(userData, this)
 
         btnResetPicture.text = getString(R.string.btn_reinit_2)
-            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
+            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
         btnResetAidant.setOnClickListener {
             vibreur.vibration(this, 330)

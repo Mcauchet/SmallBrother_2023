@@ -10,7 +10,7 @@ import android.os.VibratorManager
 /**
  * class Vibration creates a Vibrator and manages the vibrations made by all activities
  *
- * @author Sébastien Luca & Maxime Caucheteur
+ * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (Updated on 08-01-2023)
  */
 class Vibration {

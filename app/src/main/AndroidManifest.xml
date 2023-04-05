@@ -83,7 +83,7 @@
             android:name=".activities.PicActivity"
             android:screenOrientation="locked" />
         <activity
-            android:name=".activities.ReglagesActivity"
+            android:name=".activities.SettingsActivity"
             android:screenOrientation="locked" />
         <activity
             android:name=".activities.WorkActivity"

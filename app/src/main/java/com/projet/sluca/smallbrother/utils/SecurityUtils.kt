@@ -1,4 +1,4 @@
-package com.projet.sluca.smallbrother
+package com.projet.sluca.smallbrother.utils
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -45,7 +45,7 @@ object SecurityUtils {
     fun getSignKeyPair() {
         val ks: KeyStore = loadKeyStore()
         val aliases: Enumeration<String> = ks.aliases()
-        if(aliases.toList().firstOrNull {it == KEYSTORE_ALIAS_SIGN_RSA} == null) {
+        if(aliases.toList().firstOrNull {it == KEYSTORE_ALIAS_SIGN_RSA } == null) {
             val kpg: KeyPairGenerator = KeyPairGenerator.getInstance("RSA")
             initSignKpg(kpg)
             kpg.generateKeyPair()

@@ -12,13 +12,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.setAppBarTitle
+import com.projet.sluca.smallbrother.utils.showPicture
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.util.*
 
 /**
  * class InstallDantPicActivity manages the capture of the aidé picture
- *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (updated on 16-01-2023)
  */

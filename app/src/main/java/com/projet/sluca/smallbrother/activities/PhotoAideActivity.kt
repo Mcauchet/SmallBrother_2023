@@ -10,7 +10,7 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.UserDataManager
 import com.projet.sluca.smallbrother.Vibration
 import com.projet.sluca.smallbrother.models.UserData
-import com.projet.sluca.smallbrother.showPicture
+import com.projet.sluca.smallbrother.utils.showPicture
 
 /**
  * class PhotoAide allows the Aidant to show the picture of the Aide

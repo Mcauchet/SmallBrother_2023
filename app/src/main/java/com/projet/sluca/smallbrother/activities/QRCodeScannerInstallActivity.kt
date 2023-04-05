@@ -8,6 +8,9 @@ import com.budiyev.android.codescanner.*
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.message
+import com.projet.sluca.smallbrother.utils.particule
+import com.projet.sluca.smallbrother.utils.setAppBarTitle
 
 /**
  * Opens a qr code scanner to get the public key of the partner

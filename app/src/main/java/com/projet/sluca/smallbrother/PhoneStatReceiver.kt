@@ -8,7 +8,7 @@ import android.telephony.TelephonyManager
 import com.projet.sluca.smallbrother.activities.WorkActivity
 import com.projet.sluca.smallbrother.models.UserData
 
-/***
+/**
  * PhoneStatReceiver manages information when a phone call is received on the user's phone
  *
  * @author Sébastien Luca & Maxime Caucheteur (Updated on 08-01-2023)

@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,10 +12,13 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.message
+import com.projet.sluca.smallbrother.utils.particule
+import com.projet.sluca.smallbrother.utils.showPicture
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
-/***
+/**
  * PicActivity manages the re-take of a picture after installation process
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
@@ -40,7 +42,7 @@ class PicActivity : AppCompatActivity() {
         userData = UserDataManager.getUserData(application)
 
         title.text = getString(R.string.btn_reinit_2)
-            .replace("§%", particule(userData.nomPartner)+userData.nomPartner)
+            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
         apercu = findViewById(R.id.apercu)
         showPicture(apercu, userData)
@@ -70,7 +72,6 @@ class PicActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("result code", resultCode.toString())
         if (requestCode == 7 && resultCode == RESULT_OK) {
             val bitmap = data!!.extras!!["data"] as Bitmap?
             val image = userData.path + "/SmallBrother/photo_aide.jpg"

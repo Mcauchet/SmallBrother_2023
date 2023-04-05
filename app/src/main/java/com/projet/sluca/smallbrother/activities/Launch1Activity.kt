@@ -8,12 +8,13 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.redirectRole
 
 /**
  * class Launch1Activity is the starting point of the application.
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 08-01-2023)
+ * @version 1.2 (Updated on 05-04-2023)
  */
 class Launch1Activity : AppCompatActivity() {
 
@@ -30,10 +31,9 @@ class Launch1Activity : AppCompatActivity() {
 
         userData.configurePath(this)
 
-        // Activate SmsReceiver in case application crashes (as it's the launcher activity)
-        val pm = this@Launch1Activity.packageManager
+        val packageManager = this@Launch1Activity.packageManager
         val componentName = ComponentName(this@Launch1Activity, SmsReceiver::class.java)
-        pm.setComponentEnabledSetting(
+        packageManager.setComponentEnabledSetting(
             componentName,
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP

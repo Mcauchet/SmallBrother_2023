@@ -1,6 +1,8 @@
 package com.projet.sluca.smallbrother.activities
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -10,8 +12,13 @@ import android.widget.EditText
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.SecurityUtils
+import com.projet.sluca.smallbrother.utils.getAppVersion
+import com.projet.sluca.smallbrother.utils.message
+import com.projet.sluca.smallbrother.utils.setAppBarTitle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,7 +27,7 @@ import kotlinx.coroutines.launch
  * class InstallActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 26-02-2023)
+ * @version 1.2 (Updated on 05-04-2023)
  */
 class InstallActivity : AppCompatActivity() {
 
@@ -81,6 +88,69 @@ class InstallActivity : AppCompatActivity() {
     }
 
     /**
+     * Checks if inputs are valid
+     * @param [name] self name
+     * @param [namePartner] the name of the partner
+     * @param [telephone] the phone number of the partner
+     * @param [context] the Context of the application
+     * @param [userData] the user's data
+     * @param [vibreur] the phone Vibration system
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-01-2023)
+     */
+    private fun checkInputs(name: String, namePartner: String, telephone: String, context: Context,
+                    userData: UserData, vibreur: Vibration) {
+        when {
+            telephone.length > 10 || telephone.matches("".toRegex()) || !telephone.startsWith("04")
+            -> message(context, context.getString(R.string.error01), vibreur)
+            name.matches("".toRegex()) || telephone.matches("".toRegex())
+                    || namePartner.matches("".toRegex())
+            -> message(context, context.getString(R.string.error03), vibreur)
+            else -> registerData(name, namePartner, telephone, userData, context)
+        }
+    }
+
+    /**
+     * Save the user's data in a file
+     * @param [name] the name of the user
+     * @param [namePartner] the name of the partner
+     * @param [telephone] the phone number of the partner
+     * @param [userData] the user's data
+     * @param [context] the Context of the application
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
+     */
+    private fun registerData(name: String, namePartner: String, telephone: String, userData: UserData,
+                             context: Context
+    ) {
+        require(name.isNotBlank() && telephone.isNotBlank() && namePartner.isNotBlank())
+        userData.version = getAppVersion(context)
+        userData.nom = name
+        userData.nomPartner = namePartner
+        userData.telephone = telephone
+        userData.saveData(context)
+        redirectAfterRegister(userData, context)
+    }
+
+    /**
+     * Redirects the user after registering his datas
+     * @param [userData] the user's data
+     * @param [context] the Context of the application
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 16-01-2023)
+     */
+    private fun redirectAfterRegister(userData: UserData, context: Context) {
+        check(userData.role == "Aidant" || userData.role == "Aidé")
+        if (userData.role == "Aidant") {
+            val intent = Intent(context, InstallDantPicActivity::class.java)
+            ContextCompat.startActivity(context, intent, null)
+        } else {
+            val intent = Intent(context, QRCodeScannerInstallActivity::class.java)
+            ContextCompat.startActivity(context, intent, null)
+        }
+    }
+
+    /**
      * Request the permissions if not already granted
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 26-01-2023)
@@ -99,13 +169,12 @@ class InstallActivity : AppCompatActivity() {
     /**
      * Request the array of permissions needed for the aidé
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 05-04-2023)
      */
     private fun getArrayOfPermissionsAide() {
         ActivityCompat.requestPermissions(this, arrayOf(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            /*Manifest.permission.READ_CONTACTS,*/ //TODO test this
             Manifest.permission.SEND_SMS,
             Manifest.permission.CALL_PHONE,
             Manifest.permission.READ_SMS,
