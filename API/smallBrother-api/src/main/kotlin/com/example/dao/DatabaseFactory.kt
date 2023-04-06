@@ -14,7 +14,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.*
  */
 object DatabaseFactory {
     fun init(config: ApplicationConfig) {
-        val driverClassName = config.property("storage.driverClassName").getString()
+        val driverClassName = "org.postgresql.Driver"
         val jdbcURL = "jdbc:postgresql://${System.getenv()["DATABASE_HOST"]}:" +
                 "${System.getenv()["DATABASE_PORT"]}/${System.getenv()["DATABASE_NAME"]}"
         val database = Database.connect(jdbcURL, driverClassName, System.getenv()["DATABASE_USERNAME"].toString(),
