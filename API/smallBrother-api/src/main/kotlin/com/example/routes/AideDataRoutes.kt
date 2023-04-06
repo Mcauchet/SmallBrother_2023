@@ -59,16 +59,6 @@ fun Route.aideDataRouting() {
         }
     }
 
-    route("/aideData") {
-        get("/{key}") {
-            val key = call.parameters["key"]
-                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotAcceptable)
-            val aideData = dao.getAideData(key)
-            if(aideData != null) call.respond(aideData)
-            else call.respondText("Data not found", status = HttpStatusCode.NotFound)
-        }
-    }
-
     route("/download") {
         get("/{key}"){
             val key = call.parameters["key"]
@@ -84,6 +74,16 @@ fun Route.aideDataRouting() {
                 )
             }
             call.respondFile(file)
+        }
+    }
+
+    route("/aideData") {
+        get("/{key}") {
+            val key = call.parameters["key"]
+                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotAcceptable)
+            val aideData = dao.getAideData(key)
+            if(aideData != null) call.respond(aideData)
+            else call.respondText("Data not found", status = HttpStatusCode.NotFound)
         }
     }
 }

@@ -26,10 +26,12 @@ fun Route.adminRouting() {
             get {
                 call.respond(FreeMarkerContent("index.ftl", mapOf("aideDatas" to dao.allAideData())))
             }
+
             get("{uri}") {
                 val uri = call.parameters.getOrFail<String>("uri")
                 call.respond(FreeMarkerContent("show.ftl", mapOf("aideData" to dao.getAideData(uri))))
             }
+
             post("{uri}") {
                 val uri = call.parameters.getOrFail("uri")
                 val formParameters = call.receiveParameters()
@@ -40,6 +42,7 @@ fun Route.adminRouting() {
                     call.respondRedirect("/admin")
                 }
             }
+
             post("/clean") {
                 val formParameters = call.receiveParameters()
                 if(formParameters.getOrFail("_action") == "Clean") {
@@ -50,19 +53,16 @@ fun Route.adminRouting() {
                     dir.walk().forEach { file ->
                         if(file.name !in existingUris) file.delete()
                     }
-                }
-                call.respondRedirect("/admin")
-            }
-            post("/deleteAll") {
-                val formParameters = call.receiveParameters()
-                if(formParameters.getOrFail("_action") == "Delete All") {
+                } else if (formParameters.getOrFail("_action") == "Delete All") {
                     dao.deleteAideDatas()
                     File("/upload/").walk().forEach { file ->
                         file.delete()
                     }
                     call.respondRedirect("/admin")
                 }
+                call.respondRedirect("/admin")
             }
+
             get("/editAdmin") {
                 call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("admins" to dao.allAdmin())))
             }

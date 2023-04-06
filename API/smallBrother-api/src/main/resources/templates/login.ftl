@@ -8,12 +8,6 @@
         text-align: center;
         padding: 10px;
     }
-    .footer {
-        background-color: #f1f1f1;
-        padding: 10px;
-        text-align: center;
-        width: 100%;
-    }
     input {
         padding: 4px;
     }
@@ -45,5 +39,4 @@
             <input style="alignment: right" type="submit" value="Login">
         </form>
     </div>
-    <div class="footer">FOOTER</div>
 </@layout.header>
