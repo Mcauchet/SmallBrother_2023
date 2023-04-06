@@ -287,16 +287,12 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onAccelerationChanged(x: Float, y: Float, z: Float) {
         // Fetch phone's coordinates
         // Error margin (*10) to compensate the accelerometer high sensibility
-        //TODO Check this margin, try to find a way to be relevant in the movement
         val tmp = floatArrayOf(
             (x.toInt() * 10).toFloat(),
             (y.toInt() * 10).toFloat(),
             (z.toInt() * 10).toFloat()
         )
         keepMove = tmp
-        Log.d("x", tmp[0].toString())
-        Log.d("y", tmp[1].toString())
-        Log.d("z", tmp[2].toString())
     }
 
     private fun interpretMovement(checkXYZ1: FloatArray?, checkXYZ2: FloatArray?): Boolean =

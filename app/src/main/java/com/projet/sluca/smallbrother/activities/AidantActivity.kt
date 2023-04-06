@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog.Builder
 import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
+import com.projet.sluca.smallbrother.models.AideData
 import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.*
 import io.ktor.client.*
@@ -180,13 +181,14 @@ class AidantActivity : AppCompatActivity() {
      * @param [client] the HttpClient to access the server
      * @param [file] the file to store the data in
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 28-03-2023)
+     * @version 1.2 (Updated on 06-04-2023)
      */
     private suspend fun getDataOnServer(client: HttpClient, file: File) {
         val zipDataByteArray: ByteArray = downloadFileRequest(client).body()
-        val aesBody: String = client.get("$URLServer/aes/${userData.urlToFile}").body()
-        val signature: String = client.get("$URLServer/sign/${userData.urlToFile}").body()
-        val iv: String = client.get("$URLServer/iv/${userData.urlToFile}").body()
+        val aideData: AideData = client.get("$URLServer/aideData/${userData.urlToFile}").body()
+        val aesBody = aideData.aesKey
+        val signature = aideData.signature
+        val iv = aideData.iv
         val aesEncKey: ByteArray = Base64.decode(aesBody, Base64.NO_WRAP)
         if(!SecurityUtils.verifyFile(zipDataByteArray,
                 SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,

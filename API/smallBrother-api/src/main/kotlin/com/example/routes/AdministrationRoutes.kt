@@ -18,7 +18,7 @@ import java.io.File
  * Manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 20-02-2023)
+ * @version 1 (Updated on 06-04-2023)
  */
 fun Route.adminRouting() {
     authenticate("auth-session") {
@@ -27,17 +27,15 @@ fun Route.adminRouting() {
                 call.respond(FreeMarkerContent("index.ftl", mapOf("aideDatas" to dao.allAideData())))
             }
             get("{uri}") {
-                //get specific data in db
                 val uri = call.parameters.getOrFail<String>("uri")
                 call.respond(FreeMarkerContent("show.ftl", mapOf("aideData" to dao.getAideData(uri))))
             }
             post("{uri}") {
-                //delete selected entry
                 val uri = call.parameters.getOrFail("uri")
                 val formParameters = call.receiveParameters()
                 if(formParameters.getOrFail("_action") == "Delete") {
                     dao.deleteAideData(uri)
-                    val file = File("upload/$uri")
+                    val file = File("/upload/$uri")
                     file.delete()
                     call.respondRedirect("/admin")
                 }
@@ -57,8 +55,11 @@ fun Route.adminRouting() {
             }
             post("/deleteAll") {
                 val formParameters = call.receiveParameters()
-                if(formParameters.getOrFail("_action") == "CleanAll") {
+                if(formParameters.getOrFail("_action") == "Delete All") {
                     dao.deleteAideDatas()
+                    File("/upload/").walk().forEach { file ->
+                        file.delete()
+                    }
                     call.respondRedirect("/admin")
                 }
             }

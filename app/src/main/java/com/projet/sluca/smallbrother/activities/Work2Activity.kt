@@ -48,7 +48,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 04-04-2023)
+ * @version 1.2 (Updated on 06-04-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -97,10 +97,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             checkForLocation()
         }
 
-        object : CountDownTimer(11000, 1) {
-            override fun onTick(millisUntilFinished: Long) {
-                // position captured at seconds 2 and 9 of the record
-                if(locationAvailability()) {
+        if(locationAvailability()) {
+            object : CountDownTimer(11000, 1) {
+                override fun onTick(millisUntilFinished: Long) {
                     when (millisUntilFinished) {
                         in 9900..10000 -> {
                             getLocation()
@@ -112,20 +111,22 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         }
                     }
                 }
-            }
 
-            override fun onFinish() {
-                if(address1 != "" && address2 != "") {
-                    addressDiff = !(address1.contentEquals(address2))
+                override fun onFinish() {
+                    if(address1 != "" && address2 != "") {
+                        addressDiff = !(address1.contentEquals(address2))
+                    }
                 }
-                // --> [3] Capture of front and back pictures
-                tvAction.text = getString(R.string.message12B)
-                pictureService = PictureCapturingServiceImpl.getInstance(this@Work2Activity)
-                pictureService.startCapturing(this@Work2Activity, this@Work2Activity)
+            }.start()
+        }
 
-                onBackPressedDispatcher.addCallback(this@Work2Activity, onBackPressedCallback)
-            }
-        }.start()
+
+        // --> [3] Capture of front and back pictures
+        tvAction.text = getString(R.string.message12B)
+        pictureService = PictureCapturingServiceImpl.getInstance(this@Work2Activity)
+        pictureService.startCapturing(this@Work2Activity, this@Work2Activity)
+
+        onBackPressedDispatcher.addCallback(this@Work2Activity, onBackPressedCallback)
     }
 
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
@@ -183,10 +184,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     } else "Erreur lors de la récupération de la position"
 
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
+                    Log.d("locationGps", locationGps?.latitude.toString())
 
                     val information = "Localisation $particule$nomAide : $location\n" +
-                            "Coordonnées géographiques: ${locationGps!!.latitude}, " +
-                            "${locationGps!!.longitude}\n" +
+                            "Coordonnées géographiques: ${locationGps?.latitude}, " +
+                            "${locationGps?.longitude}\n" +
                             "Niveau de batterie : $battery\n" +
                             "En mouvement ? : $acceleration.\n" +
                             "Deuxième vérification mouvement (Oui/Non) : $locationDiff.\n" +

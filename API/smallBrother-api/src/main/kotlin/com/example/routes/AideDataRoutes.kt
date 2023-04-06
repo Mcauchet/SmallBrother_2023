@@ -18,7 +18,7 @@ const val EXT_SIZE = 4
  * Manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 13-03-2023)
+ * @version 1.2 (Updated on 06-04-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
@@ -59,34 +59,13 @@ fun Route.aideDataRouting() {
         }
     }
 
-    //TODO check if possible to have call.respond(aideData) and get each property client side
-    route("/aes") {
+    route("/aideData") {
         get("/{key}") {
             val key = call.parameters["key"]
-                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
+                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotAcceptable)
             val aideData = dao.getAideData(key)
-            if (aideData != null) call.respond(aideData.aesKey)
-            else call.respondText("AES key not found", status = HttpStatusCode.NotFound)
-        }
-    }
-
-    route("/sign") {
-        get("/{key}") {
-            val key = call.parameters["key"]
-                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
-            val aideData = dao.getAideData(key)
-            if(aideData != null) call.respond(aideData.signature)
-            else call.respondText("Signature not found", status = HttpStatusCode.NotFound)
-        }
-    }
-
-    route("/iv") {
-        get("/{key}") {
-            val key = call.parameters["key"]
-                ?: return@get call.respondText("uri not valid", status = HttpStatusCode.NotFound)
-            val aideData = dao.getAideData(key)
-            if(aideData != null) call.respond(aideData.iv)
-            else call.respondText("IV not found", status = HttpStatusCode.NotFound)
+            if(aideData != null) call.respond(aideData)
+            else call.respondText("Data not found", status = HttpStatusCode.NotFound)
         }
     }
 

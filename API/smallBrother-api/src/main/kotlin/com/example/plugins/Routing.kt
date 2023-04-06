@@ -17,7 +17,7 @@ fun Application.configureRouting() {
     routing {
         aideDataRouting()
         adminRouting()
-        static("/") {
+        static("/root/smallbrother/") {
             staticRootFolder = File("resources")
             default("templates/index.ftl")
             static("assets") {
