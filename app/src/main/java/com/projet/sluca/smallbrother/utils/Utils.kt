@@ -4,15 +4,19 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.activities.AideActivity
@@ -152,13 +156,31 @@ fun getCurrentTime(format: String) : String {
  * emits a fast sound to signal the user something is happening on his phone
  * @param context the Context of the application
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 07-04-2023)
+ * @version 1.2 (Updated on 10-04-2023)
  */
 fun alarm(context: Context) {
+    setAlarmVolume(context)
     val mediaPlayer = MediaPlayer.create(
         context,
         RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
     )
     mediaPlayer.playbackParams = mediaPlayer.playbackParams.setSpeed(1.5f)
     mediaPlayer.start()
+    Handler(Looper.getMainLooper()).postDelayed( {
+        mediaPlayer.stop()
+    }, 5000L)
+}
+
+/**
+ * Sets the volume of the alarm
+ * @param context the context of the application
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 10-04-2023)
+ */
+private fun setAlarmVolume(context: Context) {
+    val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING)
+    val volume = 0.6f
+    val calculatedVolume = (maxVolume * volume).toInt()
+    audioManager.setStreamVolume(AudioManager.STREAM_RING, calculatedVolume, 0)
 }

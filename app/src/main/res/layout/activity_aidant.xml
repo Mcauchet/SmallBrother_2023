@@ -192,7 +192,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="4dp">
 
@@ -250,9 +250,9 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginLeft="12dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:layout_marginRight="12dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="4dp"
             android:alpha="0.1"
             android:background="#404040"
             android:orientation="vertical" />
