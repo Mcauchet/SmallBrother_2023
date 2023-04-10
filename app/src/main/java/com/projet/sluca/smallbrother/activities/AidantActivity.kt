@@ -82,7 +82,9 @@ class AidantActivity : AppCompatActivity() {
 
         if(intent.hasExtra("url")){
             intent.getStringExtra("url")?.let { userData.saveURL(this, it) }
-            if(isOnline(this)) getContextCapture()
+            if(isOnline(this)) CoroutineScope(Dispatchers.Main).launch {
+                getContextCapture()
+            }
             else message(this, "Veuillez vous connecter pour récupérer le contexte.", vibreur)
         }
 

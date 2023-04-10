@@ -101,7 +101,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             }
 
             // 10 seconds countdown
-            object : CountDownTimer(11000, 1) {
+            object : CountDownTimer(11000, 100) {
                 override fun onTick(millisUntilFinished: Long) {
                     // position captured at seconds 2 and 9 of the record
                     when (millisUntilFinished) {

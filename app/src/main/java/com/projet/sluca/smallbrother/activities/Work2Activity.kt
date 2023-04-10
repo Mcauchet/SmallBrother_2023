@@ -92,18 +92,21 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         setAppBarTitle(userData, this)
 
         // --> [2] Get Aide Location
-        Log.d("locationavailability", locationAvailability().toString())
         if(locationAvailability()) {
             tvAction.text = getString(R.string.message12C)
             checkForLocation()
-            object : CountDownTimer(11000, 1) {
+            object : CountDownTimer(11000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
                     when (millisUntilFinished) {
                         in 9000..10000 -> {
+                            locationGps = null
+                            locationNetwork = null
                             getLocation()
                             address1 = getAddress()
                         }
                         in 1000..2000 -> {
+                            locationGps = null
+                            locationNetwork = null
                             getLocation()
                             address2 = getAddress()
                         }
