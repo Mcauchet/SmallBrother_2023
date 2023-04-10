@@ -50,7 +50,7 @@
     <string name="btn_capture">Prendre une Photo</string>
     <string name="btn_capture2">Prendre la Photo</string>
     <string name="btn_sms_va_dant">Envoi SMS: Tout va bien ?</string>
-    <string name="btn_sms_va_de">Envoi SMS: Oui, tout va bien.</string>
+    <string name="btn_sms_va_de">Envoi SMS: Tout va bien.</string>
     <string name="btn_appel">Appeler §%</string>
     <string name="btn_urgence">Capturer le contexte §%</string>
     <string name="btn_tiers">Envoyer les info par mail à …</string>
@@ -131,9 +131,9 @@
     <string name="log_install">Installation terminée.</string>
     <string name="log_reset_aidant">Réinitialisation des données SmallBrother sur votre téléphone.</string>
     <string name="log_reset_aide">Réinitialisation des données SmallBrother sur le téléphone §%.</string>
-    <string name="log_aidant_send_SMS">Envoi d\'un SMS \'Tout va bien ?\' à §%.</string>
-    <string name="log_aidant_receive_SMS">SMS reçu: §% va bien.</string>
-    <string name="log_aide_receive_SMS">SMS reçu: §% demande si tout va bien ?</string>
+    <string name="log_aidant_send_SMS">SMS envoyé à §%.</string>
+    <string name="log_aidant_receive_SMS">§% va bien.</string>
+    <string name="log_aide_receive_SMS">§% demande si tout va bien ?</string>
     <string name="log_call">Vous appelez §%.</string>
     <string name="log_called">§% vous a appelé.</string>
     <string name="log_call_missed">Vous avez manqué un appel §%.</string>
@@ -142,7 +142,7 @@
         Le traitement est en cours, veuillez patienter …
     </string>
     <string name="log_data_on_server">
-        Les données §% sont disponibles dans votre dossier de téléchargement, vous pouvez les retélécharger en appuyant sur le bouton \"Retélécharger…\".
+        Les données §% sont disponibles dans votre dossier de téléchargement, vous pouvez les retélécharger en appuyant sur le bouton.
     </string>
     <string name="log_no_internet_aide">
         §% tente de vérifier votre situation.
@@ -159,22 +159,22 @@
     </string>
     <string name="log_private_on">Vous avez activé le mode privé.</string>
     <string name="log_context_sent">Votre contexte a été envoyé à §%.</string>
+    <string name="aidant_request_context_no_internet">Veuillez activer Internet puis appuyez sur \"J\'ai besoin d\'aide\"</string>
 
 
     <string name="logo_unamur">Logo UNamur</string>
     <string name="logo_sb">Logo SB</string>
     <string name="empty_string">" "</string>
-    <string name="help_aide">J\'ai besoin d\'assistance</string>
-    <string name="retelecharger_les_donnees_de_l_aide">Retélécharger les données §%</string>
+    <string name="help_aide">J\'ai besoin d\'aide</string>
+    <string name="retelecharger_les_donnees_de_l_aide">Retélécharger les données</string>
 
     <string name="qr_code">QR Code</string>
-    <string name="explication_aide_scan">Veuillez scanner le QR Code sur le smartphone de l\'aidant. Il se trouve dans les paramètres de son application (symbole d\'engrenage)</string>
     <string name="installScan">[INSTALLATION] Veuillez scanner le QR code sur le smartphone §% pour terminer l\'installation</string>
     <string name="installQR">[INSTALLATION] Scannez ce QR code avec le smartphone §%, puis appuyez sur le bouton Terminer</string>
     <string name="nomAide">Nom de l\'Aidé</string>
     <string name="blank" />
     <string name="duree_prive_base">15</string>
-    <string name="contentDesc_photo">Boutton photo</string>
+    <string name="contentDesc_photo">Bouton photo</string>
     <string name="contentDesc_reduire">Bouton Réduire</string>
     <string name="contentDesc_log">Cadre du log</string>
     <string name="contentDesc_reglages">Bouton Réglages</string>

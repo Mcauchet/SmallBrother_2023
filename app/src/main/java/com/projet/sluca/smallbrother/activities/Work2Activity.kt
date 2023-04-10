@@ -92,20 +92,18 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         setAppBarTitle(userData, this)
 
         // --> [2] Get Aide Location
-        if (locationAvailability()) {
+        Log.d("locationavailability", locationAvailability().toString())
+        if(locationAvailability()) {
             tvAction.text = getString(R.string.message12C)
             checkForLocation()
-        }
-
-        if(locationAvailability()) {
             object : CountDownTimer(11000, 1) {
                 override fun onTick(millisUntilFinished: Long) {
                     when (millisUntilFinished) {
-                        in 9900..10000 -> {
+                        in 9000..10000 -> {
                             getLocation()
                             address1 = getAddress()
                         }
-                        in 1900..2000 -> {
+                        in 1000..2000 -> {
                             getLocation()
                             address2 = getAddress()
                         }
@@ -115,18 +113,13 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 override fun onFinish() {
                     if(address1 != "" && address2 != "") {
                         addressDiff = !(address1.contentEquals(address2))
+                        takePictures()
                     }
                 }
             }.start()
+        } else {
+            takePictures()
         }
-
-
-        // --> [3] Capture of front and back pictures
-        tvAction.text = getString(R.string.message12B)
-        pictureService = PictureCapturingServiceImpl.getInstance(this@Work2Activity)
-        pictureService.startCapturing(this@Work2Activity, this@Work2Activity)
-
-        onBackPressedDispatcher.addCallback(this@Work2Activity, onBackPressedCallback)
     }
 
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
@@ -184,8 +177,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     } else "Erreur lors de la récupération de la position"
 
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
-                    Log.d("locationGps", locationGps?.latitude.toString())
 
+                    //TODO check this
+                    Log.d("locationGps", locationGps?.latitude.toString())
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Coordonnées géographiques: ${locationGps?.latitude}, " +
                             "${locationGps?.longitude}\n" +
@@ -195,7 +189,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             "Interprétation mouvement : $movementDataInterpretation\n" +
                             "Niveau de lumiere (en lux) : $lightScale.\n" +
                             "Date de la capture : $currentTime\n"
-
                     Log.d("infos", information)
 
                     val informationFile = File(userData.path + "/SmallBrother/informations.txt")
@@ -253,6 +246,19 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 startActivity(intent)
             }
         }.start()
+    }
+
+    /**
+     * Take a picture with front and back camera if possible
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 06-04-2023)
+     */
+    private fun takePictures() {
+        tvAction.text = getString(R.string.message12B)
+        pictureService = PictureCapturingServiceImpl.getInstance(this@Work2Activity)
+        pictureService.startCapturing(this@Work2Activity, this@Work2Activity)
+
+        onBackPressedDispatcher.addCallback(this@Work2Activity, onBackPressedCallback)
     }
 
     /**

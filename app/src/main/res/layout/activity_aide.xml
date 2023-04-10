@@ -44,19 +44,6 @@
                 android:orientation="horizontal"
                 android:gravity="start" >
 
-                <!--<Button
-                    android:id="@+id/btn_aide"
-                    android:layout_height="35dp"
-                    android:layout_width="35dp"
-                    android:background="@drawable/aide"
-                    android:alpha="0.5"
-                    android:orientation="vertical"
-                    android:layout_marginStart="12dp"
-                    android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
-                    android:shadowRadius="5" />-->
-
             </LinearLayout>
 
             <!-- Logo -->
@@ -69,8 +56,8 @@
 
                 <ImageView
                     android:id="@+id/logo"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
+                    android:layout_width="60dp"
+                    android:layout_height="30dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:src="@drawable/logo2"
@@ -88,8 +75,8 @@
 
                 <Button
                     android:id="@+id/btn_reduire"
-                    android:layout_height="35dp"
-                    android:layout_width="35dp"
+                    android:layout_height="48dp"
+                    android:layout_width="48dp"
                     android:background="@drawable/reduire"
                     android:alpha="0.4"
                     android:orientation="vertical"
@@ -121,7 +108,6 @@
             android:id="@+id/cadre1C"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="1.0"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="6dp"
@@ -134,26 +120,20 @@
             android:gravity="center"
             android:background="@drawable/metalliqueshape" >
 
-            <LinearLayout
+
+            <TextView
+                android:id="@+id/log_texte"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".9"
-                android:layout_width="0dp"
-                android:layout_marginTop="4dp"
+                android:orientation="vertical"
                 android:layout_marginBottom="4dp"
-                android:orientation="vertical">
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/blank"
+                android:textColor="#404040"
+                android:textSize="27sp" />
 
-                <com.uncopt.android.widget.text.justify.JustifiedTextView
-                    android:id="@+id/log_texte"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginBottom="4dp"
-                    android:text="@string/blank"
-                    android:textStyle="italic"
-                    android:textColor="#404040"
-                    android:textSize="24sp" />
-
-            </LinearLayout>
 
         </LinearLayout>
 
@@ -237,7 +217,7 @@
                     android:id="@+id/contour0"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
@@ -246,10 +226,10 @@
                     <Switch
                         android:id="@+id/btn_deranger"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="48dp"
                         android:text="@string/btn_switch"
                         android:textColor="#656262"
-                        android:textSize="20sp"
+                        android:textSize="24sp"
                         android:gravity="right|center_vertical"
                         android:switchPadding="6dp"
                         android:theme="@style/switchekke" />
@@ -291,10 +271,10 @@
                 android:text="@string/btn_sms_va_de"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:background="@drawable/boutonsshape"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
                 android:shadowColor="#000000"
                 android:shadowRadius="5" />
 
@@ -319,10 +299,10 @@
                 android:text="@string/btn_appel"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:background="@drawable/boutonsshape"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
                 android:shadowColor="#000000"
                 android:shadowRadius="5" />
 
@@ -356,36 +336,14 @@
                 android:text="@string/help_aide"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:background="@drawable/boutonsshape"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
                 android:shadowColor="#000000"
                 android:shadowRadius="5" />
 
         </FrameLayout>
-
-        <!-- Ligne 3 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:orientation="vertical"
-            android:background="#404040"
-            android:alpha="0.1" />
-
-        <!-- Logo UNamur -->
-        <!--<ImageView
-            android:id="@+id/unamur"
-            android:layout_width="104dp"
-            android:layout_height="56dp"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:src="@drawable/unamur"
-            android:alpha="0.60" />-->
 
     </LinearLayout>
 

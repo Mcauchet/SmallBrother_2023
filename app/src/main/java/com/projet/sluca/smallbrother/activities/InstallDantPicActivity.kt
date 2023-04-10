@@ -42,7 +42,12 @@ class InstallDantPicActivity : AppCompatActivity() {
         val btnEnd: Button = findViewById(R.id.btn_continue)
 
         apercu = findViewById(R.id.apercu)
-        showPicture(apercu, userData)
+        try {
+            showPicture(apercu, userData)
+        } catch (e: java.lang.IllegalStateException) {
+            userData.configurePath(this)
+            recreate()
+        }
 
         btnCapture.setOnClickListener {
             vibreur.vibration(this, 100)

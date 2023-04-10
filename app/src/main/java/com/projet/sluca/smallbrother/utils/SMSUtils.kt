@@ -5,11 +5,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
 import android.os.Build
 import android.provider.Settings
 import android.telephony.SmsManager
+import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.SmsReceiver
 import com.projet.sluca.smallbrother.Vibration
+import com.projet.sluca.smallbrother.models.UserData
 
 /**
  * Sends an SMS through the SMSManager class
@@ -96,4 +99,21 @@ fun deactivateSmsReceiver(context: Context) {
         PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
         PackageManager.DONT_KILL_APP
     )
+}
+
+/**
+ * Warns the Aidant that aide is not connected to Internet
+ * @param context the context of the application
+ * @param vibreur the vibrator of the phone
+ * @param userData the UserData instance
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 10-04-2023)
+ */
+fun warnAidantNoInternet(context: Context, vibreur: Vibration, userData: UserData) {
+    MediaPlayer.create(context, R.raw.alarme).start()
+    vibreur.vibration(context, 2000)
+
+    var sms = context.getString(R.string.smsys05)
+    sms = sms.replace("§%", userData.nom)
+    sendSMS(context, sms, userData.telephone, vibreur)
 }

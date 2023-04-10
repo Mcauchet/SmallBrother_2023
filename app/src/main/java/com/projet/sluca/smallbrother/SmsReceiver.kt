@@ -11,6 +11,8 @@ import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.activities.Launch1Activity
 import com.projet.sluca.smallbrother.activities.WorkActivity
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.isOnline
+import com.projet.sluca.smallbrother.utils.warnAidantNoInternet
 
 /**
  * SmsReceiver updates aide's log depending on received messages coming from the aidant
@@ -18,7 +20,7 @@ import com.projet.sluca.smallbrother.models.UserData
  * (with the [#SBxx] code)
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 19-02-2023)
+ * @version 1.2 (Updated on 10-04-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -26,6 +28,7 @@ class SmsReceiver : BroadcastReceiver() {
         if(intent.action != "android.provider.Telephony.SMS_RECEIVED") return
 
         userData = context.applicationContext as UserData
+        val vibreur = Vibration()
 
         val bundle = intent.extras
         userData.loadData(context)
@@ -106,9 +109,19 @@ class SmsReceiver : BroadcastReceiver() {
                     context.startActivity(intnt)
                 }
                 "[#SB04]" -> {
-                    val intnt = Intent(context, WorkActivity::class.java)
-                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    context.startActivity(intnt)
+                    if(isOnline(context)) {
+                        val intnt = Intent(context, WorkActivity::class.java)
+                        intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                        context.startActivity(intnt)
+                    } else {
+                        userData.refreshLog(12)
+
+                        warnAidantNoInternet(context, vibreur, userData)
+
+                        val intnt = Intent(context, AideActivity::class.java)
+                        context.startActivity(intnt)
+                    }
+
                 }
             }
 

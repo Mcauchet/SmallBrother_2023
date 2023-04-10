@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 04-04-2023)
+ * @version 1.2 (updated on 10-04-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -105,9 +105,14 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys08).replace("§%", userData.nom)
             if(sendSMS(this, sms, userData.telephone, vibreur)) {
-                val workIntent = Intent(this, WorkActivity::class.java).putExtra("clef", "[#SB04]")
-                CoroutineScope(Dispatchers.Main).launch {
-                    startActivity(workIntent)
+                if(isOnline(this)) {
+                    val workIntent = Intent(this, WorkActivity::class.java).putExtra("clef", "[#SB04]")
+                    CoroutineScope(Dispatchers.Main).launch {
+                        startActivity(workIntent)
+                    }
+                } else {
+                    userData.refreshLog(22)
+                    warnAidantNoInternet(this, vibreur, userData)
                 }
             }
         }

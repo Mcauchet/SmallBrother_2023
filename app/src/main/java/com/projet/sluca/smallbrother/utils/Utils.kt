@@ -4,6 +4,8 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaPlayer
+import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.view.Window
@@ -144,4 +146,19 @@ fun getCurrentTime(format: String) : String {
         val formatter = SimpleDateFormat(format, Locale.getDefault())
         formatter.format(date)
     }
+}
+
+/**
+ * emits a fast sound to signal the user something is happening on his phone
+ * @param context the Context of the application
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 07-04-2023)
+ */
+fun alarm(context: Context) {
+    val mediaPlayer = MediaPlayer.create(
+        context,
+        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+    )
+    mediaPlayer.playbackParams = mediaPlayer.playbackParams.setSpeed(1.5f)
+    mediaPlayer.start()
 }

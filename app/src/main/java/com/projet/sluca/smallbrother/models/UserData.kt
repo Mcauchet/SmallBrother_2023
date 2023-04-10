@@ -91,7 +91,7 @@ data class UserData(
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 04-01-2023)
      */
-    private fun writeDataInFile(dataFile: File, content: String, context: Context?) {
+    fun writeDataInFile(dataFile: File, content: String, context: Context?) {
         val writer = BufferedWriter(FileWriter(dataFile, true))
         writer.write(content)
         writer.close()
@@ -218,7 +218,7 @@ data class UserData(
         return dataLine.split("\r").toTypedArray()
     }
 
-    /***
+    /**
      * getAutophotosPath retrieves the path of the captured pictures (1 and 2)
      *
      * @param [num] the number of the picture
@@ -228,14 +228,14 @@ data class UserData(
      */
     fun getAutophotosPath(num: Int): String = "$path/SmallBrother/autophoto$num.jpg"
 
-    /***
+    /**
      * refreshLog sets the log accordingly to the code parameter
      * @param [code] the code associated to the log message
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 20-02-2023)
+     * @version 1.2 (Updated on 10-04-2023)
      */
     fun refreshLog(code: Int) {
-        var texte = "${getCurrentTime("HH:mm")} : "
+        var texte = "${getCurrentTime("HH:mm")}: "
         texte += when (code) {
             1 -> getString(R.string.log_install)
             2 -> getString(R.string.log_reset_aidant)
@@ -261,6 +261,7 @@ data class UserData(
                 .replace("§%", this.nomPartner)
             20 -> getString(R.string.log_private_on)
             21 -> getString(R.string.log_context_sent).replace("§%", this.nomPartner)
+            22 -> getString(R.string.aidant_request_context_no_internet)
             else -> ""
         }
         log = texte

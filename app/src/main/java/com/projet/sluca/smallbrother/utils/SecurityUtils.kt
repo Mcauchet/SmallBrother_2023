@@ -50,7 +50,12 @@ object SecurityUtils {
             initSignKpg(kpg)
             kpg.generateKeyPair()
         } else {
-            val entry = ks.getEntry(KEYSTORE_ALIAS_SIGN_RSA, null) as? PrivateKeyEntry
+            var entry: PrivateKeyEntry? = null
+            try {
+                entry = ks.getEntry(KEYSTORE_ALIAS_SIGN_RSA, null) as? PrivateKeyEntry
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
             KeyPair(entry?.certificate?.publicKey, entry?.privateKey)
         }
     }

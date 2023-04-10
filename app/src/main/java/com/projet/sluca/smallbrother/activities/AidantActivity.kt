@@ -32,7 +32,7 @@ import java.security.PublicKey
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 13-03-2023)
+ * @version 1.2 (updated on 10-04-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -68,7 +68,6 @@ class AidantActivity : AppCompatActivity() {
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
 
         btnFiles.text = getString(R.string.retelecharger_les_donnees_de_l_aide)
-            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
         btnEmergency.text = getString(R.string.btn_urgence)
             .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
@@ -83,7 +82,8 @@ class AidantActivity : AppCompatActivity() {
 
         if(intent.hasExtra("url")){
             intent.getStringExtra("url")?.let { userData.saveURL(this, it) }
-            getContextCapture()
+            if(isOnline(this)) getContextCapture()
+            else message(this, "Veuillez vous connecter pour récupérer le contexte.", vibreur)
         }
 
         btnSettings.setOnClickListener {
