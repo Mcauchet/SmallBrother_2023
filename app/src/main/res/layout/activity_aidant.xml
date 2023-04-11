@@ -151,7 +151,6 @@
             android:paddingRight="8dp"
             android:paddingBottom="6dp">
 
-            <!--com.uncopt.android.widget.text.justify.JustifiedTextView-->
             <TextView
                 android:id="@+id/log_texte"
                 android:layout_width="match_parent"

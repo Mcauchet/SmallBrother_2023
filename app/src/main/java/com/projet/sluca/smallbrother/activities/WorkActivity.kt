@@ -139,15 +139,13 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
      * @param checkAcc2 true if moving at second 9 of the record, false otherwise
      * @return the interpretation as a String
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 19-02-2023)
+     * @version 1.2 (Updated on 11-04-2023)
      */
-    private fun interpretAcceleration(checkAcc1: Boolean, checkAcc2: Boolean): String {
-        return when {
-            checkAcc1 && checkAcc2 -> "En mouvement"
-            checkAcc1 && !checkAcc2 -> "S'est arrêté"
-            !checkAcc1 && checkAcc2 -> "Commence à bouger"
-            else -> "À l'arrêt"
-        }
+    private fun interpretAcceleration(checkAcc1: Boolean, checkAcc2: Boolean) = when {
+        checkAcc1 && checkAcc2 -> "En mouvement"
+        checkAcc1 && !checkAcc2 -> "S'est arrêté"
+        !checkAcc1 && checkAcc2 -> "Commence à bouger"
+        else -> "À l'arrêt"
     }
 
     /**

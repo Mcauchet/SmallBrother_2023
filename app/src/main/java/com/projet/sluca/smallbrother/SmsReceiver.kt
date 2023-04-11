@@ -143,7 +143,7 @@ class SmsReceiver : BroadcastReceiver() {
         val pdus = extras?.get("pdus") as Array<*>
         val format = extras.getString("format")
         var txt = ""
-        for(pdu in pdus) {
+        pdus.forEach { pdu ->
             val smsMsg = getSmsMsg(pdu as ByteArray?, format)
             val subMsg = smsMsg?.displayMessageBody
             subMsg?.let {txt = "$txt$it"}

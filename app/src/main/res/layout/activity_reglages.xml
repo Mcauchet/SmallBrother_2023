@@ -138,7 +138,7 @@
                 android:textSize="21sp" />
 
             <!-- Note explicative des réglages -->
-            <com.uncopt.android.widget.text.justify.JustifiedTextView
+            <TextView
                 android:id="@+id/reglages_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

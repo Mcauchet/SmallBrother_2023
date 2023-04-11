@@ -14,7 +14,6 @@ android {
         targetSdkVersion 33
         versionName '1.2'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        //testInstrumentationRunner 'androidx.test.runner.MockitoJUnitRunner'
     }
     // autophoto ----
     compileOptions {
@@ -39,6 +38,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'com.google.android.gms:play-services-location:21.0.1'
+
     //JUnit testing
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
@@ -52,6 +52,7 @@ dependencies {
     testImplementation "io.mockk:mockk:1.12.0"
     // For barcode testing
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
+
     // Optional -- Mockito framework
     testImplementation "org.mockito:mockito-core:5.0.0"
     androidTestImplementation 'org.mockito:mockito-android:5.0.0'
@@ -59,9 +60,8 @@ dependencies {
     // Optional -- mockito-kotlin
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
 
-    implementation 'com.uncopt:android.justified:1.3'
     // Justification de texte
-    implementation files('libs/commons-io-2.6.jar')
+    //implementation files('libs/commons-io-2.6.jar')
 
     implementation "androidx.savedstate:savedstate-ktx:1.2.1"
     implementation "androidx.core:core-ktx:1.10.0"
@@ -71,8 +71,16 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
 
-    //Ktor dependencies
+    //QRCODE GENERATOR
+    implementation 'com.github.androidmads:QRGenerator:1.0.1'
 
+    //QRCODE SCANNER
+    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
+
+    //Crypto
+    implementation("androidx.security:security-crypto:1.0.0")
+
+    //Ktor dependencies
     // HTTP engine: that handles network requests.
     implementation "io.ktor:ktor-client-core:$ktor_version"
     implementation "io.ktor:ktor-client-okhttp:$ktor_version"
@@ -87,15 +95,6 @@ dependencies {
     //Content Negotiation replaces JsonFeature
     implementation("io.ktor:ktor-client-content-negotiation:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
-
-    //QRCODE GENERATOR
-    implementation 'com.github.androidmads:QRGenerator:1.0.1'
-
-    //QRCODE SCANNER
-    implementation 'com.github.yuriy-budiyev:code-scanner:2.3.2'
-
-    //Crypto
-    implementation("androidx.security:security-crypto:1.0.0")
 }
 repositories {
     mavenCentral()
