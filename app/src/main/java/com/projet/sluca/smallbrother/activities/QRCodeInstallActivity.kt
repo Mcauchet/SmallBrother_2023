@@ -19,11 +19,11 @@ import com.projet.sluca.smallbrother.utils.setAppBarTitle
  * Manages the public key exchange between Aidé and Aidant through QR Code
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 03-03-2023)
+ * @version 1.2 (Updated on 11-04-2023)
  */
 class QRCodeInstallActivity : AppCompatActivity() {
 
-    var vibreur = Vibration()
+    val vibreur = Vibration()
     lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +35,11 @@ class QRCodeInstallActivity : AppCompatActivity() {
         val textQR: TextView = findViewById(R.id.textQR)
 
         userData = UserDataManager.getUserData(application)
-        check(userData.role == "Aidant" || userData.role == "Aidé")
 
-        textQR.text = getString(R.string.installQR)
-            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
+        if(userData.nomPartner.isNotEmpty()) {
+            textQR.text = getString(R.string.installQR)
+                .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
+        }
 
         setAppBarTitle(userData, this)
 

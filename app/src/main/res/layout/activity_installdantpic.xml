@@ -31,35 +31,35 @@
             android:id="@+id/intitule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:orientation="vertical"
             android:text="@string/installDant"
             android:textColor="#404040"
-            android:textSize="21sp" />
+            android:textSize="24sp" />
 
         <!-- Note explicative 3 -->
-        <com.uncopt.android.widget.text.justify.JustifiedTextView
+        <TextView
             android:id="@+id/install_note3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:text="@string/install_note3"
             android:textColor="#000000"
-            android:textSize="15sp" />
+            android:textSize="24sp" />
 
         <!-- Aperçu -->
         <ImageView
             android:id="@+id/apercu"
-            android:layout_width="160dp"
-            android:layout_height="160dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_gravity="center"
             android:background="@drawable/border"
             android:orientation="vertical"
@@ -69,8 +69,9 @@
             android:id="@+id/btn_capture"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
-            android:layout_marginRight="80dp"
+            android:minHeight="60sp"
+            android:layout_marginStart="80dp"
+            android:layout_marginEnd="80dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/boutonsshape"
@@ -91,7 +92,7 @@
         android:paddingRight="36dp"
         android:paddingTop="9dp"
         android:paddingBottom="9dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/metalliqueshape"
         app:layout_constraintTop_toBottomOf="@id/cadre1"
         android:layout_below="@id/cadre1" >
@@ -100,19 +101,18 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:orientation="horizontal"
-            android:weightSum="1.0"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" >
+            android:weightSum="1.0" >
 
             <Button
                 android:id="@+id/btn_previous"
                 android:layout_height="wrap_content"
+                android:minHeight="60sp"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
                 android:orientation="vertical"
                 android:text="@string/btn_previous"
                 android:textColor="#FFFFFF"
-                android:textSize="17sp"
+                android:textSize="24sp"
                 android:textAllCaps="false"
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"
@@ -127,12 +127,13 @@
             <Button
                 android:id="@+id/btn_continue"
                 android:layout_height="wrap_content"
+                android:minHeight="60sp"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
                 android:orientation="vertical"
                 android:text="@string/btn_continue"
                 android:textColor="#FFFFFF"
-                android:textSize="17sp"
+                android:textSize="24sp"
                 android:textAllCaps="false"
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"

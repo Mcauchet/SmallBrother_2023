@@ -27,11 +27,11 @@ import kotlinx.coroutines.launch
  * class InstallActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 10-04-2023)
+ * @version 1.2 (Updated on 11-04-2023)
  */
 class InstallActivity : AppCompatActivity() {
 
-    var vibreur = Vibration()
+    val vibreur = Vibration()
     lateinit var userData: UserData
 
     override fun onCreate(savedInstanceState: Bundle?) {

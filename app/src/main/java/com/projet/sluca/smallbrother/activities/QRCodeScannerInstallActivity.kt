@@ -16,27 +16,29 @@ import com.projet.sluca.smallbrother.utils.setAppBarTitle
  * Opens a qr code scanner to get the public key of the partner
  *
  * @author Maxime Caucheteur (with help of https://github.com/yuriy-budiyev/code-scanner)
- * @version 1.2 (Updated on 26-02-2023)
+ * @version 1.2 (Updated on 11-04-2023)
  */
 class QRCodeScannerInstallActivity : AppCompatActivity() {
 
     private lateinit var codeScanner: CodeScanner
 
     lateinit var userData: UserData
-    var vibreur = Vibration()
+    val vibreur = Vibration()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_qr_code_scanner_install)
 
         userData = UserDataManager.getUserData(application)
-        check(userData.role == "Aidant" || userData.role == "Aidé")
 
         setAppBarTitle(userData, this)
 
         val textScan: TextView = findViewById(R.id.textScan)
-        textScan.text = getString(R.string.installScan)
-            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
+
+        if(userData.nomPartner.isNotEmpty()) {
+            textScan.text = getString(R.string.installScan)
+                .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
+        }
 
         val scannerView: CodeScannerView = findViewById(R.id.qr_scanner)
 

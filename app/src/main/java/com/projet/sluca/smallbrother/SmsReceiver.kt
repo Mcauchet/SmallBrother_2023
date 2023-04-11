@@ -20,7 +20,7 @@ import com.projet.sluca.smallbrother.utils.warnAidantNoInternet
  * (with the [#SBxx] code)
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 10-04-2023)
+ * @version 1.2 (Updated on 11-04-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -90,8 +90,10 @@ class SmsReceiver : BroadcastReceiver() {
 
         if (userData.bit == 1) // Private mode ON
         {
-            if (clef == "[#SB02]") userData.bit = 2
-            else if (clef == "[#SB04]") userData.bit = 4
+            when(clef) {
+                "[#SB02]" -> userData.bit = 2
+                "[#SB04]" -> userData.bit = 4
+            }
         } else {
             when(clef) {
                 "[#SB01]" -> {

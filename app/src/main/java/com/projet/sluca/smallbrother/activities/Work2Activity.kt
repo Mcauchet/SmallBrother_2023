@@ -48,12 +48,12 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 06-04-2023)
+ * @version 1.2 (Updated on 11-04-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
 
-    var vibreur = Vibration()
+    val vibreur = Vibration()
     lateinit var userData: UserData
     private lateinit var tvLoading: TextView
     private lateinit var tvAction: TextView

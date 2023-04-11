@@ -13,7 +13,7 @@
         Avant tout, il va falloir installer et configurer l\'application sur deux téléphones,
         selon le rôle de chacun :
     </string>
-    <string name="install_note2">Veuillez svp compléter ces champs :</string>
+    <string name="install_note2">Veuillez compléter ces champs :</string>
     <string name="install_note3">
         [Facultatif] : prendre une photo de la personne aidée pour les cas d\'urgence.
     </string>
@@ -97,10 +97,8 @@
     <string name="message13A">Avertissement :</string>
     <string name="message13B">
         Installer la version Aidé de SmallBrother donnera à votre partenaire accès
-        à vos informations contextuelles.\nUne vérification de vos données contextuelles
-        lui permettra de capturer un échantillon audio de 10 secondes, deux photos
-        prises automatiquement, et d\'obtenir la localisation ainsi que le niveau de
-        batterie de votre téléphone.
+        à vos informations contextuelles telles que votre localisation, un enregistrement et
+        des photos.
     </string>
     <string name="message13C">Information :</string>
 

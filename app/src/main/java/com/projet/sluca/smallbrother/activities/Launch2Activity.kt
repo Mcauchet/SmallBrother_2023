@@ -12,11 +12,11 @@ import com.projet.sluca.smallbrother.Vibration
  * Launch2Activity class manages the role chosen for the device
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 11-04-2023)
  */
 class Launch2Activity : AppCompatActivity() {
 
-    var vibreur = Vibration()
+    val vibreur = Vibration()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

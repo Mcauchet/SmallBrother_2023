@@ -16,8 +16,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:paddingTop="8dp"
         android:paddingBottom="24dp"
         android:layout_marginTop="4dp"
@@ -30,27 +30,26 @@
             android:id="@+id/intitule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginTop="4dp"
             android:orientation="vertical"
             android:text="@string/installde"
             android:textColor="#404040"
-            android:textSize="21sp" />
+            android:textSize="24sp" />
 
         <!-- Note explicative 1 -->
-        <com.uncopt.android.widget.text.justify.JustifiedTextView
+        <TextView
             android:id="@+id/install_note2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/install_note2"
-            android:textColor="#000000"
-            android:textSize="15sp" />
+            android:textColor="#262626"
+            android:textSize="27sp" />
 
         <!-- [INPUTS] -->
 
@@ -64,7 +63,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:hint="@string/input1B"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName" />
 
@@ -73,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/input1A"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:importantForAutofill="no"
                 android:inputType="textPersonName"/>
 
@@ -83,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:hint="@string/input2B"
                 android:inputType="phone"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:importantForAutofill="no" />
 
         </LinearLayout>
@@ -97,11 +96,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:paddingLeft="36dp"
-        android:paddingRight="36dp"
+        android:paddingStart="36dp"
+        android:paddingEnd="36dp"
         android:paddingTop="9dp"
         android:paddingBottom="9dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/metalliqueshape"
         app:layout_constraintTop_toBottomOf="@id/cadre1"
         android:layout_below="@id/cadre1" >
@@ -110,19 +109,18 @@
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:orientation="horizontal"
-            android:weightSum="1.0"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" >
+            android:weightSum="1.0" >
 
             <Button
                 android:id="@+id/btn_previous"
                 android:layout_height="wrap_content"
+                android:minHeight="60sp"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
                 android:orientation="vertical"
                 android:text="@string/btn_previous"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:textAllCaps="false"
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"
@@ -137,12 +135,13 @@
             <Button
                 android:id="@+id/btn_continue"
                 android:layout_height="wrap_content"
+                android:minHeight="60sp"
                 android:layout_weight=".5"
                 android:layout_width="0dip"
                 android:orientation="vertical"
                 android:text="@string/btn_continue"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="27sp"
                 android:textAllCaps="false"
                 android:background="@drawable/boutonsshape"
                 android:layout_marginTop="16dp"
@@ -163,11 +162,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp"
-        android:layout_marginTop="12dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/metalliqueshape"
         app:layout_constraintTop_toBottomOf="@id/cadre2"
         android:layout_below="@id/cadre2" >
@@ -184,19 +183,16 @@
             android:textSize="15sp"
             android:paddingTop="4dp"/>
 
-        <com.uncopt.android.widget.text.justify.JustifiedTextView
+        <TextView
             android:id="@+id/avertissement"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/message13B"
-            android:textStyle="italic"
             android:textColor="#262626"
-            android:textSize="14sp">
-
-        </com.uncopt.android.widget.text.justify.JustifiedTextView>
+            android:textSize="19sp"/>
 
     </LinearLayout>
 

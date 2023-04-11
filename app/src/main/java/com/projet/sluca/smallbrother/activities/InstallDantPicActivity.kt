@@ -21,11 +21,11 @@ import java.util.*
 /**
  * class InstallDantPicActivity manages the capture of the aidé picture
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 16-01-2023)
+ * @version 1.2 (updated on 11-04-2023)
  */
 class InstallDantPicActivity : AppCompatActivity() {
 
-    var vibreur = Vibration()
+    val vibreur = Vibration()
     lateinit var userData: UserData
     private lateinit var apercu : ImageView
 

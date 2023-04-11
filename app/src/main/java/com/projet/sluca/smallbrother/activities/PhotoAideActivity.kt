@@ -16,11 +16,11 @@ import com.projet.sluca.smallbrother.utils.showPicture
  * class PhotoAide allows the Aidant to show the picture of the Aide
  *
  * @author Sébastien Luca & Maxime Caucheteur
- * @version 1.2 (Updated on 04-01-2023)
+ * @version 1.2 (Updated on 11-04-2023)
  */
 class PhotoAideActivity : AppCompatActivity() {
 
-    var vibreur = Vibration()
+    val vibreur = Vibration()
     lateinit var userData: UserData
 
     private lateinit var ivApercu: ImageView
