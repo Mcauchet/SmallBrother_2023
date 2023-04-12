@@ -7,10 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.*
-import android.os.BatteryManager
-import android.os.Bundle
-import android.os.CountDownTimer
-import android.os.Looper
+import android.os.*
 import android.provider.Settings
 import android.util.Log
 import android.widget.TextView
@@ -48,14 +45,13 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 11-04-2023)
+ * @version 1.2 (Updated on 12-04-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
 
     val vibreur = Vibration()
     lateinit var userData: UserData
-    private lateinit var tvLoading: TextView
     private lateinit var tvAction: TextView
     private var battery: String? = null
 
@@ -82,7 +78,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
-        tvLoading = findViewById(R.id.loading)
+        val tvLoading = findViewById<TextView>(R.id.loading)
         tvAction = findViewById(R.id.action)
         tvLoading.text = ""
         tvAction.text = ""
@@ -147,14 +143,16 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             intent.getStringExtra("accInterpretation").toString() else "Indéterminé"
         val xyz: Boolean = if(intent.hasExtra("movementInterpretation"))
             intent.getBooleanExtra("movementInterpretation", true) else true
-        val locationDiff = if (addressDiff) "Oui" else "Non"
+        //val locationDiff = if (addressDiff) "Oui" else "Non"
 
         val movementDataInterpretation = interpretMotionData(acceleration, xyz, addressDiff)
 
         // --> [7] Get light level
-        val light = if(intent.hasExtra("light"))
-            intent.getFloatExtra("light", -1f) else -1f
-        val lightScale = getLightScale(light)
+        val light = if(intent.hasExtra("light")) intent.getStringExtra("light") else ""
+
+        // --> [8] Get temperature
+        val temperature = if(intent.hasExtra("ambientTemperature"))
+            intent.getFloatExtra("ambientTemperature", 0f) else 0f
 
         tvAction.text = getString(R.string.message12F)
 
@@ -181,16 +179,17 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
 
-                    //TODO check this
+                    //TODO check this (with addition of temperature)
                     Log.d("locationGps", locationGps?.latitude.toString())
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Coordonnées géographiques: ${locationGps?.latitude}, " +
                             "${locationGps?.longitude}\n" +
                             "Niveau de batterie : $battery\n" +
                             "En mouvement ? : $acceleration.\n" +
-                            "Deuxième vérification mouvement (Oui/Non) : $locationDiff.\n" +
+                            //"Deuxième vérification mouvement (Oui/Non) : $locationDiff.\n" +
                             "Interprétation mouvement : $movementDataInterpretation\n" +
-                            "Niveau de lumiere (en lux) : $lightScale.\n" +
+                            "Niveau de lumiere (en lux) : $light.\n" +
+                            "Température ambiante (en °C) : $temperature. \n" +
                             "Date de la capture : $currentTime\n"
                     Log.d("infos", information)
 
@@ -265,20 +264,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
-     * Gets the light sensor interpretation for the information file
-     * @param level the results of the sensor
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 11-04-2023)
-     */
-    private fun getLightScale(level: Float) = when(level) {
-        in 0f..50f -> "Sombre - $level"
-        in 50f..500f -> "Faible - $level"
-        in 500f..1000f -> "Normal - $level"
-        in 1000f..2000f -> "Clair - $level"
-        else -> "Fort lumineux - $level"
-    }
-
-    /**
      * function to get Location of Aide's phone
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 26-02-2023)
@@ -325,19 +310,57 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * function to get an address from a Location object
      * @return the address as a String
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 12-04-2023)
      */
-    private fun getAddress() : String {
+    private fun getAddress() : String { //TODO check if it still works as I added the last API (try on my smartphone then)
         val geoCoder = Geocoder(this, Locale.getDefault())
-        var adresses : List<Address>? = null
-        if(locationGps != null) {
-            adresses = geoCoder
-                .getFromLocation(locationGps!!.latitude, locationGps!!.longitude, 1)
-        } else if (locationNetwork != null) {
-            adresses = geoCoder
-                .getFromLocation(locationNetwork!!.latitude, locationNetwork!!.longitude, 1)
+        val address: Address? = when {
+            locationGps != null -> getGpsAddress(geoCoder)
+            locationNetwork != null -> getNetworkAddress(geoCoder)
+            else -> null
         }
-        return adresses?.get(0)?.getAddressLine(0).toString()
+        return address?.getAddressLine(0).toString()
+    }
+
+    /**
+     * Get the Address object based on GPS geographic coordinates using Geocoder class
+     * @param geoCoder the Geocoder object
+     * @return the address or null if none recovered
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 12-04-2023)
+     */
+    private fun getGpsAddress(geoCoder: Geocoder): Address? {
+        var address: Address? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geoCoder.getFromLocation(locationGps!!.latitude, locationGps!!.longitude, 1)
+            { results -> if (results.isNotEmpty()) address = results[0] }
+        } else {
+            @Suppress("DEPRECATION")
+            address = geoCoder
+                .getFromLocation(locationGps!!.latitude, locationGps!!.longitude, 1)?.first()
+        }
+        return address
+    }
+
+    /**
+     * Get the Address object based on Network geographic coordinates using Geocoder class
+     * @param geoCoder the Geocoder object
+     * @return the address or null if none recovered
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 12-04-2023)
+     */
+    private fun getNetworkAddress(geoCoder: Geocoder): Address? {
+        var address: Address? = null
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            geoCoder.getFromLocation(locationNetwork!!.latitude, locationNetwork!!.longitude, 1)
+            { results -> if (results.isNotEmpty()) address = results[0] }
+        } else {
+            @Suppress("DEPRECATION")
+            address = geoCoder
+                .getFromLocation(locationNetwork!!.latitude, locationNetwork!!.longitude, 1)
+                ?.first()
+        }
+        return address
     }
 
     /**
@@ -403,7 +426,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @version 1.2 (Updated on 13-03-2023)
      */
     suspend fun uploadZip(client: HttpClient, file: File): String {
-        require(file.exists())
         val finalName = generateRandomName()
         val aesKey = SecurityUtils.getAESKey()
         val iv = SecurityUtils.generateIVForAES()
@@ -420,7 +442,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     }
 
     /**
-     * Generates a random name with randomUUID generator of a size of nameSize
+     * Generates a random name with randomUUID generator of a size of nameSize.
+     * nameSize must fit the SMSReceiver subsequence to check url to file.
      * @return the new name of the file
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 16-01-2023)

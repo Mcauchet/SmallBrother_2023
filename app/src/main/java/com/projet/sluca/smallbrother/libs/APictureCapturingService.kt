@@ -24,8 +24,8 @@ abstract class APictureCapturingService internal constructor(private val activit
             ORIENTATIONS.append(Surface.ROTATION_270, 180)
         }*/
 
-        // Moins pire comme ça
         init {
+            //TODO test with other orientations (and test by replacing 90 by 0)
             ORIENTATIONS.append(Surface.ROTATION_0, 90)
         }
     }
@@ -33,7 +33,7 @@ abstract class APictureCapturingService internal constructor(private val activit
     val context: Context = activity.applicationContext
     val manager: CameraManager = context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
 
-    /***
+    /**
      * @return  orientation
      */
     val orientation: Int
@@ -44,8 +44,8 @@ abstract class APictureCapturingService internal constructor(private val activit
 
     /**
      * starts pictures capturing process.
-     *
      * @param listener picture capturing listener
+     * @param context the context of the application
      */
     abstract fun startCapturing(listener: PictureCapturingListener?, context: Context?)
 

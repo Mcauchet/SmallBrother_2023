@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.graphics.ImageFormat
 import android.hardware.camera2.*
 import android.hardware.camera2.CameraCaptureSession.CaptureCallback
+import android.hardware.camera2.CaptureRequest.Builder
 import android.media.ImageReader
 import android.media.ImageReader.OnImageAvailableListener
 import android.os.Handler
@@ -31,14 +32,14 @@ import java.util.*
  * this library
  */
 class PictureCapturingServiceImpl
-/***
+/**
  * private constructor, meant to force the use of [.getInstance]  method
  */
 private constructor(activity: Activity) : APictureCapturingService(activity) {
     private var cameraDevice: CameraDevice? = null
     private var imageReader: ImageReader? = null
 
-    /***
+    /**
      * camera ids queue.
      */
     private lateinit var cameraIds: Queue<String>
@@ -98,10 +99,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                 manager.openCamera(currentCameraId!!, stateCallback, null)
             }
         } catch (e: CameraAccessException) {
-            Log.e(
-                TAG,
-                " exception occurred while opening camera $currentCameraId", e
-            )
+            Log.e(TAG, " exception occurred while opening camera $currentCameraId", e)
         }
     }
 
@@ -140,11 +138,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                 try {
                     takePicture()
                 } catch (e: CameraAccessException) {
-                    Log.e(
-                        TAG,
-                        " exception occurred while taking picture from $currentCameraId",
-                        e
-                    )
+                    Log.e(TAG, " exception occurred while taking picture from $currentCameraId", e)
                 }
             }, 1000)
         }
@@ -191,28 +185,50 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
         outputSurfaces.add(reader.surface)
         val captureBuilder =
             cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE)
-        captureBuilder.addTarget(reader.surface)
-        captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-        captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, (200_000_000L)) //Exposure Time
-        captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, 800) //ISO
-
+        configureCaptureBuilder(captureBuilder, reader)
         reader.setOnImageAvailableListener(onImageAvailableListener, null)
-        cameraDevice!!.createCaptureSession(
-            outputSurfaces,
+        createCaptureSession(outputSurfaces, captureBuilder)
+    }
+
+    /**
+     * Configure the capture builder with settings for pictures
+     * @param captureBuilder the CaptureRequest Builder
+     * @param reader the ImageReader
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 12-04-2023)
+     */
+    private fun configureCaptureBuilder(captureBuilder: Builder, reader: ImageReader) {
+        //TODO test several parameters to get the best option
+        captureBuilder.addTarget(reader.surface)
+        //captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
+        captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+        captureBuilder.set(CaptureRequest.CONTROL_AE_LOCK, true)
+        captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 10)
+        captureBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_AUTO)
+        //captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, (200_000_000L)) //Exposure Time
+        //captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, 1600) //ISO
+    }
+
+    /**
+     * Creates the capture session to take picture
+     * @param outputSurfaces
+     * @param captureBuilder the CaptureRequest Builder
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 12-04-2023)
+     */
+    private fun createCaptureSession(outputSurfaces: MutableList<Surface>,
+                                     captureBuilder: Builder) {
+        cameraDevice!!.createCaptureSession(outputSurfaces,
             object : CameraCaptureSession.StateCallback() {
                 override fun onConfigured(session: CameraCaptureSession) {
                     try {
                         session.capture(captureBuilder.build(), captureListener, null)
                     } catch (e: CameraAccessException) {
-                        Log.e(
-                            TAG,
-                            " exception occurred while accessing $currentCameraId", e
-                        )
+                        Log.e(TAG, " exception occurred while accessing $currentCameraId", e)
                     }
                 }
                 override fun onConfigureFailed(session: CameraCaptureSession) {}
-            },
-            null)
+            }, null)
     }
 
     private fun saveImageToDisk(bytes: ByteArray) {

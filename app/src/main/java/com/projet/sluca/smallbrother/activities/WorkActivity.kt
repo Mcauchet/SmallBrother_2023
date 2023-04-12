@@ -28,7 +28,7 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 11-04-2023)
+ * @version 1.2 (Updated on 12-04-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -38,6 +38,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private var caller: String? = null
     private var magneto: MediaRecorder? = null
     var ambientLightLux: Float = 0.0f
+    var temperature: Float = 0.0f
 
     private var checkAcc1: Boolean = false
     private var checkAcc2: Boolean = false
@@ -53,6 +54,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     private var lightDetectorListener: SensorEventListener? = null
     private var movementDetectorListener: SensorEventListener? = null
+    private var temperatureDetectorListener: SensorEventListener? = null
+
+    private val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +95,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
             CoroutineScope(Dispatchers.IO).launch {
                 deactivateSmsReceiver(this@WorkActivity)
-                registerLightSensor()
-                registerMovementDetector()
+                registerLightSensor(sensorManager)
+                registerMovementDetector(sensorManager)
+                registerTemperatureDetector(sensorManager)
 
                 // --> [1] Records a 10 seconds audio of the aide's environment
                 tvAction.text = getString(R.string.message12A)
@@ -121,12 +126,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
                     val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
                     val intent = Intent(this@WorkActivity, Work2Activity::class.java)
-                    intent.putExtra("light", ambientLightLux)
+                    intent.putExtra("light", getLightScale(ambientLightLux))
                     intent.putExtra("accInterpretation", accInterpretation)
                     intent.putExtra("movementInterpretation", movementInterpretation)
+                    intent.putExtra("ambientTemperature", temperature)
                     if(emergency) intent.putExtra("emergency", true)
-                    unregisterListener(lightDetectorListener)
+                    unregisterListener(lightDetectorListener, sensorManager)
                     AccelerometerManager.stopListening()
+                    unregisterListener(temperatureDetectorListener, sensorManager)
                     startActivity(intent)
                 }
             }.start()
@@ -208,9 +215,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 19-02-2023)
      */
-    private fun registerLightSensor() {
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as
-                SensorManager
+    private fun registerLightSensor(sensorManager: SensorManager) {
         val lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
         lightDetectorListener = object : SensorEventListener {
             override fun onSensorChanged(event: SensorEvent) {
@@ -222,14 +227,27 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             SensorManager.SENSOR_DELAY_NORMAL)
     }
 
+    /**
+     * Gets the light sensor interpretation for the information file
+     * @param level the results of the sensor
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 12-04-2023)
+     */
+    private fun getLightScale(level: Float) = when(level) {
+        in 0f..50f -> "Très faible - $level"
+        in 50f..200f -> "Faible - $level"
+        in 200f..1000f -> "Normal - $level"
+        in 1000f..10000f -> "Clair - $level"
+        else -> "Très clair - $level"
+    }
+
     /*-------------Functions related to the acceleration detection----------*/
     /**
      * Register a sensor event listener to detect the acceleration of the phone
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 19-02-2023)
      */
-    private fun registerMovementDetector() {
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    private fun registerMovementDetector(sensorManager: SensorManager) {
         val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         movementDetectorListener = object : SensorEventListener {
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
@@ -251,10 +269,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 19-02-2023)
      */
-    private fun unregisterListener(listener: SensorEventListener?) {
-        val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    private fun unregisterListener(listener: SensorEventListener?, sensorManager: SensorManager) =
         listener?.let { sensorManager.unregisterListener(listener) }
-    }
+
 
     /* -------------- Functions related to the Accelerometer -------------- */
     override fun onResume() {
@@ -281,4 +298,17 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onSensorChanged(event: SensorEvent) {}
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
     override fun onShake(force: Float) {}
+
+    /* ------------- Functions related to ambient temperature -------------- */
+    private fun registerTemperatureDetector(sensorManager: SensorManager) {
+        val temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
+        temperatureDetectorListener = object : SensorEventListener {
+            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+            override fun onSensorChanged(event: SensorEvent?) {
+                temperature = event?.values?.get(0) ?: 0f
+            }
+        }
+        sensorManager.registerListener(movementDetectorListener, temperatureSensor,
+            SensorManager.SENSOR_DELAY_NORMAL)
+    }
 }
