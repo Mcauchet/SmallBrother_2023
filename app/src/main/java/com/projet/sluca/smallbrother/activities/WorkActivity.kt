@@ -10,6 +10,7 @@ import android.media.MediaRecorder
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
+import kotlin.math.abs
 import kotlin.math.sqrt
 
 /**
@@ -56,8 +58,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private var movementDetectorListener: SensorEventListener? = null
     private var temperatureDetectorListener: SensorEventListener? = null
 
-    private val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_work)
@@ -91,10 +91,11 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         } else {
             wakeup(window, this@WorkActivity)
             loading(tvLoading)
-            alarm(this) //TODO test this
+            val sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
             CoroutineScope(Dispatchers.IO).launch {
                 deactivateSmsReceiver(this@WorkActivity)
+                alarm(this@WorkActivity) //TODO test this
                 registerLightSensor(sensorManager)
                 registerMovementDetector(sensorManager)
                 registerTemperatureDetector(sensorManager)
@@ -112,10 +113,12 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     when (millisUntilFinished) {
                         in 8900..9000 -> {
                             checkAcc1 = userData.motion
+                            Log.d("Acc1", checkAcc1.toString()) //TODO test this
                             checkXYZ1 = keepMove
                         }
                         in 1900..2000 -> {
                             checkAcc2 = userData.motion
+                            Log.d("Acc2", checkAcc2.toString())
                             checkXYZ2 = keepMove
                         }
                     }
@@ -134,6 +137,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     unregisterListener(lightDetectorListener, sensorManager)
                     AccelerometerManager.stopListening()
                     unregisterListener(temperatureDetectorListener, sensorManager)
+                    unregisterListener(movementDetectorListener, sensorManager)
                     startActivity(intent)
                 }
             }.start()
@@ -142,8 +146,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     /**
      * Interpret the results of the motion capture based on the start and end of the audio record
-     * @param checkAcc1 true if moving at second 2 of the record, false otherwise
-     * @param checkAcc2 true if moving at second 9 of the record, false otherwise
+     * @param checkAcc1 true if acceleration above threshold at second 2 of the record,
+     * false otherwise
+     * @param checkAcc2 true if acceleration above threshold at second 9 of the record,
+     * false otherwise
      * @return the interpretation as a String
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 11-04-2023)
@@ -245,18 +251,45 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     /**
      * Register a sensor event listener to detect the acceleration of the phone
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 19-02-2023)
+     * @version 1.2 (Updated on 13-04-2023)
      */
     private fun registerMovementDetector(sensorManager: SensorManager) {
         val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
-        movementDetectorListener = object : SensorEventListener {
+        movementDetectorListener = object : SensorEventListener { //TODO test new version
+            private var now: Long = 0
+            private var timeDiff: Long = 0
+            private var lastUpdate: Long = 0
+            private var lastX = 0f
+            private var lastY = 0f
+            private var lastZ = 0f
+            private var force = 0f
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-            override fun onSensorChanged(event: SensorEvent?) {
-                val accX = event?.values?.get(0) ?: 0f
-                val accY = event?.values?.get(1) ?: 0f
-                val accZ = event?.values?.get(2) ?: 0f
-                val acceleration = sqrt(accX * accX + accY * accY + accZ * accZ)
-                userData.motion = acceleration > 1.5
+            override fun onSensorChanged(event: SensorEvent) {
+                now = event.timestamp
+                val accX = event.values?.get(0) ?: 0f
+                val accY = event.values?.get(1) ?: 0f
+                val accZ = event.values?.get(2) ?: 0f
+                if(lastUpdate == 0L) {
+                    lastUpdate = now
+                    updateCoordinates(accX, accY, accZ)
+                } else {
+                    timeDiff = now - lastUpdate
+                    if(timeDiff > 0) {
+                        force = abs(accX + accY + accZ - lastX - lastY - lastZ)
+                        Log.d("force", force.toString())
+                        userData.motion = force.compareTo(10.0f) > 0
+                        Log.d("motion", userData.motion.toString())
+                        updateCoordinates(accX, accY, accZ)
+                        lastUpdate = now
+                    }
+                }
+                /*val acceleration = sqrt(accX * accX + accY * accY + accZ * accZ)
+                userData.motion = acceleration > 1.5*/
+            }
+            fun updateCoordinates(x: Float, y: Float, z: Float) {
+                lastX = x
+                lastY = y
+                lastZ = z
             }
         }
         sensorManager.registerListener(movementDetectorListener, accelerometerSensor,

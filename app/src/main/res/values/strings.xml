@@ -137,7 +137,7 @@
     <string name="log_call_missed">Vous avez manqué un appel §%.</string>
     <string name="log_aidant_requests_context">
         Vous avez demandé à vérifier la situation §%.
-        Le traitement est en cours, veuillez patienter …
+        Le traitement est en cours, veuillez patienter.
     </string>
     <string name="log_data_on_server">
         Les données §% sont disponibles dans votre dossier de téléchargement, vous pouvez les retélécharger en appuyant sur le bouton.

@@ -16,7 +16,7 @@ import kotlin.math.abs
 class AccelerometerManager {
 
     companion object {
-        private var threshold = 15.0f
+        private var threshold = 10.0f
         private var interval = 200
         private var sensor: Sensor? = null
         private var sensorManager: SensorManager? = null

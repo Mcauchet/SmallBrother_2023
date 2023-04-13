@@ -179,7 +179,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
 
-                    //TODO check this (with addition of temperature)
+                    //TODO check this (with addition of temperature) -> still needs
                     Log.d("locationGps", locationGps?.latitude.toString())
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Coordonnées géographiques: ${locationGps?.latitude}, " +
@@ -312,7 +312,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 12-04-2023)
      */
-    private fun getAddress() : String { //TODO check if it still works as I added the last API (try on my smartphone then)
+    private fun getAddress() : String { //TODO check if it works on the last API (try on my smartphone then)
         val geoCoder = Geocoder(this, Locale.getDefault())
         val address: Address? = when {
             locationGps != null -> getGpsAddress(geoCoder)
