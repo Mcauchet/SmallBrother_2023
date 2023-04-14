@@ -18,7 +18,7 @@ import java.io.File
  * Manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 06-04-2023)
+ * @version 1 (Updated on 14-04-2023)
  */
 fun Route.adminRouting() {
     authenticate("auth-session") {
@@ -45,17 +45,17 @@ fun Route.adminRouting() {
 
             post("/clean") {
                 val formParameters = call.receiveParameters()
+                val dir = File("/upload/")
                 if(formParameters.getOrFail("_action") == "Clean") {
                     val existingEntries = dao.allAideData()
                     val existingUris: MutableList<String> = mutableListOf()
                     for (entry in existingEntries) existingUris += entry.uri
-                    val dir = File("/upload/")
                     dir.walk().forEach { file ->
                         if(file.name !in existingUris) file.delete()
                     }
                 } else if (formParameters.getOrFail("_action") == "Delete All") {
                     dao.deleteAideDatas()
-                    File("/upload/").walk().forEach { file ->
+                    dir.listFiles()?.forEach { file ->
                         file.delete()
                     }
                     call.respondRedirect("/admin")
@@ -72,14 +72,13 @@ fun Route.adminRouting() {
                 val previousPwd = formParameters.getOrFail("previousPassword")
                 val newPassword = formParameters.getOrFail("newPassword")
                 val confirmPassword = formParameters.getOrFail("confirmPassword")
-                if(newPassword != confirmPassword) {
+                if(newPassword != confirmPassword)
                     call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("passwordsMatchError" to true)))
-                }
                 val phone = formParameters.getOrFail("phone")
                 val dbPwd = dao.getAdmin(email)?.encPwd
                 val newAdmin = Admin(email, BCrypt.hashpw(newPassword, BCrypt.gensalt(12)), phone)
                 if(dbPwd != null && BCrypt.checkpw(previousPwd, dbPwd)) {
-                    dao.addAdmin(newAdmin)
+                    dao.editAdmin(newAdmin)
                     call.respondRedirect("/admin")
                 } else {
                     call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("problemPwd" to true)))

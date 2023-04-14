@@ -24,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.math.abs
-import kotlin.math.sqrt
 
 /**
  * class WorkActivity manages the capture of the audio record and motion information

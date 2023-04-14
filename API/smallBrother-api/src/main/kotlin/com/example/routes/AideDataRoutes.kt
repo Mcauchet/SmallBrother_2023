@@ -18,11 +18,11 @@ const val EXT_SIZE = 4
  * Manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 06-04-2023)
+ * @version 1.2 (Updated on 14-04-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {
-        if(!File("/upload").exists()) File("/upload").mkdir()
+        if(!File("/upload/").exists()) File("/upload/").mkdir()
         var fileDescription = ""
         var fileName = ""
         post {
@@ -49,7 +49,7 @@ fun Route.aideDataRouting() {
             }
             call.respondText("$fileDescription is uploaded to 'upload/$fileName'")
         }
-        post("/aes") {
+        post("/aideData") {
             if (call.request.headers["Content-Type"] != "application/json") {
                 call.respondText("Format not valid", status = HttpStatusCode.Unauthorized)
             }

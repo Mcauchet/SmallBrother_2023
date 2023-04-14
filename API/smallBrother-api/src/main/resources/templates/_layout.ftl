@@ -3,7 +3,7 @@
     <html lang="en">
     <head>
         <link rel="stylesheet" type="text/css" href="index.css">
-        <title>SmallBrother Admin Panel</title>
+        <title>SmallBrother Administration Panel</title>
     </head>
     <style>
         * {
@@ -12,7 +12,7 @@
     </style>
     <body style="text-align: center; font-family: sans-serif">
     <div class="header" style="background-color: #f1f1f1;padding: 30px;text-align: center;font-size: 35px;">
-        SmallBrother Admin Panel
+        SmallBrother Administration Panel
     </div>
     <hr>
     <#nested>

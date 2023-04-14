@@ -45,7 +45,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 12-04-2023)
+ * @version 1.2 (Updated on 14-04-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -495,10 +495,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param client the HttpClient
      * @param aideData the AideData object
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 13-03-2023)
+     * @version 1.2 (Updated on 14-04-2023)
      */
     private suspend fun uploadAideDataRequest(client: HttpClient, aideData: AideData) {
-        client.post("$URLServer/upload/aes") {
+        client.post("$URLServer/upload/aideData") {
             contentType(ContentType.Application.Json)
             setBody(aideData)
         }

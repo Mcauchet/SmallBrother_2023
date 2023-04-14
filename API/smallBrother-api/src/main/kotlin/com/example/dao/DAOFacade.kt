@@ -3,7 +3,7 @@ package com.example.dao
 import com.example.models.Admin
 import com.example.models.AideData
 
-/***
+/**
  * The interface of the DAO to access the database queries
  *
  * @author Maxime Caucheteur

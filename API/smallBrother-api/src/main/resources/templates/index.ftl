@@ -3,12 +3,9 @@
 <@layout.header>
     <#list aideDatas?reverse as aideData>
     <div>
-        <h3 style="width:50%; float: left;">
-            <a href="/admin/${aideData.uri}">${aideData.uri}</a>
-        </h3>
-        <p style="width:50%; float: left;">
-            ${aideData.aesKey}
-        </p>
+        <ul style="width:50%; float: left;">
+            <li><a href="/admin/${aideData.uri}">${aideData.uri}</a></li>
+        </ul>
     </div>
     </#list>
     <hr>
