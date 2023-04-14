@@ -2,7 +2,6 @@
     <!DOCTYPE html>
     <html lang="en">
     <head>
-        <link rel="stylesheet" type="text/css" href="index.css">
         <title>Panneau d'administration - SmallBrother</title>
     </head>
     <style>
