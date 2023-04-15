@@ -68,13 +68,14 @@ class AideActivityTest {
     fun privateModeOnOffTest() {
         onView(withId(R.id.btn_deranger)).perform(click())
         onView(withText("Valider")).perform(click())
+        onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
         assert(userData.delay in 890000..900000)
         assert(userData.prive)
         assert(userData.bit == 1)
         onView(withText("${getCurrentTime("HH:mm")}: Vous avez activé le mode privé.")).check(matches(isDisplayed()))
-
         //uncheck switch
         onView(withId(R.id.btn_deranger)).perform(click())
+        onView(withId(R.id.btn_deranger)).check(matches(isNotChecked()))
         assert(!userData.prive)
         assert(userData.bit == 0)
     }
@@ -85,10 +86,10 @@ class AideActivityTest {
         onView(withId(R.id.input_delai)).perform(clearText())
         onView(withId(R.id.input_delai)).perform(typeText("200"))
         onView(withText("Valider")).perform(click())
+        onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
         assert(userData.delay in 7190000..7200000)
         assert(userData.prive)
         assert(userData.bit == 1)
-
         //uncheck switch
         onView(withId(R.id.btn_deranger)).perform(click())
         assert(!userData.prive)
@@ -99,6 +100,7 @@ class AideActivityTest {
     fun privateModeCancelTest() {
         onView(withId(R.id.btn_deranger)).perform(click())
         onView(withText("Annuler")).perform(click())
+        onView(withId(R.id.btn_deranger)).check(matches(isNotChecked()))
         assert(!userData.prive)
         assert(userData.bit == 0)
     }
