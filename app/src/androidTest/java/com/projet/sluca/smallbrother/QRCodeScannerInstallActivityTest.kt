@@ -62,10 +62,10 @@ class QRCodeScannerInstallActivityTest {
     fun textScanTest() {
         val textScan = onView(withId(R.id.textScan))
         textScan.check(matches(isDisplayed()))
-        activityRule.scenario.onActivity { activity ->
+        activityRule.scenario.onActivity {
             CoroutineScope(Dispatchers.IO).launch{
-                textScan.check(matches(withText("[INSTALLATION] Veuillez scanner le QR code sur le " +
-                        "smartphone de Julie pour terminer l'installation")))
+                textScan.check(matches(withText("[INSTALLATION] Veuillez scanner le QR code sur " +
+                        "le smartphone de Julie pour terminer l'installation")))
             }
         }
     }
