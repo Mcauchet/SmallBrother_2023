@@ -58,9 +58,10 @@ data class UserData(
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 17-01-2023)
      */
-    fun configurePath(context: Context?) {
-        val tmpPath: String? = context?.filesDir?.path
-        if(tmpPath != null) path = tmpPath
+    fun configurePath(context: Context) {
+        /*val tmpPath: String? = context?.filesDir?.path
+        if(tmpPath != null) path = tmpPath*/
+        path = context.filesDir.path //TODO check if context can be non-nullable
     }
 
     /**

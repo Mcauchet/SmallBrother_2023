@@ -64,8 +64,8 @@ class QRCodeScannerInstallActivityTest {
         textScan.check(matches(isDisplayed()))
         activityRule.scenario.onActivity { activity ->
             CoroutineScope(Dispatchers.IO).launch{
-                textScan.check(matches(withText(activity.getString(R.string.installScan)
-                    .replace("§%", particule(userData.nomPartner) + userData.nomPartner))))
+                textScan.check(matches(withText("[INSTALLATION] Veuillez scanner le QR code sur le " +
+                        "smartphone de Julie pour terminer l'installation")))
             }
         }
     }

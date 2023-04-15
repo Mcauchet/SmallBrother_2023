@@ -49,8 +49,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
         userData = UserDataManager.getUserData(application)
 
-        check(userData.role == "Aidé")
-
         setAppBarTitle(userData, this)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)

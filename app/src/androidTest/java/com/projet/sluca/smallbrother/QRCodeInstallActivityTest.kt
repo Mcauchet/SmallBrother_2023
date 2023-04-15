@@ -47,10 +47,10 @@ class QRCodeInstallActivityTest {
         appContext = InstrumentationRegistry.getInstrumentation().targetContext
         userData = UserDataManager.getUserData(appContext.applicationContext as Application)
 
-        activityRule.scenario.onActivity {
+        activityRule.scenario.onActivity { activity ->
             SecurityUtils.getEncryptionKeyPair()
             SecurityUtils.getSignKeyPair()
-            ivqrcode = it.findViewById(R.id.ivqrcode)
+            ivqrcode = activity.findViewById(R.id.ivqrcode)
             userData.nomPartner = "Julie"
         }
     }
