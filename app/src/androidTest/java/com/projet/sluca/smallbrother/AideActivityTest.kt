@@ -3,7 +3,7 @@ package com.projet.sluca.smallbrother
 import android.app.Application
 import android.content.Context
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -46,6 +46,8 @@ class AideActivityTest {
         userData.pubKey = "FakePublicKey"
         userData.nomPartner = "Émilie"
         userData.path = appContext.filesDir.path
+        userData.prive = false
+        userData.bit = 0
         userData.saveData(appContext)
         activityRule.scenario.onActivity { activity ->
             activity.recreate()
@@ -53,7 +55,7 @@ class AideActivityTest {
     }
 
     @Test
-    fun testAideActivityUI() {
+    fun aideActivityUITest() {
         onView(withId(R.id.btn_reduire)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_appel)).check(matches(isDisplayed()))
@@ -63,9 +65,7 @@ class AideActivityTest {
     }
 
     @Test
-    fun checkPrivateModeOnOff() {
-        userData.prive = false
-        userData.bit = 0
+    fun privateModeOnOffTest() {
         onView(withId(R.id.btn_deranger)).perform(click())
         onView(withText("Valider")).perform(click())
         assert(userData.delay in 890000..900000)
@@ -73,7 +73,32 @@ class AideActivityTest {
         assert(userData.bit == 1)
         onView(withText("${getCurrentTime("HH:mm")}: Vous avez activé le mode privé.")).check(matches(isDisplayed()))
 
+        //uncheck switch
         onView(withId(R.id.btn_deranger)).perform(click())
+        assert(!userData.prive)
+        assert(userData.bit == 0)
+    }
+
+    @Test
+    fun longPrivateModeTest() {
+        onView(withId(R.id.btn_deranger)).perform(click())
+        onView(withId(R.id.input_delai)).perform(clearText())
+        onView(withId(R.id.input_delai)).perform(typeText("200"))
+        onView(withText("Valider")).perform(click())
+        assert(userData.delay in 7190000..7200000)
+        assert(userData.prive)
+        assert(userData.bit == 1)
+
+        //uncheck switch
+        onView(withId(R.id.btn_deranger)).perform(click())
+        assert(!userData.prive)
+        assert(userData.bit == 0)
+    }
+
+    @Test
+    fun privateModeCancelTest() {
+        onView(withId(R.id.btn_deranger)).perform(click())
+        onView(withText("Annuler")).perform(click())
         assert(!userData.prive)
         assert(userData.bit == 0)
     }
