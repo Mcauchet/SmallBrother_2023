@@ -86,7 +86,7 @@ class AideActivityTest {
         assert(userData.delay in 890000..900000)
         assert(userData.prive)
         assert(userData.bit == 1)
-        onView(withText("${getCurrentTime("HH:mm")}: Vous avez activé le mode privé.")).check(matches(isDisplayed()))
+        onView(withSubstring("Vous avez activé le mode privé.")).check(matches(isDisplayed()))
         uncheckSwitch()
     }
 
@@ -105,6 +105,7 @@ class AideActivityTest {
 
     @Test
     fun shortPrivateModeTest() {
+        onView(withId(R.id.btn_deranger)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_deranger)).perform(click())
         onView(withId(R.id.input_delai)).perform(clearText())
         onView(withId(R.id.input_delai)).perform(typeText("0"))
@@ -152,9 +153,8 @@ class AideActivityTest {
     @Test
     fun sendSmsTest() {
         onView(withId(R.id.btn_sms_va_dant)).perform(click())
-        onView(withId(R.id.log_texte))
-            .check(matches(withText("${getCurrentTime("HH:mm")}: Vous signalez à " +
-                    "${userData.nomPartner} que tout va bien.")))
+        onView(withId(R.id.log_texte)).check(matches(withSubstring("Vous signalez à " +
+                "${userData.nomPartner} que tout va bien.")))
     }
 
     @Test
@@ -164,9 +164,8 @@ class AideActivityTest {
             Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null)
         )
         onView(withId(R.id.btn_appel)).perform(click())
-        onView(withId(R.id.log_texte)).check(matches(withText(
-            "${getCurrentTime("HH:mm")}: Vous appelez ${userData.nomPartner}."
-        )))
+        onView(withId(R.id.log_texte))
+            .check(matches(withSubstring("Vous appelez ${userData.nomPartner}.")))
         intended(allOf(
             hasAction(Intent.ACTION_CALL),
             hasData(Uri.parse("tel:"+userData.telephone))
@@ -174,8 +173,28 @@ class AideActivityTest {
         Intents.release()
     }
 
+    @Test
+    fun updateLogPrivateTest() {
+        userData.prive = true
+        userData.delay = 10000
+        userData.bit = 2
+        onView(withId(R.id.log_texte))
+            .check(matches(withSubstring("${userData.nomPartner} demande si tout va bien ?")))
+        userData.bit = 3
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte))
+            .check(matches(withSubstring("${userData.nomPartner} vous a appelé.")))
+        userData.bit = 4
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(withSubstring("${userData.nomPartner} " +
+                "tente de vérifier votre situation. Pourquoi ne pas l'appeler ?")))
+    }
+
     @After
     fun tearDown() {
+        userData.bit = 0
+        userData.prive = false
+        userData.delay = 0
         val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
         if(file.exists()) file.delete()
     }

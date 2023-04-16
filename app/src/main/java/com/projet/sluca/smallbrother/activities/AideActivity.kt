@@ -187,12 +187,13 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
      */
     private fun getPrivateModeDuration(input: EditText): Long {
         var privateTime: Long = 1
+        val maxPrivateTime: Long = 120
         if (input.text.toString().trim { it <= ' ' }.isNotEmpty()) {
             var valnum: String = input.text.toString()
             if (java.lang.Long.valueOf(valnum) == 0L) valnum = "1"
             privateTime = java.lang.Long.valueOf(valnum)
         }
-        if (privateTime > 120) privateTime = 120 //Max delay is defined here
+        if (privateTime > maxPrivateTime) privateTime = maxPrivateTime
         return privateTime
     }
 
