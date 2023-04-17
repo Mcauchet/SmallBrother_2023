@@ -26,7 +26,9 @@ import org.hamcrest.CoreMatchers.allOf
 import org.junit.Assert.*
 
 import org.junit.After
+import org.junit.AfterClass
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,35 +38,48 @@ import java.io.File
 @LargeTest
 class AidantActivityTest {
 
-    private lateinit var userData: UserData
-    private lateinit var appContext: Context
-
     @get:Rule
     val activityRule = ActivityScenarioRule(AidantActivity::class.java)
 
+    companion object {
+        private lateinit var userData: UserData
+        private lateinit var appContext: Context
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
+            if(file.exists()) file.delete()
+            userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+            userData.version = "1.2"
+            userData.role = "Aidant"
+            userData.nom = "Émilie"
+            userData.telephone = "0476546545"
+            userData.pubKey = "FakePublicKey"
+            userData.nomPartner = "Jules"
+            userData.path = appContext.filesDir.path
+            userData.prive = false
+            userData.bit = 0
+            userData.saveData(appContext)
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun tearDownClass() {
+            userData.urlToFile = ""
+            val file = File(appContext.filesDir, "SmallBrother/url.txt")
+            if(file.exists()) file.delete()
+            val dataFile = File(appContext.filesDir, "SmallBrother/donnees.txt")
+            if(dataFile.exists()) dataFile.delete()
+        }
+    }
+
+
     @Before
     fun setUp() {
-        appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
-        if(file.exists()) file.delete()
-        userData = UserDataManager.getUserData(appContext.applicationContext as Application)
-        userData.version = "1.2"
-        userData.role = "Aidant"
-        userData.nom = "Émilie"
-        userData.telephone = "0476546545"
-        userData.pubKey = "FakePublicKey"
-        userData.nomPartner = "Jules"
-        userData.path = appContext.filesDir.path
-        userData.prive = false
-        userData.bit = 0
-        userData.saveData(appContext)
-        activityRule.scenario.onActivity { activity ->
-            activity.recreate()
-        }
         Intents.init()
-
-        println(userData.role)
-        println(userData.nomPartner)
+        userData.loadData(appContext)
     }
 
     @Test
@@ -115,7 +130,9 @@ class AidantActivityTest {
 
     @Test
     fun emergencyButtonTest() {
-        onView(withText("Oui")).perform(click())
+        onView(withId(R.id.btn_urgence)).perform(click())
+        onView(withText(R.string.oui)).check(matches(isDisplayed()))
+        onView(withText(R.string.oui)).perform(click())
         onView(withId(R.id.log_texte)).check(matches(withSubstring("Le traitement est en cours")))
     }
 
@@ -138,11 +155,7 @@ class AidantActivityTest {
 
     @After
     fun tearDown() {
-        userData.urlToFile = ""
-        val file = File(appContext.filesDir, "SmallBrother/url.txt")
-        if(file.exists()) file.delete()
-        val dataFile = File(appContext.filesDir, "SmallBrother/donnees.txt")
-        if(dataFile.exists()) dataFile.delete()
+
         Intents.release()
     }
 }
