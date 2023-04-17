@@ -32,7 +32,7 @@ import java.security.PublicKey
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 11-04-2023)
+ * @version 1.2 (updated on 16-04-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -58,16 +58,11 @@ class AidantActivity : AppCompatActivity() {
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
         val btnFiles: Button = findViewById(R.id.btn_files)
 
-
         userData = UserDataManager.getUserData(application)
-
-        check(userData.role == "Aidant")
 
         setAppBarTitle(userData, this)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
-
-        btnFiles.text = getString(R.string.retelecharger_les_donnees_de_l_aide)
 
         btnEmergency.text = getString(R.string.btn_urgence)
             .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
@@ -81,7 +76,9 @@ class AidantActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         if(intent.hasExtra("url")){
-            intent.getStringExtra("url")?.let { userData.saveURL(this, it) }
+            intent.getStringExtra("url")?.let { url ->
+                userData.saveURL(this, url)
+            }
             if(isOnline(this)) CoroutineScope(Dispatchers.Main).launch {
                 getContextCapture()
             }

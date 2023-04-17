@@ -21,12 +21,7 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.models.UserData
-import com.projet.sluca.smallbrother.utils.getCurrentTime
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.hamcrest.CoreMatchers.*
-import org.hamcrest.MatcherAssert
 import org.junit.Assert.*
 
 import org.junit.After
@@ -46,11 +41,10 @@ class AideActivityTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(AideActivity::class.java)
 
-
     @Before
     fun setUp() {
         appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
+        val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
         if(file.exists()) file.delete()
         userData = UserDataManager.getUserData(appContext.applicationContext as Application)
         userData.version = "1.2"
@@ -66,6 +60,7 @@ class AideActivityTest {
         activityRule.scenario.onActivity { activity ->
             activity.recreate()
         }
+        Intents.init()
     }
 
     @Test
@@ -110,6 +105,7 @@ class AideActivityTest {
         onView(withId(R.id.input_delai)).perform(clearText())
         onView(withId(R.id.input_delai)).perform(typeText("0"))
         onView(withText("Valider")).perform(click())
+        onView(withId(R.id.btn_deranger)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
         assert(userData.delay in 50000..60000)
         assert(userData.prive)
@@ -159,7 +155,6 @@ class AideActivityTest {
 
     @Test
     fun callAidantTest() {
-        Intents.init()
         intending(hasAction(Intent.ACTION_CALL)).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null)
         )
@@ -170,7 +165,6 @@ class AideActivityTest {
             hasAction(Intent.ACTION_CALL),
             hasData(Uri.parse("tel:"+userData.telephone))
         ))
-        Intents.release()
     }
 
     @Test
@@ -195,7 +189,11 @@ class AideActivityTest {
         userData.bit = 0
         userData.prive = false
         userData.delay = 0
-        val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
+        activityRule.scenario.onActivity { activity ->
+            if(activity.btnPrivate.isChecked) activity.btnPrivate.toggle()
+        }
+        val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
         if(file.exists()) file.delete()
+        Intents.release()
     }
 }
