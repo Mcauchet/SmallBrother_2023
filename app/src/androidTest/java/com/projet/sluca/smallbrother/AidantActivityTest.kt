@@ -155,7 +155,6 @@ class AidantActivityTest {
 
     @After
     fun tearDown() {
-
         Intents.release()
     }
 }

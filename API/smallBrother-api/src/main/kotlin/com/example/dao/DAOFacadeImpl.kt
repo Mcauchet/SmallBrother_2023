@@ -11,7 +11,7 @@ import org.mindrot.jbcrypt.BCrypt
 /**
  * DAOFacadeImpl implements the methos of the DAOFacade interface.
  * @author Maxime Caucheteur
- * @version 1 (Updated on 14-04-2023)
+ * @version 1 (Updated on 17-04-2023)
  */
 class DAOFacadeImpl : DAOFacade {
     private fun resultRowToAideData(row: ResultRow) = AideData(
@@ -171,7 +171,7 @@ val dao: DAOFacade = DAOFacadeImpl().apply {
             addAdmin(
                 Admin(
                     "adminSB@hotmail.com",
-                    BCrypt.hashpw("123456", BCrypt.gensalt(12)),
+                    BCrypt.hashpw("123456", BCrypt.gensalt(15)),
                     ""
                 )
             )

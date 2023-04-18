@@ -18,7 +18,7 @@ import java.io.File
  * Manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 14-04-2023)
+ * @version 1 (Updated on 17-04-2023)
  */
 fun Route.adminRouting() {
     authenticate("auth-session") {
@@ -76,7 +76,7 @@ fun Route.adminRouting() {
                     call.respond(FreeMarkerContent("editAdmin.ftl", mapOf("passwordsMatchError" to true)))
                 val phone = formParameters.getOrFail("phone")
                 val dbPwd = dao.getAdmin(email)?.encPwd
-                val newAdmin = Admin(email, BCrypt.hashpw(newPassword, BCrypt.gensalt(12)), phone)
+                val newAdmin = Admin(email, BCrypt.hashpw(newPassword, BCrypt.gensalt(15)), phone)
                 if(dbPwd != null && BCrypt.checkpw(previousPwd, dbPwd)) {
                     dao.editAdmin(newAdmin)
                     call.respondRedirect("/admin")
