@@ -19,14 +19,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.projet.sluca.smallbrother.activities.QRCodeInstallActivity
 import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.SecurityUtils
-import com.projet.sluca.smallbrother.utils.particule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.junit.Assert.*
 
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -35,39 +32,43 @@ import org.junit.runner.RunWith
 @LargeTest
 class QRCodeInstallActivityTest {
 
-    private lateinit var userData: UserData
-    private lateinit var appContext: Context
-    private lateinit var ivqrcode: ImageView
-
     @get:Rule
     val activityRule = ActivityScenarioRule(QRCodeInstallActivity::class.java)
 
-    @Before
-    fun setUp() {
-        appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+    companion object {
+        private lateinit var userData: UserData
+        private lateinit var appContext: Context
+        private lateinit var ivqrcode: ImageView
 
-        activityRule.scenario.onActivity { activity ->
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            userData = UserDataManager.getUserData(appContext.applicationContext as Application)
             SecurityUtils.getEncryptionKeyPair()
             SecurityUtils.getSignKeyPair()
+        }
+    }
+
+    @Before
+    fun setUp() {
+        activityRule.scenario.onActivity { activity ->
             ivqrcode = activity.findViewById(R.id.ivqrcode)
+            ivqrcode.setImageBitmap(getEncodedQRCodeBitmap(SecurityUtils.getEncPublicKey()))
             userData.nomPartner = "Julie"
         }
     }
 
-    /*@Test
+    @Test
     fun testQRCodeDisplayed() {
-        onView(withId(R.id.ivqrcode))
-            .check(matches(isDisplayed()))
         var actualQRCodeBitmap: Bitmap? = null
         activityRule.scenario.onActivity {
-            SecurityUtils.getEncryptionKeyPair()
-            SecurityUtils.getSignKeyPair()
             actualQRCodeBitmap =
                 (it.findViewById<ImageView>(R.id.ivqrcode).drawable as BitmapDrawable).bitmap
+            assert(actualQRCodeBitmap != null)
         }
         val expectedQRCodeBitmap = getEncodedQRCodeBitmap(SecurityUtils.getEncPublicKey())
-        assertEquals(expectedQRCodeBitmap, actualQRCodeBitmap)
+        assertTrue(actualQRCodeBitmap?.sameAs(expectedQRCodeBitmap) ?: false)
     }
 
     private fun getEncodedQRCodeBitmap(msg: String?): Bitmap {
@@ -75,7 +76,7 @@ class QRCodeInstallActivityTest {
         qrEncoder.colorBlack = Color.LTGRAY
         qrEncoder.colorWhite = Color.BLACK
         return qrEncoder.bitmap
-    }*/
+    }
 
     @Test
     fun testEndButtonAidant() {

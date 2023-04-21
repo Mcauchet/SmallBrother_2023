@@ -15,9 +15,9 @@ import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.InstallActivity
 import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.SecurityUtils
-import org.junit.After
+import org.junit.AfterClass
 import org.junit.Assert.assertEquals
-import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,9 +26,6 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class InstallActivityTest {
-
-    private lateinit var userData: UserData
-    private lateinit var appContext: Context
 
     @get:Rule
     val activityRule = ActivityScenarioRule(InstallActivity::class.java)
@@ -47,11 +44,24 @@ class InstallActivityTest {
         Manifest.permission.PROCESS_OUTGOING_CALLS
     )
 
-    @Before
-    fun setup() {
-        appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        userData = UserDataManager.getUserData(appContext.applicationContext as Application)
-        assert(!userData.motion)
+    companion object {
+        private lateinit var userData: UserData
+        private lateinit var appContext: Context
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+            assert(!userData.motion)
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun tearDownClass() {
+            val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
+            if(file.exists()) file.delete()
+        }
     }
 
     @Test
@@ -61,7 +71,6 @@ class InstallActivityTest {
         SecurityUtils.getEncryptionKeyPair()
         onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
         val pubKey = SecurityUtils.getEncPublicKey()
-        println(pubKey)
         assert(pubKey != "")
     }
 
@@ -82,8 +91,6 @@ class InstallActivityTest {
         etTelephone.perform(typeText(telephone))
         btnContinue.perform(click())
 
-        /*val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val userData = UserDataManager.getUserData(context.applicationContext as Application)*/
         assert(userData.loadData(appContext))
         assertEquals(name, userData.nom)
         assertEquals(namePartner, userData.nomPartner)
@@ -131,11 +138,5 @@ class InstallActivityTest {
         btnContinue.perform(click())
 
         onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
-    }
-
-    @After
-    fun tearDown() {
-        val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
-        if(file.exists()) file.delete()
     }
 }

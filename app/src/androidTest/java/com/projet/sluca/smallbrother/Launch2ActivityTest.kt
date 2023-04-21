@@ -2,6 +2,7 @@ package com.projet.sluca.smallbrother
 
 import android.Manifest
 import android.app.Application
+import android.content.Context
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -13,7 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.Launch2Activity
 import com.projet.sluca.smallbrother.models.UserData
-import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,8 +22,6 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class Launch2ActivityTest {
-
-    private lateinit var userData: UserData
 
     @get:Rule
     val activityRule = ActivityScenarioRule(Launch2Activity::class.java)
@@ -41,11 +40,17 @@ class Launch2ActivityTest {
         Manifest.permission.PROCESS_OUTGOING_CALLS
     )
 
-    @Before
-    fun setup() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        userData = UserDataManager.getUserData(appContext.applicationContext as Application)
-        assert(!userData.motion)
+    companion object {
+        private lateinit var userData: UserData
+        private lateinit var appContext: Context
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+            assert(!userData.motion)
+        }
     }
 
     @Test

@@ -17,13 +17,13 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.Result
 import com.projet.sluca.smallbrother.activities.QRCodeScannerInstallActivity
 import com.projet.sluca.smallbrother.models.UserData
-import com.projet.sluca.smallbrother.utils.particule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.junit.After
+import org.junit.AfterClass
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,25 +33,38 @@ import java.io.File
 @LargeTest
 class QRCodeScannerInstallActivityTest {
 
-    private lateinit var userData: UserData
-    private lateinit var appContext: Context
-    private lateinit var codeScanner: CodeScanner
-    private lateinit var scannerView: CodeScannerView
-
     @get:Rule
     val activityRule = ActivityScenarioRule(QRCodeScannerInstallActivity::class.java)
 
+    companion object {
+        private lateinit var userData: UserData
+        private lateinit var appContext: Context
+        private lateinit var codeScanner: CodeScanner
+        private lateinit var scannerView: CodeScannerView
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+            userData.nomPartner = "Julie"
+            userData.role = "Aidant"
+            userData.nom = "Marc"
+            userData.version = "1.2"
+            userData.telephone = "0476181818"
+            userData.path = "${appContext.applicationContext.filesDir}/SmallBrother/"
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun tearDownClass() {
+            val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
+            if (file.exists()) file.delete()
+        }
+    }
+
     @Before
     fun setup() {
-        appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        userData = UserDataManager.getUserData(appContext.applicationContext as Application)
-        userData.nomPartner = "Julie"
-        userData.role = "Aidant"
-        userData.nom = "Marc"
-        userData.version = "1.2"
-        userData.telephone = "0476181818"
-        userData.path = "${appContext.applicationContext.filesDir}/SmallBrother/"
-
         activityRule.scenario.onActivity {
             scannerView = CodeScannerView(appContext)
             codeScanner = CodeScanner(appContext, scannerView)
@@ -73,24 +86,15 @@ class QRCodeScannerInstallActivityTest {
     @Test
     fun scanQRTest() {
         val activityScenario = launch(QRCodeScannerInstallActivity::class.java)
-
         activityScenario.onActivity { activity ->
             val codeScannerField = QRCodeScannerInstallActivity::class.java.getDeclaredField("codeScanner")
             codeScannerField.isAccessible = true
             val codeScanner = codeScannerField.get(activity) as CodeScanner
-
             val pubKey = "FakePublicKey"
             val barcode = Barcode().apply { rawValue = pubKey }
             val result = Result(barcode.rawValue, null, null, BarcodeFormat.QR_CODE)
-
             codeScanner.decodeCallback?.onDecoded(result)
         }
         onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
-    }
-
-    @After
-    fun tearDown() {
-        val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
-        if (file.exists()) file.delete()
     }
 }

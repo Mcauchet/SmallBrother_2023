@@ -6,8 +6,10 @@ import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
@@ -19,21 +21,15 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.models.UserData
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert
+import org.junit.*
 import org.junit.Assert.*
-
-import org.junit.After
-import org.junit.AfterClass
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
 
@@ -122,6 +118,8 @@ class AideActivityTest {
         onView(withId(R.id.input_delai)).perform(clearText())
         onView(withId(R.id.input_delai)).perform(typeText("0"))
         onView(withText("Valider")).perform(click())
+        onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
+        println(userData.delay)
         assert(userData.delay in 50000..60000)
         assert(userData.prive)
         assert(userData.bit == 1)
@@ -149,19 +147,23 @@ class AideActivityTest {
 
     @Test
     fun buttonReductTest() {
-        activityRule.scenario.onActivity { activity ->
-            CoroutineScope(Dispatchers.IO).launch {
-                onView(withId(R.id.btn_reduire)).check(matches(isClickable()))
-                onView(withId(R.id.btn_reduire)).perform(click())
-                MatcherAssert.assertThat(activity, `is`(notNullValue()))
-                MatcherAssert.assertThat(activity.isTaskRoot, equalTo(false))
-            }
+        onView(withId(R.id.btn_reduire)).perform(click())
+        Thread.sleep(500)
+        val lifeCycleMonitor = ActivityLifecycleMonitorRegistry.getInstance()
+        lateinit var resumedActivities: Collection<Activity>
+        lateinit var pausedActivities: Collection<Activity>
+        activityRule.scenario.onActivity {
+            resumedActivities = lifeCycleMonitor.getActivitiesInStage(Stage.RESUMED)
+            pausedActivities = lifeCycleMonitor.getActivitiesInStage(Stage.PAUSED)
         }
+        assert(resumedActivities.isEmpty())
+        assert(pausedActivities.isNotEmpty())
     }
 
     @Test
     fun sendSmsTest() {
         onView(withId(R.id.btn_sms_va_dant)).perform(click())
+        Thread.sleep(300)
         onView(withId(R.id.log_texte)).check(matches(withSubstring("Vous signalez à " +
                 "${userData.nomPartner} que tout va bien.")))
     }

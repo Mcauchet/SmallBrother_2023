@@ -1,6 +1,7 @@
 package com.projet.sluca.smallbrother
 
 import android.app.Application
+import android.content.Context
 import android.provider.MediaStore
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -18,6 +19,7 @@ import com.projet.sluca.smallbrother.activities.QRCodeInstallActivity
 import com.projet.sluca.smallbrother.models.UserData
 import org.junit.After
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,19 +28,27 @@ import org.junit.runner.RunWith
 @LargeTest
 class InstallDantPicActivityTest {
 
-    lateinit var userData: UserData
-
     @get:Rule
     val activityRule = ActivityScenarioRule(InstallDantPicActivity::class.java)
+
+    companion object {
+        private lateinit var userData: UserData
+        private lateinit var appContext: Context
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+            assert(!userData.motion)
+            userData.role = "Aidant"
+            userData.nomPartner = "Jules"
+        }
+    }
 
     @Before
     fun setup() {
         Intents.init()
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        userData = UserDataManager.getUserData(appContext.applicationContext as Application)
-        assert(!userData.motion)
-        userData.role = "Aidant"
-        userData.nomPartner = "Jules"
     }
 
     @Test

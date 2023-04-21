@@ -18,6 +18,7 @@ import com.projet.sluca.smallbrother.models.UserData
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,20 +28,27 @@ import java.io.File
 @LargeTest
 class Launch1ActivityTest {
 
-    private lateinit var userData: UserData
-    private lateinit var appContext: Context
-
     @get:Rule
     val activityRule = ActivityScenarioRule(Launch1Activity::class.java)
 
+    companion object {
+        private lateinit var userData: UserData
+        private lateinit var appContext: Context
+
+        @BeforeClass
+        @JvmStatic
+        fun setUpClass() {
+            appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+            assert(!userData.motion)
+        }
+    }
+
     @Before
     fun setup() {
-        appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
         if(file.exists())file.delete()
         file.createNewFile()
-        userData = UserDataManager.getUserData(appContext.applicationContext as Application)
-        assert(!userData.motion)
     }
 
     @Test
