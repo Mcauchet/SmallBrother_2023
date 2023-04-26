@@ -87,9 +87,14 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="52008e7bbc0a65f7" value="120" />
                   <entry key="Duration" value="90" />
                   <entry key="Pixel_3a_API_30_x86" value="120" />
+                  <entry key="R5CNC1F9TDZ" value="120" />
                   <entry key="Tests" value="360" />
+                  <entry key="samsung" value="120" />
+                  <entry key="samsung&#10; SM-A530F" value="120" />
+                  <entry key="samsung&#10; SM-G991B" value="120" />
                 </map>
               </option>
             </AndroidTestResultsTableState>

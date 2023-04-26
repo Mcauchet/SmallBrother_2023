@@ -98,7 +98,7 @@ class QRCodeScannerInstallActivity : AppCompatActivity() {
         userData.canGoBack = true
         lateinit var intent: Intent
         if (userData.role == "Aidé") {
-            intent = Intent(this, QRCodeInstallActivity::class.java)
+            intent = Intent(this, SuccessScanActivity::class.java)
         } else if (userData.role == "Aidant") {
             intent = Intent(this, AidantActivity::class.java)
         }

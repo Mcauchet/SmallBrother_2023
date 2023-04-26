@@ -80,9 +80,9 @@ class SmsReceiver : BroadcastReceiver() {
                         .toString()
                     userData.urlToFile = urlFile
                     intnt.putExtra("url", urlFile)
-                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             }
+            intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
             context.startActivity(intnt)
         }
 
@@ -102,12 +102,14 @@ class SmsReceiver : BroadcastReceiver() {
                     userData.byeData("donnees.txt")
                     if(!userData.loadData(context)){
                         val mIntent = Intent(context, Launch1Activity::class.java)
+                        mIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         context.startActivity(mIntent)
                     }
                 }
                 "[#SB02]" -> {
                     userData.refreshLog(6)
                     val intnt = Intent(context, AideActivity::class.java)
+                    intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startActivity(intnt)
                 }
                 "[#SB04]" -> {

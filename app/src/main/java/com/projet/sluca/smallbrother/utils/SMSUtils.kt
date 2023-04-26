@@ -67,7 +67,7 @@ fun sentPI(context: Context): PendingIntent = PendingIntent.getBroadcast(
     context,
     0,
     Intent("SMS_SENT"),
-    0)
+    PendingIntent.FLAG_IMMUTABLE)
 
 /**
  * Activate the SMSReceiver to listen to incoming sms

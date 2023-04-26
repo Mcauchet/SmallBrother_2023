@@ -15,6 +15,7 @@ import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.InstallActivity
 import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.SecurityUtils
+import org.junit.After
 import org.junit.AfterClass
 import org.junit.Assert.assertEquals
 import org.junit.BeforeClass
@@ -52,6 +53,8 @@ class InstallActivityTest {
         @JvmStatic
         fun setUpClass() {
             appContext = InstrumentationRegistry.getInstrumentation().targetContext
+            val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
+            if(file.exists()) file.delete()
             userData = UserDataManager.getUserData(appContext.applicationContext as Application)
             assert(!userData.motion)
         }
@@ -75,7 +78,7 @@ class InstallActivityTest {
     }
 
     @Test
-    fun registerValidData() {
+    fun registerValidDataAidant() {
         userData.role = "Aidant"
         val name = "John"
         val namePartner = "Jane"
@@ -95,11 +98,31 @@ class InstallActivityTest {
         assertEquals(name, userData.nom)
         assertEquals(namePartner, userData.nomPartner)
         assertEquals(telephone, userData.telephone)
-        if(userData.role == "Aidant") {
-            onView(withId(R.id.btn_capture)).check(matches(isDisplayed()))
-        } else {
-            onView(withId(R.id.textScan)).check(matches(isDisplayed()))
-        }
+        onView(withId(R.id.btn_capture)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun registerValidDataAide() {
+        userData.role = "Aidé"
+        val name = "Jane"
+        val namePartner = "John"
+        val telephone = "0475123456"
+
+        val etName = onView(withId(R.id.input_nom))
+        val etNamePartner = onView(withId(R.id.input_partner))
+        val etTelephone = onView(withId(R.id.input_telephone))
+        val btnContinue = onView(withId(R.id.btn_continue))
+
+        etName.perform(typeText(name))
+        etNamePartner.perform(typeText(namePartner))
+        etTelephone.perform(typeText(telephone))
+        btnContinue.perform(click())
+
+        assert(userData.loadData(appContext))
+        assertEquals(name, userData.nom)
+        assertEquals(namePartner, userData.nomPartner)
+        assertEquals(telephone, userData.telephone)
+        onView(withId(R.id.btn_qrcode)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -138,5 +161,11 @@ class InstallActivityTest {
         btnContinue.perform(click())
 
         onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
+    }
+
+    @After
+    fun tearDown() {
+        val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
+        if (file.exists()) file.delete()
     }
 }

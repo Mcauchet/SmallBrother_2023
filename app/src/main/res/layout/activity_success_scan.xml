@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ombreshape">
+
+    <!-- Cadre Principal -->
+    <LinearLayout
+        android:id="@+id/cadre1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/metalliqueshape" >
+
+        <!-- Entête -->
+        <LinearLayout
+            android:id="@+id/cadre1B"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:baselineAligned="false"
+            android:weightSum="1.0"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp" >
+
+            <!-- Logo -->
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/logo2" />
+
+        </LinearLayout>
+
+        <!-- Ligne 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical"
+            android:background="#404040"
+            android:alpha="0.1" />
+
+        <TextView
+            android:id="@+id/textPostScan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/scan_termin_avec_succ_s_appuyez_sur_afficher_qr_code_pour_continuer"
+            android:textSize="27sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:layout_marginTop="4dp"
+            android:orientation="vertical"
+            android:textColor="#404040"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="vertical"
+            android:background="#404040"
+            android:alpha="0.1" />
+
+        <FrameLayout
+            android:id="@+id/contour1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_gravity="center" >
+
+            <Button
+                android:id="@+id/btn_qrcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:text="@string/afficher_qr_code"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="27sp"
+                android:background="@drawable/boutons2shape"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="8dp"
+                android:shadowColor="#000000"
+                android:shadowRadius="5" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

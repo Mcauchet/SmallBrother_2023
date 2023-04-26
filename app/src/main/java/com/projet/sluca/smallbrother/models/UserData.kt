@@ -70,14 +70,15 @@ data class UserData(
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 17-01-2023)
      */
-    fun saveData(context: Context?) {
+    fun saveData(context: Context) {
         val content = version + "\r" + role + "\r" + nom + "\r" + telephone + "\r" + pubKey + "\r" +
                 nomPartner + "\r" + path
         try {
-            val directory = File(context?.filesDir, "SmallBrother")
+            val directory = File(context.filesDir, "SmallBrother")
             if (!directory.exists()) directory.mkdirs()
             val dataFile = File(directory, file)
             if(!dataFile.exists()) dataFile.createNewFile() else byeData("donnees.txt")
+            Log.d("save data works ?", dataFile.exists().toString())
             writeDataInFile(dataFile, content, context)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -133,6 +134,8 @@ data class UserData(
      */
     fun loadData(context: Context?): Boolean {
         val data = File(context?.filesDir, "SmallBrother/$file")
+        Log.d("file exists", data.exists().toString())
+        Log.d("file can read", data.canRead().toString())
         if (data.exists() && data.canRead()) {
             try {
                 return retrieveData(data) //test this (retrieveData returns true or false)

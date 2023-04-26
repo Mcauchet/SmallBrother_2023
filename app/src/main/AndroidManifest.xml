@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- TODO check this -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
@@ -43,17 +43,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="false">
-         <!-- Déclaration launcher activity -->
+        <!-- Déclaration launcher activity -->
         <activity
             android:name=".activities.Launch1Activity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="locked">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <!-- Déclaration d'Activities -->
+        </activity> <!-- Déclaration d'Activities -->
         <activity
             android:name=".activities.QRCodeScannerInstallActivity"
             android:screenOrientation="locked">
@@ -99,6 +99,10 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+        <activity
+            android:name=".activities.SuccessScanActivity"
+            android:exported="false"
+            android:screenOrientation="locked"/>
         <!-- SmsReceiver -->
         <receiver
             android:name=".SmsReceiver"

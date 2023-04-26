@@ -40,8 +40,12 @@ class InstallActivity : AppCompatActivity() {
 
         setAppBarTitle(userData, this)
 
-        if(userData.role == "Aidé") setContentView(R.layout.activity_installde)
-        else setContentView(R.layout.activity_installdant)
+        if(userData.role != "Aidé" && userData.role != "Aidant") finish()
+
+        when(userData.role) {
+            "Aidé" -> setContentView(R.layout.activity_installde)
+            "Aidant" -> setContentView(R.layout.activity_installdant)
+        }
 
         val btnBack: Button = findViewById(R.id.btn_previous)
         val btnContinue: Button = findViewById(R.id.btn_continue)
