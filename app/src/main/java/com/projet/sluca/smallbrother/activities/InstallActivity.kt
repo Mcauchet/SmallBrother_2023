@@ -162,14 +162,12 @@ class InstallActivity : AppCompatActivity() {
     /**
      * Request the permissions if not already granted
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 26-01-2023)
+     * @version 1.2 (Updated on 27-04-2023)
      */
     private fun requestPermissions() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
-            if(userData.role == "Aidé") {
-                getArrayOfPermissionsAide()
-            }
+            if(userData.role == "Aidé") getArrayOfPermissionsAide()
             else getArrayOfPermissionsAidant()
         }
     }

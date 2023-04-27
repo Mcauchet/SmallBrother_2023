@@ -244,7 +244,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     /**
      * Register a sensor event listener to detect the acceleration of the phone
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 13-04-2023)
+     * @version 1.2 (Updated on 27-04-2023)
      */
     private fun registerMovementDetector(sensorManager: SensorManager) {
         val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)

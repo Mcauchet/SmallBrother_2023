@@ -22,16 +22,15 @@ import java.util.*
  * @property telephone: other one's phone (if on aide's phone, telephone = aidant's phone number)
  * @property motion: Is the user moving
  * @property prive: Private mode
- * @property delay: time spent in Private mode
- * @property esquive: avoid redundant handlers for AideActivity
+ * @property delay: time left in Private mode
+ * @property esquive: avoid redundant handlers
  * @property log: log content
  * @property canGoBack: indicates if going back is possible
  * @property bit: on Sms received, change the log message
- * @property pubKey: the public key of the partner for encryption purpose
+ * @property pubKey: the public key of the partner for encryption/signing purpose
  * @constructor creates a user with default properties
- *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 28-03-2023)
+ * @version 1.2 (updated on 27-04-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -42,7 +41,6 @@ data class UserData(
 ) : Application() {
 
     var urlToFile: String = ""
-    // this path is configured at first launch of the app through configurePath(..)
     var path: String = ""
     private val file = "donnees.txt"
 
@@ -59,9 +57,7 @@ data class UserData(
      * @version 1.2 (Updated on 17-01-2023)
      */
     fun configurePath(context: Context) {
-        /*val tmpPath: String? = context?.filesDir?.path
-        if(tmpPath != null) path = tmpPath*/
-        path = context.filesDir.path //TODO check if context can be non-nullable
+        path = context.filesDir.path
     }
 
     /**
@@ -78,7 +74,6 @@ data class UserData(
             if (!directory.exists()) directory.mkdirs()
             val dataFile = File(directory, file)
             if(!dataFile.exists()) dataFile.createNewFile() else byeData("donnees.txt")
-            Log.d("save data works ?", dataFile.exists().toString())
             writeDataInFile(dataFile, content, context)
         } catch (e: IOException) {
             e.printStackTrace()
@@ -130,19 +125,19 @@ data class UserData(
      * @param [context] the context of the application
      * @return true if data loaded, false otherwise
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 17-01-2023)
+     * @version 1.2 (Updated on 27-04-2023)
      */
     fun loadData(context: Context?): Boolean {
         val data = File(context?.filesDir, "SmallBrother/$file")
-        Log.d("file exists", data.exists().toString())
-        Log.d("file can read", data.canRead().toString())
         if (data.exists() && data.canRead()) {
             try {
-                return retrieveData(data) //test this (retrieveData returns true or false)
+                return retrieveData(data)
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
             } catch (e: IOException) {
                 e.printStackTrace()
+            } catch (e: java.lang.IllegalArgumentException) {
+                Log.e("LOAD DATA", "File not found")
             }
         } else Log.d("FILE", "Can't read the file")
         return false
@@ -169,6 +164,13 @@ data class UserData(
         return true
     }
 
+    /**
+     * Checks if installation process is finished and every property is set
+     * @param context the context of the application
+     * @return true if installation is completed, false otherwise
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 27-04-2023)
+     */
     fun installCompleted(context: Context): Boolean {
         if (loadData(context)) {
             when {

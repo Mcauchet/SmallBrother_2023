@@ -45,7 +45,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 14-04-2023)
+ * @version 1.2 (Updated on 27-04-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -175,7 +175,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
 
-                    //TODO check this (with addition of temperature) -> still needs
                     Log.d("locationGps", locationGps?.latitude.toString())
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Coordonnées géographiques: ${locationGps?.latitude}, " +
