@@ -109,8 +109,8 @@ android:background="@drawable/ombreshape">
         <Button
             android:id="@+id/btn_previous"
             android:layout_height="wrap_content"
-            android:minHeight="60sp"
-            android:layout_weight=".5"
+            android:minHeight="48sp"
+            android:layout_weight=".4"
             android:layout_width="0dp"
             android:orientation="vertical"
             android:text="@string/btn_previous"
@@ -128,8 +128,8 @@ android:background="@drawable/ombreshape">
         <Button
             android:id="@+id/btn_continue"
             android:layout_height="wrap_content"
-            android:minHeight="60sp"
-            android:layout_weight=".5"
+            android:minHeight="48sp"
+            android:layout_weight=".6"
             android:layout_width="0dp"
             android:orientation="vertical"
             android:text="@string/btn_continue"

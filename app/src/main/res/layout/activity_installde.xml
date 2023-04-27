@@ -19,7 +19,7 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="8dp"
-        android:paddingBottom="24dp"
+        android:paddingBottom="8dp"
         android:layout_marginTop="4dp"
         android:orientation="vertical"
         android:gravity="center"
@@ -49,7 +49,7 @@
             android:layout_marginBottom="4dp"
             android:text="@string/install_note2"
             android:textColor="#262626"
-            android:textSize="27sp" />
+            android:textSize="25sp" />
 
         <!-- [INPUTS] -->
 
@@ -96,10 +96,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center"
-        android:paddingStart="36dp"
-        android:paddingEnd="36dp"
-        android:paddingTop="9dp"
-        android:paddingBottom="9dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/metalliqueshape"
         app:layout_constraintTop_toBottomOf="@id/cadre1"
@@ -115,7 +113,7 @@
                 android:id="@+id/btn_previous"
                 android:layout_height="wrap_content"
                 android:minHeight="60sp"
-                android:layout_weight=".5"
+                android:layout_weight=".45"
                 android:layout_width="0dip"
                 android:orientation="vertical"
                 android:text="@string/btn_previous"
@@ -136,7 +134,7 @@
                 android:id="@+id/btn_continue"
                 android:layout_height="wrap_content"
                 android:minHeight="60sp"
-                android:layout_weight=".5"
+                android:layout_weight=".55"
                 android:layout_width="0dip"
                 android:orientation="vertical"
                 android:text="@string/btn_continue"
@@ -188,7 +186,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:text="@string/message13B"
             android:textColor="#262626"

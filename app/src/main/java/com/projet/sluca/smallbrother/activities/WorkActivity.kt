@@ -24,12 +24,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.math.abs
+import kotlin.math.sqrt
 
 /**
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 12-04-2023)
+ * @version 1.2 (Updated on 27-04-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -37,9 +38,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     private lateinit var userData: UserData
     private lateinit var clef: String
     private var caller: String? = null
-    private var magneto: MediaRecorder? = null
+    private lateinit var magneto: MediaRecorder
     var ambientLightLux: Float = 0.0f
-    var temperature: Float = 0.0f
 
     private var checkAcc1: Boolean = false
     private var checkAcc2: Boolean = false
@@ -55,7 +55,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
     private var lightDetectorListener: SensorEventListener? = null
     private var movementDetectorListener: SensorEventListener? = null
-    private var temperatureDetectorListener: SensorEventListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,15 +93,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
             CoroutineScope(Dispatchers.IO).launch {
                 deactivateSmsReceiver(this@WorkActivity)
-                alarm(this@WorkActivity) //TODO test this
+                //alarm(this@WorkActivity) //TODO test this
                 registerLightSensor(sensorManager)
                 registerMovementDetector(sensorManager)
-                registerTemperatureDetector(sensorManager)
 
                 // --> [1] Records a 10 seconds audio of the aide's environment
                 tvAction.text = getString(R.string.message12A)
                 initMagneto()
-                magneto?.start()
+                magneto.start()
             }
 
             // 10 seconds countdown
@@ -131,11 +129,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     intent.putExtra("light", getLightScale(ambientLightLux))
                     intent.putExtra("accInterpretation", accInterpretation)
                     intent.putExtra("movementInterpretation", movementInterpretation)
-                    intent.putExtra("ambientTemperature", temperature)
                     if(emergency) intent.putExtra("emergency", true)
                     unregisterListener(lightDetectorListener, sensorManager)
                     AccelerometerManager.stopListening()
-                    unregisterListener(temperatureDetectorListener, sensorManager)
                     unregisterListener(movementDetectorListener, sensorManager)
                     startActivity(intent)
                 }
@@ -175,7 +171,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         }
         configureMagneto()
         try{
-            magneto?.prepare()
+            magneto.prepare()
         } catch (e: IOException) {
             e.printStackTrace()
         }
@@ -189,11 +185,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
      */
     private fun configureMagneto() {
         val path = userData.path + "/SmallBrother/audio.ogg"
-
-        magneto?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        magneto?.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        magneto?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-        magneto?.setOutputFile(path)
+        magneto.setAudioSource(MediaRecorder.AudioSource.MIC)
+        magneto.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        magneto.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+        magneto.setOutputFile(path)
     }
 
     /**
@@ -203,9 +198,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
      * @version 1.2 (Updated on 04-01-2023)
      */
     private fun resetMagneto() {
-        magneto?.stop()
-        magneto?.release()
-        magneto = null
+        magneto.stop()
+        magneto.release()
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -275,7 +269,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     timeDiff = now - lastUpdate
                     if(timeDiff > 0) {
                         force = abs(accX + accY + accZ - lastX - lastY - lastZ)
+                        val acc = sqrt(accX * accX + accY * accY + accZ*accZ)
                         Log.d("force", force.toString())
+                        Log.d("acc", acc.toString())
                         userData.motion = force.compareTo(10.0f) > 0
                         Log.d("motion", userData.motion.toString())
                         updateCoordinates(accX, accY, accZ)
@@ -330,17 +326,4 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onSensorChanged(event: SensorEvent) {}
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
     override fun onShake(force: Float) {}
-
-    /* ------------- Functions related to ambient temperature -------------- */
-    private fun registerTemperatureDetector(sensorManager: SensorManager) {
-        val temperatureSensor = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE)
-        temperatureDetectorListener = object : SensorEventListener {
-            override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-            override fun onSensorChanged(event: SensorEvent?) {
-                temperature = event?.values?.get(0) ?: 0f
-            }
-        }
-        sensorManager.registerListener(movementDetectorListener, temperatureSensor,
-            SensorManager.SENSOR_DELAY_NORMAL)
-    }
 }

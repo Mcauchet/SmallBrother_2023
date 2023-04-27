@@ -14,7 +14,7 @@ import com.projet.sluca.smallbrother.utils.redirectRole
  * class Launch1Activity is the starting point of the application.
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 11-04-2023)
+ * @version 1.2 (Updated on 27-04-2023)
  */
 class Launch1Activity : AppCompatActivity() {
 
@@ -51,12 +51,12 @@ class Launch1Activity : AppCompatActivity() {
     /**
      * Checks if this is the first launch of the app (looks for existing data)
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 08-01-2023)
+     * @version 1.2 (Updated on 27-04-2023)
      */
     private fun checkFirstLaunch() {
         when {
-            userData.loadData(this) -> redirectRole(this, userData)
-            userData.role != null -> {
+            userData.installCompleted(this) -> redirectRole(this, userData)
+            userData.role != null && userData.pubKey != "" -> {
                 userData.canGoBack = false
                 userData.refreshLog(2)
                 val intent = Intent(this, InstallActivity::class.java)
@@ -67,15 +67,5 @@ class Launch1Activity : AppCompatActivity() {
                 userData.refreshLog(1)
             }
         }
-        /*if (userData.loadData(this)) redirectRole(this, userData)
-        else if (userData.role != null) {
-            userData.canGoBack = false
-            userData.refreshLog(2)
-            val intent = Intent(this, InstallActivity::class.java)
-            startActivity(intent)
-        } else {
-            userData.canGoBack = true
-            userData.refreshLog(1)
-        }*/
     }
 }

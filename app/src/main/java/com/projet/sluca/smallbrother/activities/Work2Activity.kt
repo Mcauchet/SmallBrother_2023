@@ -150,10 +150,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         // --> [7] Get light level
         val light = if(intent.hasExtra("light")) intent.getStringExtra("light") else ""
 
-        // --> [8] Get temperature
-        val temperature = if(intent.hasExtra("ambientTemperature"))
-            intent.getFloatExtra("ambientTemperature", 0f) else 0f
-
         tvAction.text = getString(R.string.message12F)
 
         // Checks what particule should be used with the partner name
@@ -189,7 +185,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                             //"Deuxième vérification mouvement (Oui/Non) : $locationDiff.\n" +
                             "Interprétation mouvement : $movementDataInterpretation\n" +
                             "Niveau de lumiere (en lux) : $light.\n" +
-                            "Température ambiante (en °C) : $temperature. \n" +
                             "Date de la capture : $currentTime\n"
                     Log.d("infos", information)
 

@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
  * class InstallActivity manages the data of the Aidant in the Aide's app
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 11-04-2023)
+ * @version 1.2 (Updated on 27-04-2023)
  */
 class InstallActivity : AppCompatActivity() {
 
@@ -37,9 +37,7 @@ class InstallActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userData = UserDataManager.getUserData(application)
-
         setAppBarTitle(userData, this)
-
         if(userData.role != "Aidé" && userData.role != "Aidant") finish()
 
         when(userData.role) {
@@ -54,6 +52,7 @@ class InstallActivity : AppCompatActivity() {
 
         btnBack.setOnClickListener {
             vibreur.vibration(this, 100)
+            userData.role = null
             finish()
         }
 
@@ -62,14 +61,21 @@ class InstallActivity : AppCompatActivity() {
             nextStep()
         }
 
+        getKeys()
         requestPermissions()
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+    }
 
+    /**
+     * Generate the keys used for encryption or signing depending on the role
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 27-04-2023)
+     */
+    private fun getKeys() {
         CoroutineScope(Dispatchers.IO).launch {
             if(userData.role == "Aidant") SecurityUtils.getEncryptionKeyPair()
             else SecurityUtils.getSignKeyPair()
         }
-
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     /**
@@ -163,7 +169,6 @@ class InstallActivity : AppCompatActivity() {
             != PackageManager.PERMISSION_GRANTED) {
             if(userData.role == "Aidé") {
                 getArrayOfPermissionsAide()
-                getSpecialPermission()
             }
             else getArrayOfPermissionsAidant()
         }
@@ -178,6 +183,7 @@ class InstallActivity : AppCompatActivity() {
         if (requestCode == 1) {
             if((grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED))
                 requestPermissions()
+            if(userData.role == "Aidé") getSpecialPermission()
         }
     }
 
@@ -213,11 +219,11 @@ class InstallActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             ActivityCompat.requestPermissions(this, arrayOf(
                 Manifest.permission.READ_PHONE_NUMBERS
-            ), 1)
+            ), 2)
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             ActivityCompat.requestPermissions(this, arrayOf(
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION), 1)
+                Manifest.permission.ACCESS_BACKGROUND_LOCATION), 2)
         }
     }
 

@@ -169,6 +169,21 @@ data class UserData(
         return true
     }
 
+    fun installCompleted(context: Context): Boolean {
+        if (loadData(context)) {
+            when {
+                this.role == null -> return false
+                this.nom == "" -> return false
+                this.telephone == "" -> return false
+                this.pubKey == "" -> return false
+                this.nomPartner == "" -> return false
+                this.path == "" -> return false
+            }
+            return true
+        }
+        return false
+    }
+
     /**
      * Save the URL to access the context data file on the server
      * @param context the context of the activity

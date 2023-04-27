@@ -46,8 +46,8 @@
 
                 <ImageView
                     android:id="@+id/logo"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
+                    android:layout_width="96dp"
+                    android:layout_height="48dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
                     android:src="@drawable/logo2" />
@@ -73,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/installQR"
-            android:textSize="20sp"
+            android:textSize="27sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -136,41 +136,19 @@
                 android:id="@+id/btn_terminer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="60sp"
                 android:orientation="vertical"
                 android:text="@string/btn_terminer"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:background="@drawable/boutons2shape"
+                android:textSize="27sp"
+                android:background="@drawable/boutonsshape"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:shadowColor="#000000"
                 android:shadowRadius="5" />
 
         </FrameLayout>
-
-        <!-- Ligne -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:orientation="vertical"
-            android:background="#404040"
-            android:alpha="0.1" />
-
-        <!-- Logo UNamur -->
-        <!--<ImageView
-            android:id="@+id/unamur"
-            android:layout_width="104dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:src="@drawable/unamur"
-            android:alpha="0.60" />-->
 
     </LinearLayout>
 

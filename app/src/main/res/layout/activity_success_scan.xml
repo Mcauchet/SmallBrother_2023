@@ -17,8 +17,8 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:gravity="center"
@@ -33,8 +33,8 @@
             android:gravity="center"
             android:baselineAligned="false"
             android:weightSum="1.0"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" >
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" >
 
             <!-- Logo -->
             <ImageView
@@ -53,8 +53,8 @@
             android:layout_height="1dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
             android:orientation="vertical"
             android:background="#404040"
             android:alpha="0.1" />
@@ -91,8 +91,8 @@
             android:id="@+id/contour1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:layout_gravity="center" >
@@ -101,12 +101,13 @@
                 android:id="@+id/btn_qrcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="60sp"
                 android:orientation="vertical"
                 android:text="@string/afficher_qr_code"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="27sp"
-                android:background="@drawable/boutons2shape"
+                android:background="@drawable/boutonsshape"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
                 android:shadowColor="#000000"

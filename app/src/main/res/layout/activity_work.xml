@@ -122,7 +122,7 @@
                     android:text="@string/chargement"
                     android:textStyle="bold"
                     android:textColor="#262626"
-                    android:textSize="18sp" />
+                    android:textSize="27sp" />
 
                 <TextView
                     android:id="@+id/loading"
@@ -132,7 +132,7 @@
                     android:orientation="horizontal"
                     android:layout_marginTop="4dp"
                     android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:text="..."
                     android:textStyle="bold"
                     android:textColor="#262626"
@@ -152,8 +152,8 @@
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:orientation="vertical"
         android:layout_gravity="center"
@@ -165,15 +165,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="18dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="18dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/message06"
-            android:textStyle="italic"
             android:textColor="#262626"
-            android:textSize="15sp" />
+            android:textSize="27sp" />
 
         <!-- Avertissement Photo -->
         <LinearLayout
@@ -184,7 +181,8 @@
             android:baselineAligned="false"
             android:weightSum="1.0"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" >
+            android:layout_marginRight="8dp"
+            android:layout_marginBottom="8dp" >
 
             <!-- Image -->
             <LinearLayout
@@ -215,11 +213,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_gravity="center_vertical|right"
+                    android:layout_gravity="center_vertical|end"
                     android:text="@string/message06B"
                     android:textStyle="bold"
                     android:textColor="#262626"
-                    android:textSize="15sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
@@ -231,37 +229,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="18dp"
-            android:layout_marginLeft="18dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="4dp"
-            android:text=" "
-            android:textStyle="italic"
+            android:text="@string/blank"
             android:textColor="#737373"
-            android:textSize="15sp" />
+            android:textSize="27sp" />
 
-        <!-- Ligne 2 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:orientation="vertical"
-            android:background="#404040"
-            android:alpha="0.1" />
-
-        <!-- Logo UNamur -->
-        <ImageView
-            android:id="@+id/unamur"
-            android:layout_width="104dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:src="@drawable/unamur"
-            android:alpha="0.60" />
 
     </LinearLayout>
 

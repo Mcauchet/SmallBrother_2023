@@ -23,8 +23,8 @@
     <string name="input2B">N° de portable de l\'Aidant</string>
     <string name="reglages_intitule">Réglages</string>
     <string name="reglages_note">
-        Ce menu vous permet de réinitialiser vos informations et celles de l\'aidé. Vous pouvez également refaire la photo de l\'aidé. \n
-        Attention, si vous réinitialisez les informations, vous devrez réinstaller l\'application sur les deux smartphones.
+        Ce menu vous permet de réinitialiser votre application et celle de l\'aidé. Vous pouvez également refaire la photo de l\'aidé.
+        Attention, si vous réinitialisez les applications, vous devrez réinstaller l\'application sur les deux smartphones.
     </string>
     <string name="chargement">Envoi en cours </string>
     <string name="cheminphoto">Stockage Interne/Download/SmallBrother/photo_aide.jpg</string>
@@ -32,7 +32,7 @@
     <string name="reacpitulatif_cln1">→ Nom : \n→ Numéro de l\'Aidé : </string>
     <string name="popup1">
         Entrez une durée en minutes (maximum 120) durant laquelle vous ne souhaitez pas
-        que votre partenaire puisse vérifier vos informations :
+        que votre partenaire puisse vérifier votre situation :
     </string>
     <string name="intitule_delai">Temps restant : </string>
 
@@ -41,20 +41,20 @@
     <string name="btn_commencer">Commencer</string>
     <string name="btn_role1">Ce téléphone est celui de l\'Aidant</string>
     <string name="btn_role2">Ce téléphone est celui de l\'Aidé</string>
-    <string name="btn_previous">Précédent</string>
+    <string name="btn_previous">Retour</string>
     <string name="btn_continue">Continuer</string>
     <string name="btn_terminer">Terminer</string>
     <string name="btn_valider">Valider</string>
     <string name="btn_annuler">Annuler</string>
     <string name="btn_sauver">Sauver</string>
-    <string name="btn_capture">Prendre une Photo</string>
-    <string name="btn_capture2">Prendre la Photo</string>
+    <string name="btn_capture">Prendre une photo</string>
+    <string name="btn_capture2">Prendre la photo</string>
     <string name="btn_sms_va_dant">Envoyer SMS: Tout va bien ?</string>
     <string name="btn_sms_va_de">Envoyer SMS: Tout va bien.</string>
     <string name="btn_appel">Appeler §%</string>
-    <string name="btn_urgence">Capturer le contexte §%</string>
+    <string name="btn_urgence">Vérifier la situation §%</string>
     <string name="btn_tiers">Envoyer les info par mail à …</string>
-    <string name="btn_reinit_1">Réinitialiser les informations</string>
+    <string name="btn_reinit_1">Réinitialiser SmallBrother</string>
     <string name="btn_reinit_2">Refaire la photo §%</string>
     <string name="btn_switch">Mode Privé </string>
 
@@ -76,13 +76,11 @@
     <string name="message04">SMS envoyé.</string>
     <string name="message05">L\'appel est lancé.</string>
     <string name="message06">
-        Votre partenaire tente de vérifier votre situation.\n\n
-        Veuillez patienter pendant que SmallBrother réalise les actions requises.
+        Votre partenaire tente de vérifier votre situation. Veuillez patienter pendant que SmallBrother réalise les actions requises.
     </string>
     <string name="message06B">
         RAPPEL :
-        ce processus va déclencher les appareils photo, micro et outils de localisation
-        de votre smartphone.
+        ce processus va déclencher les appareils photo, micro et outils de localisation.
     </string>
     <string name="message07">La demande a été envoyée.</string>
     <string name="message09">Photo de votre partenaire mise à jour.</string>
@@ -156,12 +154,12 @@
         §% souhaite ne pas être dérangé.e durant les N# prochaines minutes.
     </string>
     <string name="log_private_on">Vous avez activé le mode privé.</string>
-    <string name="log_context_sent">Votre contexte a été envoyé à §%.</string>
+    <string name="log_context_sent">Votre situation a été envoyée à §%.</string>
     <string name="aidant_request_context_no_internet">Veuillez activer Internet puis appuyez sur \"J\'ai besoin d\'aide\"</string>
 
 
     <string name="logo_unamur">Logo UNamur</string>
-    <string name="logo_sb">Logo SB</string>
+    <string name="logo_sb">Logo SmallBrother</string>
     <string name="empty_string">" "</string>
     <string name="help_aide">J\'ai besoin d\'aide</string>
     <string name="retelecharger_les_donnees_de_l_aide">Retélécharger les données</string>
@@ -178,5 +176,6 @@
     <string name="contentDesc_reglages">Bouton Réglages</string>
     <string name="scan_termin_avec_succ_s_appuyez_sur_afficher_qr_code_pour_continuer">[INSTALLATION] Scan terminé avec succès, appuyez sur \'Afficher QR code\' pour continuer.</string>
     <string name="afficher_qr_code">Afficher QR code</string>
+    <string name="image_de_l_aide">Image de l\'Aidé</string>
 
 </resources>

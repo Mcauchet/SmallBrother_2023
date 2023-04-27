@@ -46,8 +46,8 @@
 
                 <Button
                     android:id="@+id/btn_retour"
-                    android:layout_height="35dp"
-                    android:layout_width="35dp"
+                    android:layout_height="48dp"
+                    android:layout_width="48dp"
                     android:background="@drawable/retour"
                     android:alpha="0.5"
                     android:orientation="vertical"
@@ -59,22 +59,16 @@
             </LinearLayout>
 
             <!-- Logo -->
-            <LinearLayout
-                android:layout_height="wrap_content"
+
+            <ImageView
+                android:id="@+id/logo"
                 android:layout_weight=".4"
-                android:layout_width="0dip"
-                android:orientation="horizontal"
-                android:gravity="center" >
+                android:layout_width="96dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/logo2" />
 
-                <ImageView
-                    android:id="@+id/logo"
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:src="@drawable/logo2" />
-
-            </LinearLayout>
 
             <!-- Case vide -->
             <LinearLayout
@@ -121,7 +115,7 @@
                 android:orientation="vertical"
                 android:text="@string/btn_reinit_2"
                 android:textColor="#404040"
-                android:textSize="21sp" />
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -141,67 +135,42 @@
             android:layout_width="fill_parent"
             android:orientation="horizontal"
             android:weightSum="1.0"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp" >
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp">
 
             <Button
                 android:id="@+id/btn_capture"
                 android:layout_height="wrap_content"
-                android:layout_weight=".55"
+                android:layout_weight=".65"
                 android:layout_width="0dip"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:minHeight="48sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:background="@drawable/boutonsshape"
                 android:textColor="#FFFFFF"
                 android:text="@string/btn_capture2"
                 android:textAllCaps="false"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:shadowColor="#000000"
                 android:shadowRadius="5"/>
 
             <Button
                 android:id="@+id/btn_save"
                 android:layout_height="wrap_content"
-                android:layout_weight=".45"
+                android:layout_weight=".35"
                 android:layout_width="0dip"
-                android:orientation="vertical"
+                android:minHeight="48sp"
                 android:text="@string/btn_sauver"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textAllCaps="false"
                 android:background="@drawable/boutonsshape"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:shadowColor="#000000"
                 android:shadowRadius="5" />
         </LinearLayout>
-
-        <!-- Ligne -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:orientation="vertical"
-            android:background="#404040"
-            android:alpha="0.1" />
-
-        <!-- Logo UNamur -->
-        <ImageView
-            android:id="@+id/unamur"
-            android:layout_width="104dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:src="@drawable/unamur"
-            android:alpha="0.60" />
 
     </LinearLayout>
 
