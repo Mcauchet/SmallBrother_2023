@@ -120,6 +120,7 @@
     <string name="smsys05">SmallBrother : §% n\'est actuellement pas connecté à Internet ! [#SB05]</string>
     <string name="smsys07">SmallBrother : §% a activé le Mode Privé. (N#)[#SB07]</string>
     <string name="smsys08">SmallBrother : §% a besoin d\'assistance immédiatement! [#SB08]</string>
+    <string name="smsys09">SmallBrother : Erreur lors de l\'envoi de la capture de contexte au serveur. [#SB09]</string>
     <string name="smsys10">"SmallBrother : §% [#SB10]"</string>
 
 
@@ -149,6 +150,7 @@
     </string>
     <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Ses données seront disponibles dans votre dossier de téléchargement dans quelques instants.</string>
     <string name="log_aide_send_SMS">Vous signalez à §% que tout va bien.</string>
+    <string name="log_download_ko">Il n\'y a pas de fichier sur le serveur appartenant à §%.</string>
     <string name="log_private_expired">Le délai du Mode Privé est écoulé.</string>
     <string name="log_private_warn">
         §% souhaite ne pas être dérangé.e durant les N# prochaines minutes.
@@ -156,6 +158,7 @@
     <string name="log_private_on">Vous avez activé le mode privé.</string>
     <string name="log_context_sent">Votre situation a été envoyée à §%.</string>
     <string name="aidant_request_context_no_internet">Veuillez activer Internet puis appuyez sur \"J\'ai besoin d\'aide\"</string>
+    <string name="log_upload_failed">Erreur lors de l\'envoi du fichier sur le serveur, veuillez vérifier la situation.</string>
 
 
     <string name="logo_unamur">Logo UNamur</string>

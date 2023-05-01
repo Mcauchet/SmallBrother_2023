@@ -83,21 +83,13 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
     }
 
     private fun openCamera() {
-        Log.d(
-            TAG,
-            "opening camera $currentCameraId"
-        )
+        Log.d(TAG, "opening camera $currentCameraId")
         try {
             if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                manager.openCamera(currentCameraId!!, stateCallback, null)
-            }
+                && ActivityCompat.checkSelfPermission(context,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) manager.openCamera(currentCameraId!!, stateCallback, null)
         } catch (e: CameraAccessException) {
             Log.e(TAG, " exception occurred while opening camera $currentCameraId", e)
         }
@@ -195,18 +187,14 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
      * @param captureBuilder the CaptureRequest Builder
      * @param reader the ImageReader
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 12-04-2023)
+     * @version 1.2 (Updated on 29-04-2023)
      */
     private fun configureCaptureBuilder(captureBuilder: Builder, reader: ImageReader) {
-        //TODO test several parameters to get the best option
         captureBuilder.addTarget(reader.surface)
-        //captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
         captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
         captureBuilder.set(CaptureRequest.CONTROL_AE_LOCK, true)
         captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 10)
         captureBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_AUTO)
-        //captureBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, (200_000_000L)) //Exposure Time
-        //captureBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, 1600) //ISO
     }
 
     /**

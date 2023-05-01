@@ -14,6 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.Launch2Activity
 import com.projet.sluca.smallbrother.models.UserData
+import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
@@ -35,14 +36,12 @@ class Launch2ActivityTest {
         Manifest.permission.CALL_PHONE,
         Manifest.permission.READ_SMS,
         Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.RECEIVE_BOOT_COMPLETED,
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.PROCESS_OUTGOING_CALLS
     )
 
     companion object {
         private lateinit var userData: UserData
-        private lateinit var appContext: Context
 
         @BeforeClass
         @JvmStatic
@@ -50,6 +49,12 @@ class Launch2ActivityTest {
             val appContext = InstrumentationRegistry.getInstrumentation().targetContext
             userData = UserDataManager.getUserData(appContext.applicationContext as Application)
             assert(!userData.motion)
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun tearDownClass() {
+            userData.role = null
         }
     }
 

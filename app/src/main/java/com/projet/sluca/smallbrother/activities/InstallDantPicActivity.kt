@@ -74,7 +74,6 @@ class InstallDantPicActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("result code", resultCode.toString())
         if (requestCode == 7 && resultCode == RESULT_OK) {
             val bitmap = data!!.extras!!["data"] as Bitmap?
             val image = userData.path + "/SmallBrother/photo_aide.jpg"

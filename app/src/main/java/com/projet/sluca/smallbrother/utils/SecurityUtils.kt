@@ -36,6 +36,7 @@ object SecurityUtils {
 
     /**
      * Load the AndroidKeyStore instance
+     * @return the KeyStore instance
      */
     private fun loadKeyStore() : KeyStore = getInstance("AndroidKeyStore").apply { load(null) }
 
@@ -62,6 +63,7 @@ object SecurityUtils {
 
     /**
      * Configure the sign and verify key pair generator
+     * @param kpg the KeyPairGenerator
      */
     private fun initSignKpg(kpg: KeyPairGenerator) {
         kpg.initialize(
@@ -122,6 +124,7 @@ object SecurityUtils {
 
     /**
      * Configure the encryption and decryption key pair generator
+     * @param kpg the KeyPairGenerator
      */
     private fun initEncKpg(kpg: KeyPairGenerator) {
         kpg.initialize(
@@ -140,7 +143,7 @@ object SecurityUtils {
     /**
      * deletes the AES Key entry
      */
-    fun deleteAESKeyEntry() {
+    private fun deleteAESKeyEntry() {
         val ks: KeyStore = loadKeyStore()
         ks.deleteEntry(KEYSTORE_ALIAS_AES)
     }
@@ -179,7 +182,8 @@ object SecurityUtils {
             val aesKey = generator.generateKey()
             aesKey
         } else {
-            ks.getEntry(KEYSTORE_ALIAS_AES, null) as SecretKey
+            deleteAESKeyEntry()
+            getAESKey()
         }
     }
 

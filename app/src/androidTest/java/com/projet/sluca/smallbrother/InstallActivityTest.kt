@@ -40,7 +40,6 @@ class InstallActivityTest {
         Manifest.permission.CALL_PHONE,
         Manifest.permission.READ_SMS,
         Manifest.permission.RECEIVE_SMS,
-        Manifest.permission.RECEIVE_BOOT_COMPLETED,
         Manifest.permission.READ_PHONE_STATE,
         Manifest.permission.PROCESS_OUTGOING_CALLS
     )
@@ -56,6 +55,7 @@ class InstallActivityTest {
             val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
             if(file.exists()) file.delete()
             userData = UserDataManager.getUserData(appContext.applicationContext as Application)
+            userData.role = "Aidant"
             assert(!userData.motion)
         }
 
@@ -70,6 +70,9 @@ class InstallActivityTest {
     @Test
     fun checkAidantKeys() {
         userData.role = "Aidant"
+        activityRule.scenario.onActivity {
+            it.recreate()
+        }
         assert(userData.role == "Aidant")
         SecurityUtils.getEncryptionKeyPair()
         onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
@@ -80,6 +83,9 @@ class InstallActivityTest {
     @Test
     fun registerValidDataAidant() {
         userData.role = "Aidant"
+        activityRule.scenario.onActivity {
+            it.recreate()
+        }
         val name = "John"
         val namePartner = "Jane"
         val telephone = "0475123456"
@@ -104,6 +110,9 @@ class InstallActivityTest {
     @Test
     fun registerValidDataAide() {
         userData.role = "Aidé"
+        activityRule.scenario.onActivity {
+            it.recreate()
+        }
         val name = "Jane"
         val namePartner = "John"
         val telephone = "0475123456"
@@ -122,7 +131,7 @@ class InstallActivityTest {
         assertEquals(name, userData.nom)
         assertEquals(namePartner, userData.nomPartner)
         assertEquals(telephone, userData.telephone)
-        onView(withId(R.id.btn_qrcode)).check(matches(isDisplayed()))
+        onView(withId(R.id.textScan)).check(matches(isDisplayed()))
     }
 
     @Test

@@ -13,7 +13,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.*
  * @see "https://ktor.io/docs/interactive-website-add-persistence.html"
  */
 object DatabaseFactory {
-    fun init(config: ApplicationConfig) {
+    fun init() {
         val driverClassName = "org.postgresql.Driver"
         val jdbcURL = "jdbc:postgresql://${System.getenv()["DATABASE_HOST"]}:" +
                 "${System.getenv()["DATABASE_PORT"]}/${System.getenv()["DATABASE_NAME"]}"

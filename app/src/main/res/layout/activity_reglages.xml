@@ -84,18 +84,6 @@
                 android:orientation="horizontal"
                 android:gravity="end" >
 
-                <Button
-                    android:id="@+id/btn_aide"
-                    android:layout_height="35dp"
-                    android:layout_width="35dp"
-                    android:background="@drawable/aide"
-                    android:alpha="0.5"
-                    android:orientation="vertical"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:shadowColor="#000000"
-                    android:shadowRadius="5" />
-
             </LinearLayout>
 
         </LinearLayout>

@@ -19,9 +19,7 @@ import com.projet.sluca.smallbrother.libs.AccelerometerListener
 import com.projet.sluca.smallbrother.libs.AccelerometerManager
 import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.io.IOException
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -30,7 +28,7 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 27-04-2023)
+ * @version 1.2 (Updated on 01-05-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -93,7 +91,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
             CoroutineScope(Dispatchers.IO).launch {
                 deactivateSmsReceiver(this@WorkActivity)
-                //alarm(this@WorkActivity) //TODO test this
                 registerLightSensor(sensorManager)
                 registerMovementDetector(sensorManager)
 
@@ -110,12 +107,10 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     when (millisUntilFinished) {
                         in 8900..9000 -> {
                             checkAcc1 = userData.motion
-                            Log.d("Acc1", checkAcc1.toString()) //TODO test this
                             checkXYZ1 = keepMove
                         }
                         in 1900..2000 -> {
                             checkAcc2 = userData.motion
-                            Log.d("Acc2", checkAcc2.toString())
                             checkXYZ2 = keepMove
                         }
                     }
@@ -248,7 +243,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
      */
     private fun registerMovementDetector(sensorManager: SensorManager) {
         val accelerometerSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
-        movementDetectorListener = object : SensorEventListener { //TODO test new version
+        movementDetectorListener = object : SensorEventListener {
             private var now: Long = 0
             private var timeDiff: Long = 0
             private var lastUpdate: Long = 0
@@ -267,19 +262,17 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     updateCoordinates(accX, accY, accZ)
                 } else {
                     timeDiff = now - lastUpdate
-                    if(timeDiff > 0) {
+                    if(timeDiff > 100) {
                         force = abs(accX + accY + accZ - lastX - lastY - lastZ)
                         val acc = sqrt(accX * accX + accY * accY + accZ*accZ)
                         Log.d("force", force.toString())
                         Log.d("acc", acc.toString())
-                        userData.motion = force.compareTo(10.0f) > 0
+                        userData.motion = force.compareTo(1.0f) > 0
                         Log.d("motion", userData.motion.toString())
                         updateCoordinates(accX, accY, accZ)
                         lastUpdate = now
                     }
                 }
-                /*val acceleration = sqrt(accX * accX + accY * accY + accZ * accZ)
-                userData.motion = acceleration > 1.5*/
             }
             fun updateCoordinates(x: Float, y: Float, z: Float) {
                 lastX = x
@@ -312,10 +305,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onAccelerationChanged(x: Float, y: Float, z: Float) {
         // Fetch phone's coordinates
         // Error margin (*10) to compensate the accelerometer high sensibility
+        //TODO check the correct multiplier to have a decent sensor
+        val errorMargin = 10
+        Log.d("x y and z", "$x ; $y ; $z")
+        Log.d("x multiplied", "${(x.toInt()*errorMargin).toFloat()}")
         val tmp = floatArrayOf(
-            (x.toInt() * 10).toFloat(),
-            (y.toInt() * 10).toFloat(),
-            (z.toInt() * 10).toFloat()
+            (x.toInt() * errorMargin).toFloat(),
+            (y.toInt() * errorMargin).toFloat(),
+            (z.toInt() * errorMargin).toFloat()
         )
         keepMove = tmp
     }

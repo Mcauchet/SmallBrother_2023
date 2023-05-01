@@ -19,7 +19,7 @@ fun Application.module() {
     configureAuthentication()
     configureSession()
     configureCallLogging()
-    DatabaseFactory.init(environment.config)
+    DatabaseFactory.init()
     configureTemplating()
     configureSerialization()
     configureRouting()

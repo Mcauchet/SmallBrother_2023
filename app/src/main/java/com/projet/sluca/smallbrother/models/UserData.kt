@@ -30,7 +30,7 @@ import java.util.*
  * @property pubKey: the public key of the partner for encryption/signing purpose
  * @constructor creates a user with default properties
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 27-04-2023)
+ * @version 1.2 (updated on 01-05-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -44,15 +44,9 @@ data class UserData(
     var path: String = ""
     private val file = "donnees.txt"
 
-    //Online doc of the previous application
-    //TODO see if we keep it
-    val url = "https://projects.info.unamur.be/geras/projects/smallbrother/"
-    val help = "help/"
-
     /**
      * configurePath sets the path at runtime in Launch1Activity
      * @param [context] the context of the activity running
-     * @see Launch1Activity.onCreate
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 17-01-2023)
      */
@@ -139,7 +133,7 @@ data class UserData(
             } catch (e: java.lang.IllegalArgumentException) {
                 Log.e("LOAD DATA", "File not found")
             }
-        } else Log.d("FILE", "Can't read the file")
+        } else Log.d("LOAD DATA", "Can't read the file or doesn't exist")
         return false
     }
 
@@ -253,7 +247,7 @@ data class UserData(
      * refreshLog sets the log accordingly to the code parameter
      * @param [code] the code associated to the log message
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 10-04-2023)
+     * @version 1.2 (Updated on 01-05-2023)
      */
     fun refreshLog(code: Int) {
         var texte = "${getCurrentTime("HH:mm")}: "
@@ -277,6 +271,8 @@ data class UserData(
             13 -> getString(R.string.log_no_internet_aidant).replace("§%", this.nomPartner)
             14 -> getString(R.string.log_aide_needs_help).replace("§%", this.nomPartner)
             15 -> getString(R.string.log_aide_send_SMS).replace("§%", this.nomPartner)
+            16 -> getString(R.string.log_upload_failed)
+            17 -> getString(R.string.log_download_ko).replace("§%", this.nomPartner)
             18 -> getString(R.string.log_private_expired)
             19 -> getString(R.string.log_private_warn).replace("N#", SmsReceiver.tempsrestant)
                 .replace("§%", this.nomPartner)
@@ -292,7 +288,6 @@ data class UserData(
      * subDelay subtracts a number from the remaining delay in private mode
      *
      * @param [sub] the time to subtract
-     * @see [AideActivity.reloadLog] for usage
      */
     fun subDelay(sub: Long) {
         delay = delay.minus(sub)

@@ -1,5 +1,6 @@
 package com.projet.sluca.smallbrother
 
+import android.Manifest
 import android.app.Activity
 import android.app.Application
 import android.app.Instrumentation
@@ -12,27 +13,20 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.AidantActivity
-import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.models.UserData
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.allOf
+import org.junit.*
 import org.junit.Assert.*
-
-import org.junit.After
-import org.junit.AfterClass
-import org.junit.Before
-import org.junit.BeforeClass
-import org.junit.Rule
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -40,6 +34,19 @@ class AidantActivityTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(AidantActivity::class.java)
+
+    @get:Rule
+    val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.PROCESS_OUTGOING_CALLS
+    )
 
     companion object {
         private lateinit var userData: UserData
@@ -91,7 +98,7 @@ class AidantActivityTest {
         onView(withId(R.id.btn_appel)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_appel)).check(matches(withText("Appeler Jules")))
         onView(withId(R.id.btn_urgence)).check(matches(isDisplayed()))
-        onView(withId(R.id.btn_urgence)).check(matches(withText("Capturer le contexte de Jules")))
+        onView(withId(R.id.btn_urgence)).check(matches(withText("Vérifier la situation de Jules")))
         onView(withId(R.id.btn_files)).check(matches(isDisplayed()))
     }
 
@@ -141,10 +148,13 @@ class AidantActivityTest {
         val file = File(appContext.filesDir, "SmallBrother/url.txt")
         if(file.exists()) file.delete()
         file.createNewFile()
-        file.writeText("abcdef")
-        onView(withId(R.id.btn_files)).check(matches(isDisplayed()))
-        onView(withId(R.id.btn_files)).perform(click())
-        assert(userData.urlToFile == "abcdef")
+        onView(withId(R.id.btn_files)).check(matches(isDisplayed())).perform(click())
+        assert(userData.urlToFile == "")
+        assert(userData.bit == 7)
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring("Il n'y a pas de fichier sur le serveur appartenant à Jules."))
+        )
     }
 
     @Test

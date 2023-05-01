@@ -88,7 +88,9 @@
               <option name="preferredColumnWidths">
                 <map>
                   <entry key="52008e7bbc0a65f7" value="120" />
+                  <entry key="BSUBB18427150408" value="120" />
                   <entry key="Duration" value="90" />
+                  <entry key="HUAWEI&#10; LDN-L21" value="120" />
                   <entry key="Pixel_3a_API_30_x86" value="120" />
                   <entry key="R5CNC1F9TDZ" value="120" />
                   <entry key="Tests" value="360" />
@@ -183,7 +185,10 @@
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">
                 <map>
+                  <entry key="BSUBB18427150408" value="120" />
                   <entry key="Duration" value="90" />
+                  <entry key="HUAWEI&#10; LDN-L21" value="120" />
+                  <entry key="Pixel_2_API_33" value="120" />
                   <entry key="Pixel_3a_API_30_x86" value="120" />
                   <entry key="Tests" value="360" />
                 </map>
@@ -270,6 +275,19 @@
           </value>
         </entry>
         <entry key="404183132">
+          <value>
+            <AndroidTestResultsTableState>
+              <option name="preferredColumnWidths">
+                <map>
+                  <entry key="Duration" value="90" />
+                  <entry key="Pixel_3a_API_30_x86" value="120" />
+                  <entry key="Tests" value="360" />
+                </map>
+              </option>
+            </AndroidTestResultsTableState>
+          </value>
+        </entry>
+        <entry key="740105980">
           <value>
             <AndroidTestResultsTableState>
               <option name="preferredColumnWidths">

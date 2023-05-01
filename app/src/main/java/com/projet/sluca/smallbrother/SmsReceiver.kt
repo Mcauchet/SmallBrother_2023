@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.telephony.SmsMessage
-import android.util.Log
 import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.activities.Launch1Activity
@@ -20,7 +19,7 @@ import com.projet.sluca.smallbrother.utils.warnAidantNoInternet
  * (with the [#SBxx] code)
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 11-04-2023)
+ * @version 1.2 (Updated on 01-05-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -49,6 +48,7 @@ class SmsReceiver : BroadcastReceiver() {
             "[#SB05]",  // -> aide not connected
             "[#SB07]", // -> private mode ON
             "[#SB08]", // -> aide needs help
+            "[#SB09]", // -> upload failed
             "[#SB10]", // -> aidant receives url to files
         )
 
@@ -71,8 +71,8 @@ class SmsReceiver : BroadcastReceiver() {
                     userData.refreshLog(19)
                 }
                 "[#SB08]" -> userData.bit = 8
+                "[#SB09]" -> userData.bit = 9
                 "[#SB10]" -> {
-                    userData.bit = 10
                     // The subsequence depends on the URL to the file, if its length changes,
                     // the subsequence must be changed too
                     val urlFile = message
@@ -125,10 +125,8 @@ class SmsReceiver : BroadcastReceiver() {
                         val intnt = Intent(context, AideActivity::class.java)
                         context.startActivity(intnt)
                     }
-
                 }
             }
-
         }
     }
 
@@ -149,7 +147,6 @@ class SmsReceiver : BroadcastReceiver() {
             val smsMsg = getSmsMsg(pdu as ByteArray?, format)
             val subMsg = smsMsg?.displayMessageBody
             subMsg?.let {txt = "$txt$it"}
-            Log.d("txt msg", txt)
             numero = smsMsg?.originatingAddress?.replace("+32", "0")
         }
         return txt

@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.*
+import android.location.LocationListener
 import android.os.*
 import android.provider.Settings
 import android.util.Log
@@ -45,7 +46,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 27-04-2023)
+ * @version 1.2 (Updated on 01-05-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -55,10 +56,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     private lateinit var tvAction: TextView
     private var battery: String? = null
 
-    // Must not be nullable in Kotlin in order for it to work
     private lateinit var pictureService: APictureCapturingService
 
     lateinit var locationManager: LocationManager
+    lateinit var locationListener: LocationListener
+
     private var hasGps = false
     private var hasNetwork = false
     private var locationGps: Location? = null
@@ -76,6 +78,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_work)
 
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         val tvLoading = findViewById<TextView>(R.id.loading)
@@ -86,39 +89,48 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         userData = UserDataManager.getUserData(application)
         loading(tvLoading)
         setAppBarTitle(userData, this)
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         // --> [2] Get Aide Location
         if(locationAvailability()) {
+
+            locationListener = object: LocationListener {
+                override fun onLocationChanged(newLoc: Location) {
+                    when {
+                        hasGps -> locationGps = newLoc
+                        hasNetwork -> locationNetwork = newLoc
+                    }
+                }
+                override fun onProviderEnabled(provider: String) = getLocation()
+                override fun onProviderDisabled(provider: String) {}
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+            }
+
+            requestPermission()
+            @Suppress("MissingPermission")
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER, 1000, 10f, locationListener
+            )
+
             tvAction.text = getString(R.string.message12C)
             checkForLocation()
-            object : CountDownTimer(11000, 1000) {
+            if(locationGps==null && locationNetwork==null) getLocation()
+            object : CountDownTimer(13000, 100) {
                 override fun onTick(millisUntilFinished: Long) {
                     when (millisUntilFinished) {
-                        in 9000..10000 -> {
-                            locationGps = null
-                            locationNetwork = null
-                            getLocation()
-                            address1 = getAddress()
-                        }
-                        in 1000..2000 -> {
-                            locationGps = null
-                            locationNetwork = null
-                            getLocation()
-                            address2 = getAddress()
-                        }
+                        in 10000..12000 -> address1 = getAddress()
+                        in 1000..2000 -> address2 = getAddress()
                     }
                 }
-
                 override fun onFinish() {
-                    if(address1 != "" && address2 != "") {
+                    if(address1 != "" && address2 != "")
                         addressDiff = !(address1.contentEquals(address2))
-                        takePictures()
-                    }
+                    locationManager.removeUpdates(locationListener)
+                    takePictures()
                 }
             }.start()
-        } else {
-            takePictures()
-        }
+        } else takePictures()
+
     }
 
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
@@ -143,7 +155,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             intent.getStringExtra("accInterpretation").toString() else "Indéterminé"
         val xyz: Boolean = if(intent.hasExtra("movementInterpretation"))
             intent.getBooleanExtra("movementInterpretation", true) else true
-        //val locationDiff = if (addressDiff) "Oui" else "Non"
 
         val movementDataInterpretation = interpretMotionData(acceleration, xyz, addressDiff)
 
@@ -152,7 +163,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
         tvAction.text = getString(R.string.message12F)
 
-        // Checks what particule should be used with the partner name
         val nomAide = userData.nom
         val particule = particule(nomAide)
 
@@ -174,14 +184,11 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     } else "Erreur lors de la récupération de la position"
 
                     val currentTime = getCurrentTime("dd/MM/yyyy HH:mm:ss")
-
-                    Log.d("locationGps", locationGps?.latitude.toString())
                     val information = "Localisation $particule$nomAide : $location\n" +
                             "Coordonnées géographiques: ${locationGps?.latitude}, " +
                             "${locationGps?.longitude}\n" +
                             "Niveau de batterie : $battery\n" +
                             "En mouvement ? : $acceleration.\n" +
-                            //"Deuxième vérification mouvement (Oui/Non) : $locationDiff.\n" +
                             "Interprétation mouvement : $movementDataInterpretation\n" +
                             "Niveau de lumiere (en lux) : $light.\n" +
                             "Date de la capture : $currentTime\n"
@@ -205,15 +212,21 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
-                            if (File(ziPath).exists()) {
-                                zipName = uploadZip(client, File(ziPath))
-                                assert(zipName != "")
+                            if (File(ziPath).exists()) zipName = uploadZip(client, File(ziPath))
+
+                            if(zipName != "") {
+                                val fileLocMsg = getString(R.string.smsys10)
+                                    .replace("§%", "$URLServer/download/$zipName")
+
+                                sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
+                            } else {
+                                sendSMS(
+                                    this@Work2Activity,
+                                    getString(R.string.smsys09),
+                                    userData.telephone,
+                                    vibreur
+                                )
                             }
-
-                            val fileLocMsg = getString(R.string.smsys10)
-                                .replace("§%", "$URLServer/download/$zipName")
-
-                            sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
 
                             audioFile.delete()
                             firstPicture.delete()
@@ -235,7 +248,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                 activateSMSReceiver(this@Work2Activity)
 
-                Log.d("emergencyIntent", intent.hasExtra("emergency").toString())
                 if(intent.hasExtra("emergency")) finish()
 
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)
@@ -265,7 +277,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     @SuppressLint("MissingPermission")
     private fun checkForLocation() {
         requestPermission()
-        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         if(!hasGps && !hasNetwork) {
@@ -273,7 +284,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             startActivity(intent)
         }
         assert(hasGps || hasNetwork)
-        getLocation()
     }
 
     /**
@@ -283,21 +293,20 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      */
     @SuppressLint("MissingPermission")
     private fun getLocation() {
+        locationGps = null
+        locationNetwork = null
+        Log.d("Address 1 in getLocation", address1)
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            if (location != null && hasGps) {
-                locationGps = location
-            } else if(location != null && hasNetwork) {
+            Log.d("accuracy", location.accuracy.toString())
+            if (location != null && hasGps) locationGps = location
+            else if(location != null && hasNetwork) {
                 fusedLocationClient.lastLocation.addOnSuccessListener { networkLocation ->
                     locationNetwork = networkLocation
                 }.addOnFailureListener { e ->
                     Log.e("Work2Activity","Error getting network location", e)
                 }
-            } else {
-                requestNewLocationData()
-            }
-        }.addOnFailureListener { e ->
-            Log.e("Work2Activity", "Error getting GPS location", e)
-        }
+            } else requestNewLocationData()
+        }.addOnFailureListener { e -> Log.e("Work2Activity", "Error getting GPS location", e) }
     }
 
     /**
@@ -658,6 +667,12 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         return (hasGps || hasNetwork)
     }
+
+    /**
+     * Requests the location permission if it is not granted
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 27-04-2023)
+     */
     private fun requestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED

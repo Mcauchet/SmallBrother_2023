@@ -1,5 +1,6 @@
 package com.projet.sluca.smallbrother
 
+import android.Manifest
 import android.app.Application
 import android.content.Context
 import android.provider.MediaStore
@@ -14,6 +15,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.InstallDantPicActivity
 import com.projet.sluca.smallbrother.activities.QRCodeInstallActivity
 import com.projet.sluca.smallbrother.models.UserData
@@ -30,6 +32,19 @@ class InstallDantPicActivityTest {
 
     @get:Rule
     val activityRule = ActivityScenarioRule(InstallDantPicActivity::class.java)
+
+    @get:Rule
+    val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.PROCESS_OUTGOING_CALLS
+    )
 
     companion object {
         private lateinit var userData: UserData

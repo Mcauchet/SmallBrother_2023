@@ -17,7 +17,7 @@ import com.projet.sluca.smallbrother.utils.setAppBarTitle
  * SettingsActivity manages the resets of aide's and aidant's information and aide's picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 16-04-2023)
+ * @version 1.2 (Updated on 30-04-2023)
  */
 class SettingsActivity : AppCompatActivity() {
 
@@ -31,7 +31,6 @@ class SettingsActivity : AppCompatActivity() {
         val btnResetAidant: Button = findViewById(R.id.btn_reinit_1)
         val btnResetPicture: Button = findViewById(R.id.btn_reinit_2)
         val btnBack: Button = findViewById(R.id.btn_retour)
-        val btnHelp: Button = findViewById(R.id.btn_aide)
 
         userData = UserDataManager.getUserData(application)
 
@@ -56,17 +55,6 @@ class SettingsActivity : AppCompatActivity() {
         btnBack.setOnClickListener {
             vibreur.vibration(this, 100)
             finish()
-        }
-
-        //TODO Do we keep this page available ? Then we need to update it but I have to contact
-        // Sebastien for that
-        btnHelp.setOnClickListener {
-            vibreur.vibration(this, 100)
-            val browserIntent = Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(userData.url + userData.help)
-            )
-            startActivity(browserIntent)
         }
     }
 

@@ -18,7 +18,7 @@ import java.io.File
  * Manages the routing for the admin panel
  *
  * @author Maxime Caucheteur
- * @version 1 (Updated on 17-04-2023)
+ * @version 1 (Updated on 30-04-2023)
  */
 fun Route.adminRouting() {
     authenticate("auth-session") {
@@ -50,7 +50,7 @@ fun Route.adminRouting() {
                     val existingEntries = dao.allAideData()
                     val existingUris: MutableList<String> = mutableListOf()
                     for (entry in existingEntries) existingUris += entry.uri
-                    dir.walk().forEach { file ->
+                    dir.listFiles()?.forEach { file ->
                         if(file.name !in existingUris) file.delete()
                     }
                 } else if (formParameters.getOrFail("_action") == "Delete All") {
