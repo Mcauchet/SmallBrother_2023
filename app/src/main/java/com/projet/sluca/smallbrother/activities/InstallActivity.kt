@@ -72,6 +72,7 @@ class InstallActivity : AppCompatActivity() {
      * @version 1.2 (Updated on 27-04-2023)
      */
     private fun getKeys() {
+        //TODO see if Dispatchers.Default is more appropriate
         CoroutineScope(Dispatchers.IO).launch {
             if(userData.role == "Aidant") SecurityUtils.getEncryptionKeyPair()
             else SecurityUtils.getSignKeyPair()

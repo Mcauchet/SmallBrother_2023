@@ -1,6 +1,7 @@
 package com.projet.sluca.smallbrother
 
 import android.Manifest
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.provider.MediaStore
@@ -74,10 +75,12 @@ class InstallDantPicActivityTest {
 
     @Test
     fun testBackButton() {
-        onView(withId(R.id.btn_previous)).perform(click())
-        activityRule.scenario.onActivity { activity ->
-            assert(activity.isFinishing)
+        lateinit var activity: Activity
+        activityRule.scenario.onActivity { installDantPicActivity ->
+            activity = installDantPicActivity
         }
+        onView(withId(R.id.btn_previous)).perform(click())
+        assert(activity.isFinishing)
     }
 
     @Test
