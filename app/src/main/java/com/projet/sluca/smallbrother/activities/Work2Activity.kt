@@ -219,6 +219,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                     .replace("§%", "$URLServer/download/$zipName")
 
                                 sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
+                                userData.refreshLog(21)
                             } else {
                                 sendSMS(
                                     this@Work2Activity,
@@ -226,6 +227,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                                     userData.telephone,
                                     vibreur
                                 )
+                                userData.refreshLog(23)
                             }
 
                             audioFile.delete()
@@ -242,9 +244,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-
                 vibreur.vibration(this@Work2Activity, 330)
-                userData.refreshLog(21)
 
                 activateSMSReceiver(this@Work2Activity)
 
@@ -315,7 +315,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 12-04-2023)
      */
-    private fun getAddress() : String { //TODO check if it works on the last API (try on my smartphone then)
+    private fun getAddress() : String {
         val geoCoder = Geocoder(this, Locale.getDefault())
         val address: Address? = when {
             locationGps != null -> getGpsAddress(geoCoder)

@@ -126,13 +126,14 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             cameraDevice = camera
             Log.i(TAG, "Taking picture from camera " + camera.id)
             //Take the picture after some delay. It may resolve getting a black dark photos.
+            //TODO see if we can change the timer here to get the front picture to not be black
             Handler(Looper.getMainLooper()).postDelayed({
                 try {
                     takePicture()
                 } catch (e: CameraAccessException) {
                     Log.e(TAG, " exception occurred while taking picture from $currentCameraId", e)
                 }
-            }, 1000)
+            }, 3000)
         }
 
         override fun onDisconnected(camera: CameraDevice) {

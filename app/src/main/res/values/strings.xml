@@ -158,7 +158,8 @@
     <string name="log_private_on">Vous avez activé le mode privé.</string>
     <string name="log_context_sent">Votre situation a été envoyée à §%.</string>
     <string name="aidant_request_context_no_internet">Veuillez activer Internet puis appuyez sur \"J\'ai besoin d\'aide\"</string>
-    <string name="log_upload_failed">Erreur lors de l\'envoi du fichier sur le serveur, veuillez vérifier la situation.</string>
+    <string name="log_warn_aide_upload_failed">Votre situation ne peut être envoyée, appelez $%</string>
+    <string name="log_upload_failed">Erreur lors de l\'envoi du fichier §% sur le serveur, veuillez revérifier sa situation.</string>
 
 
     <string name="logo_unamur">Logo UNamur</string>

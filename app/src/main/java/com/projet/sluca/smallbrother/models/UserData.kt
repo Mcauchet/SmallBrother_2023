@@ -10,7 +10,6 @@ import com.projet.sluca.smallbrother.utils.getCurrentTime
 import com.projet.sluca.smallbrother.utils.particule
 import org.apache.commons.io.IOUtils
 import java.io.*
-import java.util.*
 
 /**
  * creates an object UserData which contains all pieces of information about the user
@@ -30,7 +29,7 @@ import java.util.*
  * @property pubKey: the public key of the partner for encryption/signing purpose
  * @constructor creates a user with default properties
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 01-05-2023)
+ * @version 1.2 (updated on 05-05-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -247,7 +246,7 @@ data class UserData(
      * refreshLog sets the log accordingly to the code parameter
      * @param [code] the code associated to the log message
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 01-05-2023)
+     * @version 1.2 (Updated on 05-05-2023)
      */
     fun refreshLog(code: Int) {
         var texte = "${getCurrentTime("HH:mm")}: "
@@ -272,6 +271,7 @@ data class UserData(
             14 -> getString(R.string.log_aide_needs_help).replace("§%", this.nomPartner)
             15 -> getString(R.string.log_aide_send_SMS).replace("§%", this.nomPartner)
             16 -> getString(R.string.log_upload_failed)
+                .replace("§%", particule(this.nomPartner) +this.nomPartner)
             17 -> getString(R.string.log_download_ko).replace("§%", this.nomPartner)
             18 -> getString(R.string.log_private_expired)
             19 -> getString(R.string.log_private_warn).replace("N#", SmsReceiver.tempsrestant)
@@ -279,6 +279,7 @@ data class UserData(
             20 -> getString(R.string.log_private_on)
             21 -> getString(R.string.log_context_sent).replace("§%", this.nomPartner)
             22 -> getString(R.string.aidant_request_context_no_internet)
+            23 -> getString(R.string.log_warn_aide_upload_failed).replace("§%", this.nomPartner)
             else -> ""
         }
         log = texte

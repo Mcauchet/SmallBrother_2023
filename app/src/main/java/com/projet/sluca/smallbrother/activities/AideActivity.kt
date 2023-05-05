@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.activity.OnBackPressedCallback
@@ -24,7 +23,7 @@ import kotlinx.coroutines.launch
  * class AideActivity manages the actions available to the "aidé".
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 30-04-2023)
+ * @version 1.2 (updated on 04-05-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -99,21 +98,15 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             userData.refreshLog(7)
         }
 
+        //TODO test modification
         btnEmergency.setOnClickListener {
-            updateBitOnAction()
+            //updateBitOnAction()
+            userData.prive = false
+            userData.delay = 0
+            changeSwitch()
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys08).replace("§%", userData.nom)
-            if(sendSMS(this, sms, userData.telephone, vibreur)) {
-                if(isOnline(this)) {
-                    val workIntent = Intent(this, WorkActivity::class.java).putExtra("clef", "[#SB04]")
-                    CoroutineScope(Dispatchers.Main).launch {
-                        startActivity(workIntent)
-                    }
-                } else {
-                    userData.refreshLog(22)
-                    warnAidantNoInternet(this, vibreur, userData)
-                }
-            }
+            aideAskForHelp(sms)
         }
     }
 
@@ -130,6 +123,27 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             message(this, getString(R.string.message11), vibreur)
             userData.delay = 0
             updateAideInfo()
+        }
+    }
+
+    /**
+     * Manages when the aide presses the Emergency button
+     * @param sms the message sent to the aidant
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-05-2023)
+     */
+    private fun aideAskForHelp(sms: String) {
+        if(sendSMS(this, sms, userData.telephone, vibreur)) {
+            if(isOnline(this)) {
+                val workIntent = Intent(this, WorkActivity::class.java)
+                    .putExtra("clef", "[#SB04]")
+                CoroutineScope(Dispatchers.Main).launch {
+                    startActivity(workIntent)
+                }
+            } else {
+                userData.refreshLog(22)
+                warnAidantNoInternet(this, vibreur, userData)
+            }
         }
     }
 
