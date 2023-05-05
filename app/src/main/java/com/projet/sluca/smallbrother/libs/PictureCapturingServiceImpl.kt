@@ -133,7 +133,7 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
                 } catch (e: CameraAccessException) {
                     Log.e(TAG, " exception occurred while taking picture from $currentCameraId", e)
                 }
-            }, 3000)
+            }, 1000)
         }
 
         override fun onDisconnected(camera: CameraDevice) {

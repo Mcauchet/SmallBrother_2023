@@ -172,13 +172,14 @@ class AidantActivity : AppCompatActivity() {
      * Extract the content of the .zip archive into a directory saved in the downloads directory
      * @param file The zip file
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 01-05-2023)
+     * @version 1.2 (Updated on 05-05-2023)
      */
     private fun extractArchive(file: File) {
         if (!file.exists()) return
+        val time = getCurrentTime("HH'h'mm")
         val targetDir = File(Environment
             .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
-        "SmallBrother_Aide_${userData.urlToFile}".replace(".zip", ""))
+        "Situation_${userData.nomPartner}_${time}_${userData.urlToFile}".replace(".zip", ""))
         targetDir.mkdirs()
         ZipInputStream(FileInputStream(file)).use { zis ->
             runThroughArchive(zis, targetDir)

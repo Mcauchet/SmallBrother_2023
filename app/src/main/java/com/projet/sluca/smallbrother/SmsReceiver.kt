@@ -1,5 +1,6 @@
 package com.projet.sluca.smallbrother
 
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -19,7 +20,7 @@ import com.projet.sluca.smallbrother.utils.warnAidantNoInternet
  * (with the [#SBxx] code)
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 01-05-2023)
+ * @version 1.2 (Updated on 05-05-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -37,6 +38,11 @@ class SmsReceiver : BroadcastReceiver() {
         if (!message.startsWith("SmallBrother :")) return
         if (numero != userData.telephone) return
 
+        //TODO test if this cancel the message notification
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
+                as NotificationManager
+        val notificationId = intent.getIntExtra("notificationId", 0)
+        notificationManager.cancel(notificationId)
         // If SMS is for the application and comes from the partner :
         // Fetch the #SBxx code of the SMS (Can't exceed 100 #SB code)
         clef = message.substring(message.length - 7)
