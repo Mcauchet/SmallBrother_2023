@@ -58,7 +58,7 @@ class QRCodeInstallActivity : AppCompatActivity() {
         }
     }
 
-    /***
+    /**
      * Generate the QR code with the public key
      *
      * @param [msg] the message in the QR Code

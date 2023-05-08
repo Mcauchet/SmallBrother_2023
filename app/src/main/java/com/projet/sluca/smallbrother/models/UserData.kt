@@ -91,11 +91,11 @@ data class UserData(
     /**
      * byeData deletes the donnees.txt file of the device
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
+     * @version 1.2 (Updated on 08-05-2023)
      */
     fun byeData(fileName: String) {
         val data = File("$path/SmallBrother/$fileName")
-        data.delete()
+        if(data.exists()) data.delete()
         assert(!data.exists())
     }
 

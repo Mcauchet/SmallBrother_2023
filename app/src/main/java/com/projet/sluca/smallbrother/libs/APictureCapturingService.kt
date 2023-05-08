@@ -17,17 +17,17 @@ abstract class APictureCapturingService internal constructor(private val activit
     companion object {
         private val ORIENTATIONS = SparseIntArray()
 
-        /*init {
+        init { //TODO test
             ORIENTATIONS.append(Surface.ROTATION_0, 90)
             ORIENTATIONS.append(Surface.ROTATION_90, 0)
             ORIENTATIONS.append(Surface.ROTATION_180, 270)
             ORIENTATIONS.append(Surface.ROTATION_270, 180)
-        }*/
+        }
 
-        init {
+        /*init {
             //TODO test with other orientations (and test by replacing 90 by 0)
             ORIENTATIONS.append(Surface.ROTATION_0, 90)
-        }
+        }*/
     }
 
     val context: Context = activity.applicationContext

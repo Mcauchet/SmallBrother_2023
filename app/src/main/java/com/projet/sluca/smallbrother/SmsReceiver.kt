@@ -107,6 +107,8 @@ class SmsReceiver : BroadcastReceiver() {
 
         if(userData.role != "Aidé") return
 
+        if(clef == "[#SB01]") resetApp(context)
+
         if (userData.bit == 1) // Private mode ON
         {
             when(clef) {
@@ -115,16 +117,6 @@ class SmsReceiver : BroadcastReceiver() {
             }
         } else {
             when(clef) {
-                "[#SB01]" -> {
-                    Vibration().vibration(context, 330)
-                    userData.refreshLog(3)
-                    userData.byeData("donnees.txt")
-                    if(!userData.loadData(context)){
-                        val mIntent = Intent(context, Launch1Activity::class.java)
-                        mIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        context.startActivity(mIntent)
-                    }
-                }
                 "[#SB02]" -> {
                     userData.refreshLog(6)
                     val intnt = Intent(context, AideActivity::class.java)
@@ -138,14 +130,29 @@ class SmsReceiver : BroadcastReceiver() {
                         context.startActivity(intnt)
                     } else {
                         userData.refreshLog(12)
-
                         warnAidantNoInternet(context, vibreur, userData)
-
                         val intnt = Intent(context, AideActivity::class.java)
                         context.startActivity(intnt)
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Resets the aide's application
+     * @param context the context of the application
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 08-05-2023)
+     */
+    private fun resetApp(context: Context) {
+        Vibration().vibration(context, 330)
+        userData.refreshLog(3)
+        userData.byeData("donnees.txt")
+        if(!userData.loadData(context)){
+            val mIntent = Intent(context, Launch1Activity::class.java)
+            mIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(mIntent)
         }
     }
 

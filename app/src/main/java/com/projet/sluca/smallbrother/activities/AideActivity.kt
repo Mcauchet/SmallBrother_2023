@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 /**
  * class AideActivity manages the actions available to the "Aidé".
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 04-05-2023)
+ * @version 1.2 (updated on 08-05-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -97,9 +97,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             userData.refreshLog(7)
         }
 
-        //TODO test modification
         btnEmergency.setOnClickListener {
-            //updateBitOnAction()
             userData.prive = false
             userData.delay = 0
             changeSwitch()
