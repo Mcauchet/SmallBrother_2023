@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.telephony.SmsMessage
+import android.util.Log
 import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.activities.Launch1Activity
@@ -38,11 +39,23 @@ class SmsReceiver : BroadcastReceiver() {
         if (!message.startsWith("SmallBrother :")) return
         if (numero != userData.telephone) return
 
+        //TODO check intent extras to see the notification ID to try to cancel it
+        val extras = intent.extras
+        extras?.keySet()?.forEach { key ->
+            val value = extras.get(key)
+            Log.d("Sms Intent", "Extra key: $key, Extra value: $value")
+        }
+
         //TODO test if this cancel the message notification
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE)
                 as NotificationManager
         val notificationId = intent.getIntExtra("notificationId", 0)
-        notificationManager.cancel(notificationId)
+        Log.d("notifID", notificationId.toString())
+        val canceled = notificationManager.cancel(notificationId)
+        Log.d("notification was canceled", canceled.toString())
+        //TODO test if this works if other way does not
+        //notificationManager.cancelAll()
+
         // If SMS is for the application and comes from the partner :
         // Fetch the #SBxx code of the SMS (Can't exceed 100 #SB code)
         clef = message.substring(message.length - 7)

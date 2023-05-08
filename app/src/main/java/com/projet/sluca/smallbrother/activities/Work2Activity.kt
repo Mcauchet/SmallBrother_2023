@@ -46,7 +46,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 01-05-2023)
+ * @version 1.2 (Updated on 06-05-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -403,7 +403,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * false otherwise
      * @return the interpretation as a String
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 11-04-2023)
+     * @version 1.2 (Updated on 06-05-2023)
      */
     private fun interpretMotionData(acc: String, xyz: Boolean, addressDiff: Boolean) = when {
         (acc == "En mouvement" || acc == "Commence à bouger") && !xyz && addressDiff ->
@@ -416,7 +416,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         (acc == "À l'arrêt" || acc == "S'est arrêté") && xyz && addressDiff ->
             "Semble à l'arrêt, le GPS peut être imprécis."
         (acc == "À l'arrêt" || acc == "S'est arrêté") && !xyz && !addressDiff ->
-            "Se déplace très lentement."
+            "Se déplace très lentement ou à l'arrêt."
         else -> "Déplacement indéterminé."
     }
 

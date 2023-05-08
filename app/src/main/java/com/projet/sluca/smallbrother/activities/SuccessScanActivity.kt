@@ -8,6 +8,11 @@ import com.projet.sluca.smallbrother.R
 import com.projet.sluca.smallbrother.UserDataManager
 import com.projet.sluca.smallbrother.utils.setAppBarTitle
 
+/**
+ * Prompts instructions to the "Aidé" to make it clear the next QR code has to be shown to the aidant
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 06-05-2023)
+ */
 class SuccessScanActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

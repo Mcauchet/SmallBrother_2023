@@ -20,8 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 /**
- * class AideActivity manages the actions available to the "aidé".
- *
+ * class AideActivity manages the actions available to the "Aidé".
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
  * @version 1.2 (updated on 04-05-2023)
  */
