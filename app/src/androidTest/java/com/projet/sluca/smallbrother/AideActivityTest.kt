@@ -90,7 +90,6 @@ class AideActivityTest {
 
     @Test
     fun aideActivityUITest() {
-        onView(withId(R.id.btn_reduire)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_appel)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_appel)).check(matches(withText("Appeler Émilie")))
@@ -156,16 +155,6 @@ class AideActivityTest {
         onView(withId(R.id.btn_deranger)).check(matches(isNotChecked()))
         assert(!userData.prive)
         assert(userData.bit == 0)
-    }
-
-    @Test
-    fun buttonReductTest() {
-        onView(withId(R.id.btn_reduire)).perform(click())
-        val lifeCycleMonitor = ActivityLifecycleMonitorRegistry.getInstance()
-        activityRule.scenario.onActivity {
-            val resumedActivities = lifeCycleMonitor.getActivitiesInStage(Stage.RESUMED)
-            assert(resumedActivities.isEmpty())
-        }
     }
 
     @Test

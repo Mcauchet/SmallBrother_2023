@@ -10,15 +10,15 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import java.io.File
 
-const val MAX_SIZE = 3000000 //3MB
+const val MAX_SIZE = 10000000 //10MB limit for files
 const val NAME_SIZE = 25
 const val EXT_SIZE = 4
 
-/***
+/**
  * Manages the upload and download of aide's files
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 14-04-2023)
+ * @version 1.2 (Updated on 09-05-2023)
  */
 fun Route.aideDataRouting() {
     route("/upload") {

@@ -33,7 +33,7 @@ import java.util.zip.ZipInputStream
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 01-05-2023)
+ * @version 1.2 (updated on 09-05-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -51,29 +51,22 @@ class AidantActivity : AppCompatActivity() {
 
         val btnSettings: Button = findViewById(R.id.btn_reglages)
         val btnPicture: Button = findViewById(R.id.btn_photo)
-        val btnReduct: Button = findViewById(R.id.btn_reduire)
-
+        val btnFolder: Button = findViewById(R.id.btn_downloadFolder)
         val btnSmsAide: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
-
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
         val btnFiles: Button = findViewById(R.id.btn_files)
+        tvLog = findViewById(R.id.log_texte)
 
         userData = UserDataManager.getUserData(application)
-
         setAppBarTitle(userData, this)
 
         btnCall.text = getString(R.string.btn_appel).replace("§%", userData.nomPartner)
-
         btnEmergency.text = getString(R.string.btn_urgence)
             .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
-        tvLog = findViewById(R.id.log_texte)
-
-        reloadLog.run()
-
         wakeup(window, this@AidantActivity)
-
+        reloadLog.run()
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         if(intent.hasExtra("url")){
@@ -87,21 +80,20 @@ class AidantActivity : AppCompatActivity() {
         }
 
         btnSettings.setOnClickListener {
-            vibreur.vibration(this, 100)
+            vibreur.vibration(this, 200)
             val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
 
         btnPicture.setOnClickListener {
-            vibreur.vibration(this, 100)
+            vibreur.vibration(this, 200)
             val intent = Intent(this, PhotoAideActivity::class.java)
             startActivity(intent)
         }
 
-        btnReduct.setOnClickListener {
+        btnFolder.setOnClickListener {
             vibreur.vibration(this, 200)
-            message(this, getString(R.string.message01), vibreur)
-            moveTaskToBack(true)
+            openDownloadDirectory()
         }
 
         btnSmsAide.setOnClickListener {
@@ -125,7 +117,7 @@ class AidantActivity : AppCompatActivity() {
         }
 
         btnEmergency.setOnClickListener {
-            vibreur.vibration(this, 330)
+            vibreur.vibration(this, 200)
             userData.bit = 0
             createAndShowConfirmationAlertDialog()
         }

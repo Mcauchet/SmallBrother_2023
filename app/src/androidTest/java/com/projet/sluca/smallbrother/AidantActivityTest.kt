@@ -12,7 +12,8 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -93,7 +94,7 @@ class AidantActivityTest {
     fun aidantActivityUITest() {
         onView(withId(R.id.btn_reglages)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_photo)).check(matches(isDisplayed()))
-        onView(withId(R.id.btn_reduire)).check(matches(isDisplayed()))
+        onView(withId(R.id.btn_downloadFolder)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_appel)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_appel)).check(matches(withText("Appeler Jules")))
@@ -123,16 +124,24 @@ class AidantActivityTest {
 
     @Test
     fun callButtonTest() {
-        Intents.intending(IntentMatchers.hasAction(Intent.ACTION_CALL)).respondWith(
+        Intents.intending(hasAction(Intent.ACTION_CALL)).respondWith(
             Instrumentation.ActivityResult(Activity.RESULT_CANCELED, null)
         )
         onView(withId(R.id.btn_appel)).perform(click())
         onView(withId(R.id.log_texte))
             .check(matches(withSubstring("Vous appelez ${userData.nomPartner}.")))
         intended(allOf(
-                IntentMatchers.hasAction(Intent.ACTION_CALL),
-                IntentMatchers.hasData(Uri.parse("tel:" + userData.telephone))
+                hasAction(Intent.ACTION_CALL),
+                hasData(Uri.parse("tel:" + userData.telephone))
         ))
+    }
+
+    @Test
+    fun testDownloadFolderButton() {
+        Intents.intending(hasAction(Intent.ACTION_VIEW))
+            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+        onView(withId(R.id.btn_downloadFolder)).perform(click())
+        intended(hasAction(Intent.ACTION_VIEW))
     }
 
     @Test

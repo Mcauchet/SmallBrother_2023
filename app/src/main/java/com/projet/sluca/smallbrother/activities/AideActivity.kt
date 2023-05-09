@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 /**
  * class AideActivity manages the actions available to the "Aidé".
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 08-05-2023)
+ * @version 1.2 (updated on 09-05-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -41,7 +41,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_aide)
 
-        val btnReduct: Button = findViewById(R.id.btn_reduire)
         val btnSmsAidant: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
@@ -69,12 +68,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         reloadLog.run()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
-        btnReduct.setOnClickListener {
-            vibreur.vibration(this, 100)
-            message(this, getString(R.string.message01), vibreur)
-            moveTaskToBack(true)
-        }
 
         btnSmsAidant.setOnClickListener {
             updateBitOnAction()
