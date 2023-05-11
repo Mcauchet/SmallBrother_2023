@@ -26,7 +26,7 @@ import java.util.*
  * camera app) from all available cameras using Android Camera 2 API
  *
  * @author hzitoun (zitoun.hamed@gmail.com)
- * (converted in Kotlin by Maxime Caucheteur on 07-09-2022, updated on 09-03-2023)
+ * (converted in Kotlin by Maxime Caucheteur on 07-09-2022, updated on 11-05-2023)
  *
  * https://github.com/hzitoun/android-camera2-secret-picture-taker for further info about
  * this library
@@ -126,14 +126,13 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
             cameraDevice = camera
             Log.i(TAG, "Taking picture from camera " + camera.id)
             //Take the picture after some delay. It may resolve getting a black dark photos.
-            //TODO see if we can change the timer here to get the front picture to not be black
             Handler(Looper.getMainLooper()).postDelayed({
                 try {
                     takePicture()
                 } catch (e: CameraAccessException) {
                     Log.e(TAG, " exception occurred while taking picture from $currentCameraId", e)
                 }
-            }, 1000)
+            }, 2000)
         }
 
         override fun onDisconnected(camera: CameraDevice) {
@@ -188,13 +187,13 @@ private constructor(activity: Activity) : APictureCapturingService(activity) {
      * @param captureBuilder the CaptureRequest Builder
      * @param reader the ImageReader
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 29-04-2023)
+     * @version 1.2 (Updated on 11-05-2023)
      */
     private fun configureCaptureBuilder(captureBuilder: Builder, reader: ImageReader) {
         captureBuilder.addTarget(reader.surface)
         captureBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
         captureBuilder.set(CaptureRequest.CONTROL_AE_LOCK, true)
-        captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 10)
+        captureBuilder.set(CaptureRequest.CONTROL_AE_EXPOSURE_COMPENSATION, 20)
         captureBuilder.set(CaptureRequest.CONTROL_AWB_MODE, CaptureRequest.CONTROL_AWB_MODE_AUTO)
     }
 
