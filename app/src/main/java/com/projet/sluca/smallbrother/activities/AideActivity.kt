@@ -34,6 +34,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private lateinit var tvIntituleDelay: TextView
     lateinit var btnPrivate: Switch
     private lateinit var ivLogo: ImageView
+    var successUpload: Boolean = false
 
     private var logHandler: Handler = Handler(Looper.getMainLooper())
 
@@ -46,6 +47,8 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
         userData = UserDataManager.getUserData(application)
+
+        if(intent.hasExtra("success")) successUpload = intent.getBooleanExtra("success", false)
 
         setAppBarTitle(userData, this)
 
@@ -127,9 +130,9 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
             if(isOnline(this)) {
                 val workIntent = Intent(this, WorkActivity::class.java)
                     .putExtra("clef", "[#SB04]")
-                CoroutineScope(Dispatchers.Main).launch {
+                //CoroutineScope(Dispatchers.Main).launch {
                     startActivity(workIntent)
-                }
+                //}
             } else {
                 userData.refreshLog(22)
                 warnAidantNoInternet(this, vibreur, userData)

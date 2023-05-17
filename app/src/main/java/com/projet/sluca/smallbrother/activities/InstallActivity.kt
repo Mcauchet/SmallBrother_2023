@@ -198,7 +198,6 @@ class InstallActivity : AppCompatActivity() {
             Manifest.permission.READ_SMS,
             Manifest.permission.RECEIVE_SMS,
             Manifest.permission.BROADCAST_SMS,
-            Manifest.permission.RECEIVE_BOOT_COMPLETED,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.PROCESS_OUTGOING_CALLS,
             Manifest.permission.RECORD_AUDIO,
@@ -238,7 +237,6 @@ class InstallActivity : AppCompatActivity() {
             Manifest.permission.CALL_PHONE,
             Manifest.permission.READ_SMS,
             Manifest.permission.RECEIVE_SMS,
-            Manifest.permission.RECEIVE_BOOT_COMPLETED,
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.PROCESS_OUTGOING_CALLS
         ), 1)

@@ -13,18 +13,16 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasAction
-import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
+import androidx.test.espresso.intent.matcher.IntentMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
-import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
-import androidx.test.runner.lifecycle.Stage
 import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.SecurityUtils
 import kotlinx.coroutines.*
 import org.hamcrest.CoreMatchers.*
 import org.junit.*
@@ -62,12 +60,14 @@ class AideActivityTest {
             appContext = InstrumentationRegistry.getInstrumentation().targetContext
             val file = File(appContext.filesDir, "SmallBrother/donnees.txt")
             if(file.exists()) file.delete()
+            SecurityUtils.getEncryptionKeyPair()
+            SecurityUtils.getSignKeyPair()
             userData = UserDataManager.getUserData(appContext.applicationContext as Application)
             userData.version = "1.2"
             userData.role = "Aidé"
             userData.nom = "Jules"
             userData.telephone = "0476546545"
-            userData.pubKey = "FakePublicKey"
+            userData.pubKey = SecurityUtils.getEncPublicKey()
             userData.nomPartner = "Émilie"
             userData.path = appContext.filesDir.path
             userData.prive = false
@@ -125,10 +125,9 @@ class AideActivityTest {
 
     @Test
     fun shortPrivateModeTest() {
-        onView(withId(R.id.btn_deranger)).check(matches(isDisplayed()))
-        onView(withId(R.id.btn_deranger)).perform(click())
-        onView(withId(R.id.input_delai)).perform(clearText())
-        onView(withId(R.id.input_delai)).perform(typeText("0"))
+        onView(withId(R.id.btn_deranger)).check(matches(isDisplayed())).perform(click())
+        onView(withId(R.id.input_delai)).perform(clearText()).perform(typeText("0"))
+        Thread.sleep(100)
         onView(withText("Valider")).perform(scrollTo())
             .check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
@@ -153,6 +152,7 @@ class AideActivityTest {
     private fun uncheckSwitch() {
         onView(withId(R.id.btn_deranger)).perform(click())
         onView(withId(R.id.btn_deranger)).check(matches(isNotChecked()))
+        assert(userData.delay == 0L)
         assert(!userData.prive)
         assert(userData.bit == 0)
     }
@@ -196,6 +196,11 @@ class AideActivityTest {
         onView(withId(R.id.log_texte)).check(matches(withSubstring("${userData.nomPartner} " +
                 "tente de vérifier votre situation. Pourquoi ne pas l'appeler ?")))
     }
+
+    /*@Test
+    fun askForHelpTest() {
+
+    }*/
 
     @After
     fun tearDown() {

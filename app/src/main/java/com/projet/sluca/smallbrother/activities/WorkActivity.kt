@@ -118,6 +118,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                 override fun onFinish() {
                     resetMagneto()
+                    alarm(this@WorkActivity)
                     val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
                     val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
                     val intent = Intent(this@WorkActivity, Work2Activity::class.java)

@@ -248,9 +248,8 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
                 activateSMSReceiver(this@Work2Activity)
 
-                if(intent.hasExtra("emergency")) finish()
-
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)
+                intent.putExtra("success", true)
                 startActivity(intent)
             }
         }.start()
