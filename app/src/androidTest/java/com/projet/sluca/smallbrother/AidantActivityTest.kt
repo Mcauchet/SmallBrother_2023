@@ -110,6 +110,22 @@ class AidantActivityTest {
     }
 
     @Test
+    fun redoPictureTest() {
+        onView(withId(R.id.btn_reglages)).perform(click())
+        onView(withId(R.id.btn_reinit_2)).perform(click())
+        onView(withId(R.id.btn_save)).check(matches(isDisplayed())).perform(click())
+        onView(withId(R.id.legende)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun cancelRedoPictureTest() {
+        onView(withId(R.id.btn_reglages)).perform(click())
+        onView(withId(R.id.btn_reinit_2)).perform(click())
+        onView(withId(R.id.btn_retour)).perform(click())
+        onView(withId(R.id.btn_reinit_2)).check(matches(isDisplayed()))
+    }
+
+    @Test
     fun pictureButtonTest() {
         onView(withId(R.id.btn_photo)).perform(click())
         onView(withId(R.id.legende)).check(matches(isDisplayed()))

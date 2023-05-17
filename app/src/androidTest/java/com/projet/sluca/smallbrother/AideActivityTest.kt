@@ -112,8 +112,8 @@ class AideActivityTest {
     @Test
     fun longPrivateModeTest() {
         onView(withId(R.id.btn_deranger)).perform(click())
-        onView(withId(R.id.input_delai)).perform(clearText())
-        onView(withId(R.id.input_delai)).perform(typeText("200"))
+        onView(withId(R.id.input_delai)).perform(clearText()).perform(typeText("200"))
+        Thread.sleep(100)
         onView(withText("Valider")).perform(scrollTo())
             .check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
@@ -127,9 +127,10 @@ class AideActivityTest {
     fun shortPrivateModeTest() {
         onView(withId(R.id.btn_deranger)).check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.input_delai)).perform(clearText()).perform(typeText("0"))
-        Thread.sleep(100)
+        Thread.sleep(200)
         onView(withText("Valider")).perform(scrollTo())
             .check(matches(isDisplayed())).perform(click())
+        Thread.sleep(200)
         onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
         assert(userData.delay in 50000..60000)
         assert(userData.prive)
@@ -150,8 +151,7 @@ class AideActivityTest {
      * Turn the private mode switch off
      */
     private fun uncheckSwitch() {
-        onView(withId(R.id.btn_deranger)).perform(click())
-        onView(withId(R.id.btn_deranger)).check(matches(isNotChecked()))
+        onView(withId(R.id.btn_deranger)).perform(click()).check(matches(isNotChecked()))
         assert(userData.delay == 0L)
         assert(!userData.prive)
         assert(userData.bit == 0)
