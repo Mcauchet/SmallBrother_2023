@@ -46,7 +46,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 06-05-2023)
+ * @version 1.2 (Updated on 18-05-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -249,7 +249,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 activateSMSReceiver(this@Work2Activity)
 
                 val intent = Intent(this@Work2Activity, AideActivity::class.java)
-                intent.putExtra("success", true)
                 startActivity(intent)
             }
         }.start()

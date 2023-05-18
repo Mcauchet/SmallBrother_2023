@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 /**
  * class AideActivity manages the actions available to the "Aidé".
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 09-05-2023)
+ * @version 1.2 (updated on 18-05-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -34,7 +34,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
     private lateinit var tvIntituleDelay: TextView
     lateinit var btnPrivate: Switch
     private lateinit var ivLogo: ImageView
-    var successUpload: Boolean = false
 
     private var logHandler: Handler = Handler(Looper.getMainLooper())
 
@@ -47,8 +46,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         val btnEmergency: Button = findViewById(R.id.btn_urgence)
 
         userData = UserDataManager.getUserData(application)
-
-        if(intent.hasExtra("success")) successUpload = intent.getBooleanExtra("success", false)
 
         setAppBarTitle(userData, this)
 

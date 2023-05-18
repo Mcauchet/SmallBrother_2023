@@ -12,12 +12,12 @@ import com.projet.sluca.smallbrother.models.UserData
 /**
  * PhoneStatReceiver manages information when a phone call is received on the user's phone
  *
- * @author Sébastien Luca & Maxime Caucheteur (Updated on 08-01-2023)
+ * @author Sébastien Luca & Maxime Caucheteur (Updated on 18-05-2023)
  */
 class PhoneStatReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        //userData = UserDataManager.getUserData(context.applicationContext as Application)
-        userData.loadData(context)
+        userData = UserDataManager.getUserData(context.applicationContext as Application)
+        //userData.loadData(context) //TODO test this change
         if (intent.action != Intent.ACTION_NEW_OUTGOING_CALL) processCall(context, intent)
     }
 
