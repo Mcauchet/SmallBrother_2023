@@ -94,6 +94,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                 registerLightSensor(sensorManager)
                 registerMovementDetector(sensorManager)
 
+                //alarm(this@WorkActivity)
+
                 // --> [1] Records a 10 seconds audio of the aide's environment
                 tvAction.text = getString(R.string.message12A)
                 initMagneto()
