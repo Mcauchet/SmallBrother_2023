@@ -55,10 +55,9 @@ fun loading(tvLoading: TextView) {
  * @param [userData] the user's data
  * @param [tvLog] the Log TextView
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 19-02-2023)
+ * @version 1.2 (Updated on 21-05-2023)
  */
 fun setLogAppearance(userData: UserData, tvLog: TextView) {
-    check(userData.log != null)
     val sb = SpannableStringBuilder(userData.log)
     val fcs = ForegroundColorSpan(Color.rgb(57, 114, 26))
     val bss = StyleSpan(Typeface.BOLD)

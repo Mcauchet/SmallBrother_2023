@@ -29,7 +29,7 @@ import java.io.*
  * @property pubKey: the public key of the partner for encryption/signing purpose
  * @constructor creates a user with default properties
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 05-05-2023)
+ * @version 1.2 (updated on 21-05-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -89,27 +89,15 @@ data class UserData(
     }
 
     /**
-     * byeData deletes the donnees.txt file of the device
+     * byeData deletes a given file from the app's storage
+     * @param fileName the name of the file
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 08-05-2023)
+     * @version 1.2 (Updated on 21-05-2023)
      */
     fun byeData(fileName: String) {
         val data = File("$path/SmallBrother/$fileName")
         if(data.exists()) data.delete()
         assert(!data.exists())
-    }
-
-    /**
-     * deletePicture deletes the picture of the Aide on the device
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    fun deletePicture() {
-        val file = File("$path/SmallBrother/photo_aide.jpg")
-        if(file.exists()) {
-            file.delete()
-            assert(!file.exists())
-        }
     }
 
     /**
@@ -246,7 +234,7 @@ data class UserData(
      * refreshLog sets the log accordingly to the code parameter
      * @param [code] the code associated to the log message
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 05-05-2023)
+     * @version 1.2 (Updated on 21-05-2023)
      */
     fun refreshLog(code: Int) {
         var texte = "${getCurrentTime("HH:mm")}: "
@@ -260,8 +248,6 @@ data class UserData(
             6 -> getString(R.string.log_aide_receive_SMS).replace("§%", this.nomPartner)
             7 -> getString(R.string.log_call).replace("§%", this.nomPartner)
             8 -> getString(R.string.log_called).replace("§%", this.nomPartner)
-            9 -> getString(R.string.log_call_missed)
-                .replace("§%", particule(this.nomPartner) +this.nomPartner)
             10 -> getString(R.string.log_aidant_requests_context)
                 .replace("§%", particule(this.nomPartner) +this.nomPartner)
             11 -> getString(R.string.log_data_on_server)

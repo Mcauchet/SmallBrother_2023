@@ -2,8 +2,7 @@ package com.projet.sluca.smallbrother
 
 import android.Manifest
 import android.app.Application
-import android.content.Context
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -60,17 +59,25 @@ class Launch2ActivityTest {
 
     @Test
     fun checkRoleAidant() {
-        Espresso.onView(withId(R.id.btn_role1)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.btn_role1)).perform(click())
+        onView(withId(R.id.btn_role1)).check(matches(isDisplayed()))
+        onView(withId(R.id.btn_role1)).perform(click())
         assert(userData.role == "Aidant")
-        Espresso.onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
+        onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
     }
 
     @Test
     fun checkRoleAide() {
-        Espresso.onView(withId(R.id.btn_role2)).check(matches(isDisplayed()))
-        Espresso.onView(withId(R.id.btn_role2)).perform(click())
+        onView(withId(R.id.btn_role2)).check(matches(isDisplayed()))
+        onView(withId(R.id.btn_role2)).perform(click())
         assert(userData.role == "Aidé")
-        Espresso.onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
+        onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun backButtonInstallActivityTest() {
+        onView(withId(R.id.btn_role1)).perform(click())
+        onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
+        onView(withId(R.id.btn_previous)).perform(click())
+        onView(withId(R.id.btn_role1)).check(matches(isDisplayed()))
     }
 }

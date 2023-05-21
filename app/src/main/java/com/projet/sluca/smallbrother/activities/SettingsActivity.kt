@@ -82,7 +82,7 @@ class SettingsActivity : AppCompatActivity() {
             vibreur.vibration(this, 100)
             val sms = getString(R.string.smsys01).replace("§%", userData.nom)
             sendSMS(this, sms, userData.telephone, vibreur)
-            userData.deletePicture()
+            userData.byeData("photo_aide.jpg")
             userData.byeData("donnees.txt")
             message(this, getString(R.string.message03A), vibreur)
             val mIntent = Intent(this, Launch1Activity::class.java)

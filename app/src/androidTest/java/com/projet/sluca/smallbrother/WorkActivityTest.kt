@@ -98,6 +98,7 @@ class WorkActivityTest {
     fun contextCaptureTest() {
         CoroutineScope(Dispatchers.IO).launch {
             withTimeout(30000) {
+                SecurityUtils.getAESKey()
                 onView(withId(R.id.btn_urgence)).check(matches(isDisplayed()))
             }
         }

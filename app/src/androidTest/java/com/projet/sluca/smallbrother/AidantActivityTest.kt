@@ -7,6 +7,8 @@ import android.app.Instrumentation
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Environment
+import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -22,6 +24,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.models.UserData
+import com.projet.sluca.smallbrother.utils.SecurityUtils
+import com.projet.sluca.smallbrother.utils.getCurrentTime
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.*
 import org.junit.Assert.*
@@ -52,6 +56,7 @@ class AidantActivityTest {
     companion object {
         private lateinit var userData: UserData
         private lateinit var appContext: Context
+        var time: String = ""
 
         @BeforeClass
         @JvmStatic
@@ -64,7 +69,7 @@ class AidantActivityTest {
             userData.role = "Aidant"
             userData.nom = "Émilie"
             userData.telephone = "0476546545"
-            userData.pubKey = "FakePublicKey"
+            userData.pubKey = SecurityUtils.getSignPublicKey()
             userData.nomPartner = "Jules"
             userData.path = appContext.filesDir.path
             userData.prive = false
@@ -104,9 +109,16 @@ class AidantActivityTest {
     }
 
     @Test
-    fun settingsButtonTest() {
+    fun settingsButtonsTest() {
         onView(withId(R.id.btn_reglages)).perform(click())
-        onView(withId(R.id.btn_reinit_1)).check(matches(isDisplayed()))
+        onView(withId(R.id.btn_retour)).perform(click())
+        onView(withId(R.id.btn_reglages)).check(matches(isDisplayed())).perform(click())
+        onView(withId(R.id.btn_reinit_1)).check(matches(isDisplayed())).perform(click())
+        onView(withText("Cancel")).perform(click())
+        onView(withId(R.id.btn_reinit_1)).check(matches(isDisplayed())).perform(click())
+        onView(withText("Oui")).perform(click())
+        Thread.sleep(1000)
+        onView(withId(R.id.btn_continue)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -163,8 +175,9 @@ class AidantActivityTest {
     @Test
     fun emergencyButtonTest() {
         onView(withId(R.id.btn_urgence)).perform(click())
-        onView(withText(R.string.oui)).check(matches(isDisplayed()))
-        onView(withText(R.string.oui)).perform(click())
+        onView(withText("Cancel")).check(matches(isDisplayed())).perform(click())
+        onView(withId(R.id.btn_urgence)).perform(click())
+        onView(withText(R.string.oui)).check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.log_texte)).check(matches(withSubstring("Le traitement est en cours")))
     }
 
@@ -183,13 +196,56 @@ class AidantActivityTest {
     }
 
     @Test
+    fun reloadLogTest() {
+        userData.bit = 7
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring("Il n'y a pas de fichier sur le serveur appartenant à Jules."))
+        )
+        userData.bit = 8
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring("Jules a besoin d'aide immédiatement.")
+        ))
+        userData.bit = 9
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring("Erreur lors de l'envoi du fichier")
+        ))
+        userData.bit = 10
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring("Les données de Jules sont disponibles")
+        ))
+    }
+
+    @Test
     fun urlSaveTest() {
         userData.saveURL(appContext, "abcdef")
         assert(userData.loadURL(appContext) == "abcdef")
     }
 
+    @Test
+    fun getContextCaptureTest() {
+        userData.saveURL(appContext, "c119e537-a42b-4cfc-8fca-e.zip") //Replace with existing url when testing
+        Thread.sleep(1000)
+        launch(AidantActivity::class.java)
+        onView(withId(R.id.btn_files)).perform(click())
+        Thread.sleep(5000)
+        time = getCurrentTime("HH'h'mm")
+        val dataFile = File(Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
+            "Situation_${userData.nomPartner}_${time}_${userData.urlToFile}".replace(".zip", ""))
+        assert(dataFile.exists())
+    }
+
     @After
     fun tearDown() {
+        val file = File(Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
+                "Situation_${userData.nomPartner}_${time}_${userData.urlToFile}".replace(".zip", "")
+            )
+        if (file.exists()) file.delete()
         Intents.release()
     }
 }

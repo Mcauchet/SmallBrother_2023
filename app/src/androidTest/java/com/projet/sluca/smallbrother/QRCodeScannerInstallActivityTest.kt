@@ -3,8 +3,10 @@ package com.projet.sluca.smallbrother
 import android.Manifest
 import android.app.Application
 import android.content.Context
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -63,7 +65,6 @@ class QRCodeScannerInstallActivityTest {
             appContext = InstrumentationRegistry.getInstrumentation().targetContext
             userData = UserDataManager.getUserData(appContext.applicationContext as Application)
             userData.nomPartner = "Julie"
-            userData.role = "Aidant"
             userData.nom = "Marc"
             userData.version = "1.2"
             userData.telephone = "0476181818"
@@ -88,6 +89,7 @@ class QRCodeScannerInstallActivityTest {
 
     @Test
     fun textScanTest() {
+        userData.role = "Aidant"
         val textScan = onView(withId(R.id.textScan))
         textScan.check(matches(isDisplayed()))
         activityRule.scenario.onActivity {
@@ -100,9 +102,26 @@ class QRCodeScannerInstallActivityTest {
 
     @Test
     fun scanQRTest() {
+        userData.role = "Aidant"
         val activityScenario = launch(QRCodeScannerInstallActivity::class.java)
+        scannerActivity(activityScenario)
+        onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun aideScanQRTest() {
+        userData.role = "Aidé"
+        val activityScenario = launch(QRCodeScannerInstallActivity::class.java)
+        scannerActivity(activityScenario)
+        Thread.sleep(1000)
+        onView(withId(R.id.btn_qrcode)).check(matches(isDisplayed())).perform(click())
+        onView(withId(R.id.textQR)).check(matches(isDisplayed()))
+    }
+
+    private fun scannerActivity(activityScenario: ActivityScenario<QRCodeScannerInstallActivity>) {
         activityScenario.onActivity { activity ->
-            val codeScannerField = QRCodeScannerInstallActivity::class.java.getDeclaredField("codeScanner")
+            val codeScannerField =
+                QRCodeScannerInstallActivity::class.java.getDeclaredField("codeScanner")
             codeScannerField.isAccessible = true
             val codeScanner = codeScannerField.get(activity) as CodeScanner
             val pubKey = "FakePublicKey"
@@ -110,6 +129,5 @@ class QRCodeScannerInstallActivityTest {
             val result = Result(barcode.rawValue, null, null, BarcodeFormat.QR_CODE)
             codeScanner.decodeCallback?.onDecoded(result)
         }
-        onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
     }
 }

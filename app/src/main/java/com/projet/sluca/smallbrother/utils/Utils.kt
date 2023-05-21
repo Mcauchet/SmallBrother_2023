@@ -122,10 +122,9 @@ fun getAppVersion(context: Context): String {
  * @param [apercu] the picture preview
  * @param [userData] the user's data
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 19-02-2023)
+ * @version 1.2 (Updated on 21-05-2023)
  */
 fun showPicture(apercu: ImageView, userData: UserData) {
-    check(userData.path != "")
     val path = userData.path + "/SmallBrother/photo_aide.jpg"
     assert(path != "/SmallBrother/photo_aide.jpg")
     val file = File(path)

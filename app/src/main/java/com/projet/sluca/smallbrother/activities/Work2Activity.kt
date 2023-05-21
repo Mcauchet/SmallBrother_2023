@@ -46,7 +46,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 18-05-2023)
+ * @version 1.2 (Updated on 21-05-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -463,7 +463,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @version 1.2 (Updated on 16-01-2023)
      */
     private fun encryptAESKeyWithRSA(aesKey: SecretKey) : String {
-        check(userData.pubKey != "")
         return android.util.Base64.encodeToString(
                 SecurityUtils.encryptAESKey(
                     SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
@@ -546,7 +545,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * Zips files contained in the source file
      * @param [zipOut] the zip output stream
      * @param [sourceFile] the File to zip
-     * @param [parentDirPath] the path of the sourceFile's parent
      * code snippet from https://www.folkstalk.com/tech/how-to-zip-folders-subfolders-with-files-in-it-in-kotlin-using-zipoutputstream-with-code-solution/
      */
     private fun zipFiles(zipOut: ZipOutputStream, sourceFile: File, parentDirPath: String) {
@@ -597,7 +595,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     /**
      * Write the data of the entry in the zip archive
      * @param [file] the next entry
-     * @param [parent] the parent path of the file
      * @param [zipOut] the zipOutputStream
      * @param [data] the ByteArray buffer
      * @author Maxime Caucheteur

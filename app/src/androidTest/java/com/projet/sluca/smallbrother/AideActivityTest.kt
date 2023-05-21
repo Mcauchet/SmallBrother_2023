@@ -197,10 +197,17 @@ class AideActivityTest {
                 "tente de vérifier votre situation. Pourquoi ne pas l'appeler ?")))
     }
 
-    /*@Test
-    fun askForHelpTest() {
-
-    }*/
+    @Test
+    fun exitPrivateModeTest() {
+        onView(withId(R.id.btn_deranger)).perform(click())
+        onView(withText("Valider")).perform(click())
+        onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
+        userData.delay = 200
+        Thread.sleep(500)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring("Le délai du Mode Privé est écoulé.")
+        ))
+    }
 
     @After
     fun tearDown() {
