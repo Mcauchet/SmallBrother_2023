@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Environment
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -98,7 +99,6 @@ class AidantActivityTest {
     @Test
     fun aidantActivityUITest() {
         onView(withId(R.id.btn_reglages)).check(matches(isDisplayed()))
-        onView(withId(R.id.btn_photo)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_downloadFolder)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
         onView(withId(R.id.btn_appel)).check(matches(isDisplayed()))
@@ -119,28 +119,6 @@ class AidantActivityTest {
         onView(withText("Oui")).perform(click())
         Thread.sleep(1000)
         onView(withId(R.id.btn_continue)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun redoPictureTest() {
-        onView(withId(R.id.btn_reglages)).perform(click())
-        onView(withId(R.id.btn_reinit_2)).perform(click())
-        onView(withId(R.id.btn_save)).check(matches(isDisplayed())).perform(click())
-        onView(withId(R.id.legende)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun cancelRedoPictureTest() {
-        onView(withId(R.id.btn_reglages)).perform(click())
-        onView(withId(R.id.btn_reinit_2)).perform(click())
-        onView(withId(R.id.btn_retour)).perform(click())
-        onView(withId(R.id.btn_reinit_2)).check(matches(isDisplayed()))
-    }
-
-    @Test
-    fun pictureButtonTest() {
-        onView(withId(R.id.btn_photo)).perform(click())
-        onView(withId(R.id.legende)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -227,7 +205,7 @@ class AidantActivityTest {
 
     @Test
     fun getContextCaptureTest() {
-        userData.saveURL(appContext, "c119e537-a42b-4cfc-8fca-e.zip") //Replace with existing url when testing
+        userData.saveURL(appContext, "d2eafb29-a698-4fc6-a7a3-d.zip") //Replace with existing url when testing
         Thread.sleep(1000)
         launch(AidantActivity::class.java)
         onView(withId(R.id.btn_files)).perform(click())

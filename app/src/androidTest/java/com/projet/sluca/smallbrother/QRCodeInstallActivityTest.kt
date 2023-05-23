@@ -111,7 +111,4 @@ class QRCodeInstallActivityTest {
         userData.role = ""
     }
 
-    @After
-    fun tearDown() {
-    }
 }

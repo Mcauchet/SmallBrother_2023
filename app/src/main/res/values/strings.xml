@@ -14,20 +14,16 @@
         selon le rôle de chacun :
     </string>
     <string name="install_note2">Veuillez compléter ces champs :</string>
-    <string name="install_note3">
-        [Facultatif] : prendre une photo de la personne aidée pour les cas d\'urgence.
-    </string>
     <string name="input1A">Nom de l\'Aidant</string>
     <string name="input1B">Nom de l\'Aidé</string>
     <string name="input2A">N° de portable de l\'Aidé</string>
     <string name="input2B">N° de portable de l\'Aidant</string>
     <string name="reglages_intitule">Réglages</string>
     <string name="reglages_note">
-        Ce menu vous permet de réinitialiser votre application et celle de l\'aidé. Vous pouvez également refaire la photo de l\'aidé.
+        Ce menu vous permet de réinitialiser votre application et celle de l\'aidé.
         Attention, si vous réinitialisez les applications, vous devrez réinstaller l\'application sur les deux smartphones.
     </string>
     <string name="chargement">Envoi en cours </string>
-    <string name="cheminphoto">Stockage Interne/Download/SmallBrother/photo_aide.jpg</string>
     <string name="nophoto">Aucun fichier trouvé.</string>
     <string name="reacpitulatif_cln1">→ Nom : \n→ Numéro de l\'Aidé : </string>
     <string name="popup1">
@@ -47,15 +43,12 @@
     <string name="btn_valider">Valider</string>
     <string name="btn_annuler">Annuler</string>
     <string name="btn_sauver">Sauver</string>
-    <string name="btn_capture">Prendre une photo</string>
-    <string name="btn_capture2">Prendre la photo</string>
     <string name="btn_sms_va_dant">Envoyer SMS: Tout va bien ?</string>
     <string name="btn_sms_va_de">Envoyer SMS: Tout va bien.</string>
     <string name="btn_appel">Appeler §%</string>
     <string name="btn_urgence">Vérifier la situation §%</string>
     <string name="btn_tiers">Envoyer les info par mail à …</string>
     <string name="btn_reinit_1">Réinitialiser SmallBrother</string>
-    <string name="btn_reinit_2">Refaire la photo §%</string>
     <string name="btn_switch">Mode Privé </string>
 
 
@@ -69,7 +62,7 @@
     <string name="message02_settings">Confirmez-vous cette action ? Vous devrez réinstaller
         l\'application sur les deux smartphones pour pouvoir l\'utiliser à nouveau. Cette action
         entraînera la suppression des données en lien avec l\'application sur les smartphones de
-        l\'aidant et de l\'aidé (informations, photo). Les captures de contexte seront toujours
+        l\'aidant et de l\'aidé. Les captures de contexte seront toujours
         disponibles dans votre dossier de téléchargement.</string>
     <string name="message03A">Suppression effectuée.</string>
     <string name="message03B">Un SMS de déclenchement a été envoyé à votre partenaire.</string>
@@ -83,7 +76,6 @@
         ce processus va déclencher les appareils photo, micro et outils de localisation.
     </string>
     <string name="message07">La demande a été envoyée.</string>
-    <string name="message09">Photo de votre partenaire mise à jour.</string>
     <string name="message10">Mode Privé activé pour §% minute(s).</string>
     <string name="message11">Mode Privé désactivé.</string>
     <string name="message12A">EN COURS : enregistrement audio.</string>
@@ -174,12 +166,10 @@
     <string name="nomAide">Nom de l\'Aidé</string>
     <string name="blank" />
     <string name="duree_prive_base">15</string>
-    <string name="contentDesc_photo">Bouton photo</string>
-    <string name="contentDesc_reduire">Bouton Réduire</string>
+    <string name="contentDesc_download">Dossier de téléchargement</string>
     <string name="contentDesc_log">Cadre du log</string>
     <string name="contentDesc_reglages">Bouton Réglages</string>
     <string name="scan_termin_avec_succ_s_appuyez_sur_afficher_qr_code_pour_continuer">[INSTALLATION] Scan terminé avec succès, veuillez appuyer sur \'Afficher QR code\' pour permettre à §% de le scanner.</string>
     <string name="afficher_qr_code">Afficher QR code</string>
-    <string name="image_de_l_aide">Image de l\'Aidé</string>
 
 </resources>

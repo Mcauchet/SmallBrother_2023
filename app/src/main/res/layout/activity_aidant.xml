@@ -59,20 +59,6 @@
                     android:shadowDy="0"
                     android:shadowRadius="5" />
 
-                <!-- Bouton Photo -->
-                <Button
-                    android:id="@+id/btn_photo"
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:alpha="0.6"
-                    android:background="@drawable/photo"
-                    android:contentDescription="@string/contentDesc_photo"
-                    android:orientation="vertical"
-                    android:shadowColor="#000000"
-                    android:shadowDx="0"
-                    android:shadowDy="0"
-                    android:shadowRadius="5" />
 
             </LinearLayout>
 
@@ -111,7 +97,7 @@
                     android:layout_marginEnd="8dp"
                     android:alpha="0.6"
                     android:background="@drawable/download_folder"
-                    android:contentDescription="@string/contentDesc_reduire"
+                    android:contentDescription="@string/contentDesc_download"
                     android:orientation="vertical"
                     android:shadowColor="#000000"
                     android:shadowDx="0"

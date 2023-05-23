@@ -104,7 +104,7 @@ class InstallActivityTest {
         assertEquals(name, userData.nom)
         assertEquals(namePartner, userData.nomPartner)
         assertEquals(telephone, userData.telephone)
-        onView(withId(R.id.btn_capture)).check(matches(isDisplayed()))
+        onView(withId(R.id.textQR)).check(matches(isDisplayed()))
     }
 
     @Test

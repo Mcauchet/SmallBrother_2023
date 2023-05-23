@@ -33,7 +33,7 @@ import java.util.zip.ZipInputStream
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 09-05-2023)
+ * @version 1.2 (updated on 23-05-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -50,7 +50,6 @@ class AidantActivity : AppCompatActivity() {
         setContentView(R.layout.activity_aidant)
 
         val btnSettings: Button = findViewById(R.id.btn_reglages)
-        val btnPicture: Button = findViewById(R.id.btn_photo)
         val btnFolder: Button = findViewById(R.id.btn_downloadFolder)
         val btnSmsAide: Button = findViewById(R.id.btn_sms_va_dant)
         val btnCall: Button = findViewById(R.id.btn_appel)
@@ -82,12 +81,6 @@ class AidantActivity : AppCompatActivity() {
         btnSettings.setOnClickListener {
             vibreur.vibration(this, 200)
             val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnPicture.setOnClickListener {
-            vibreur.vibration(this, 200)
-            val intent = Intent(this, PhotoAideActivity::class.java)
             startActivity(intent)
         }
 
