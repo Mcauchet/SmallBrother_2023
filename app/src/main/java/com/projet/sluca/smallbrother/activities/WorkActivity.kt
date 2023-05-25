@@ -28,7 +28,7 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 01-05-2023)
+ * @version 1.2 (Updated on 24-05-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -138,23 +138,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     }
 
     /**
-     * Interpret the results of the motion capture based on the start and end of the audio record
-     * @param checkAcc1 true if acceleration above threshold at second 2 of the record,
-     * false otherwise
-     * @param checkAcc2 true if acceleration above threshold at second 9 of the record,
-     * false otherwise
-     * @return the interpretation as a String
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 11-04-2023)
-     */
-    private fun interpretAcceleration(checkAcc1: Boolean, checkAcc2: Boolean) = when {
-        checkAcc1 && checkAcc2 -> "En mouvement"
-        checkAcc1 && !checkAcc2 -> "S'est arrêté"
-        !checkAcc1 && checkAcc2 -> "Commence à bouger"
-        else -> "À l'arrêt"
-    }
-
-    /**
      * Init the MediaRecorder responsible for the audio capture
      *
      * @author Maxime Caucheteur
@@ -224,20 +207,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
             SensorManager.SENSOR_DELAY_NORMAL)
     }
 
-    /**
-     * Gets the light sensor interpretation for the information file
-     * @param level the results of the sensor
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 12-04-2023)
-     */
-    private fun getLightScale(level: Float) = when(level) {
-        in 0f..50f -> "Très faible - $level"
-        in 50f..200f -> "Faible - $level"
-        in 200f..1000f -> "Normal - $level"
-        in 1000f..10000f -> "Clair - $level"
-        else -> "Très clair - $level"
-    }
-
     /*-------------Functions related to the acceleration detection----------*/
     /**
      * Register a sensor event listener to detect the acceleration of the phone
@@ -268,10 +237,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                     if(timeDiff > 100) {
                         force = abs(accX + accY + accZ - lastX - lastY - lastZ)
                         val acc = sqrt(accX * accX + accY * accY + accZ*accZ)
-                        Log.d("force", force.toString())
-                        Log.d("acc", acc.toString())
                         userData.motion = force.compareTo(1.0f) > 0
-                        Log.d("motion", userData.motion.toString())
                         updateCoordinates(accX, accY, accZ)
                         lastUpdate = now
                     }
@@ -310,8 +276,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         // Error margin (*10) to compensate the accelerometer high sensibility
         //TODO check the correct multiplier to have a decent sensor
         val errorMargin = 10
-        Log.d("x y and z", "$x ; $y ; $z")
-        Log.d("x multiplied", "${(x.toInt()*errorMargin).toFloat()}")
         val tmp = floatArrayOf(
             (x.toInt() * errorMargin).toFloat(),
             (y.toInt() * errorMargin).toFloat(),

@@ -118,20 +118,6 @@ fun getAppVersion(context: Context): String {
 }
 
 /**
- * Shows the Aide's picture if it exists
- * @param [apercu] the picture preview
- * @param [userData] the user's data
- * @author Maxime Caucheteur
- * @version 1.2 (Updated on 21-05-2023)
- */
-fun showPicture(apercu: ImageView, userData: UserData) {
-    val path = userData.path + "/SmallBrother/photo_aide.jpg"
-    assert(path != "/SmallBrother/photo_aide.jpg")
-    val file = File(path)
-    if (file.exists()) apercu.setImageURI(Uri.fromFile(file))
-}
-
-/**
  * Get the current time and format it
  * @param [format] the format of the date
  * @return The date as a String

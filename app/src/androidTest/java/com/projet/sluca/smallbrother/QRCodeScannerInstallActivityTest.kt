@@ -104,6 +104,7 @@ class QRCodeScannerInstallActivityTest {
     fun scanQRTest() {
         userData.role = "Aidant"
         val activityScenario = launch(QRCodeScannerInstallActivity::class.java)
+        onView(withId(R.id.qr_scanner)).perform(click())
         scannerActivity(activityScenario)
         onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
     }
@@ -112,6 +113,7 @@ class QRCodeScannerInstallActivityTest {
     fun aideScanQRTest() {
         userData.role = "Aidé"
         val activityScenario = launch(QRCodeScannerInstallActivity::class.java)
+        onView(withId(R.id.qr_scanner)).perform(click())
         scannerActivity(activityScenario)
         Thread.sleep(1000)
         onView(withId(R.id.btn_qrcode)).check(matches(isDisplayed())).perform(click())

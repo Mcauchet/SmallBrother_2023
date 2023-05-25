@@ -205,7 +205,7 @@ class AidantActivityTest {
 
     @Test
     fun getContextCaptureTest() {
-        userData.saveURL(appContext, "d2eafb29-a698-4fc6-a7a3-d.zip") //Replace with existing url when testing
+        userData.saveURL(appContext, "e3baeec9-63d0-497c-85cd-b.zip") //Replace with existing url when testing
         Thread.sleep(1000)
         launch(AidantActivity::class.java)
         onView(withId(R.id.btn_files)).perform(click())
