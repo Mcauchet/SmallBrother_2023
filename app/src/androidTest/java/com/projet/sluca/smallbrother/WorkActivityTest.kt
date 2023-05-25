@@ -98,6 +98,7 @@ class WorkActivityTest {
     @Test
     fun contextCaptureTest() {
         launch(AideActivity::class.java)
+        SmsReceiver.clef = "[#SB04]"
         val intent = Intent(appContext, WorkActivity::class.java)
         intent.putExtra("clef", "[#SB04]")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

@@ -110,14 +110,16 @@ class AidantActivityTest {
 
     @Test
     fun settingsButtonsTest() {
-        onView(withId(R.id.btn_reglages)).perform(click())
+        onView(withId(R.id.btn_reglages)).check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.btn_retour)).perform(click())
+        Thread.sleep(300)
         onView(withId(R.id.btn_reglages)).check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.btn_reinit_1)).check(matches(isDisplayed())).perform(click())
         onView(withText("Cancel")).perform(click())
         onView(withId(R.id.btn_reinit_1)).check(matches(isDisplayed())).perform(click())
         onView(withText("Oui")).perform(click())
         Thread.sleep(1000)
+        assert(!File("donnees.txt").exists())
         onView(withId(R.id.btn_continue)).check(matches(isDisplayed()))
     }
 
@@ -205,25 +207,31 @@ class AidantActivityTest {
 
     @Test
     fun getContextCaptureTest() {
-        userData.saveURL(appContext, "e3baeec9-63d0-497c-85cd-b.zip") //Replace with existing url when testing
+        userData.saveURL(appContext, "2c808e95-4b36-4402-94c0-9.zip") //Replace with existing url when testing
         Thread.sleep(1000)
         launch(AidantActivity::class.java)
         onView(withId(R.id.btn_files)).perform(click())
         Thread.sleep(5000)
-        time = getCurrentTime("HH'h'mm")
-        val dataFile = File(Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
-            "Situation_${userData.nomPartner}_${time}_${userData.urlToFile}".replace(".zip", ""))
+        val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath)
+        lateinit var dataFile: File
+        val files = directory.listFiles()
+        for(file in files!!) {
+            if (file.name.contains(userData.urlToFile)) {
+                dataFile = file
+            }
+        }
         assert(dataFile.exists())
     }
 
     @After
     fun tearDown() {
-        val file = File(Environment
-                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath,
-                "Situation_${userData.nomPartner}_${time}_${userData.urlToFile}".replace(".zip", "")
-            )
-        if (file.exists()) file.delete()
+        val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath)
+        val files = directory.listFiles()
+        for(ctxt in files!!) {
+            if (ctxt.name.contains(userData.urlToFile)) {
+                ctxt.delete()
+            }
+        }
         Intents.release()
     }
 }

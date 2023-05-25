@@ -82,6 +82,36 @@ class Launch1ActivityTest {
         userData.role = null
     }
 
+    @Test
+    fun checkLaunchAfterResetTest() {
+        userData.role="Aidant"
+        userData.pubKey="FakeKey"
+
+        ActivityScenario.launch(Launch1Activity::class.java)
+
+        onView(withId(R.id.input_nom)).check(matches(isDisplayed()))
+
+        userData.role = null
+    }
+
+    @Test
+    fun checkLaunchAfterResetRoleNullTest() {
+        userData.role = null
+        userData.pubKey = "FakeKey"
+        ActivityScenario.launch(Launch1Activity::class.java)
+        onView(withId(R.id.btn_commencer)).check(matches(isDisplayed()))
+        userData.role = null
+    }
+
+    @Test
+    fun checkLaunchAfterResetNoPubKeyTest() {
+        userData.role = "Aidant"
+        userData.pubKey = ""
+        ActivityScenario.launch(Launch1Activity::class.java)
+        onView(withId(R.id.btn_commencer)).check(matches(isDisplayed()))
+        userData.role = null
+    }
+
     @After
     fun tearDown() {
         val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")

@@ -295,7 +295,6 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         locationNetwork = null
         Log.d("Address 1 in getLocation", address1)
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            Log.d("accuracy", location.accuracy.toString())
             if (location != null && hasGps) locationGps = location
             else if(location != null && hasNetwork) {
                 fusedLocationClient.lastLocation.addOnSuccessListener { networkLocation ->

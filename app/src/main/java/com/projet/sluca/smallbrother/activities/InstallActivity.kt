@@ -126,12 +126,11 @@ class InstallActivity : AppCompatActivity() {
      * @param [userData] the user's data
      * @param [context] the Context of the application
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 16-01-2023)
+     * @version 1.2 (Updated on 26-05-2023)
      */
     private fun registerData(name: String, namePartner: String, telephone: String, userData: UserData,
                              context: Context
     ) {
-        require(name.isNotBlank() && telephone.isNotBlank() && namePartner.isNotBlank())
         userData.version = getAppVersion(context)
         userData.nom = name
         userData.nomPartner = namePartner
@@ -148,7 +147,7 @@ class InstallActivity : AppCompatActivity() {
      * @version 1.2 (Updated on 23-05-2023)
      */
     private fun redirectAfterRegister(userData: UserData, context: Context) {
-        check(userData.role == "Aidant" || userData.role == "Aidé")
+        //TODO add when (userData.role) Aidant, Aidé, else = Launch1Activity::class.java
         if (userData.role == "Aidant") {
             val intent = Intent(context, QRCodeInstallActivity::class.java)
             ContextCompat.startActivity(context, intent, null)

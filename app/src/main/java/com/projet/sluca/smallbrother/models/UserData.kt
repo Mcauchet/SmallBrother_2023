@@ -29,7 +29,7 @@ import java.io.*
  * @property pubKey: the public key of the partner for encryption/signing purpose
  * @constructor creates a user with default properties
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 21-05-2023)
+ * @version 1.2 (updated on 26-05-2023)
  */
 data class UserData(
     var version: String = "", var role: String? = null, var nom: String = "",
@@ -132,7 +132,6 @@ data class UserData(
      * @version 1.2 (Updated on 17-01-2023)
      */
     private fun retrieveData(file: File): Boolean {
-        require(file.exists())
         val dataTab: Array<String> = readDataFile(file)
         if(dataTab.size != 7) return false
         version = dataTab[0]
