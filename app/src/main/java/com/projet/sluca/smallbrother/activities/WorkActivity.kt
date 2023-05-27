@@ -28,7 +28,7 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 24-05-2023)
+ * @version 1.2 (Updated on 27-05-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -64,6 +64,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         tvAction = findViewById(R.id.action)
         tvLoading.text = ""
         tvAction.text = ""
+        findViewById<TextView>(R.id.travail).text = getString(R.string.message06)
+            .replace("§%", userData.nomPartner)
 
         userData = UserDataManager.getUserData(application)
 
@@ -275,7 +277,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
         // Fetch phone's coordinates
         // Error margin (*10) to compensate the accelerometer high sensibility
         //TODO check the correct multiplier to have a decent sensor
-        val errorMargin = 10
+        val errorMargin = 10 //seems a bit too sensitive, maybe try 15/20/30
         val tmp = floatArrayOf(
             (x.toInt() * errorMargin).toFloat(),
             (y.toInt() * errorMargin).toFloat(),

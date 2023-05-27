@@ -28,7 +28,7 @@
     <string name="reacpitulatif_cln1">→ Nom : \n→ Numéro de l\'Aidé : </string>
     <string name="popup1">
         Entrez une durée en minutes (maximum 120) durant laquelle vous ne souhaitez pas
-        que votre partenaire puisse vérifier votre situation :
+        que §% puisse vérifier votre situation :
     </string>
     <string name="intitule_delai">Temps restant : </string>
 
@@ -65,11 +65,10 @@
         l\'aidant et de l\'aidé. Les captures de contexte seront toujours
         disponibles dans votre dossier de téléchargement.</string>
     <string name="message03A">Suppression effectuée.</string>
-    <string name="message03B">Un SMS de déclenchement a été envoyé à votre partenaire.</string>
     <string name="message04">SMS envoyé.</string>
     <string name="message05">L\'appel est lancé.</string>
     <string name="message06">
-        Votre partenaire tente de vérifier votre situation. Veuillez patienter pendant que SmallBrother réalise les actions requises.
+        §% tente de vérifier votre situation. Veuillez patienter pendant que SmallBrother réalise les actions requises.
     </string>
     <string name="message06B">
         RAPPEL :
@@ -131,7 +130,7 @@
         Le traitement est en cours, veuillez patienter.
     </string>
     <string name="log_data_on_server">
-        Les données §% sont disponibles dans votre dossier de téléchargement. Vous pouvez l\'ouvrir en appuyant sur l\'icône.
+        Les données §% sont disponibles dans votre dossier de téléchargement. Vous pouvez l\'ouvrir en appuyant sur le dossier en haut à droite de l'écran.
     </string>
     <string name="log_no_internet_aide">
         §% tente de vérifier votre situation.
@@ -141,7 +140,7 @@
         §% n\'a pas Internet, les fichiers ne peuvent être envoyés au serveur.
     </string>
     <string name="log_aide_needs_help">§% a besoin d\'aide immédiatement. Ses données seront disponibles dans votre dossier de téléchargement dans quelques instants.</string>
-    <string name="log_aide_send_SMS">Vous signalez à §% que tout va bien.</string>
+    <string name="log_aide_send_SMS">Vous avez signalé à §% que tout va bien.</string>
     <string name="log_download_ko">Il n\'y a pas de fichier sur le serveur appartenant à §%.</string>
     <string name="log_private_expired">Le délai du Mode Privé est écoulé.</string>
     <string name="log_private_warn">

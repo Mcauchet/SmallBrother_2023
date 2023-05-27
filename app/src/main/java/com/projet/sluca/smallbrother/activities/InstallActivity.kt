@@ -147,7 +147,6 @@ class InstallActivity : AppCompatActivity() {
      * @version 1.2 (Updated on 23-05-2023)
      */
     private fun redirectAfterRegister(userData: UserData, context: Context) {
-        //TODO add when (userData.role) Aidant, Aidé, else = Launch1Activity::class.java
         if (userData.role == "Aidant") {
             val intent = Intent(context, QRCodeInstallActivity::class.java)
             ContextCompat.startActivity(context, intent, null)
@@ -155,6 +154,13 @@ class InstallActivity : AppCompatActivity() {
             val intent = Intent(context, QRCodeScannerInstallActivity::class.java)
             ContextCompat.startActivity(context, intent, null)
         }
+        //TODO test this
+        /*val intent: Intent = when(userData.role) {
+            "Aidant" -> Intent(context, QRCodeInstallActivity::class.java)
+            "Aidé" -> Intent(context, QRCodeScannerInstallActivity::class.java)
+            else -> Intent(context, Launch1Activity::class.java)
+        }
+        ContextCompat.startActivity(context, intent, null)*/
     }
 
     /**

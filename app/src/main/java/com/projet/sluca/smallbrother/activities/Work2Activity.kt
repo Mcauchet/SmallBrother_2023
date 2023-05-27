@@ -109,17 +109,23 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             requestPermission()
             @Suppress("MissingPermission")
             locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER, 1000, 10f, locationListener
+                LocationManager.GPS_PROVIDER, 1000, 1f, locationListener
             )
 
             tvAction.text = getString(R.string.message12C)
             checkForLocation()
             if(locationGps==null && locationNetwork==null) getLocation()
-            object : CountDownTimer(13000, 100) {
+            object : CountDownTimer(14000, 100) {
                 override fun onTick(millisUntilFinished: Long) {
                     when (millisUntilFinished) {
-                        in 10000..12000 -> address1 = getAddress()
-                        in 1000..2000 -> address2 = getAddress()
+                        in 11000..13000 -> {
+                            address1 = getAddress()
+                            Log.d("address1", address1)
+                        }
+                        in 1000..3000 -> {
+                            address2 = getAddress()
+                            Log.d("address2", address2)
+                        }
                     }
                 }
                 override fun onFinish() {

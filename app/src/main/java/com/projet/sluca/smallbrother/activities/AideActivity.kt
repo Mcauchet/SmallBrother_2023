@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 /**
  * class AideActivity manages the actions available to the "Aidé".
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 18-05-2023)
+ * @version 1.2 (updated on 27-05-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -102,9 +102,10 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         if (isChecked && !userData.prive) {
+            findViewById<TextView>(R.id.text).text =
+                getString(R.string.popup1).replace("§%", userData.nomPartner)
             val promptsView = LayoutInflater.from(this).inflate(R.layout.popup1, null)
-            val alertDialogBuilder = AlertDialog.Builder(this)
-            alertDialogBuilder.setView(promptsView)
+            val alertDialogBuilder = AlertDialog.Builder(this).setView(promptsView)
             val input = promptsView.findViewById<View>(R.id.input_delai) as EditText
             configureAlertDialog(alertDialogBuilder, input)
             alertDialogBuilder.create().show()
@@ -313,6 +314,7 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
+            if (userData.bit == 0) tvLog.text = "" //TODO test this
             if (userData.bit > 1)  updateLogPrivate(userData.bit) // Means private mode is ON
             if (userData.log != null) setLogAppearance(userData, tvLog)
             updatePrivateMode()
