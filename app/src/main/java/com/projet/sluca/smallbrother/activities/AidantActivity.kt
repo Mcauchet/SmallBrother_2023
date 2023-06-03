@@ -69,8 +69,10 @@ class AidantActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         if(intent.hasExtra("url")){
+            if(!isDNDModeOn(this)) alarm(this)
             intent.getStringExtra("url")?.let { url ->
                 userData.saveURL(this, url)
+                userData.urlToFile = url
             }
             if(isOnline(this)) CoroutineScope(Dispatchers.Main).launch {
                 getContextCapture()
@@ -95,7 +97,7 @@ class AidantActivity : AppCompatActivity() {
             if(sendSMS(this, sms, userData.telephone, vibreur)) {
                 userData.bit = 0
                 message(this, getString(R.string.message04), vibreur)
-                userData.refreshLog(4)
+                userData.refreshLog(2)
             }
         }
 
@@ -237,7 +239,7 @@ class AidantActivity : AppCompatActivity() {
      * @param [client] the HttpClient to access the server
      * @param [file] the file to store the data in
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 01-05-2023)
+     * @version 1.2 (Updated on 31-05-2023)
      */
     private suspend fun getDataOnServer(client: HttpClient, file: File) {
         val zipDataByteArray: ByteArray = downloadFileRequest(client)?.body() ?: return
@@ -246,9 +248,8 @@ class AidantActivity : AppCompatActivity() {
         val signature = aideData.signature
         val iv = aideData.iv
         val aesEncKey: ByteArray = Base64.decode(aesBody, Base64.NO_WRAP)
-        if(!SecurityUtils.verifyFile(zipDataByteArray,
-                SecurityUtils.loadPublicKey(userData.pubKey) as PublicKey,
-                Base64.decode(signature, Base64.NO_WRAP))) return
+        if(!SecurityUtils.verifyFile(zipDataByteArray, SecurityUtils.loadPublicKey(userData.pubKey)
+                    as PublicKey, Base64.decode(signature, Base64.NO_WRAP))) return
         val decryptedData = SecurityUtils.decryptDataAes(zipDataByteArray, aesEncKey, iv)
         file.writeBytes(decryptedData)
         extractArchive(file)
@@ -358,10 +359,13 @@ class AidantActivity : AppCompatActivity() {
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
             when (userData.bit) {
+                5 -> userData.refreshLog(5)
                 7 -> userData.refreshLog(17)
                 8 ->  userData.refreshLog(14)
                 9 -> userData.refreshLog(16)
                 10 -> userData.refreshLog(11)
+                13 -> userData.refreshLog(13)
+                19 -> userData.refreshLog(19)
             }
             if (userData.log != null) setLogAppearance(userData, tvLog)
             logHandler.postDelayed(this, 250)

@@ -100,6 +100,7 @@ class AideActivityTest {
     @Test
     fun privateModeOnOffTest() {
         onView(withId(R.id.btn_deranger)).perform(click())
+        Thread.sleep(100)
         onView(withText("Valider")).perform(click())
         onView(withId(R.id.btn_deranger)).check(matches(isChecked()))
         assert(userData.delay in 890000..900000)
@@ -161,7 +162,7 @@ class AideActivityTest {
     fun sendSmsTest() {
         onView(withId(R.id.btn_sms_va_dant)).perform(click())
         Thread.sleep(300)
-        onView(withId(R.id.log_texte)).check(matches(withSubstring("Vous signalez à " +
+        onView(withId(R.id.log_texte)).check(matches(withSubstring("Vous avez signalé à " +
                 "${userData.nomPartner} que tout va bien.")))
     }
 

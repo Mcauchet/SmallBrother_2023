@@ -103,9 +103,9 @@ class WorkActivityTest {
         intent.putExtra("clef", "[#SB04]")
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         appContext.startActivity(intent)
-        Thread.sleep(30000)
+        Thread.sleep(35000)
         CoroutineScope(Dispatchers.IO).launch {
-            withTimeout(30000) {
+            withTimeout(35000) {
                 val secretKey = SecurityUtils.getAESKey()
                 val secretKey2 = SecurityUtils.getAESKey()
                 assert(secretKey != secretKey2)

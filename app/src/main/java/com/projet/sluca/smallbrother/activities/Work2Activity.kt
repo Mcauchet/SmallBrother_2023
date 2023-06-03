@@ -46,7 +46,7 @@ import javax.crypto.SecretKey
  * class Work2Activity manages the captures of pictures if requested by the aidant
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 21-05-2023)
+ * @version 1.2 (Updated on 03-06-2023)
  */
 class Work2Activity : AppCompatActivity(), PictureCapturingListener,
     OnRequestPermissionsResultCallback {
@@ -81,12 +81,15 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
+        userData = UserDataManager.getUserData(application)
+
         val tvLoading = findViewById<TextView>(R.id.loading)
         tvAction = findViewById(R.id.action)
         tvLoading.text = ""
         tvAction.text = ""
+        findViewById<TextView>(R.id.travail).text = getString(R.string.message06)
+            .replace("§%", userData.nomPartner)
 
-        userData = UserDataManager.getUserData(application)
         loading(tvLoading)
         setAppBarTitle(userData, this)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -121,6 +124,10 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                         in 11000..13000 -> {
                             address1 = getAddress()
                             Log.d("address1", address1)
+                        }
+                        8000L -> {
+                            locationGps = null
+                            locationNetwork = null //TODO test this
                         }
                         in 1000..3000 -> {
                             address2 = getAddress()
@@ -250,6 +257,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
+                locationManager.removeUpdates(locationListener)
                 vibreur.vibration(this@Work2Activity, 330)
 
                 activateSMSReceiver(this@Work2Activity)
@@ -403,9 +411,9 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
      * @param [file] the zip file to upload
      * @return the final name of the file to put in the download URL
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 13-03-2023)
+     * @version 1.2 (Updated on 03-06-2023)
      */
-    suspend fun uploadZip(client: HttpClient, file: File): String {
+    private suspend fun uploadZip(client: HttpClient, file: File): String {
         val finalName = generateRandomName()
         val aesKey = SecurityUtils.getAESKey()
         val iv = SecurityUtils.generateIVForAES()

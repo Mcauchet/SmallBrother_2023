@@ -15,14 +15,11 @@ import androidx.appcompat.app.AppCompatActivity
 import com.projet.sluca.smallbrother.*
 import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /**
  * class AideActivity manages the actions available to the "Aidé".
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 27-05-2023)
+ * @version 1.2 (updated on 31-05-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -102,8 +99,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {
         if (isChecked && !userData.prive) {
-            findViewById<TextView>(R.id.text).text =
-                getString(R.string.popup1).replace("§%", userData.nomPartner)
             val promptsView = LayoutInflater.from(this).inflate(R.layout.popup1, null)
             val alertDialogBuilder = AlertDialog.Builder(this).setView(promptsView)
             val input = promptsView.findViewById<View>(R.id.input_delai) as EditText
@@ -121,16 +116,14 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
      * Manages when the aide presses the Emergency button
      * @param sms the message sent to the aidant
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-05-2023)
+     * @version 1.2 (Updated on 31-05-2023)
      */
     private fun aideAskForHelp(sms: String) {
         if(sendSMS(this, sms, userData.telephone, vibreur)) {
             if(isOnline(this)) {
                 val workIntent = Intent(this, WorkActivity::class.java)
                     .putExtra("clef", "[#SB04]")
-                //CoroutineScope(Dispatchers.Main).launch {
-                    startActivity(workIntent)
-                //}
+                startActivity(workIntent)
             } else {
                 userData.refreshLog(22)
                 warnAidantNoInternet(this, vibreur, userData)
@@ -314,7 +307,6 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
 
     private val reloadLog: Runnable = object : Runnable {
         override fun run() {
-            if (userData.bit == 0) tvLog.text = "" //TODO test this
             if (userData.bit > 1)  updateLogPrivate(userData.bit) // Means private mode is ON
             if (userData.log != null) setLogAppearance(userData, tvLog)
             updatePrivateMode()

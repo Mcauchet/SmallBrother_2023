@@ -26,12 +26,39 @@ import kotlinx.coroutines.launch
 /**
  * class InstallActivity manages the data of the Aidant in the Aide's app
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 27-04-2023)
+ * @version 1.2 (Updated on 29-05-2023)
  */
 class InstallActivity : AppCompatActivity() {
 
     val vibreur = Vibration()
     lateinit var userData: UserData
+
+    private val aidantPermissions = arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.PROCESS_OUTGOING_CALLS,
+        Manifest.permission.CAMERA
+    )
+
+    private val aidePermissions = arrayOf(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.SEND_SMS,
+        Manifest.permission.CALL_PHONE,
+        Manifest.permission.READ_SMS,
+        Manifest.permission.RECEIVE_SMS,
+        Manifest.permission.READ_PHONE_STATE,
+        Manifest.permission.PROCESS_OUTGOING_CALLS,
+        Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.CAMERA,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -166,14 +193,27 @@ class InstallActivity : AppCompatActivity() {
     /**
      * Request the permissions if not already granted
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 27-04-2023)
+     * @version 1.2 (Updated on 03-06-2023)
      */
     private fun requestPermissions() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-            if(userData.role == "Aidé") getArrayOfPermissionsAide()
-            else getArrayOfPermissionsAidant()
+        when (userData.role) {
+            "Aidé" -> checkAllPermissions(aidePermissions)
+            "Aidant" -> checkAllPermissions(aidantPermissions)
+            else -> finish()
         }
+    }
+
+    /**
+     * Checks that all the permission in the array are granted, request them otherwise
+     * @param array the array of permissions
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 03-06-2023)
+     */
+    private fun checkAllPermissions(array: Array<String>) {
+        val allGranted = array.all {
+            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
+        }
+        if (!allGranted) getArrayOfPermissions(array)
     }
 
     override fun onRequestPermissionsResult(
@@ -183,33 +223,20 @@ class InstallActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == 1) {
-            if((grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED))
-                requestPermissions()
-            if(userData.role == "Aidé") getSpecialPermission()
+            if(grantResults.all {it == PackageManager.PERMISSION_GRANTED}) {
+                if(userData.role == "Aidé") getSpecialPermission()
+            } else requestPermissions()
         }
     }
 
     /**
-     * Request the array of permissions needed for the aidé
+     * Request the array of permissions needed for the user based on his role
+     * @param array the permissions array
      * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 05-04-2023)
+     * @version 1.2 (Updated on 29-05-2023)
      */
-    private fun getArrayOfPermissionsAide() {
-        ActivityCompat.requestPermissions(this, arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.SEND_SMS,
-            Manifest.permission.CALL_PHONE,
-            Manifest.permission.READ_SMS,
-            Manifest.permission.RECEIVE_SMS,
-            Manifest.permission.BROADCAST_SMS,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.PROCESS_OUTGOING_CALLS,
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION), 1)
-    }
+    private fun getArrayOfPermissions(array: Array<String>) =
+        ActivityCompat.requestPermissions(this, array, 1)
 
     /**
      * Target specific permissions according to the API version
@@ -226,25 +253,6 @@ class InstallActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION), 2)
         }
-    }
-
-    /**
-     * Request the array of permissions needed for the aidant
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    private fun getArrayOfPermissionsAidant() {
-        ActivityCompat.requestPermissions(this, arrayOf(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.CAMERA,
-            Manifest.permission.SEND_SMS,
-            Manifest.permission.CALL_PHONE,
-            Manifest.permission.READ_SMS,
-            Manifest.permission.RECEIVE_SMS,
-            Manifest.permission.READ_PHONE_STATE,
-            Manifest.permission.PROCESS_OUTGOING_CALLS
-        ), 1)
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {

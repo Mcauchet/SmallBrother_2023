@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Environment
 import androidx.test.core.app.ActivityScenario.launch
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
@@ -24,9 +23,13 @@ import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.projet.sluca.smallbrother.activities.AidantActivity
+import com.projet.sluca.smallbrother.activities.WorkActivity
 import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.SecurityUtils
-import com.projet.sluca.smallbrother.utils.getCurrentTime
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.hamcrest.CoreMatchers.allOf
 import org.junit.*
 import org.junit.Assert.*
@@ -45,7 +48,6 @@ class AidantActivityTest {
     val grantPermissionRule: GrantPermissionRule = GrantPermissionRule.grant(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA,
         Manifest.permission.SEND_SMS,
         Manifest.permission.CALL_PHONE,
         Manifest.permission.READ_SMS,
@@ -57,7 +59,6 @@ class AidantActivityTest {
     companion object {
         private lateinit var userData: UserData
         private lateinit var appContext: Context
-        var time: String = ""
 
         @BeforeClass
         @JvmStatic
@@ -111,6 +112,7 @@ class AidantActivityTest {
     @Test
     fun settingsButtonsTest() {
         onView(withId(R.id.btn_reglages)).check(matches(isDisplayed())).perform(click())
+        Thread.sleep(300)
         onView(withId(R.id.btn_retour)).perform(click())
         Thread.sleep(300)
         onView(withId(R.id.btn_reglages)).check(matches(isDisplayed())).perform(click())
@@ -154,7 +156,7 @@ class AidantActivityTest {
 
     @Test
     fun emergencyButtonTest() {
-        onView(withId(R.id.btn_urgence)).perform(click())
+        onView(withId(R.id.btn_urgence)).check(matches(isDisplayed())).perform(click())
         onView(withText("Cancel")).check(matches(isDisplayed())).perform(click())
         onView(withId(R.id.btn_urgence)).perform(click())
         onView(withText(R.string.oui)).check(matches(isDisplayed())).perform(click())
@@ -177,6 +179,11 @@ class AidantActivityTest {
 
     @Test
     fun reloadLogTest() {
+        userData.bit = 5
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring(userData.nomPartner + " va bien.")
+        ))
         userData.bit = 7
         Thread.sleep(300)
         onView(withId(R.id.log_texte)).check(matches(
@@ -197,6 +204,17 @@ class AidantActivityTest {
         onView(withId(R.id.log_texte)).check(matches(
             withSubstring("Les données de Jules sont disponibles")
         ))
+        userData.bit = 13
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring(userData.nomPartner + " n'a pas Internet")
+        ))
+        SmsReceiver.tempsrestant = "10"
+        userData.bit = 19
+        Thread.sleep(300)
+        onView(withId(R.id.log_texte)).check(matches(
+            withSubstring(userData.nomPartner + " souhaite ne pas être dérangé")
+        ))
     }
 
     @Test
@@ -207,20 +225,50 @@ class AidantActivityTest {
 
     @Test
     fun getContextCaptureTest() {
-        userData.saveURL(appContext, "2c808e95-4b36-4402-94c0-9.zip") //Replace with existing url when testing
+        userData.saveURL(appContext, "36085647-7e4b-4129-bdb7-8.zip") //Replace with existing url when testing
+        userData.pubKey = SecurityUtils.getSignPublicKey()
         Thread.sleep(1000)
         launch(AidantActivity::class.java)
         onView(withId(R.id.btn_files)).perform(click())
         Thread.sleep(5000)
-        val directory = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath)
+        checkFileInDownload()
+    }
+
+    private fun checkFileInDownload() {
+        val directory = File(Environment
+            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath)
         lateinit var dataFile: File
         val files = directory.listFiles()
         for(file in files!!) {
-            if (file.name.contains(userData.urlToFile)) {
-                dataFile = file
-            }
+            if (file.name.contains((userData.urlToFile).substring(0, userData.urlToFile.length - 4))
+            ) dataFile = file
         }
         assert(dataFile.exists())
+    }
+
+    private fun uploadFileOnServer() {
+        SecurityUtils.getSignKeyPair()
+        SecurityUtils.getEncryptionKeyPair()
+        userData.pubKey = SecurityUtils.getEncPublicKey()
+        CoroutineScope(Dispatchers.IO).launch {
+            launch(WorkActivity::class.java)
+            withTimeout(35000) {
+                launch(AidantActivity::class.java)
+            }
+        }
+    }
+
+   @Test
+    fun urlFromIntentTest() {
+       val intent = Intent(appContext, AidantActivity::class.java)
+       intent.putExtra("url", "36085647-7e4b-4129-bdb7-8.zip")
+       intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+       userData.esquive = true
+       appContext.startActivity(intent)
+       Thread.sleep(7000)
+       assert(userData.loadURL(appContext) == "36085647-7e4b-4129-bdb7-8.zip")
+       userData.urlToFile = ""
+       userData.byeData("url.txt")
     }
 
     @After

@@ -28,7 +28,7 @@ import kotlin.math.sqrt
  * class WorkActivity manages the capture of the audio record and motion information
  *
  * @author Maxime Caucheteur (with contribution of Sébastien Luca (Java version))
- * @version 1.2 (Updated on 27-05-2023)
+ * @version 1.2 (Updated on 03-06-2023)
  */
 class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerListener {
 
@@ -60,14 +60,14 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
+        userData = UserDataManager.getUserData(application)
+
         tvLoading = findViewById(R.id.loading)
         tvAction = findViewById(R.id.action)
         tvLoading.text = ""
         tvAction.text = ""
         findViewById<TextView>(R.id.travail).text = getString(R.string.message06)
             .replace("§%", userData.nomPartner)
-
-        userData = UserDataManager.getUserData(application)
 
         userData.esquive = true
 
@@ -96,8 +96,6 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                 registerLightSensor(sensorManager)
                 registerMovementDetector(sensorManager)
 
-                //alarm(this@WorkActivity)
-
                 // --> [1] Records a 10 seconds audio of the aide's environment
                 tvAction.text = getString(R.string.message12A)
                 initMagneto()
@@ -122,7 +120,7 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
                 override fun onFinish() {
                     resetMagneto()
-                    alarm(this@WorkActivity)
+                    if(!isDNDModeOn(this@WorkActivity)) alarm(this@WorkActivity)
                     val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
                     val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
                     val intent = Intent(this@WorkActivity, Work2Activity::class.java)

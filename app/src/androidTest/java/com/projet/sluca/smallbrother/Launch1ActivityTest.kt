@@ -49,6 +49,8 @@ class Launch1ActivityTest {
         val file = File(appContext.filesDir, "/SmallBrother/donnees.txt")
         if(file.exists())file.delete()
         file.createNewFile()
+        userData.role = null
+        userData.pubKey = ""
     }
 
     @Test

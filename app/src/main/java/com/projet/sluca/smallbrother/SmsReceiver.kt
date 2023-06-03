@@ -19,7 +19,7 @@ import com.projet.sluca.smallbrother.utils.warnAidantNoInternet
  * (with the [#SBxx] code)
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 27-05-2023)
+ * @version 1.2 (Updated on 31-05-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -57,18 +57,11 @@ class SmsReceiver : BroadcastReceiver() {
         if(userData.role == "Aidant") {
             val intnt = Intent(context, AidantActivity::class.java)
             when (clef) {
-                "[#SB03]" -> {
-                    userData.bit = 0
-                    userData.refreshLog(5)
-                }
-                "[#SB05]" -> {
-                    userData.bit = 0
-                    userData.refreshLog(13)
-                }
+                "[#SB03]" -> userData.bit = 5
+                "[#SB05]" -> userData.bit = 13
                 "[#SB07]" -> {
-                    userData.bit = 0
+                    userData.bit = 19
                     tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
-                    userData.refreshLog(19)
                 }
                 "[#SB08]" -> userData.bit = 8
                 "[#SB09]" -> userData.bit = 9
@@ -92,10 +85,14 @@ class SmsReceiver : BroadcastReceiver() {
 
         if (userData.bit == 1) // Private mode ON
         {
+            userData.esquive = true
             when(clef) {
                 "[#SB02]" -> userData.bit = 2
                 "[#SB04]" -> userData.bit = 4
             }
+            val intnt = Intent(context, AideActivity::class.java)
+            intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            context.startActivity(intnt)
         } else {
             userData.esquive = true
             when(clef) {
@@ -129,7 +126,6 @@ class SmsReceiver : BroadcastReceiver() {
      */
     private fun resetApp(context: Context) {
         Vibration().vibration(context, 330)
-        userData.refreshLog(3)
         userData.byeData("donnees.txt")
         if(!userData.loadData(context)){
             val mIntent = Intent(context, Launch1Activity::class.java)

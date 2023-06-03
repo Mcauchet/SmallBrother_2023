@@ -28,7 +28,7 @@
     <string name="reacpitulatif_cln1">→ Nom : \n→ Numéro de l\'Aidé : </string>
     <string name="popup1">
         Entrez une durée en minutes (maximum 120) durant laquelle vous ne souhaitez pas
-        que §% puisse vérifier votre situation :
+        que votre partenaire puisse vérifier votre situation :
     </string>
     <string name="intitule_delai">Temps restant : </string>
 
@@ -130,7 +130,7 @@
         Le traitement est en cours, veuillez patienter.
     </string>
     <string name="log_data_on_server">
-        Les données §% sont disponibles dans votre dossier de téléchargement. Vous pouvez l\'ouvrir en appuyant sur le dossier en haut à droite de l'écran.
+        Les données §% sont disponibles dans votre dossier de téléchargement. Vous pouvez l\'ouvrir en appuyant sur le dossier en haut à droite de l\'écran.
     </string>
     <string name="log_no_internet_aide">
         §% tente de vérifier votre situation.

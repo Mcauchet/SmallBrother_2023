@@ -17,6 +17,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat.startActivity
+import androidx.core.content.getSystemService
 import com.projet.sluca.smallbrother.activities.AidantActivity
 import com.projet.sluca.smallbrother.activities.AideActivity
 import com.projet.sluca.smallbrother.models.UserData
@@ -153,6 +154,18 @@ fun alarm(context: Context) {
     Handler(Looper.getMainLooper()).postDelayed( {
         mediaPlayer.stop()
     }, 3000L)
+}
+
+/**
+ * Checks if the phone is in silent mode
+ * @param context the context of the application
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 03-06-2023)
+ */
+fun isDNDModeOn(context: Context): Boolean {
+    val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    if(audioManager.ringerMode == AudioManager.RINGER_MODE_SILENT) return true
+    return false
 }
 
 /**
