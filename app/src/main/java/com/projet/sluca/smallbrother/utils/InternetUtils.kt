@@ -3,6 +3,11 @@ package com.projet.sluca.smallbrother.utils
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import io.ktor.client.*
+import io.ktor.client.engine.android.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
 import java.io.IOException
 
 /**
@@ -43,5 +48,23 @@ private fun checkInternetCapabilities(context: Context) : Boolean {
                         capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
         -> true
         else -> false
+    }
+}
+
+/**
+ * Create and initialize the HttpClient
+ * @return the HttpClient
+ * @author Maxime Caucheteur
+ * @version 1.2 (Updated on 04-01-2023)
+ */
+fun initClient() : HttpClient {
+    return HttpClient(Android) {
+        install(ContentNegotiation) {
+            json()
+        }
+        install(HttpRequestRetry) {
+            retryOnServerErrors(maxRetries = 5)
+            exponentialDelay()
+        }
     }
 }

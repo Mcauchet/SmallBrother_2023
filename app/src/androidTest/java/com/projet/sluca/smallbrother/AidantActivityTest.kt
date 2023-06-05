@@ -59,6 +59,7 @@ class AidantActivityTest {
     companion object {
         private lateinit var userData: UserData
         private lateinit var appContext: Context
+        private const val targetUrl: String = "b5db4362-2989-472d-8fd1-e.zip" // first create a file and put its url here
 
         @BeforeClass
         @JvmStatic
@@ -225,7 +226,7 @@ class AidantActivityTest {
 
     @Test
     fun getContextCaptureTest() {
-        userData.saveURL(appContext, "36085647-7e4b-4129-bdb7-8.zip") //Replace with existing url when testing
+        userData.saveURL(appContext, targetUrl)
         userData.pubKey = SecurityUtils.getSignPublicKey()
         Thread.sleep(1000)
         launch(AidantActivity::class.java)
@@ -261,12 +262,12 @@ class AidantActivityTest {
    @Test
     fun urlFromIntentTest() {
        val intent = Intent(appContext, AidantActivity::class.java)
-       intent.putExtra("url", "36085647-7e4b-4129-bdb7-8.zip")
+       intent.putExtra("url", targetUrl)
        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
        userData.esquive = true
        appContext.startActivity(intent)
        Thread.sleep(7000)
-       assert(userData.loadURL(appContext) == "36085647-7e4b-4129-bdb7-8.zip")
+       assert(userData.loadURL(appContext) == targetUrl)
        userData.urlToFile = ""
        userData.byeData("url.txt")
     }

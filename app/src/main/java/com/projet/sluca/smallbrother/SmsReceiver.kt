@@ -19,7 +19,7 @@ import com.projet.sluca.smallbrother.utils.warnAidantNoInternet
  * (with the [#SBxx] code)
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 31-05-2023)
+ * @version 1.2 (Updated on 04-06-2023)
  */
 class SmsReceiver : BroadcastReceiver() {
 
@@ -54,65 +54,82 @@ class SmsReceiver : BroadcastReceiver() {
 
         if (!listOf(*motsclef).contains(clef)) return
 
-        if(userData.role == "Aidant") {
-            val intnt = Intent(context, AidantActivity::class.java)
-            when (clef) {
-                "[#SB03]" -> userData.bit = 5
-                "[#SB05]" -> userData.bit = 13
-                "[#SB07]" -> {
-                    userData.bit = 19
-                    tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
-                }
-                "[#SB08]" -> userData.bit = 8
-                "[#SB09]" -> userData.bit = 9
-                "[#SB10]" -> {
-                    // The subsequence depends on the URL to the file, if its length changes,
-                    // the subsequence must be changed too
-                    val urlFile = message
-                        .subSequence(message.length - 37, message.length - 8)
-                        .toString()
-                    userData.urlToFile = urlFile
-                    intnt.putExtra("url", urlFile)
-                }
-            }
-            intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(intnt)
-        }
+        if(userData.role == "Aidant") aidantReceiver(context, message)
 
         if(userData.role != "Aidé") return
 
         if(clef == "[#SB01]") resetApp(context)
 
-        if (userData.bit == 1) // Private mode ON
-        {
-            userData.esquive = true
-            when(clef) {
-                "[#SB02]" -> userData.bit = 2
-                "[#SB04]" -> userData.bit = 4
+        userData.esquive = true
+        if (userData.bit == 1) resolveSmsAidePrivateOn(context)
+        else resolveSmsAidePrivateOff(context, vibreur)
+    }
+
+    /**
+     * Manages the SMS received by the Aidant
+     */
+    private fun aidantReceiver(context: Context, message: String) {
+        val intnt = Intent(context, AidantActivity::class.java)
+        when (clef) {
+            "[#SB03]" -> userData.bit = 5
+            "[#SB05]" -> userData.bit = 13
+            "[#SB07]" -> {
+                userData.bit = 19
+                tempsrestant = message.substring(message.indexOf("(") + 1, message.indexOf(")"))
             }
-            val intnt = Intent(context, AideActivity::class.java)
-            intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            context.startActivity(intnt)
-        } else {
-            userData.esquive = true
-            when(clef) {
-                "[#SB02]" -> {
-                    userData.refreshLog(6)
-                    val intnt = Intent(context, AideActivity::class.java)
+            "[#SB08]" -> userData.bit = 8
+            "[#SB09]" -> userData.bit = 9
+            "[#SB10]" -> {
+                // The subsequence depends on the URL to the file, if its length changes,
+                // the subsequence must be changed too
+                val urlFile = message
+                    .subSequence(message.length - 37, message.length - 8)
+                    .toString()
+                userData.urlToFile = urlFile
+                intnt.putExtra("url", urlFile)
+            }
+        }
+        intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intnt)
+    }
+
+    /**
+     * Resolve SMS received by Aide while private mode ON
+     * @param context the context of the application
+     */
+    private fun resolveSmsAidePrivateOn(context: Context) {
+        when(clef) {
+            "[#SB02]" -> userData.bit = 2
+            "[#SB04]" -> userData.bit = 4
+        }
+        val intnt = Intent(context, AideActivity::class.java)
+        intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        context.startActivity(intnt)
+    }
+
+    /**
+     * Resolve SMS received by Aidant while private mode OFF
+     * @param context the context of the application
+     * @param vibreur the smartphone vibrator
+     */
+    private fun resolveSmsAidePrivateOff(context: Context, vibreur: Vibration) {
+        when(clef) {
+            "[#SB02]" -> {
+                userData.refreshLog(6)
+                val intnt = Intent(context, AideActivity::class.java)
+                intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                context.startActivity(intnt)
+            }
+            "[#SB04]" -> {
+                if(isOnline(context)) {
+                    val intnt = Intent(context, WorkActivity::class.java)
                     intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     context.startActivity(intnt)
-                }
-                "[#SB04]" -> {
-                    if(isOnline(context)) {
-                        val intnt = Intent(context, WorkActivity::class.java)
-                        intnt.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        context.startActivity(intnt)
-                    } else {
-                        userData.refreshLog(12)
-                        warnAidantNoInternet(context, vibreur, userData)
-                        val intnt = Intent(context, AideActivity::class.java)
-                        context.startActivity(intnt)
-                    }
+                } else {
+                    userData.refreshLog(12)
+                    warnAidantNoInternet(context, vibreur, userData)
+                    val intnt = Intent(context, AideActivity::class.java)
+                    context.startActivity(intnt)
                 }
             }
         }

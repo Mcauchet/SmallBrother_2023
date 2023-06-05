@@ -15,12 +15,9 @@ import com.projet.sluca.smallbrother.models.UserData
 import com.projet.sluca.smallbrother.utils.*
 import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.android.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
-import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +30,7 @@ import java.util.zip.ZipInputStream
  * class AidantActivity manages the actions the Aidant can make
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 23-05-2023)
+ * @version 1.2 (updated on 04-06-2023)
  */
 class AidantActivity : AppCompatActivity() {
 
@@ -81,46 +78,88 @@ class AidantActivity : AppCompatActivity() {
         }
 
         btnSettings.setOnClickListener {
-            vibreur.vibration(this, 200)
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+            btnSettings()
         }
 
         btnFolder.setOnClickListener {
-            vibreur.vibration(this, 200)
-            openDownloadDirectory()
+            btnFolder()
         }
 
         btnSmsAide.setOnClickListener {
-            vibreur.vibration(this, 200)
-            val sms = getString(R.string.smsys02).replace("§%", userData.nom)
-            if(sendSMS(this, sms, userData.telephone, vibreur)) {
-                userData.bit = 0
-                message(this, getString(R.string.message04), vibreur)
-                userData.refreshLog(2)
-            }
+            btnSmsAide()
         }
 
         btnCall.setOnClickListener {
-            userData.bit = 0
-            vibreur.vibration(this, 200)
-            val callIntent = Intent(Intent.ACTION_CALL)
-            callIntent.data = Uri.parse("tel:" + userData.telephone)
-            startActivity(callIntent)
-            message(this, getString(R.string.message05), vibreur)
-            userData.refreshLog(7)
+            btnCall()
         }
 
         btnEmergency.setOnClickListener {
-            vibreur.vibration(this, 200)
-            userData.bit = 0
-            createAndShowConfirmationAlertDialog()
+            btnEmergency()
         }
 
         btnFiles.setOnClickListener {
-            userData.urlToFile = userData.loadURL(this)
-            getContextCapture()
+            btnFiles()
         }
+    }
+
+    /**
+     * Manage clicks on the settings button
+     */
+    private fun btnSettings() {
+        vibreur.vibration(this, 200)
+        val intent = Intent(this, SettingsActivity::class.java)
+        startActivity(intent)
+    }
+
+    /**
+     * Manage clicks on the folder button
+     */
+    private fun btnFolder() {
+        vibreur.vibration(this, 200)
+        openDownloadDirectory()
+    }
+
+    /**
+     * Manage clicks on the SMS button
+     */
+    private fun btnSmsAide() {
+        vibreur.vibration(this, 200)
+        val sms = getString(R.string.smsys02).replace("§%", userData.nom)
+        if(sendSMS(this, sms, userData.telephone, vibreur)) {
+            userData.bit = 0
+            message(this, getString(R.string.message04), vibreur)
+            userData.refreshLog(2)
+        }
+    }
+
+    /**
+     * Manage clicks on the call button
+     */
+    private fun btnCall() {
+        userData.bit = 0
+        vibreur.vibration(this, 200)
+        val callIntent = Intent(Intent.ACTION_CALL)
+        callIntent.data = Uri.parse("tel:" + userData.telephone)
+        startActivity(callIntent)
+        message(this, getString(R.string.message05), vibreur)
+        userData.refreshLog(7)
+    }
+
+    /**
+     * Manage clicks on the emergency button
+     */
+    private fun btnEmergency() {
+        vibreur.vibration(this, 200)
+        userData.bit = 0
+        createAndShowConfirmationAlertDialog()
+    }
+
+    /**
+     * Manage clicks on the re-download button
+     */
+    private fun btnFiles() {
+        userData.urlToFile = userData.loadURL(this)
+        getContextCapture()
     }
 
     /**
@@ -294,23 +333,6 @@ class AidantActivity : AppCompatActivity() {
         return file
     }
 
-    /**
-     * Create and initialize the HttpClient
-     * @return the HttpClient
-     * @author Maxime Caucheteur
-     * @version 1.2 (Updated on 04-01-2023)
-     */
-    private fun initClient() : HttpClient {
-        return HttpClient(Android) {
-            install(ContentNegotiation) {
-                json()
-            }
-            install(HttpRequestRetry) {
-                retryOnServerErrors(maxRetries = 5)
-                exponentialDelay()
-            }
-        }
-    }
 
     /**
      * Instantiate the builder, configure it and show it

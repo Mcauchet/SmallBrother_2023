@@ -75,13 +75,9 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
 
         if (SmsReceiver.clef != null) clef = SmsReceiver.clef.toString()
 
-        if (intent.hasExtra("clef")) {
-            clef = intent.getStringExtra("clef").toString()
-            emergency = true
-        }
-        caller = PhoneStatReceiver.catchCallNumber()
-        if (caller?.startsWith("+32") == true) caller?.replace("+32", "0")
-        PhoneStatReceiver.resetCallNumber()
+        checkClef()
+
+        getCallerNumber()
 
         if (caller != "" && userData.telephone == caller) {
             userData.refreshLog(8)
@@ -101,39 +97,55 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
                 initMagneto()
                 magneto.start()
             }
+            recordAudioCountdown(sensorManager)
+        }
+    }
 
-            // 10 seconds countdown
-            object : CountDownTimer(11000, 100) {
-                override fun onTick(millisUntilFinished: Long) {
-                    // position captured at seconds 2 and 9 of the record
-                    when (millisUntilFinished) {
-                        in 8900..9000 -> {
-                            checkAcc1 = userData.motion
-                            checkXYZ1 = keepMove
-                        }
-                        in 1900..2000 -> {
-                            checkAcc2 = userData.motion
-                            checkXYZ2 = keepMove
-                        }
+    /**
+     * Starts a countdown timer for the audio recorder
+     * @param sensorManager the sensorManager for lightSensor and MovementDetector
+     */
+    private fun recordAudioCountdown(sensorManager: SensorManager) {
+        object : CountDownTimer(11000, 100) {
+            override fun onTick(millisUntilFinished: Long) {
+                when (millisUntilFinished) {
+                    in 8800..9000 -> {
+                        checkAcc1 = userData.motion
+                        checkXYZ1 = keepMove
+                    }
+                    in 1800..2000 -> {
+                        checkAcc2 = userData.motion
+                        checkXYZ2 = keepMove
                     }
                 }
+            }
+            override fun onFinish() {
+                resetMagneto()
+                val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
+                val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
+                val intent = Intent(this@WorkActivity, Work2Activity::class.java)
+                intent.putExtra("light", getLightScale(ambientLightLux))
+                intent.putExtra("accInterpretation", accInterpretation)
+                intent.putExtra("movementInterpretation", movementInterpretation)
+                if(emergency) intent.putExtra("emergency", true)
+                unregisterListener(lightDetectorListener, sensorManager)
+                AccelerometerManager.stopListening()
+                unregisterListener(movementDetectorListener, sensorManager)
+                startActivity(intent)
+            }
+        }.start()
+    }
 
-                override fun onFinish() {
-                    resetMagneto()
-                    if(!isDNDModeOn(this@WorkActivity)) alarm(this@WorkActivity)
-                    val accInterpretation = interpretAcceleration(checkAcc1, checkAcc2)
-                    val movementInterpretation = interpretMovement(checkXYZ1, checkXYZ2)
-                    val intent = Intent(this@WorkActivity, Work2Activity::class.java)
-                    intent.putExtra("light", getLightScale(ambientLightLux))
-                    intent.putExtra("accInterpretation", accInterpretation)
-                    intent.putExtra("movementInterpretation", movementInterpretation)
-                    if(emergency) intent.putExtra("emergency", true)
-                    unregisterListener(lightDetectorListener, sensorManager)
-                    AccelerometerManager.stopListening()
-                    unregisterListener(movementDetectorListener, sensorManager)
-                    startActivity(intent)
-                }
-            }.start()
+    private fun getCallerNumber() {
+        caller = PhoneStatReceiver.catchCallNumber()
+        if (caller?.startsWith("+32") == true) caller?.replace("+32", "0")
+        PhoneStatReceiver.resetCallNumber()
+    }
+
+    private fun checkClef() {
+        if (intent.hasExtra("clef")) {
+            clef = intent.getStringExtra("clef").toString()
+            emergency = true
         }
     }
 
