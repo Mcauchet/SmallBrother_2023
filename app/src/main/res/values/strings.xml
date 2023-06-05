@@ -14,8 +14,8 @@
         selon le rôle de chacun :
     </string>
     <string name="install_note2">Veuillez compléter ces champs :</string>
-    <string name="input1A">Nom de l\'Aidant</string>
-    <string name="input1B">Nom de l\'Aidé</string>
+    <string name="input1A">Prénom de l\'Aidant</string>
+    <string name="input1B">Prénom de l\'Aidé</string>
     <string name="input2A">N° de portable de l\'Aidé</string>
     <string name="input2B">N° de portable de l\'Aidant</string>
     <string name="reglages_intitule">Réglages</string>
@@ -162,7 +162,7 @@
     <string name="qr_code">QR Code</string>
     <string name="installScan">[INSTALLATION] Veuillez scanner le QR code sur le smartphone §%.</string>
     <string name="installQR">[INSTALLATION] Scannez ce QR code avec le smartphone §%, puis appuyez sur le bouton \'Terminer\'.</string>
-    <string name="nomAide">Nom de l\'Aidé</string>
+    <string name="nomAide">Prénom de l\'Aidé</string>
     <string name="blank" />
     <string name="duree_prive_base">15</string>
     <string name="contentDesc_download">Dossier de téléchargement</string>
