@@ -72,7 +72,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    lateinit var zipName: String
+    var zipName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

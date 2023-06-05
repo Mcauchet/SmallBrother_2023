@@ -106,6 +106,7 @@ class QRCodeScannerInstallActivityTest {
         val activityScenario = launch(QRCodeScannerInstallActivity::class.java)
         onView(withId(R.id.qr_scanner)).perform(click())
         scannerActivity(activityScenario)
+        Thread.sleep(500)
         onView(withId(R.id.btn_sms_va_dant)).check(matches(isDisplayed()))
     }
 
