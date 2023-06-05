@@ -155,9 +155,9 @@ class InstallActivity : AppCompatActivity() {
      * @author Maxime Caucheteur
      * @version 1.2 (Updated on 26-05-2023)
      */
-    private fun registerData(name: String, namePartner: String, telephone: String, userData: UserData,
-                             context: Context
-    ) {
+    private fun registerData(name: String, namePartner: String, telephone: String,
+                             userData: UserData, context: Context)
+    {
         userData.version = getAppVersion(context)
         userData.nom = name
         userData.nomPartner = namePartner

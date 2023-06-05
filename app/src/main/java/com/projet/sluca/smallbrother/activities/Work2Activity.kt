@@ -118,33 +118,34 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
             tvAction.text = getString(R.string.message12C)
             checkForLocation()
             if(locationGps==null && locationNetwork==null) getLocation()
-            object : CountDownTimer(14000, 100) {
-                override fun onTick(millisUntilFinished: Long) {
-                    when (millisUntilFinished) {
-                        in 11000..13000 -> {
-                            address1 = getAddress()
-                            Log.d("address1", address1)
-                        }
-                        8000L -> {
-                            locationGps = null
-                            locationNetwork = null //TODO test this
-                        }
-                        in 1000..3000 -> {
-                            address2 = getAddress()
-                            Log.d("address2", address2)
-                        }
-                    }
-                }
-                override fun onFinish() {
-                    if(address1 != "" && address2 != "")
-                        addressDiff = !(address1.contentEquals(address2))
-                    locationManager.removeUpdates(locationListener)
-                    takePictures()
-                }
-            }.start()
+            startAddressesTimer()
         } else takePictures()
-
     }
+
+    /**
+     * Starts a countdown timer to get address 10 seconds apart
+     */
+    private fun startAddressesTimer() {
+        object : CountDownTimer(14000, 100) {
+            override fun onTick(millisUntilFinished: Long) {
+                when (millisUntilFinished) {
+                    in 11000..13000 -> address1 = getAddress()
+                    in 1000..3000 -> address2 = getAddress()
+                }
+            }
+            override fun onFinish() {
+                if(address1 != "" && address2 != "") addressDiff = compareAddresses()
+                locationManager.removeUpdates(locationListener)
+                takePictures()
+            }
+        }.start()
+    }
+
+    /**
+     * Checks if addresses match
+     */
+    private fun compareAddresses(): Boolean = !(address1.contentEquals(address2))
+
 
     override fun onDoneCapturingAllPhotos(picturesTaken: TreeMap<String, ByteArray>?) {
         // --> [4] Get all needed files reference.
@@ -182,15 +183,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
         object : Thread() {
             override fun run() {
                 try {
-                    val client = HttpClient(Android) {
-                        install(ContentNegotiation) {
-                            json()
-                        }
-                        install(HttpRequestRetry) {
-                            retryOnServerErrors(maxRetries = 5)
-                            exponentialDelay()
-                        }
-                    }
+                    val client = initClient()
                     val location: String = if((locationGps != null || locationNetwork != null)
                         && locationAvailability()){
                         getAddress()
@@ -208,16 +201,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     Log.d("infos", information)
 
                     val informationFile = File(userData.path + "/SmallBrother/informations.txt")
-                    informationFile.createNewFile()
-
-                    val outputStream = FileOutputStream(informationFile)
-
-                    val bufferedWriter = BufferedWriter(OutputStreamWriter(
-                        outputStream,
-                        Charsets.UTF_8
-                    ))
-                    bufferedWriter.write(information)
-                    bufferedWriter.close()
+                    writeInfoInFile(informationFile, information)
 
                     val ziPath = this@Work2Activity.filesDir.path+"/SmallBrother/zippedFiles.zip"
 
@@ -226,22 +210,7 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                     CoroutineScope(Dispatchers.IO).launch {
                         try {
                             if (File(ziPath).exists()) zipName = uploadZip(client, File(ziPath))
-
-                            if(zipName != "") {
-                                val fileLocMsg = getString(R.string.smsys10)
-                                    .replace("§%", "$URLServer/download/$zipName")
-
-                                sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
-                                userData.refreshLog(21)
-                            } else {
-                                sendSMS(
-                                    this@Work2Activity,
-                                    getString(R.string.smsys09),
-                                    userData.telephone,
-                                    vibreur
-                                )
-                                userData.refreshLog(23)
-                            }
+                            resolveUpload()
 
                             audioFile.delete()
                             firstPicture.delete()
@@ -266,6 +235,45 @@ class Work2Activity : AppCompatActivity(), PictureCapturingListener,
                 startActivity(intent)
             }
         }.start()
+    }
+
+    /**
+     * Send correct message based on upload result
+     */
+    private fun resolveUpload() {
+        if(zipName != "") {
+            val fileLocMsg = getString(R.string.smsys10)
+                .replace("§%", "$URLServer/download/$zipName")
+
+            sendSMS(this@Work2Activity, fileLocMsg, userData.telephone, vibreur)
+            userData.refreshLog(21)
+        } else {
+            sendSMS(
+                this@Work2Activity,
+                getString(R.string.smsys09),
+                userData.telephone,
+                vibreur
+            )
+            userData.refreshLog(23)
+        }
+    }
+
+    /**
+     * Writes information collected in the file
+     * @param informationFile the File
+     * @param information the info to write
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-06-2023)
+     */
+    private fun writeInfoInFile(informationFile: File, information: String) {
+        informationFile.createNewFile()
+        val outputStream = FileOutputStream(informationFile)
+        val bufferedWriter = BufferedWriter(OutputStreamWriter(
+            outputStream,
+            Charsets.UTF_8
+        ))
+        bufferedWriter.write(information)
+        bufferedWriter.close()
     }
 
     /**

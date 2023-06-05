@@ -19,7 +19,7 @@ import com.projet.sluca.smallbrother.utils.*
 /**
  * class AideActivity manages the actions available to the "Aidé".
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (updated on 31-05-2023)
+ * @version 1.2 (updated on 04-06-2023)
  */
 class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener {
 
@@ -67,34 +67,61 @@ class AideActivity : AppCompatActivity(), CompoundButton.OnCheckedChangeListener
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         btnSmsAidant.setOnClickListener {
-            updateBitOnAction()
-            vibreur.vibration(this, 100)
-            val sms = getString(R.string.smsys03).replace("§%", userData.nom)
-            if(sendSMS(this, sms, userData.telephone, vibreur)) {
-                message(this, getString(R.string.message04), vibreur)
-                userData.refreshLog(15)
-            }
+            btnSmsAidant()
         }
 
         btnCall.setOnClickListener {
-            updateBitOnAction()
-            vibreur.vibration(this, 100)
-            val callIntent = Intent(Intent.ACTION_CALL).apply {
-                data = Uri.parse("tel:" + userData.telephone)
-            }
-            startActivity(callIntent)
-            message(this, getString(R.string.message05), vibreur)
-            userData.refreshLog(7)
+            btnCall()
         }
 
         btnEmergency.setOnClickListener {
-            userData.prive = false
-            userData.delay = 0
-            changeSwitch()
-            vibreur.vibration(this, 100)
-            val sms = getString(R.string.smsys08).replace("§%", userData.nom)
-            aideAskForHelp(sms)
+            btnEmergency()
         }
+    }
+
+    /**
+     * Sends an SMS to the Aidant
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-06-2023)
+     */
+    private fun btnSmsAidant() {
+        updateBitOnAction()
+        vibreur.vibration(this, 100)
+        val sms = getString(R.string.smsys03).replace("§%", userData.nom)
+        if(sendSMS(this, sms, userData.telephone, vibreur)) {
+            message(this, getString(R.string.message04), vibreur)
+            userData.refreshLog(15)
+        }
+    }
+
+    /**
+     * Calls the Aidant
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-06-2023)
+     */
+    private fun btnCall() {
+        updateBitOnAction()
+        vibreur.vibration(this, 100)
+        val callIntent = Intent(Intent.ACTION_CALL).apply {
+            data = Uri.parse("tel:" + userData.telephone)
+        }
+        startActivity(callIntent)
+        message(this, getString(R.string.message05), vibreur)
+        userData.refreshLog(7)
+    }
+
+    /**
+     * Captures the context and send it to the server
+     * @author Maxime Caucheteur
+     * @version 1.2 (Updated on 04-06-2023)
+     */
+    private fun btnEmergency() {
+        userData.prive = false
+        userData.delay = 0
+        changeSwitch()
+        vibreur.vibration(this, 100)
+        val sms = getString(R.string.smsys08).replace("§%", userData.nom)
+        aideAskForHelp(sms)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton, isChecked: Boolean) {

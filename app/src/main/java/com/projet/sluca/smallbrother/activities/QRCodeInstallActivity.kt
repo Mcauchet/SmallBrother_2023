@@ -19,7 +19,7 @@ import com.projet.sluca.smallbrother.utils.setAppBarTitle
  * Manages the public key exchange between Aidé and Aidant through QR Code
  *
  * @author Maxime Caucheteur
- * @version 1.2 (Updated on 11-04-2023)
+ * @version 1.2 (Updated on 04-06-2023)
  */
 class QRCodeInstallActivity : AppCompatActivity() {
 
@@ -36,10 +36,8 @@ class QRCodeInstallActivity : AppCompatActivity() {
 
         userData = UserDataManager.getUserData(application)
 
-        if(userData.nomPartner.isNotEmpty()) {
-            textQR.text = getString(R.string.installQR)
-                .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
-        }
+        textQR.text = getString(R.string.installQR)
+            .replace("§%", particule(userData.nomPartner) +userData.nomPartner)
 
         setAppBarTitle(userData, this)
 
@@ -47,14 +45,21 @@ class QRCodeInstallActivity : AppCompatActivity() {
         else if(userData.role == "Aidé") qrEncoder(SecurityUtils.getSignPublicKey(), ivQrCode)
 
         btnEnd.setOnClickListener {
-            vibreur.vibration(this, 100)
-            if(userData.role == "Aidant") {
-                val intent = Intent(this, QRCodeScannerInstallActivity::class.java)
-                startActivity(intent)
-            } else if(userData.role == "Aidé") {
-                val intent = Intent(this, AideActivity::class.java)
-                startActivity(intent)
-            }
+            btnEnd()
+        }
+    }
+
+    /**
+     * Manage clicks on the end button
+     */
+    private fun btnEnd() {
+        vibreur.vibration(this, 100)
+        if(userData.role == "Aidant") {
+            val intent = Intent(this, QRCodeScannerInstallActivity::class.java)
+            startActivity(intent)
+        } else if(userData.role == "Aidé") {
+            val intent = Intent(this, AideActivity::class.java)
+            startActivity(intent)
         }
     }
 

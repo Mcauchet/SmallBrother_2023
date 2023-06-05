@@ -15,7 +15,7 @@ import com.projet.sluca.smallbrother.utils.setAppBarTitle
  * SettingsActivity manages the resets of aide's and aidant's information and aide's picture
  *
  * @author Maxime Caucheteur (with contribution of Sébatien Luca (Java version))
- * @version 1.2 (Updated on 23-05-2023)
+ * @version 1.2 (Updated on 05-06-2023)
  */
 class SettingsActivity : AppCompatActivity() {
 
@@ -34,16 +34,22 @@ class SettingsActivity : AppCompatActivity() {
         setAppBarTitle(userData, this)
 
         btnResetAidant.setOnClickListener {
-            vibreur.vibration(this, 330)
-            val builder = AlertDialog.Builder(this)
-            configureAlertDialog(builder)
-            builder.create().show()
+            btnReset()
         }
-
         btnBack.setOnClickListener {
             vibreur.vibration(this, 100)
             finish()
         }
+    }
+
+    /**
+     * Manage clicks on the reset button
+     */
+    private fun btnReset() {
+        vibreur.vibration(this, 330)
+        val builder = AlertDialog.Builder(this)
+        configureAlertDialog(builder)
+        builder.create().show()
     }
 
     /**
