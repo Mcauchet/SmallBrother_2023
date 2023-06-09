@@ -286,8 +286,8 @@ class WorkActivity : AppCompatActivity(), SensorEventListener, AccelerometerList
     override fun onAccelerationChanged(x: Float, y: Float, z: Float) {
         // Fetch phone's coordinates
         // Error margin (*10) to compensate the accelerometer high sensibility
-        //TODO check the correct multiplier to have a decent sensor
-        val errorMargin = 10 //seems a bit too sensitive, maybe try 15/20/30
+        // seems a bit too sensitive, Larger tests needed to find good errorMargin
+        val errorMargin = 10
         val tmp = floatArrayOf(
             (x.toInt() * errorMargin).toFloat(),
             (y.toInt() * errorMargin).toFloat(),
