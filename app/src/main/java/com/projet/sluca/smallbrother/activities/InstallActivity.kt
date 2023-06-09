@@ -181,13 +181,6 @@ class InstallActivity : AppCompatActivity() {
             val intent = Intent(context, QRCodeScannerInstallActivity::class.java)
             ContextCompat.startActivity(context, intent, null)
         }
-        //TODO test this
-        /*val intent: Intent = when(userData.role) {
-            "Aidant" -> Intent(context, QRCodeInstallActivity::class.java)
-            "Aidé" -> Intent(context, QRCodeScannerInstallActivity::class.java)
-            else -> Intent(context, Launch1Activity::class.java)
-        }
-        ContextCompat.startActivity(context, intent, null)*/
     }
 
     /**
